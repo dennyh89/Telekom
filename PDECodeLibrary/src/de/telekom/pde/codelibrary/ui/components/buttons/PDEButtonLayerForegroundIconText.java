@@ -712,7 +712,9 @@ public class PDEButtonLayerForegroundIconText implements PDEButtonLayerInterface
         // set icon shadow if shadow is on and icon is colored
         if (mTextHasShadow && mIconColored) {
             mImageView.setOffset((int)shadowOffset.x, (int)shadowOffset.y);
-            mImageView.setShadowColor(shadowColor.getIntegerColor());
+            //mImageView.setShadowColor(shadowColor.getIntegerColor());
+            mImageView.setShadowColor(Color.argb((int)0.25f*255, (int)shadowColor.getRed()*255, (int)shadowColor.getGreen()*255, (int)shadowColor.getBlue()*255));
+
         }
 
     }

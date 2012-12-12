@@ -18,6 +18,7 @@ package de.telekom.pde.codelibrary.ui.components.buttons;
 import android.content.Context;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.ImageView;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
@@ -34,6 +35,9 @@ import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameterDictionar
 import de.telekom.pde.codelibrary.ui.elements.common.PDELayerSunken;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 
 /**
@@ -92,6 +96,8 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
 
     // the layer
     protected PDEAbsoluteLayout mLayer = null;
+
+    private static Method sImageViewSetAlphaMethod = null;
 
 
     /**
@@ -164,8 +170,8 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         // update if necessary
         if (needsUpdate) {
             // update animateable parameters on change
-            updateColors_priv();
-            updateState_priv();
+            updateColors();
+            updateState();
         }
     }
 
@@ -191,17 +197,17 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
 
         // color is a fixed parameter right now
         if (force) {
-            prepareColor_priv();
+            prepareColor();
         }
 
         // state is a fixed parameter right now
         if (force) {
-            prepareState_priv();
+            prepareState();
         }
 
         // non-animatable properties do their change management internally
-        prepareAlignment_priv();
-        prepareSize_priv();
+        prepareAlignment();
+        prepareSize();
     }
 
 
@@ -218,7 +224,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      * The shadow color is also calculated; the shadow color depends solely on the main color (and does only change
      * inbetween states)
      */
-    private void prepareColor_priv()
+    private void prepareColor()
     {
         // create fixed defaults (old way for old compilers, dictionary literal would be better readable)
         mParamColor.removeAllObjects();
@@ -251,7 +257,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         }
 
         // and apply once
-        updateColors_priv();
+        updateColors();
     }
 
 
@@ -260,7 +266,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      *
      * Shadow strengs animates the shadow as a whole. The range is 0.0..1.0.
      */
-    private void prepareState_priv()
+    private void prepareState()
     {
         // set the new values
         mParamState.removeAllObjects();
@@ -285,7 +291,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         }
 
         // apply once
-        updateState_priv();
+        updateState();
     }
 
 
@@ -297,7 +303,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      *
      * IconOnRightSide and IconTextAlignment are non-animated and uses the base parameter
      */
-    private void prepareAlignment_priv()
+    private void prepareAlignment()
     {
         String alignmentString;
         PDEConstants.PDEAlignment alignment;
@@ -325,7 +331,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         mCheckboxAlignment = alignment;
 
         // relayout
-        relayout_priv();
+        relayout();
     }
 
 
@@ -334,7 +340,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      *
      * Preparation function for the font which evaluates the parameters. Note that we need to
      */
-    private void prepareSize_priv()
+    private void prepareSize()
     {
         Object sizeObject;
         PDEButtonLayerOverlayCheckboxSizeMode checkboxMode;
@@ -382,8 +388,8 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         mCheckboxSize = checkboxSize;
 
         // update size, and relayout
-        updateSize_priv();
-        relayout_priv();
+        updateSize();
+        relayout();
     }
 
 
@@ -398,7 +404,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      *
      * Title colors, shadow colors. All colors are precalculated and only animated.
      */
-    private void updateColors_priv()
+    private void updateColors()
     {
         PDEColor color,border;
 
@@ -415,15 +421,39 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
     /**
      * @brief Private function - update state, show icon if required.
      */
-    private void updateState_priv()
+    private void updateState()
     {
         float alpha;
+        Method method = null;
 
         // interpolate colors by calling complex logic color interpolation helper
         alpha = PDEComponentHelpers.interpolateFloat(mParamState, mAgentHelper, PDEAgentHelper.PDEAgentHelperAnimationStateOnly, null);
 
         // show/hide icon
-        mIconLayer.setAlpha(alpha);
+        // since the setAlpha(int) method is deprecated in API 16 we go by reflection.
+        if (sImageViewSetAlphaMethod == null) {
+            try {
+                method = mIconLayer.getClass().getMethod("setImageAlpha",new Class[] {int.class});
+            } catch (NoSuchMethodException e) {
+                try {
+                    method = mIconLayer.getClass().getMethod("setAlpha",new Class[] {int.class});
+                } catch (NoSuchMethodException e2) {
+                    //that should never happen!
+                    Log.e(LOG_TAG,"no method for setting alpha for ImageView");
+                }
+            }
+            sImageViewSetAlphaMethod = method;
+        }
+
+        if (sImageViewSetAlphaMethod != null) {
+            try {
+                sImageViewSetAlphaMethod.invoke(mIconLayer,Integer.valueOf((int)alpha*255));
+            } catch (IllegalAccessException e) {
+                Log.e(LOG_TAG,"can't invoke method for changing alpha of imageView - IllegalAccessException");
+            } catch (InvocationTargetException e) {
+                Log.e(LOG_TAG,"can't invoke method for changing alpha of imageView - InvocationTargetException");
+            }
+        }
     }
 
 
@@ -432,7 +462,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      *
      * The layouting positions the graphical element; the sizing of red dot and sunken layer is done here.
      */
-    private void updateSize_priv()
+    private void updateSize()
     {
         Context context = PDECodeLibrary.getInstance().getApplicationContext();
         int resourceID = 0;
@@ -527,7 +557,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         mLayout = new PDEButtonLayoutHelper(layout);
 
         // update the size
-        updateSize_priv();
+        updateSize();
 // ToDo find out what to do with cliprect stuff
 //
 //        // set bounds and offset of our layer; we're clipping
@@ -535,7 +565,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
 //        self.layer.frame = layout->mClipRect;
 
         // and perform a new layout (-> this might adjust further layout rects)
-        performLayout_priv(layout);
+        performLayout(layout);
     }
 
 
@@ -545,7 +575,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      * Use the stored layout. This is not correct since it does not update dependent layers. When we have change
      * management we must trigger a complete button layout here.
      */
-    private void relayout_priv()
+    private void relayout()
     {
         PDEButtonLayoutHelper layout;
 
@@ -553,7 +583,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         layout = new PDEButtonLayoutHelper(mLayout);
 
         // perform layout with stored layout data
-        performLayout_priv(layout);
+        performLayout(layout);
     }
 
 
@@ -563,10 +593,9 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      * Called when anything has changed. Performs the new layout for all elements and sets it
      * accordingly. The member variables are already set correctly outside.
      */
-    private void performLayout_priv(PDEButtonLayoutHelper layout)
+    private void performLayout(PDEButtonLayoutHelper layout)
     {
         float xoffset,yoffset,width,height,checkboxX,checkboxY,iconX,iconY,dist,oldvalue;
-//        Rect test = new Rect(0,0,0,0);
 
         // commonly used data (adjusted for our special clipping logic)
         xoffset = layout.mLayoutRect.left - layout.mClipRect.left;
@@ -633,20 +662,6 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         iconLayerParams.y = PDEBuildingUnits.roundToScreenCoordinates(iconY);
         // also width & height???
         mIconLayer.setLayoutParams(iconLayerParams);
-
-//        mSunkenLayer.setX(checkboxX);
-//        mSunkenLayer.setY(checkboxY);
-    // set icon position
-
-//TOTO do something like this
-//    PDEAbsoluteLayout.LayoutParams imageViewParams = (PDEAbsoluteLayout.LayoutParams) mImageView.getLayoutParams();
-//    imageViewParams.x = PDEBuildingUnits.roundToScreenCoordinates(iconPosition.x);
-//    imageViewParams.y = PDEBuildingUnits.roundToScreenCoordinates(iconPosition.y);
-//    imageViewParams.width = iconWidth;
-//    imageViewParams.height = iconHeight;
-//    mImageView.setLayoutParams(imageViewParams);
-
-//        [mIconLayer setPosition:CGPointMake (iconX,iconY)];
     }
 
 

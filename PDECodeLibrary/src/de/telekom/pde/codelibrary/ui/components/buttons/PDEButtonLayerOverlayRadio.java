@@ -175,8 +175,8 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         // update if necessary
         if (needsUpdate) {
             // update animateable parameters on change
-            updateColors_priv();
-            updateState_priv();
+            updateColors();
+            updateState();
         }
     }
 
@@ -202,17 +202,17 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
 
         // color is a fixed parameter right now
         if (force) {
-            prepareColor_priv();
+            prepareColor();
         }
 
         // state is a fixed parameter right now
         if (force) {
-            prepareState_priv();
+            prepareState();
         }
 
         // non-animatable properties do their change management internally
-        prepareAlignment_priv();
-        prepareSize_priv();
+        prepareAlignment();
+        prepareSize();
     }
 
 
@@ -228,7 +228,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      * The shadow color is also calculated; the shadow color depends solely on the main color (and does only change
      * inbetween states)
      */
-    private void prepareColor_priv()
+    private void prepareColor()
     {
         // create fixed defaults (old way for old compilers, dictionary literal would be better readable)
         mParamColor.removeAllObjects();
@@ -263,7 +263,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         }
 
         // and apply once
-        updateColors_priv();
+        updateColors();
     }
 
 
@@ -272,7 +272,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      *
      * Shadow strengs animates the shadow as a whole. The range is 0.0..1.0.
      */
-    private void prepareState_priv()
+    private void prepareState()
     {
         // set the new values
         mParamState.removeAllObjects();
@@ -297,7 +297,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         }
 
         // apply once
-        updateState_priv();
+        updateState();
     }
 
 
@@ -309,7 +309,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      *
      * IconOnRightSide and IconTextAlignment are non-animated and uses the base parameter
      */
-    private void prepareAlignment_priv()
+    private void prepareAlignment()
     {
         String alignmentString;
         PDEConstants.PDEAlignment alignment;
@@ -330,7 +330,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         mRadioAlignment = alignment;
 
         // relayout
-        relayout_priv();
+        relayout();
     }
 
 
@@ -339,7 +339,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      *
      * Preparation function for the font which evaluates the parameters. Note that we need to
      */
-    private void prepareSize_priv()
+    private void prepareSize()
     {
         Object sizeObject;
         PDEButtonLayerOverlayRadioSizeMode radioMode;
@@ -385,8 +385,8 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         mRadioSize = radioSize;
 
         // update size, and relayout
-        updateSize_priv();
-        relayout_priv();
+        updateSize();
+        relayout();
     }
 
 
@@ -401,7 +401,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      *
      * Title colors, shadow colors. All colors are precalculated and only animated.
      */
-    private void updateColors_priv()
+    private void updateColors()
     {
         PDEColor color,border;
 
@@ -418,7 +418,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
     /**
      * @brief Private function - update state, show marker if required.
      */
-    private void updateState_priv()
+    private void updateState()
     {
         float alpha;
 
@@ -435,7 +435,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      *
      * The layouting positions the graphical element; the sizing of red dot and sunken layer is done here.
      */
-    private void updateSize_priv()
+    private void updateSize()
     {
         float height,radioSize,markerSize;
 
@@ -507,7 +507,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         mLayout = layout;
 
         // update the size
-        updateSize_priv();
+        updateSize();
 
 // ToDo find out what to do with cliprect stuff
         // set bounds and offset of our layer; we're clipping
@@ -515,7 +515,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
 //        self.layer.frame = layout->mClipRect;
 
         // and perform a new layout (-> this might adjust further layout rects)
-        performLayout_priv(layout);
+        performLayout(layout);
     }
 
 
@@ -525,7 +525,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      * Use the stored layout. This is not correct since it does not update dependent layers. When we have change
      * management we must trigger a complete button layout here.
      */
-    private void relayout_priv()
+    private void relayout()
     {
         PDEButtonLayoutHelper layout;
 
@@ -533,7 +533,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         layout = new PDEButtonLayoutHelper(mLayout);
 
         // perform layout with stored layout data
-        performLayout_priv(layout);
+        performLayout(layout);
     }
 
 
@@ -543,7 +543,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      * Called when anything has changed. Performs the new layout for all elements and sets it
      * accordingly. The member variables are already set correctly outside.
      */
-    private void performLayout_priv(PDEButtonLayoutHelper layout)
+    private void performLayout(PDEButtonLayoutHelper layout)
     {
         float xoffset,yoffset,width,height,radioX,radioY,markerX,markerY,dist,oldvalue;
 
@@ -577,7 +577,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
             radioX = xoffset + PDEBuildingUnits.roundToScreenCoordinates((width-mRadioUsedSize)/2.0f);
         } else if (mRadioAlignment == PDEConstants.PDEAlignment.PDEAlignmentRight) {
             // right, one BU from border
-            radioX = xoffset + PDEBuildingUnits.roundToScreenCoordinates((width-mRadioUsedSize)/2.0f);
+            radioX = xoffset + PDEBuildingUnits.roundToScreenCoordinates(width- PDEBuildingUnits.BU()-mRadioUsedSize);
             // adjusting distance
             dist = PDEBuildingUnits.BU() + mRadioUsedSize;
             // adjust layout rect
