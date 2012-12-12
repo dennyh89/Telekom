@@ -1,0 +1,104 @@
+<!--
+  ~ Copyright (c) 2012. Neuland Multimedia GmbH. All rights reserved.
+  -->
+
+<resources>
+    <!-- Data acquired from IOS 21.09.2012:
+
+            - Definition of Colors.pdf, Release 1.00, 11.11.2011
+            - Additional measurements from "All Buttons/For Designer/*.psd"
+    -->
+
+    <!-- primary corporate colors -->
+    <color name="DTBlack">#000000</color>
+    <color name="DTWhite">#FFFFFF</color>
+    <color name="DTGrey1">#A4A4A4</color>
+    <color name="DTGrey2">#7C7C7C</color>
+    <color name="DTGrey3">#6C6C6C</color>
+    <color name="DTGrey4">#EDEDED</color>
+    <color name="DTGrey5">#4B4B4B</color>
+    <color name="DTGrey6">#D0D0D0</color>
+    <color name="DTMagenta">#E20074</color>
+
+    <!-- secondary corporate colors -->
+    <color name="DTDarkBlue">#427BAB</color>
+    <color name="DTLightBlue">#64B9E4</color>
+    <color name="DTDarkGreen">#BABD5A</color>
+    <color name="DTLightGreen">#DDD674</color>
+    <color name="DTOrange">#EDA95A</color>
+    <color name="DTYellow">#FDD167</color>
+    <color name="DTBrown">#B48062</color>
+    <color name="DTPetrol">#408F9A</color>
+
+    <!-- functional colors -->
+    <color name="DTFunctionalRed">#D90000</color>
+    <color name="DTFunctionalYellow">#FECB00</color>
+    <color name="DTFunctionalGreen">#6BB324</color>
+    <color name="DTFunctionalBlue">#00A1DE</color>
+
+    <!-- other UI colors -->
+    <color name="DTGrey237">#EDEDED</color>
+    <color name="DTGrey220">#DCDCDC</color>
+    <color name="DTGrey208">#D0D0D0</color>
+    <color name="DTGrey189">#BDBDBD</color>
+    <color name="DTGrey140">#8C8C8C</color>
+    <color name="DTGrey129">#818181</color>
+    <color name="DTGrey100">#646464</color>
+    <color name="DTGrey75">#4B4B4B</color>
+    <color name="DTGrey38">#262626</color>
+    <color name="DTTOnlineBlue">#1F5BA4</color>
+    <color name="DTBlue">#1F5BA4</color>
+
+    <!-- helper readable definitions for dark and light UI -->
+    <color name="DTLightUIText">@color/DTGrey75</color>
+    <color name="DTLightUIInteractive">@color/DTGrey237</color>
+    <color name="DTLightUIBackground">@color/DTWhite</color>
+    <color name="DTLightUIIndicativeText">@color/DTGrey140</color>
+    <color name="DTDarkUIText">@color/DTWhite</color>
+    <color name="DTDarkUIInteractive">@color/DTGrey100</color>
+    <color name="DTDarkUIBackground">@color/DTGrey75</color>
+    <color name="DTDarkUIIndicativeText">@color/DTGrey189</color>
+
+    <!-- known (measured) interactive colors, where they differ from calculatable colors -->
+    <color name="DTGrey237_Idle_GradientCenter">#F2F2F2</color>
+    <color name="DTGrey237_Idle_GradientLighter">#FFFFFF</color>
+    <color name="DTGrey237_Idle_GradientDarker">#E6E6E6</color>
+    <color name="DTGrey237_Idle_Border">#D0D0D0</color>
+    <color name="DTGrey237_Focus">#DBDBDB</color>
+    <color name="DTGrey237_Focus_GradientCenter">#E0E0E0</color>
+    <color name="DTGrey237_Focus_GradientLighter">#EDEDED</color>
+    <color name="DTGrey237_Focus_GradientDarker">#D4D4D4</color>
+    <color name="DTGrey237_Focus_Border">#BFBFBF</color>
+    <color name="DTGrey237_TakingInput">#C7C7C7</color>
+    <color name="DTGrey237_TakingInput_GradientCenter">#CCCCCC</color>
+    <color name="DTGrey237_TakingInput_GradientLighter">#D9D9D9</color>
+    <color name="DTGrey237_TakingInput_GradientDarker">#BFBFBF</color>
+    <color name="DTGrey237_TakingInput_Border">#ABABAB</color>
+
+    <color name="DTGrey100_Idle_GradientCenter">#636363</color>
+    <color name="DTGrey100_Idle_GradientLighter">#7C7C7C</color>
+    <color name="DTGrey100_Idle_GradientDarker">#4B4B4B</color>
+    <color name="DTGrey100_Idle_Border">#383838</color>
+    <color name="DTGrey100_Focus">#525252</color>
+    <color name="DTGrey100_Focus_GradientCenter">#525252</color>
+    <color name="DTGrey100_Focus_GradientLighter">#6B6B6B</color>
+    <color name="DTGrey100_Focus_GradientDarker">#383838</color>
+    <color name="DTGrey100_Focus_Border">#262626</color>
+    <color name="DTGrey100_TakingInput">#3D3D3D</color>
+    <color name="DTGrey100_TakingInput_GradientCenter">#3D3D3D</color>
+    <color name="DTGrey100_TakingInput_GradientLighter">#575757</color>
+    <color name="DTGrey100_TakingInput_GradientDarker">#242424</color>
+    <color name="DTGrey100_TakingInput_Border">#121212</color>
+
+    <!-- UI commonly used special colors -->
+    <color name="DTTransparentBlack">#00000000</color>
+    <color name="DTTransparentWhite">#00FFFFFF</color>
+
+
+    <color name="KDTestHalf">#88ff0000</color>
+    <color name="KDTestHalf2">#880000ff</color>
+    <color name="KDTestHalf3">#8800ff00</color>
+    <color name="KDGrey237Half">#88EDEDED</color>
+
+
+</resources>

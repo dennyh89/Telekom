@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+
+        <!-- Override definitions for button border colors -->
+
+        <!-- Grey237 measured values -->
+        <key>DTGrey237</key>
+        <dict>
+            <key>idle</key>
+            <string>DTGrey237_Idle_Border</string>
+            <key>focus</key>
+            <string>DTGrey237_Focus_Border</string>
+            <key>takinginput</key>
+            <string>DTGrey237_TakingInput_Border</string>
+        </dict>
+
+        <!-- Grey100 measured values -->
+        <key>DTGrey100</key>
+        <dict>
+            <key>idle</key>
+            <string>DTGrey100_Idle_Border</string>
+            <key>focus</key>
+            <string>DTGrey100_Focus_Border</string>
+            <key>takinginput</key>
+            <string>DTGrey100_TakingInput_Border</string>
+        </dict>
+
+        <!-- TransparentBlack default values for indicative button, light UI style -->
+        <key>DTTransparentBlack</key>
+        <dict>
+            <key>idle</key>
+            <string>DTGrey208</string>
+        </dict>
+
+    </dict>
+</plist>

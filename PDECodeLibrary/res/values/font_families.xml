@@ -1,0 +1,12 @@
+<resources>
+    <string name="Tele_GroteskNor">t036013t.ttf</string>
+    <string name="Tele_GroteskHal">t036014t.ttf</string>
+    <string name="Tele_GroteskFet">t036016t.ttf</string>
+    <string name="Tele_GroteskUlt">t036018t.ttf</string>
+    <string-array name="tele_grotesk">
+        <item>@string/Tele_GroteskNor</item>
+        <item>@string/Tele_GroteskHal</item>
+        <item>@string/Tele_GroteskFet</item>
+        <item>@string/Tele_GroteskUlt</item>
+    </string-array>
+</resources>

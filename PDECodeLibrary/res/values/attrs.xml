@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PDEAbsoluteLayout_Layout">
+        <attr name="layout_x" format="dimension" />
+        <attr name="layout_y" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="PDEButton">
+        <attr name="button_color" format="color"/>
+        <attr name="src" format="reference"/>
+        <attr name="text" format="string"/>
+        <attr name="text_alignment">
+            <enum name="left" value="0"/>
+            <enum name="center" value="1"/>
+            <enum name="right" value="2"/>
+        </attr>
+        <attr name="icon_alignment">
+            <enum name="left" value="0"/>
+            <enum name="right" value="1"/>
+            <enum name="left_attached" value="2"/>
+            <enum name="right_attached" value="3"/>
+        </attr>
+        <attr name="checkbox_alignment">
+            <enum name="left" value="0"/>
+            <enum name="center" value="1"/>
+            <enum name="right" value="2"/>
+        </attr>
+        <attr name="radio_alignment">
+            <enum name="left" value="0"/>
+            <enum name="center" value="1"/>
+            <enum name="right" value="2"/>
+        </attr>
+        <attr name="background">
+            <enum name="none" value="5"/>
+            <enum name="beveled" value="8"/>
+            <enum name="embossed" value="9"/>
+            <enum name="flat" value="7"/>
+            <enum name="indicative" value="10"/>
+            <enum name="plate" value="11"/>
+            <enum name="rect" value="12"/>
+        </attr>
+        <attr name="overlay">
+            <enum name="none" value="13"/>
+            <enum name="checkbox" value="15"/>
+            <enum name="radio" value="16"/>
+        </attr>
+        <attr name="typeface" format="string"/>
+        <attr name="text_size" format="string" />
+        <attr name="icon_colored" format="boolean"/>
+        <attr name="corner_radius" format="float"/>
+        <attr name="border_color" format="color"/>
+        <attr name="title_color" format="color"/>
+        <attr name="min_button_padding" format="dimension"/>
+        <attr name="min_button_padding_left" format="dimension"/>
+        <attr name="min_button_padding_top" format="dimension"/>
+        <attr name="min_button_padding_right" format="dimension"/>
+        <attr name="min_button_padding_bottom" format="dimension"/>
+        <attr name="selected" format="boolean"/>
+    </declare-styleable>
+
+</resources>
