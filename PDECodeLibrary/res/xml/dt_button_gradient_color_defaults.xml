@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+
+        <!-- Override definitions for button gradient colors -->
+
+        <!-- Grey237 measured values -->
+        <key>DTGrey237</key>
+        <dict>
+            <key>idle</key>
+            <string>DTGrey237_Idle_GradientCenter</string>
+            <key>idle.lighter</key>
+            <string>DTGrey237_Idle_GradientLighter</string>
+            <key>idle.darker</key>
+            <string>DTGrey237_Idle_GradientDarker</string>
+            <key>focus</key>
+            <string>DTGrey237_Focus_GradientCenter</string>
+            <key>focus.lighter</key>
+            <string>DTGrey237_Focus_GradientLighter</string>
+            <key>focus.darker</key>
+            <string>DTGrey237_Focus_GradientDarker</string>
+            <key>takinginput</key>
+            <string>DTGrey237_TakingInput_GradientCenter</string>
+            <key>takinginput.lighter</key>
+            <string>DTGrey237_TakingInput_GradientLighter</string>
+            <key>takinginput.darker</key>
+            <string>DTGrey237_TakingInput_GradientDarker</string>
+            <key>DTGrey237</key>
+        </dict>
+
+        <!-- Grey100 measured values -->
+        <key>DTGrey100</key>
+        <dict>
+            <key>idle</key>
+            <string>DTGrey100_Idle_GradientCenter</string>
+            <key>idle.lighter</key>
+            <string>DTGrey100_Idle_GradientLighter</string>
+            <key>idle.darker</key>
+            <string>DTGrey100_Idle_GradientDarker</string>
+            <key>focus</key>
+            <string>DTGrey100_Focus_GradientCenter</string>
+            <key>focus.lighter</key>
+            <string>DTGrey100_Focus_GradientLighter</string>
+            <key>focus.darker</key>
+            <string>DTGrey100_Focus_GradientDarker</string>
+            <key>takinginput</key>
+            <string>DTGrey100_TakingInput_GradientCenter</string>
+            <key>takinginput.lighter</key>
+            <string>DTGrey100_TakingInput_GradientLighter</string>
+            <key>takinginput.darker</key>
+            <string>DTGrey100_TakingInput_GradientDarker</string>
+        </dict>
+    </dict>
+</plist>
