@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TVDPI is special this is the only dpi context where 12 dp don't align allways to pixels -->
+    <dimen name="Telekom.BU_1_12">1.3333px</dimen>
+    <dimen name="Telekom.BU_1_6">2.6666px</dimen>
+    <dimen name="Telekom.BU_1_4">4px</dimen>
+    <dimen name="Telekom.BU_1_3">5.3333px</dimen>
+    <dimen name="Telekom.BU_1_2">8px</dimen>
+    <dimen name="Telekom.BU_2_3">10.6666px</dimen>
+    <dimen name="Telekom.BU">16px</dimen>
+    <dimen name="Telekom.BU1_1_2">24px</dimen>
+    <dimen name="Telekom.BU2">32px</dimen>
+    <dimen name="Telekom.BU2_1_2">40px</dimen>
+    <dimen name="Telekom.BU3">48px</dimen>
+    <dimen name="Telekom.BU3_1_2">56px</dimen>
+    <dimen name="Telekom.BU4">64px</dimen>
+    <dimen name="Telekom.BU4_1_2">72px</dimen>
+    <dimen name="Telekom.BU5">80px</dimen>
+    <dimen name="Telekom.BU6">96px</dimen>
+    <dimen name="Telekom.BU7">112px</dimen>
+    <dimen name="Telekom.BU8">128px</dimen>
+    <dimen name="Telekom.BU9">144px</dimen>
+    <dimen name="Telekom.BU10">160px</dimen>
+
+
+    <dimen name="TeleGroteskDefaultSize">24px</dimen>
+    <dimen name="OtherFontsDefaultSize">21.3px</dimen>
+    <dimen name="StandardListItemHeight">@dimen/Telekom.BU4</dimen>
+    <dimen name="StandardButtonHeight">@dimen/Telekom.BU3</dimen>
+</resources>

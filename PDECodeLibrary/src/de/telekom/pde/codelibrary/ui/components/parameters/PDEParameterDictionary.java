@@ -10,6 +10,10 @@ package de.telekom.pde.codelibrary.ui.components.parameters;
 
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 
+//----------------------------------------------------------------------------------------------------------------------
+// PDEParameterDictionary
+//----------------------------------------------------------------------------------------------------------------------
+
 
 public class PDEParameterDictionary {
 
@@ -648,7 +652,7 @@ public class PDEParameterDictionary {
      *
      * They are not equal if one exists, and the other doesn't.
      */
-    public boolean isEqual(PDEParameterDictionary parameters,String parameterName)
+    public boolean isEqual(PDEParameterDictionary parameters, String parameterName)
     {
         PDEParameter param1;
         PDEParameter param2;

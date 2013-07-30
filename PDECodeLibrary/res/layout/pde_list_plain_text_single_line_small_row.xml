@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Deutsche Telekom AG owns the right of use concerning the following code taken from the Deutsche Telekom
+  ~ Experience Toolbox. You can obtain a copy of the terms and conditions of the Experience Toolbox at
+  ~ https://www.design.telekom.com/myaccount/terms-of-use/
+  ~
+  ~ Copyright (c) 2012. Neuland Multimedia GmbH.
+  -->
+
+
+<!-- *** XML-Template for a small sized list item with single line text. *** -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+        >
+    <!-- If you want to ensure a fixed height of the layout, you have to nest two layouts... -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:pdecodelibrary="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/Telekom.BU3"
+                    >
+
+        <de.telekom.pde.codelibrary.ui.elements.wrapper.PDELayerTextView
+                android:id = "@+id/PDEList_ItemText"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/Telekom.BU3"
+                pdecodelibrary:paddingLeft="@dimen/Telekom.BU"
+                pdecodelibrary:textSize="@dimen/TeleGroteskDefaultSize"
+                pdecodelibrary:backgroundColor="@color/DTTransparentBlack"
+                pdecodelibrary:alignmentMode="capHeight"
+                pdecodelibrary:verticalAlignment="center"
+                pdecodelibrary:textColor="@color/DTUIText"
+                />
+
+    </RelativeLayout>
+</RelativeLayout>

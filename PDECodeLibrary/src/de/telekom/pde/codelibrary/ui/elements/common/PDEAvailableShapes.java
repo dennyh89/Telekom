@@ -7,6 +7,18 @@
 
 package de.telekom.pde.codelibrary.ui.elements.common;
 
+//----------------------------------------------------------------------------------------------------------------------
+//  PDEAvailableShapes
+//----------------------------------------------------------------------------------------------------------------------
+
+
+/**
+ * @brief Just a collection of constants of the shapes our shape-layers can have
+ *
+ * We have some elements/layers that can be drawn in several shapes. These constants
+ * define which shapes are available.
+ */
+
 public class PDEAvailableShapes {
     protected static final int SHAPE_RECT = 0;
     protected static final int SHAPE_ROUNDED_RECT = 1;

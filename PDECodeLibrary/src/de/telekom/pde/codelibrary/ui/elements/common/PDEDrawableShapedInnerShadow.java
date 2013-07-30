@@ -7,102 +7,154 @@
 
 package de.telekom.pde.codelibrary.ui.elements.common;
 
-import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
-import de.telekom.pde.codelibrary.ui.color.PDEColor;
-
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
+import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
+import de.telekom.pde.codelibrary.ui.color.PDEColor;
+import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
+
+//----------------------------------------------------------------------------------------------------------------------
+// PDEDrawableShapedInnerShadow
+//----------------------------------------------------------------------------------------------------------------------
 
 
-public class PDEDrawableShapedInnerShadow extends Drawable {
-    PDEColor mShapeColor;
-    float mBlurRadius;
-    Path mShapePath;
-    int mShapeType;
-    RectF mBoundingRect;
-    float mCornerRadius;
-    int mAlpha;
-    Paint mPaint = null;
-    Paint mPaint2 = null;
-    Paint mPaint3 = null;
-    PointF mShadowOffset;
+/**
+ * @brief Graphics primitive - an inner shadow of an element.
+ *
+ * This class is used for inner shadows of elements. The possible shapes are:
+ * rectangle, rounded rectangle, oval or a custom shape by path.
+ */
+public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
 
+//-----  properties ---------------------------------------------------------------------------------------------------
+    protected PDEColor mElementShapeColor;
+    protected float mElementBlurRadius;
+    protected Path mElementShapePath;
+    private int mShapeType;
+    protected float mElementCornerRadius;
+    protected PointF mElementLightIncidenceOffset;
+    // drawing helpers
+    private Paint mBackgroundPaint = null;
+    private Paint mPaint2 = null;
+    private Paint mPaint3 = null;
+    // private helpers
+    RectF mDrawRect;
+    float mOffsetFactor;
+
+
+
+//----- init -----------------------------------------------------------------------------------------------------------
 
     public PDEDrawableShapedInnerShadow(){
-        mShapeColor =  PDEColor.valueOf(Color.BLACK);
-        mBlurRadius = (float) PDEBuildingUnits.oneFourthBU();
-        mAlpha = 255;
-
+        // init drawable basics
+        super();
+        // init PDE defaults
+        mElementShapeColor =  PDEColor.valueOf(Color.BLACK);
+        mElementBlurRadius = (float) PDEBuildingUnits.oneFourthBU();
         mShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
-        mBoundingRect = new RectF(0.0f,0.0f,0.0f,0.0f);
-        mCornerRadius = 0.0f;
-        mPaint = new Paint();
+        //mElementCornerRadius = 0.0f;
+        mElementCornerRadius = PDEBuildingUnits.exactOneThirdBU();
+        mBackgroundPaint = new Paint();
         mPaint2 = new Paint();
         mPaint3 = new Paint();
-        mShapePath = new Path();
-        mShadowOffset = new PointF(0,0);
-        setShapeOpacity(0.28f);
-        setShadowOffset(new PointF(0.0f, PDEBuildingUnits.oneTwelfthsBU()));
+        mPaint2.setAntiAlias(true);
+        mPaint3.setAntiAlias(true);
+        mElementShapePath = new Path();
+        mElementLightIncidenceOffset = new PointF(0,0);
+        mDrawRect = null;
+        mOffsetFactor = 0;
+
+        //init paints for drawing
+        update(true);
+        setElementShapeOpacity(0.28f);
+        setElementLightIncidenceOffset(new PointF(0.0f, PDEBuildingUnits.oneTwelfthsBU()));
     }
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- general setters and getters ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
     /**
      * @brief Set shadow opacity.
+     *
+     * @param opacity new opacity of the element.
      */
-    public void setShapeOpacity (float opacity){
+    public void setElementShapeOpacity(float opacity){
         int alpha = Math.round(opacity*255);
         setAlpha(alpha);
     }
 
-    public float getShapeOpacity(){
+
+    /**
+     * @brief Get shadow opacity.
+     *
+     * @return element opacity
+     */
+    public float getElementShapeOpacity(){
         return mAlpha/255;
     }
 
 
     /**
      * @brief Set shape color.
+     *
+     * @param color new shape color
      */
-    public void setShapeColor (PDEColor color){
-        // ToDo: override PDEColor:equals()  (optional)
+    public void setElementShapeColor(PDEColor color){
         // any change?
-        if (color.getIntegerColor() == mShapeColor.getIntegerColor()) {
+        if (color.getIntegerColor() == mElementShapeColor.getIntegerColor()) {
             return;
         }
-
         // remember the color
-        mShapeColor = color;
-
-        invalidateSelf();
+        mElementShapeColor = color;
+        // update
+        update(true);
     }
 
-    public PDEColor getShapeColor(){
-        return mShapeColor;
+
+    /**
+     * @brief Get shape color.
+     *
+     * @return color of element
+     */
+    public PDEColor getElementShapeColor(){
+        return mElementShapeColor;
     }
 
 
     /**
      * @brief Set shadow blur radius.
+     *
+     * @param radius new blur radius of shadow
      */
-    public void setBlurRadius (float radius){
+    public void setElementBlurRadius(float radius){
         // any change?
-        if (mBlurRadius == radius) {
+        if (mElementBlurRadius == radius) {
             return;
         }
-        mBlurRadius = radius;
-        invalidateSelf();
+        // remember
+        mElementBlurRadius = radius;
+        // update
+        update();
     }
 
+    /**
+     * @brief Get shadow blur radius.
+     */
     public float getBlurRadius(){
-        return mBlurRadius;
+        return mElementBlurRadius;
     }
 
 
@@ -112,207 +164,91 @@ public class PDEDrawableShapedInnerShadow extends Drawable {
      * Paths are always filled using the count rule (which is an iOS feature and cannot be changed at
      * the moment). So something like shapes with holes etc. cannot be done through this layer.
      */
-    public void setShapePath (Path path){
+    public void setElementShapePath(Path path){
         // any change?
-        if (mShapePath.equals(path)) {
+        if (mElementShapePath.equals(path)) {
             return;
         }
 
         // store the path
-        mShapePath = path;
+        mElementShapePath = path;
         mShapeType = PDEAvailableShapes.SHAPE_CUSTOM_PATH;
-        invalidateSelf();
+        // update
+        update();
     }
 
-    public Path getShapePath(){
-        return mShapePath;
+
+    /**
+     * @brief Get custom path.
+     */
+    public Path getElementShapePath(){
+        return mElementShapePath;
     }
+
 
     /**
      * @brief Set a rectangular path
      */
-    public void setShapeRect(RectF rect){
-        setBoundingRect(rect);
+    public void setElementShapeRect(){
         mShapeType = PDEAvailableShapes.SHAPE_RECT;
-        invalidateSelf();
+        // update
+        update();
     }
+
 
     /**
      * @brief Set a rectangular path with rounded corners.
      */
-    public void setShapeRoundedRect(RectF rect, float cornerRadius){
-        setBoundingRect(rect);
-        mCornerRadius = cornerRadius;
+    public void setElementShapeRoundedRect(float cornerRadius){
+        mElementCornerRadius = cornerRadius;
         mShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
-        invalidateSelf();
+        // update
+        update();
     }
+
 
     /**
      * @brief Set a oval inscribing the rect. Use a square to get a circle
      */
-    public void setShapeOval(RectF rect){
-        setBoundingRect(rect);
+    public void setElementShapeOval(){
         mShapeType = PDEAvailableShapes.SHAPE_OVAL;
-        invalidateSelf();
+        // update
+        update();
     }
 
 
 
+//---------------------------------------------------------------------------------------------------------------------
+// ----- Drawable overrides ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
-    @Override
-    public void setAlpha(int alpha) {
-        if (mAlpha == alpha) {
-            return;
-        }
-        mAlpha = alpha;
-        invalidateSelf();
-    }
 
+    /**
+     * @brief draws the inner shadow
+     */
     @Override
     public void draw(android.graphics.Canvas canvas){
-//        Bitmap colorShape, alphaMask, shadowImage;
-        Bitmap bitmap;
-        Canvas c;
-        mPaint.reset();
-        mPaint2.reset();
-        mPaint3.reset();
-        mPaint.setAntiAlias(true);
-        mPaint2.setAntiAlias(true);
-        mPaint3.setAntiAlias(true);
-        RectF drawRect;
-        RectF normalizedBoundingRect;
-        RectF outlineRect;
-        RectF shadowClipRect;
-        Path clipPath = new Path();
-
-        float offsetFactor;
+        Rect bounds = getBounds();
 
         // security
-        if (mBoundingRect.width() <= 0 || mBoundingRect.height() <= 0 ){
-//            || mInnerRect.width() <= 0 || mInnerRect.height() <= 0) {
+        if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawRect == null || mDrawingBitmap == null) {
             return;
         }
 
-        if (Math.abs(mShadowOffset.x)>Math.abs(mShadowOffset.y)){
-            offsetFactor = Math.abs(mShadowOffset.x);
-        } else {
-            offsetFactor = Math.abs(mShadowOffset.y);
-        }
-        drawRect = new RectF(mBoundingRect.left-offsetFactor,mBoundingRect.top-offsetFactor,
-                        mBoundingRect.right+offsetFactor,mBoundingRect.bottom+offsetFactor);
-
-
-//
-//        bitmap = Bitmap.createBitmap((int) mBoundingRect.width(), (int) mBoundingRect.height(),
-//                                     Bitmap.Config.ARGB_8888);
-        bitmap = Bitmap.createBitmap((int) drawRect.width(), (int) drawRect.height(),
-                                     Bitmap.Config.ARGB_8888);
-
-        c = new Canvas(bitmap);
-
-//        normalizedBoundingRect = new RectF(0,0,mBoundingRect.right-mBoundingRect.left,
-//                                           mBoundingRect.bottom-mBoundingRect.top);
-        normalizedBoundingRect = new RectF(0,0,drawRect.right-drawRect.left,
-                                           drawRect.bottom-drawRect.top);
-
-        outlineRect = new RectF(normalizedBoundingRect.left-1.0f,
-                               normalizedBoundingRect.top-1.0f,
-                               normalizedBoundingRect.right+1.0f,
-                               normalizedBoundingRect.bottom+1.0f);
-        // outline
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(mShapeColor.getIntegerColor());
-        drawCurrentShape(c,outlineRect,mCornerRadius,mPaint);
-
-        // inner rect
-        mPaint2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
-        mPaint2.setColor(Color.TRANSPARENT);
-        mPaint2.setMaskFilter(new BlurMaskFilter(mBlurRadius+offsetFactor,BlurMaskFilter.Blur.INNER));
-        drawCurrentShape(c,normalizedBoundingRect,mCornerRadius,mPaint2);
-
-        // Mask to cut overlapping stuff
-        mPaint3.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
-        mPaint3.setColor(Color.TRANSPARENT);
-        mPaint3.setStyle(Paint.Style.FILL);
-        //mPaint3.setStrokeWidth(5.0f+2.0f);
-        clipPath.reset();
-        clipPath.addRect(outlineRect, Path.Direction.CW);
-        shadowClipRect = new RectF(outlineRect.left+offsetFactor-mShadowOffset.x+1.0f,
-                             outlineRect.top+offsetFactor-mShadowOffset.y+1.0f,
-                             outlineRect.right-offsetFactor-mShadowOffset.x-1.0f,
-                             outlineRect.bottom-offsetFactor-mShadowOffset.y-1.0f);
-
-
-        switch(mShapeType){
-            case PDEAvailableShapes.SHAPE_RECT:
-                clipPath.addRect(shadowClipRect,Path.Direction.CW);
-                break;
-            case PDEAvailableShapes.SHAPE_ROUNDED_RECT:
-                clipPath.addRoundRect(shadowClipRect,mCornerRadius+1.0f,mCornerRadius+1.0f,Path.Direction.CW);
-                break;
-            case PDEAvailableShapes.SHAPE_OVAL:
-                clipPath.addOval(shadowClipRect,Path.Direction.CW);
-                break;
-            case PDEAvailableShapes.SHAPE_CUSTOM_PATH:         // ToDo: This option needs further testing
-                clipPath.addPath(mShapePath);
-                break;
-        }
-
-
-
-
-        clipPath.setFillType(Path.FillType.EVEN_ODD);
-        clipPath.close();
-        //drawCurrentShape(c,helperRect,mCornerRadius+1.0f,mPaint3);
-        c.drawPath(clipPath,mPaint3);
-
-
-
-        mPaint.setAlpha(mAlpha);
         // draw the resulting bitmap on our canvas
-//        canvas.drawBitmap(bitmap,mBoundingRect.left,mBoundingRect.top,mPaint);
-        canvas.drawBitmap(bitmap,drawRect.left+mShadowOffset.x,drawRect.top+mShadowOffset.y,mPaint);
-
-        /*
-        // first create a bitmap with the size, shape and the color of the shadow
-        colorShape = Bitmap.createBitmap((int)mBoundingRect.width(),(int)mBoundingRect.height(),
-                                         Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(colorShape);
-        mPaint.setAntiAlias(true);
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(mShapeColor.getIntegerColor());
-        drawCurrentShape(c);
-
-        // Next create a bitmap that works as an alpha mask. It's the negative black form of the shadow we need.
-        // All black pixels of this mask will be transparent later on, so if we combine it with a bitmap in the color
-        // of the shadow we'll receive the positive shadow image
-        alphaMask = Bitmap.createBitmap((int)mBoundingRect.width(),(int)mBoundingRect.height(),
-                                         Bitmap.Config.ARGB_8888);
-        c = new Canvas(alphaMask);
-        BlurMaskFilter blur = new BlurMaskFilter(mBlurRadius,BlurMaskFilter.Blur.INNER);
-        mPaint.setMaskFilter(blur);
-        drawCurrentShape(c);
-        // reset
-        mPaint.setMaskFilter(null);
-
-        // now combine the color-shape bitmap and the alpha-mask bitmap to a new bitmap that carries the positive
-        // shadow image
-        shadowImage = Bitmap.createBitmap((int)mBoundingRect.width(),(int)mBoundingRect.height(),
-                                         Bitmap.Config.ARGB_8888);
-        c = new Canvas(shadowImage);
-
-        mPaint.setFilterBitmap(false);
-        c.drawBitmap(colorShape,0,0,mPaint);
-        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-        c.drawBitmap(alphaMask,0,0,mPaint);
-        mPaint.setXfermode(null);
-
-        mPaint.setAlpha(mAlpha);
-
-        // draw the resulting bitmap on our canvas
-        canvas.drawBitmap(shadowImage,0,0,mPaint);*/
+        canvas.drawBitmap(mDrawingBitmap, mDrawRect.left+ mElementLightIncidenceOffset.x,
+                          mDrawRect.top+ mElementLightIncidenceOffset.y, new Paint());
     }
 
+
+    /**
+     * @brief Helper that draws the configured shape into the given canvas.
+     *
+     * @param canvas canvas to draw shape into
+     * @param rect layout rect
+     * @param radius radius for rounded corners (for rounded rect only)
+     * @param paint paint settings
+     */
     protected void drawCurrentShape(Canvas canvas, RectF rect, float radius, Paint paint){
         switch(mShapeType){
             case PDEAvailableShapes.SHAPE_RECT:
@@ -325,50 +261,187 @@ public class PDEDrawableShapedInnerShadow extends Drawable {
                 canvas.drawOval(rect,paint);
                 break;
             case PDEAvailableShapes.SHAPE_CUSTOM_PATH:         // ToDo: This option needs further testing
-                canvas.drawPath(mShapePath,paint);
+                canvas.drawPath(mElementShapePath,paint);
                 break;
         }
     }
 
-    /**
-     * @brief abstract in Drawable, need to override
-     *
-     */
-    @Override
-    public int getOpacity(){
-        return PixelFormat.OPAQUE;
-    }
 
     /**
-     * @brief abstract in Drawable, need to override
+     * @brief Sets offset of the inner rectangle that determines the thickness of shadow borders.
      *
+     * To indicate the direction of the light we must be able to tweak the thickness of the shadow for the
+     * different element sides. If we think of a light that comes from top-left, the top and the left side cast a
+     * larger shadow than the bottom and the right side. So we have to shift this offset in the bottom-right direction.
+     *
+     * @param offset
+     */
+    public void setElementLightIncidenceOffset(PointF offset){
+        // anything to do?
+        if(offset.x == mElementLightIncidenceOffset.x && offset.y == mElementLightIncidenceOffset.y){
+            return;
+        }
+        // remember
+        mElementLightIncidenceOffset = offset;
+        // update
+        createDrawingBitmap();
+        update();
+    }
+
+
+    /**
+     * @brief Get light incidence offset
+     * @return light incidence offset
+     */
+    public PointF getElementLightIncidenceOffset(){
+        return mElementLightIncidenceOffset;
+    }
+
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- Helpers ------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+    /**
+     * @brief update background and border paint values
      */
     @Override
-    public void setColorFilter(android.graphics.ColorFilter cf){
-        // ToDo: Don't know if we really need this
+    protected void updateAllPaints() {
+        createBackgroundPaint();
     }
 
-    private void setBoundingRect(RectF rect){
-        if(rect.left == mBoundingRect.left
-           && rect.top == mBoundingRect.top
-           && rect.right == mBoundingRect.right
-           && rect.bottom == mBoundingRect.bottom){
+
+    /**
+     * @brief create background paint for drawing
+     */
+    private void createBackgroundPaint() {
+        mBackgroundPaint = new Paint();
+        mBackgroundPaint.setAntiAlias(true);
+        mBackgroundPaint.setStyle(Paint.Style.FILL);
+        mBackgroundPaint.setColorFilter(mColorFilter);
+        mBackgroundPaint.setDither(mDither);
+        mBackgroundPaint.setColor(mElementShapeColor.newIntegerColorWithCombinedAlpha(mAlpha));
+    }
+
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- Drawing Bitmap ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @brief Creates the bitmap in which we draw our element.
+     *
+     * We draw our element in a bitmap first before we draw this bitmap on the canvas.
+     * The reason for this detour is that we can avoid annoying graphic acceleration bugs in this way.
+     * If the size of the element changes, we have to recreate the bitmap by calling this function.
+     */
+    @Override
+    protected void createDrawingBitmap(){
+        Rect bounds = getBounds();
+
+        // security
+        if (bounds.width() <= 0 || bounds.height() <= 0) {
             return;
         }
-        mBoundingRect = rect;
-        invalidateSelf();
+        // use bitmap to avoid gfx-acceleration bug
+        if (mDrawingBitmap != null) {
+            mDrawingBitmap.recycle();
+        }
+
+        // determine offset factor
+        if (Math.abs(mElementLightIncidenceOffset.x)>Math.abs(mElementLightIncidenceOffset.y)){
+            mOffsetFactor = Math.abs(mElementLightIncidenceOffset.x);
+        } else {
+            mOffsetFactor = Math.abs(mElementLightIncidenceOffset.y);
+        }
+        // drawing rect
+        mDrawRect = new RectF(bounds.left- mOffsetFactor,bounds.top- mOffsetFactor,
+                              bounds.right+ mOffsetFactor,bounds.bottom+ mOffsetFactor);
+
+        mDrawingBitmap = Bitmap.createBitmap((int)mDrawRect.width(), (int)mDrawRect.height(), Bitmap.Config.ARGB_8888);
     }
 
-    public void setShadowOffset(PointF offset){
-        if(offset.x == mShadowOffset.x && offset.y == mShadowOffset.y){
+
+    /**
+     * @brief Updates our drawing bitmap and triggers a redraw of this element.
+     *
+     * If a drawing parameter changes, we need to call this function in order to update our drawing-bitmap and
+     * in order to trigger the draw of our updated bitmap to the canvas.
+     */
+    @Override
+    protected void updateDrawingBitmap(Canvas c, Rect bounds) {
+        RectF normalizedBoundingRect;
+        RectF outlineRect;
+        RectF shadowClipRect;
+        Path clipPath = new Path();
+
+        //mBackgroundPaint.reset();
+        mPaint2.reset();
+        mPaint3.reset();
+        //mBackgroundPaint.setAntiAlias(true);
+        mPaint2.setAntiAlias(true);
+        mPaint3.setAntiAlias(true);
+
+        // security
+        if (bounds.width() <= 0 || bounds.height() <= 0 || mElementBlurRadius + mOffsetFactor <=0 ||
+            mDrawingBitmap == null) {
             return;
         }
-        mShadowOffset = offset;
-        invalidateSelf();
-    }
 
-    public PointF getShadowOffset(){
-        return mShadowOffset;
+        // normalized version of drawing rect
+        normalizedBoundingRect = new RectF(0,0, mDrawRect.right- mDrawRect.left,
+                                           mDrawRect.bottom- mDrawRect.top);
+        // rect of the outline
+        outlineRect = new RectF(normalizedBoundingRect.left-1.0f,
+                                normalizedBoundingRect.top-1.0f,
+                                normalizedBoundingRect.right+1.0f,
+                                normalizedBoundingRect.bottom+1.0f);
+        // outline
+        //mBackgroundPaint.setStyle(Paint.Style.FILL);
+        //if (mColorFilter != null) mBackgroundPaint.setColorFilter(mColorFilter);
+        //mBackgroundPaint.setDither(mDither);
+        //mBackgroundPaint.setColor(mElementShapeColor.getIntegerColor());
+        drawCurrentShape(c, outlineRect, mElementCornerRadius, mBackgroundPaint);
+
+        // inner rect
+        mPaint2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+        mPaint2.setColor(Color.TRANSPARENT);
+        mPaint2.setMaskFilter(new BlurMaskFilter(mElementBlurRadius + mOffsetFactor, BlurMaskFilter.Blur.INNER));
+        drawCurrentShape(c, normalizedBoundingRect, mElementCornerRadius, mPaint2);
+
+        // Mask to cut overlapping stuff
+        mPaint3.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+        mPaint3.setColor(Color.TRANSPARENT);
+        mPaint3.setStyle(Paint.Style.FILL);
+        clipPath.reset();
+        clipPath.addRect(outlineRect, Path.Direction.CW);
+        shadowClipRect = new RectF(outlineRect.left+ mOffsetFactor - mElementLightIncidenceOffset.x+1.0f,
+                                   outlineRect.top+ mOffsetFactor - mElementLightIncidenceOffset.y+1.0f,
+                                   outlineRect.right- mOffsetFactor - mElementLightIncidenceOffset.x-1.0f,
+                                   outlineRect.bottom- mOffsetFactor - mElementLightIncidenceOffset.y-1.0f);
+
+
+        switch(mShapeType){
+            case PDEAvailableShapes.SHAPE_RECT:
+                clipPath.addRect(shadowClipRect,Path.Direction.CW);
+                break;
+            case PDEAvailableShapes.SHAPE_ROUNDED_RECT:
+                clipPath.addRoundRect(shadowClipRect, mElementCornerRadius +1.0f, mElementCornerRadius +1.0f,Path.Direction.CW);
+                break;
+            case PDEAvailableShapes.SHAPE_OVAL:
+                clipPath.addOval(shadowClipRect,Path.Direction.CW);
+                break;
+            case PDEAvailableShapes.SHAPE_CUSTOM_PATH:         // ToDo: This option needs further testing
+                clipPath.addPath(mElementShapePath);
+                break;
+        }
+
+        clipPath.setFillType(Path.FillType.EVEN_ODD);
+        clipPath.close();
+        c.drawPath(clipPath, mPaint3);
     }
 }
 

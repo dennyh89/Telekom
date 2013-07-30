@@ -30,8 +30,8 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
     /**
      * @brief Global tag for log outputs.
      */
+	@SuppressWarnings("unused")
     private final static String LOG_TAG = PDEAnimationRoot.class.getName();
-    private final static boolean DEBUGPARAMS = false;
 
     protected boolean mRegisteredWithRunloop;
 
@@ -153,7 +153,7 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
      * @brief Re-implementation to link to a different source.
      */
     @Override
-    void setRunningRegisteredWithParent(boolean running) {
+    protected void setRunningRegisteredWithParent(boolean running) {
         // any change?
         if (running == mRunningRegisteredWithParent) {
             return;
@@ -203,7 +203,7 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
      * @brief Re-implementation of parent time function.
      */
     @Override
-    long getParentTime() {
+    public long getParentTime() {
         // always use frame time
         return PDEFrameTiming.getInstance().getFrameTime();
     }
@@ -215,7 +215,6 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
      * also want to call our animate function (probably no overloaded) and want to notify any listeners of the change
      */
     public void frameTiming(Long time) {
-        //ToDo Why don't we process the parameter in any way?
         // simply use the parentTimeDidChange function, this will do the rest
         parentTimeDidChange();
     }
@@ -272,7 +271,7 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
      * @brief Register ourself for explicit change management in parent.
      */
     @Override
-    void setChangedRegisteredWithParent() {
+    public void setChangedRegisteredWithParent() {
         // are we already registered?
         if (mChangedRegisteredWithParent) {
             return;

@@ -1,0 +1,18 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android" >
+            <solid android:color="@color/pde_actionbar_divider_color" />
+        </shape>
+    </item>
+    <item
+        android:bottom="1px"
+        android:left="1px"
+        android:right="1px"
+        android:top="1px">
+        <shape>
+            <solid android:color="@color/pde_actionbar_background_dropdown" />
+        </shape>
+    </item>
+
+</layer-list>

@@ -1,6 +1,9 @@
 *.iml
 gen
 out
+bin
+classes
 .idea
-project.properties
+.DS_Store
+
 

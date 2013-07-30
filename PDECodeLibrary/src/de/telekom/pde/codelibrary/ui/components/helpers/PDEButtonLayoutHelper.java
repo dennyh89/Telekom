@@ -11,6 +11,12 @@ package de.telekom.pde.codelibrary.ui.components.helpers;
 
 import android.graphics.Rect;
 
+
+//----------------------------------------------------------------------------------------------------------------------
+//  PDEButtonLayoutHelper
+//----------------------------------------------------------------------------------------------------------------------
+
+
 /**
  * @brief PDEButton layout structure helper.
  *

@@ -8,16 +8,20 @@
 package de.telekom.pde.codelibrary.ui.components.buttons;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
-import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 
+/// @cond INTERNAL_CLASS
+@SuppressWarnings("unused")
 public class PDEDrawText extends View {
 
     private final static String LOG_TAG = PDEDrawText.class.getName();
@@ -134,6 +138,15 @@ public class PDEDrawText extends View {
         recalculate();
     }
 
+
+    /**
+     *  @brief Get text size in pixel.
+     */
+    public float getTextSize() {
+       return mTextSize;
+    }
+
+
     /**
      *
      * @param text
@@ -146,14 +159,21 @@ public class PDEDrawText extends View {
         recalculate();
     }
 
+    public void setSize(int w, int h) {
+        onSizeChanged(w, h, mWidth, mHeight);
+    }
+
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);    //To change body of overridden methods use File | Settings | File Templates.
+        super.onSizeChanged(w, h, oldw, oldh);
 
-        if (DEBUG_OUTPUT) Log.d(LOG_TAG,"onSizeChanged w, h"+w+","+h);
+        if (DEBUG_OUTPUT) Log.d(LOG_TAG,"onSizeChanged "+w+","+h);
 
+        // check for changes
         if (w == mWidth && h == mHeight) return;
 
+        // remember
         mWidth = w;
         mHeight = h;
 
@@ -209,7 +229,7 @@ public class PDEDrawText extends View {
             mShadowPaint.setAntiAlias(true);
             mShadowPaint.setColor(mShadowColor);
             mShadowPaint.setTextSize(mTextSize);
-            mShadowPaint.setAlpha((int)mShadowAlpha*255);
+            mShadowPaint.setAlpha((int)mShadowAlpha * 255);
         } else {
             mShadowPaint = null;
         }
@@ -230,18 +250,24 @@ public class PDEDrawText extends View {
         Rect ellipsizeBounds = new Rect();
         if (mEllipsize) {
             if (DEBUG_ELLIPSIZE) Log.d(LOG_TAG, "Ellipsize on");
-            mPaint.getTextBounds(mText,0,mText.length(),ellipsizeBounds);
+            mPaint.getTextBounds(mText, 0, mText.length(), ellipsizeBounds);
 
             if (ellipsizeBounds.width() > mWidth) {
-                if (DEBUG_ELLIPSIZE) Log.d(LOG_TAG, "Ellipsize needed! width: "+mWidth+" textWidth:"+mPaint.measureText(mText));
-                mShownText = TextUtils.substring(mText, 0, mText.length()-1);
+                if (DEBUG_ELLIPSIZE) {
+                    Log.d(LOG_TAG, "Ellipsize needed! width: " + mWidth + " textWidth:" + mPaint.measureText(mText));
+                }
+                mShownText = TextUtils.substring(mText, 0, mText.length() - 1);
 
-                while (ellipsizeBounds.width() > mWidth && mShownText.length()-1 > 0) {
-                    mShownText = TextUtils.substring(mShownText, 0, mShownText.length()-1);
-                    mPaint.getTextBounds((mShownText+EllipsizeString),0,(mShownText+EllipsizeString).length(),ellipsizeBounds);
+                while (ellipsizeBounds.width() > mWidth
+                        && mShownText.length() - 1 > 0) {
+                    mShownText = TextUtils.substring(mShownText, 0, mShownText.length() - 1);
+                    mPaint.getTextBounds((mShownText+EllipsizeString), 0,
+                            (mShownText+EllipsizeString).length(), ellipsizeBounds);
                 }
                 mShownText = mShownText+EllipsizeString;
-                if (DEBUG_ELLIPSIZE) Log.d(LOG_TAG, "Ellipsize orig. text: '"+mText+"' shown text: '"+mShownText +"' "+ mPaint.measureText(mShownText) );
+                if (DEBUG_ELLIPSIZE) {
+                    Log.d(LOG_TAG, "Ellipsize orig. text: '"+mText+"' shown text: '"+mShownText +"' "+ mPaint.measureText(mShownText) );
+                }
             } else {
                 //fits inside
                 if (DEBUG_ELLIPSIZE) Log.d(LOG_TAG, "Ellipsize not needed");
@@ -275,6 +301,7 @@ public class PDEDrawText extends View {
      * @param alpha alpha value, which will be set for the color. Ranges from 0.0f to 1.0f.
      */
     public void setShadowLayer(float offsetX, float offsetY, int color, float alpha) {
+        if (DEBUG_OUTPUT) Log.d(LOG_TAG, "setShadowLayer x:"+offsetX+" y:"+offsetY+" color:"+color+" alpha:"+alpha);
         if (alpha <= 0.0f) {
             mShadowOffsetX = 0.0f;
             mShadowOffsetY = 0.0f;
@@ -286,6 +313,8 @@ public class PDEDrawText extends View {
             mShadowAlpha = alpha;
             mShadowColor = color;
         }
+
+        recalculate();
     }
 
     /**
@@ -297,8 +326,9 @@ public class PDEDrawText extends View {
      * @param color color of the shadow text (including alpha)
      */
     public void setShadowLayer(float offsetX, float offsetY, int color) {
-        setShadowLayer(offsetX, offsetY, color, Color.alpha(color)/255.0f);
+        setShadowLayer(offsetX, offsetY, color, Color.alpha(color) / 255.0f);
     }
-
-
 }
+
+
+/// @endcond INTERNAL_CLASS

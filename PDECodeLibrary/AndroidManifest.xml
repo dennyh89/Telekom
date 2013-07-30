@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="de.telekom.pde.codelibrary.ui"
-      android:versionCode="1"
-      android:versionName="1.0">
-    <uses-sdk android:targetSdkVersion="16" android:minSdkVersion="9"/>
-    <application>
+    package="de.telekom.pde.codelibrary.ui"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="10"
+        android:targetSdkVersion="17" />
+
+    <application android:theme="@style/Theme.Pde" >
+        <activity
+            android:name=".activity.PDEActivitySplash"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.PDE.NoActionBar" >
+        </activity>
+
+        <activity android:name="de.telekom.pde.codelibrary.ui.modules.login.OKDialog" android:theme="@style/Theme.OKDialog" android:excludeFromRecents="true"/>
+        <activity android:name="de.telekom.pde.codelibrary.ui.modules.login.PDEOneIDMLoginScreenActivity"/>
 
     </application>
-</manifest> 
+
+</manifest>

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="action_settings">Settings</string>
+    <string name="app_name">PDECodeLibrary</string>
 
+    <!-- Splash Screen -->
+    <string name="splash_screen_footer_content_description">Deutsche Telekom</string>
+    <string name="splash_screen_app_icon_content_description">PDECodeLibrary</string>
+
+    <!-- Error messages -->
 </resources>

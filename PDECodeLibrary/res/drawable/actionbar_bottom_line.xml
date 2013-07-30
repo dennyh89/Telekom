@@ -1,0 +1,5 @@
+<!--   Copyright 2012 -->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+    <solid android:color="@color/pde_actionbar_divider_color"></solid>    <size  android:height="1dp"/>
+</shape>

@@ -7,152 +7,181 @@
 
 package de.telekom.pde.codelibrary.ui.elements.common;
 
-import android.graphics.ColorFilter;
+import de.telekom.pde.codelibrary.ui.color.PDEColor;
+import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
+
+import android.graphics.Canvas;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.graphics.drawable.Drawable;
 
 
-public class PDEDrawableGradientShape extends Drawable {
+//----------------------------------------------------------------------------------------------------------------------
+// PDEDrawableGradientShape
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+// todo: Check if we couldn't replace the use of this class by PDEDrawableRoundedGradientBox (or vice versa). They seem to be VERY similar.
+//
+
+public class PDEDrawableGradientShape extends PDEDrawableBase {
     protected float mCornerRadius;
     protected int mColors[];
-    private int mAlpha = 0xFF;
-    private Paint mPaint = null;
-    private ColorFilter mColorFilter;
-    private Rect mBoundingRect;
+    protected int mElementBackgroundTopColor;
+    protected int mElementBackgroundMainColor;
+    protected int mElementBackgroundBottomColor;
+    private Paint mBackgroundPaint = null;
     private int mShapeType;
     private Path mShapePath;
 
+    // initialization
     public PDEDrawableGradientShape(){
+        // init drawable basics
+        super();
+        //todo initialize with telekom default values
         mCornerRadius = 10.0f;
         mColors = new int[]{0,0,0};
-        mPaint = new Paint();
-        mBoundingRect = new Rect(0,0,0,0);
+        mBackgroundPaint = new Paint();
         mShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
         mShapePath = new Path();
+        update(true);
     }
 
-    @Override
-    public void setAlpha(int alpha) {
-        mAlpha = alpha;
-        invalidateSelf();
-    }
 
-    @Override
-    public void draw(android.graphics.Canvas canvas){
-       if(mBoundingRect.width()>0 && mBoundingRect.height()>0){
-           // RectF boundsRect = new RectF(getBounds());
-            RectF boundsRect = new RectF(mBoundingRect);
-            // ToDo: check if mAlpha == 0 would work correctly here or if we have to change the alpha channels of the
-            // colors
-            mPaint.setAlpha(mAlpha);
-            mPaint.setAntiAlias(true);
-            mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setShader(new LinearGradient( (boundsRect.right-boundsRect.left)/2,boundsRect.top,
-                                                 (boundsRect.right-boundsRect.left)/2,boundsRect.bottom,mColors,null,
-                                                 Shader.TileMode.MIRROR));
-//            canvas.drawRoundRect(boundsRect, mCornerRadius, mCornerRadius, mPaint);
-           // ToDo: other shapes than roundedRect need testing
-           switch (mShapeType) {
-               case PDEAvailableShapes.SHAPE_RECT:
-                   canvas.drawRect(boundsRect, mPaint);
-                   break;
-               case PDEAvailableShapes.SHAPE_ROUNDED_RECT:
-                   canvas.drawRoundRect(boundsRect, mCornerRadius, mCornerRadius, mPaint);
-                   break;
-               case PDEAvailableShapes.SHAPE_OVAL:
-                   canvas.drawOval(boundsRect, mPaint);
-                   break;
-               case PDEAvailableShapes.SHAPE_CUSTOM_PATH:
-                   canvas.drawPath(mShapePath, mPaint);
-                   break;
-           }
-       }
-    }
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- general setters and getters ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
     /**
-     * @brief abstract in Drawable, need to override
+     * @brief Set corner radius (rounded rect).
      *
+     * @param radius
      */
-    @Override
-    public int getOpacity(){
-        return PixelFormat.OPAQUE;
-    }
-
-    /**
-     * @brief abstract in Drawable, need to override
-     *
-     */
-    @Override
-    public void setColorFilter(android.graphics.ColorFilter cf){
-        mColorFilter = cf;
-    }
-
-    public void setCornerRadius(float radius){
+    public void setElementCornerRadius(float radius){
+        // any change?
+        if (mCornerRadius == radius) return;
+        // remember
         mCornerRadius = radius;
-        invalidateSelf();
+        // update
+        update();
     }
 
-    public float getCornerRadius(){
+
+    /**
+     * @brief Get corner radius (rounded rect).
+     *
+     * @return corner radius (rounded rect).
+     */
+    public float getElementCornerRadius(){
         return mCornerRadius;
     }
 
 
-    public void setColors(int topColor,int middleColor,int bottomColor){
-        mColors = new int[]{topColor,middleColor,bottomColor};
-        invalidateSelf();
-    }
-
-    public void setTopColor(int color){
-        mColors[0]=color;
-        invalidateSelf();
-    }
-
-    public void setMiddleColor(int color){
-        mColors[1]=color;
-        invalidateSelf();
-    }
-
-    public void setBottomColor(int color){
-        mColors[2]=color;
-        invalidateSelf();
-    }
-
-    public int[] getColors(){
-        return mColors;
-    }
-
-    public int getTopColor(){
-        return mColors[0];
-    }
-
-    public int getMiddleColor(){
-        return mColors[1];
-    }
-
-    public int getBottomColor(){
-        return mColors[2];
-    }
-
-    public void setBoundingRect(Rect bounds){
-        if(mBoundingRect.width() != bounds.width() || mBoundingRect.height() != bounds.height()){
-            mBoundingRect = bounds;
-            invalidateSelf();
-        }
-    }
-
-    public Rect getBoundingRect(){
-        return mBoundingRect;
+    /**
+     * @brief Set all colors of the gradient at once.
+     *
+     * @param topColor
+     * @param middleColor
+     * @param bottomColor
+     */
+    public void setElementColors(int topColor, int middleColor, int bottomColor){
+        // any change?
+        if (topColor == mElementBackgroundTopColor && middleColor == mElementBackgroundMainColor &&
+            bottomColor == mElementBackgroundBottomColor) return;
+        // remember
+        mElementBackgroundTopColor = topColor;
+        mElementBackgroundMainColor = middleColor;
+        mElementBackgroundBottomColor = bottomColor;
+        // update
+        update(true);
     }
 
 
-    public void setShapePath(Path path) {
-        // ToDo: Don't know if equals() is meaningful overriden here.
+    /**
+     * @brief Set the top color of the gradient.
+     *
+     * @param color the top color.
+     */
+    public void setElementTopColor(int color){
+        // any change?
+        if (mElementBackgroundTopColor == color) return;
+        // remember
+        mElementBackgroundTopColor = color;
+        // update
+        update(true);
+    }
+
+
+    /**
+     * @brief Set the middle color of the gradient.
+     *
+     * @param color the middle color.
+     */
+    public void setElementMiddleColor(int color){
+        // any change?
+        if (mElementBackgroundMainColor == color) return;
+        // remember
+        mElementBackgroundMainColor=color;
+        // update
+        update(true);
+    }
+
+
+    /**
+     * @brief Set the bottom color of the gradient.
+     *
+     * @param color the bottom color.
+     */
+    public void setElementBottomColor(int color){
+        // any change?
+        if (mElementBackgroundBottomColor == color) return;
+        // remember
+        mElementBackgroundBottomColor = color;
+        update(true);
+    }
+
+
+    /**
+     * @brief Get top color of gradient.
+     *
+     * @return top color of gradient.
+     */
+    public int getElementTopColor(){
+        return mElementBackgroundTopColor;
+    }
+
+
+    /**
+     * @brief Get middle color of gradient.
+     *
+     * @return middle color of gradient.
+     */
+    public int getElementMiddleColor(){
+        return mElementBackgroundMainColor;
+    }
+
+
+    /**
+     * @brief Get bottom color of gradient.
+     *
+     * @return bottom color of gradient.
+     */
+    public int getElementBottomColor(){
+        return mElementBackgroundBottomColor;
+    }
+
+    /**
+     * @brief Set custom shape as a path.
+     *
+     * @param path the custom shape of the element.
+     */
+    public void setElementShapePath(Path path) {
+        // ToDo: Don't know if equals() is meaningful overridden here.
         // any change?
         if (mShapePath.equals(path)) {
             return;
@@ -161,41 +190,123 @@ public class PDEDrawableGradientShape extends Drawable {
         // store the path
         mShapePath = path;
         mShapeType = PDEAvailableShapes.SHAPE_CUSTOM_PATH;
-        invalidateSelf();
+        // update
+        update();
     }
 
-    public Path getShapePath() {
+    /**
+     * @brief Get custom shape as a path.
+     *
+     * @return custom path
+     */
+    public Path getElementShapePath() {
         return mShapePath;
     }
 
     /**
      * @brief Set a rectangular path
      */
-    public void setShapeRect(Rect rect) {
-        mBoundingRect = rect;
+    public void setElementShapeRect() {
         mShapeType = PDEAvailableShapes.SHAPE_RECT;
-        invalidateSelf();
+        update();
     }
 
 
     /**
      * @brief Set a rectangular path with rounded corners.
      */
-    public void setShapeRoundedRect(Rect rect, float cornerRadius) {
-        mBoundingRect = rect;
+    public void setElementShapeRoundedRect(float cornerRadius) {
         mCornerRadius = cornerRadius;
         mShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
-        invalidateSelf();
+        update();
     }
 
     /**
      * @brief Set a oval inscribing the rect. Use a square to get a circle
      */
-    public void setShapeOval(Rect rect) {
-        mBoundingRect = rect;
+    public void setElementShapeOval() {
         mShapeType = PDEAvailableShapes.SHAPE_OVAL;
-        invalidateSelf();
+        update();
     }
+
+    /**
+     * @brief Private helper that applies all new colors.
+     */
+    private void updateColors() {
+        // set colors
+        mColors = new int[]{PDEColor.getIntegerColorCombinedWithAlpha(mElementBackgroundTopColor,mAlpha),
+                            PDEColor.getIntegerColorCombinedWithAlpha(mElementBackgroundMainColor, mAlpha),
+                            PDEColor.getIntegerColorCombinedWithAlpha(mElementBackgroundBottomColor, mAlpha)};
+    }
+
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- Helpers ------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+    /**
+     * @brief update background and border paint values
+     */
+    protected void updateAllPaints() {
+        createBackgroundPaint();
+    }
+
+
+    /**
+     * @brief create background paint for drawing
+     */
+    private void createBackgroundPaint() {
+        mBackgroundPaint = new Paint();
+        mBackgroundPaint.setAntiAlias(true);
+        mBackgroundPaint.setStyle(Paint.Style.FILL);
+        mBackgroundPaint.setColorFilter(mColorFilter);
+        mBackgroundPaint.setDither(mDither);
+        updateColors();
+    }
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- Drawing Bitmap ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+    /**
+     * @brief Updates our drawing bitmap and triggers a redraw of this element.
+     *
+     * If a drawing parameter changes, we need to call this function in order to update our drawing-bitmap and
+     * in order to trigger the draw of our updated bitmap to the canvas.
+     */
+    protected void updateDrawingBitmap(Canvas c, Rect bounds) {
+        RectF frame;
+
+        // security
+        if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
+        // normalized and pixelshifted
+        frame = new RectF(mPixelShift,mPixelShift,bounds.width() - mPixelShift,bounds.height() - mPixelShift);
+        mBackgroundPaint.setShader(new LinearGradient((frame.right - frame.left) / 2, frame.top,
+                                                      (frame.right - frame.left) / 2, frame.bottom, mColors,
+                                                      null,Shader.TileMode.MIRROR));
+        // ToDo: other shapes than roundedRect need testing
+        switch (mShapeType) {
+            case PDEAvailableShapes.SHAPE_RECT:
+                c.drawRect(frame, mBackgroundPaint);
+                break;
+            case PDEAvailableShapes.SHAPE_ROUNDED_RECT:
+                c.drawRoundRect(frame, mCornerRadius, mCornerRadius, mBackgroundPaint);
+                break;
+            case PDEAvailableShapes.SHAPE_OVAL:
+                c.drawOval(frame, mBackgroundPaint);
+                break;
+            case PDEAvailableShapes.SHAPE_CUSTOM_PATH:
+                c.drawPath(mShapePath, mBackgroundPaint);
+                break;
+        }
+    }
+
 }
 
 

@@ -17,7 +17,6 @@ package de.telekom.pde.codelibrary.ui.events;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-import android.util.Log;
 
 /**
  * @brief Event data base class.
@@ -50,7 +49,7 @@ import android.util.Log;
  */
 
 
-public class PDEEvent extends Object {
+public class PDEEvent {
 
     /**
      * @brief properties.
@@ -100,7 +99,7 @@ public class PDEEvent extends Object {
      * @brief PDEEvent flag bitfield constants.
      */
     public static final int FLAG_NONE = 0;
-    public static final int FLAG_PROCESSED = 1 << 0;
+    public static final int FLAG_PROCESSED = 1;
     public static final int FLAG_DISTRIBUTE_TO_ALL = 1 << 1;
 
 
@@ -233,7 +232,7 @@ public class PDEEvent extends Object {
      * when modifying event behaviour. Other event handlers might need to receive the event to
      * function correctly.
      */
-    void clearDistributeToAll() {
+    public void clearDistributeToAll() {
         // add to flags
         mFlags &= ~FLAG_DISTRIBUTE_TO_ALL;
     }
@@ -243,7 +242,7 @@ public class PDEEvent extends Object {
      *
      * @result true if distribution to all is turned on.
      */
-    boolean isDistributeToAll() {
+    public boolean isDistributeToAll() {
         // check flags
         if ((mFlags & FLAG_DISTRIBUTE_TO_ALL) == FLAG_DISTRIBUTE_TO_ALL) {
             return true;
@@ -256,7 +255,7 @@ public class PDEEvent extends Object {
      *
      * @result true if a result (other than null) was set.
      */
-    boolean hasResult() {
+    public boolean hasResult() {
         if (mResult != null) {
             return true;
         }
@@ -272,7 +271,7 @@ public class PDEEvent extends Object {
      *
      * @param resultObject The value to be set, boxed in an object of appropriate type (Integer/Double).
      */
-    void setResult(Object resultObject) {
+    public void setResult(Object resultObject) {
         mResult = resultObject;
     }
 
@@ -285,9 +284,9 @@ public class PDEEvent extends Object {
      *
      * @param value The value to set.
      */
-    void setResult(int value) {
+    public void setResult(int value) {
         // convert to Integer-Object
-        mResult = new Integer(value);
+        mResult = value;
     }
 
     /**
@@ -298,9 +297,9 @@ public class PDEEvent extends Object {
      *
      * @param value The value to set.
      */
-    void setResult(double value) {
+    public void setResult(double value) {
         // convert to Double-Object
-        mResult = new Double(value);
+        mResult = value;
     }
 
 
@@ -311,7 +310,7 @@ public class PDEEvent extends Object {
      * Integer- or Double-Objects. So the returned Object has to be casted correctly before use. Alternatively use
      * the more specialized methods getIntResult or getDoubleResult.
      */
-    Object getResult() {
+    public Object getResult() {
         return mResult;
     }
 
@@ -322,7 +321,7 @@ public class PDEEvent extends Object {
      * @result The stored int result value. If no result is set, or if the result is whether of type Integer nor
      * Double, return -1 as default/error value. If original type is Double it will be converted to int.
      */
-    int getIntResult() {
+    public int getIntResult() {
         // do we have a result?
         if (mResult == null) {
             return -1;
@@ -345,7 +344,7 @@ public class PDEEvent extends Object {
      * @result The stored double result value. If no result is set, or if the result is whether of type Double nor
      * Integer, return 0.0 as default value. If original type is Integer it will be converted to double.
      */
-    double getDoubleResult() {
+    public double getDoubleResult() {
         // do we have a result?
         if (mResult == null) {
             return 0.0;

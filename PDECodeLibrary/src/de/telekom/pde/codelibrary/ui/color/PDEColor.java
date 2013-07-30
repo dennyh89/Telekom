@@ -7,12 +7,23 @@
 
 package de.telekom.pde.codelibrary.ui.color;
 
-
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 
+
+//----------------------------------------------------------------------------------------------------------------------
+//  PDEColor
+//----------------------------------------------------------------------------------------------------------------------
+
+@SuppressWarnings("unused")
 public class PDEColor {
+
+    /**
+     * @brief Global tag for log outputs.
+     */
+    private final static String LOG_TAG = PDEColor.class.getName();
 
     private float mRed;
     private float mGreen;
@@ -21,65 +32,101 @@ public class PDEColor {
 
     private float mHue;
     private float mSaturation;
+    // luminance
     private float mValue;
 
-    //TODO mabye use other type, at the moment this must be a regular expression
-    // define parsing character sets
-    static String PDEColorGlobal_hexCharacterSet = "[0-9a-fA-F]*";
-    static String PDEColorGlobal_digitCommaCharacterSet = "[0-9, ]*";
-    static String PDEColorGlobal_digitPointCommaCharacterSet = "[0-9., ]*";
+    public static final String DTUIText = "DTUITextAuto";
+    public static final String DTUIBackground = "DTUIBackgroundAuto";
+    public static final String DTUIInteractive = "DTUIInteractiveAuto";
+    public static final String DTUIIndicativeText = "DTUIIndicativeTextAuto";
+
+    // define parsing character sets as regular expression
+    final static String PDEColorGlobal_hexCharacterSet = "[0-9a-fA-F]*";
+    final static String PDEColorGlobal_digitCommaCharacterSet = "[0-9, ]*";
+    final static String PDEColorGlobal_digitPointCommaCharacterSet = "[0-9., ]*";
 
 
     public PDEColor() {
         init();
     }
 
+
     public PDEColor(PDEColor color){
         if( color!= null ){
             //use rgba values direct instead of getIntegerColor to avoid calculation differences!!!!!
             //the same int color values(with getIntegerColor) can have some different rgba float values (this is more accurate for step calculation in hsv mode)
-            init(color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha());
+            init(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
         }else {
             init();
         }
     }
 
     public PDEColor(int color){
-        init(color,false);
+        init(color, false);
     }
 
 
     //only used by valueOf(int,boolean)
     private PDEColor(int color, boolean ignoreAlpha){
-       init(color,ignoreAlpha);
+       init(color, ignoreAlpha);
     }
 
     public PDEColor(float red, float green, float blue, float alpha){
-        init(red,green,blue,alpha);
+        init(red, green, blue, alpha);
     }
 
     private void init() {
-        init(0.0f,0.0f,0.0f,1.0f);
+        init(0.0f, 0.0f, 0.0f, 1.0f);
     }
+
+    /**
+     * @brief Create text color depending on the current dark/light style setting of the library.
+     */
+    static public PDEColor DTUITextColor(){
+        return PDEColor.valueOf(DTUIText);
+    }
+
+
+    /**
+     * @brief Create background color depending on the current dark/light style setting of the library.
+     */
+    static public PDEColor DTUIBackgroundColor(){
+        return PDEColor.valueOf(DTUIBackground);
+    }
+
+    /**
+     * @brief Create interactive color depending on the current dark/light style setting of the library.
+     */
+    static public PDEColor DTUIInteractiveColor(){
+        return PDEColor.valueOf(DTUIInteractive);
+    }
+
+    /**
+     * @brief Create interactive text color depending on the current dark/light style setting of the library.
+     */
+    static public PDEColor DTUIIndicativeTextColor(){
+        return PDEColor.valueOf(DTUIIndicativeText);
+    }
+
 
     private void init(int color){
-        init(color,false);
+        init(color, false);
     }
 
-    private void init(int color,boolean ignoreAlpha) {
-        float a,r,g,b;
+    private void init(int color, boolean ignoreAlpha) {
+        float a, r, g, b;
 
         a = 1.0f;
 
         // extract values
-        if( !ignoreAlpha) {
-            a=((color>>24)&0xff) / 255.0f;
+        if(!ignoreAlpha) {
+            a = ((color >> 24) & 0xff) / 255.0f;
         }
-        r=((color>>16)&0xff) / 255.0f;
-        g=((color>>8)&0xff) / 255.0f;
-        b=(color&0xff) / 255.0f;
+        r = ((color >> 16) & 0xff) / 255.0f;
+        g = ((color >> 8) & 0xff) / 255.0f;
+        b = (color & 0xff) / 255.0f;
 
-        init(r,g,b,a);
+        init(r, g, b, a);
     }
 
     private void init(float red, float green, float blue, float alpha){
@@ -147,6 +194,7 @@ public class PDEColor {
         // now it's time to perform the operations (if any)
         colorOperations = colorOperations.trim();
         if ( !TextUtils.isEmpty(colorOperations) ) {
+            // todo Implement! (isn't there on iOS as well)
         }
     }
 
@@ -175,28 +223,28 @@ public class PDEColor {
             //!!!!!!!!
             //!!!! no recursion like on ios -> just try to get identifier with new name!!!!
             //!!!!!!!!
-            if (symbolicName.equals("DTUIText") ) {
+            if (symbolicName.equals(DTUIText) ) {
                 if ( PDECodeLibrary.getInstance().isDarkStyle() ){
                     resourceID = getColorNameIdentifier("DTDarkUIText");
                 }
                 else {
                     resourceID = getColorNameIdentifier("DTLightUIText");
                 }
-            } else if ( symbolicName.equals("DTUIInteractive") ) {
+            } else if ( symbolicName.equals(DTUIInteractive) ) {
                 if ( PDECodeLibrary.getInstance().isDarkStyle() ){
                     resourceID = getColorNameIdentifier("DTDarkUIInteractive");
                 }
                 else {
                     resourceID = getColorNameIdentifier("DTLightUIInteractive");
                 }
-            } else if ( symbolicName.equals("DTUIBackground") ) {
+            } else if ( symbolicName.equals(DTUIBackground) ) {
                 if ( PDECodeLibrary.getInstance().isDarkStyle() ){
                     resourceID = getColorNameIdentifier("DTDarkUIBackground");
                 }
                 else {
                     resourceID = getColorNameIdentifier("DTLightUIBackground");
                 }
-            } else if ( symbolicName.equals("DTUIIndicativeText") ) {
+            } else if ( symbolicName.equals(DTUIIndicativeText) ) {
                 if ( PDECodeLibrary.getInstance().isDarkStyle() ){
                     resourceID = getColorNameIdentifier("DTDarkUIIndicativeText");
                 }
@@ -226,7 +274,7 @@ public class PDEColor {
         }
 
         // check the string: must be either 7 or 9 bytes long
-        if (hexString.length()!=7 && hexString.length()!=9) return;
+        if (hexString.length() != 7 && hexString.length() != 9) return;
 
         // first character must be '#'
         if (hexString.charAt(0) != '#') return;
@@ -242,16 +290,16 @@ public class PDEColor {
         // split into colors, normalize
         if (hexString.length() == 7) {
             // RGB with no alpha
-            mRed = (((value>>16)&0xff) / 255.0f);
-            mGreen = (((value>>8)&0xff) / 255.0f);
-            mBlue = ((value&0xff) / 255.0f);
+            mRed = (((value >> 16) & 0xff) / 255.0f);
+            mGreen = (((value >> 8) & 0xff) / 255.0f);
+            mBlue = ((value & 0xff) / 255.0f);
             mAlpha = 1.0f;
         } else {
             // RGB with alpha
-            mAlpha = (((value>>24)&0xff) / 255.0f);
-            mRed = (((value>>16)&0xff) / 255.0f);
-            mGreen = (((value>>8)&0xff) / 255.0f);
-            mBlue = ((value&0xff) / 255.0f);
+            mAlpha = (((value >> 24) & 0xff) / 255.0f);
+            mRed = (((value >> 16) & 0xff) / 255.0f);
+            mGreen = (((value >> 8) & 0xff) / 255.0f);
+            mBlue = ((value & 0xff) / 255.0f);
         }
     }
 
@@ -280,27 +328,27 @@ public class PDEColor {
         if (subStrings.length > 4) return;
 
         // convert into numbers
-        for (i=0; i<subStrings.length; i++) {
+        for (i=0; i < subStrings.length; i++) {
             str = subStrings[i].trim();
             value = Integer.parseInt(str);
-            if (value<0) value=0;
-            if (value>255) value=255;
+            if (value < 0) value = 0;
+            if (value > 255) value = 255;
             values[i] = value / 255.0f;
         }
 
         // assign depending on pattern
         switch (subStrings.length) {
             case 1:
-                init(values[0],values[0],values[0],1.0f);
+                init(values[0], values[0], values[0], 1.0f);
                 break;
             case 2:
-                init(values[0],values[0],values[0],values[1]);
+                init(values[0], values[0], values[0], values[1]);
                 break;
             case 3:
-                init(values[0],values[1],values[2],1.0f);
+                init(values[0], values[1], values[2], 1.0f);
                 break;
             case 4:
-                init(values[0],values[1],values[2],values[3]);
+                init(values[0], values[1], values[2], values[3]);
                 break;
         }
     }
@@ -335,8 +383,8 @@ public class PDEColor {
         for (i=0; i<subStrings.length; i++) {
             str = subStrings[i].trim();
             value = Float.parseFloat(str);
-            if (value<0.0f) value=0.0f;
-            if (value>1.0f) value=1.0f;
+            if (value < 0.0f) value = 0.0f;
+            if (value > 1.0f) value = 1.0f;
             values[i] = value;
         }
 
@@ -371,13 +419,13 @@ public class PDEColor {
         int ir,ig,ib,ia;
 
         // to int, clamp
-        ir=(int) (mRed*255.0f); if (ir<0) ir=0; if (ir>255) ir=255;
-        ig=(int) (mGreen*255.0f); if (ig<0) ig=0; if (ig>255) ig=255;
-        ib=(int) (mBlue*255.0f); if (ib<0) ib=0; if (ib>255) ib=255;
-        ia=(int) (mAlpha*255.0f); if (ia<0) ia=0; if (ia>255) ia=255;
+        ir = (int) (mRed * 255.0f); if (ir < 0) ir = 0; if (ir > 255) ir = 255;
+        ig = (int) (mGreen * 255.0f); if (ig < 0) ig = 0; if (ig > 255) ig = 255;
+        ib = (int) (mBlue * 255.0f); if (ib < 0) ib = 0; if (ib > 255) ib = 255;
+        ia = (int) (mAlpha * 255.0f); if (ia < 0) ia = 0; if (ia > 255) ia = 255;
 
         // make a color from this
-        return (ia<<24) | (ir<<16) | (ig<<8) | ib;
+        return (ia << 24) | (ir << 16) | (ig << 8) | ib;
     }
 
 
@@ -400,9 +448,7 @@ public class PDEColor {
     public boolean isDarkColor()
     {
         // check against fixed threshold
-        if (luminance() < 0.5f)
-            return true;
-        else return false;
+        return luminance() < 0.5f;
     }
 
 
@@ -414,9 +460,7 @@ public class PDEColor {
      public boolean isTransparentColor()
     {
         // check against fixed threshold
-        if (getAlpha() < 0.5f)
-            return true;
-        else return false;
+        return getAlpha() < 0.5f;
     }
 
     /**
@@ -435,13 +479,13 @@ public class PDEColor {
         if (blend>1.0f) blend=1.0f;
 
         // mix values
-        newRed = (float)((colorToMix.getRed()*blend) + (getRed()*(1.0-blend)));
-        newGreen =  (float)((colorToMix.getGreen()*blend) + (getGreen()*(1.0-blend)));
-        newBlue = (float)((colorToMix.getBlue()*blend) + (getBlue()*(1.0-blend)));
-        newAlpha = (float)((colorToMix.getAlpha()*blend) + (getAlpha()*(1.0-blend)));
+        newRed = (float)((colorToMix.getRed() * blend) + (getRed() * (1.0 - blend)));
+        newGreen =  (float)((colorToMix.getGreen() * blend) + (getGreen() * (1.0 - blend)));
+        newBlue = (float)((colorToMix.getBlue() * blend) + (getBlue() * (1.0 - blend)));
+        newAlpha = (float)((colorToMix.getAlpha() * blend) + (getAlpha() * (1.0 - blend)));
 
         // create color from new values
-        return new PDEColor(newRed,newGreen,newBlue,newAlpha);
+        return new PDEColor(newRed, newGreen, newBlue, newAlpha);
     }
 
 
@@ -453,7 +497,7 @@ public class PDEColor {
      *
      * Alpha stays unchanged in the calculation.
      */
-    public PDEColor darkerColor(float step) {
+    public PDEColor darkerColor(@SuppressWarnings("SameParameterValue") float step) {
         return lighterColor(-step);
     }
 
@@ -531,6 +575,29 @@ public class PDEColor {
 
 
     /**
+     * @brief Styleguide color math. Bright color (used as textfield background).
+     *
+     * Go to a really almost white color: saturation to 5%, value to 95% (unless original saturation
+     * is lower, or value is higher)
+     */
+    public PDEColor styleguideBrightColor()
+    {
+        PDEColor newColor = new PDEColor( this );
+
+        // convert to HSV
+        newColor.convertRGBToHSV();
+
+        // adjust
+        if (newColor.getValue() < 0.98f) newColor.setValue(0.98f);
+        if (newColor.getSaturation() > 0.03f) newColor.setSaturation(0.03f);
+
+        // convert back and return the resulting color
+        newColor.convertHSVToRGB();
+        return newColor;
+    }
+
+
+    /**
      * @brief Styleguide color math. Agent state color scheme.
      *
      * Agent states run along idle -> focus -> takinginput, and get darker every step. The darker step is
@@ -581,14 +648,14 @@ public class PDEColor {
             hue = 0.0f;
         } else if (rgbmax == mRed) {
             // red area
-            hue = (mGreen-mBlue)/chroma;
+            hue = (mGreen - mBlue)/chroma;
             if (hue < 0.0f) hue += 6.0f;
         } else if (rgbmax == mGreen) {
             // green area
-            hue = (mBlue-mRed)/chroma + 2.0f;
+            hue = (mBlue - mRed) / chroma + 2.0f;
         } else {
             // blue area
-            hue = (mRed-mGreen)/chroma + 4.0f;
+            hue = (mRed - mGreen) / chroma + 4.0f;
         }
 
         // simple luminance: highest value
@@ -606,7 +673,7 @@ public class PDEColor {
         // now set the values in the colordata (leave alpha as it is)
         mHue = hue;
         mSaturation = saturation;
-        mValue =luminance;
+        mValue = luminance;
     }
 
 
@@ -680,10 +747,8 @@ public class PDEColor {
      * @brief Convert an UI color to the form "r.r,g.g,b.b,a.a". This always uses alpha.
      */
     public String getColorString(){
-        float r,g,b,a;
-
         // return formatted string
-        return String.format("%0f,%0f,%0f,%0f",mRed,mGreen,mBlue,mAlpha);
+        return String.format("%01f,%01f,%01f,%01f", mRed, mGreen, mBlue, mAlpha);
     }
 
 
@@ -692,33 +757,45 @@ public class PDEColor {
      */
     public String getHexColorString() {
         // return hex formatted string
-        return String.format("#%08x",getIntegerColor());
+        return String.format("#%08x", getIntegerColor());
     }
-
 
 
     public void setRed(float red) {
         mRed = red;
     }
+
+
     public void setGreen(float green) {
         mGreen = green;
     }
+
+
     public void setBlue(float blue) {
         mBlue = blue;
     }
+
+
     public void setAlpha(float alpha) {
         mAlpha = alpha;
     }
 
+
     public float getRed() {
         return mRed;
     }
+
+
     public float getGreen() {
         return mGreen;
     }
+
+
     public float getBlue() {
         return mBlue;
     }
+
+
     public float getAlpha() {
         return mAlpha;
     }
@@ -726,9 +803,13 @@ public class PDEColor {
     public void setHue(float hue) {
         mHue = hue;
     }
+
+
     public void setSaturation(float saturation) {
         mSaturation = saturation;
     }
+
+
     public void setValue(float value) {
         mValue = value;
     }
@@ -736,9 +817,13 @@ public class PDEColor {
     public float getHue() {
         return mHue;
     }
+
+
     public float getSaturation() {
         return mSaturation;
     }
+
+
     public float getValue() {
         return mValue;
     }
@@ -775,7 +860,7 @@ public class PDEColor {
      * Alpha channel is ignored -> int format is 0xxrrggbb.
      * Alpha channel is used -> int format is 0xaarrggbb.
      */
-    public static PDEColor valueOf(int color, boolean ignoreAlpha){
+    public static PDEColor valueOf(int color, @SuppressWarnings("SameParameterValue") boolean ignoreAlpha){
         return new PDEColor(color,ignoreAlpha);
     }
 
@@ -788,8 +873,72 @@ public class PDEColor {
         return String.format("#%02x%02x%02x%02x",(color>>24)&0xff,(color>>16)&0xff,(color>>8)&0xff,color&0xff);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof PDEColor)) return false;
 
-//----- debugging ------------------------------------------------------------------------------------------------------
+        return mRed == ((PDEColor) o).getRed() &&
+                mGreen == ((PDEColor) o).getGreen() &&
+                mBlue == ((PDEColor) o).getBlue() &&
+                mAlpha == ((PDEColor) o).getAlpha() &&
+                mHue == ((PDEColor) o).getHue() &&
+                mSaturation == ((PDEColor) o).getSaturation() &&
+                mValue == ((PDEColor) o).getValue();
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result =205;
+        result *= 37 + Float.floatToIntBits(mRed);
+        result *= 37 + Float.floatToIntBits(mGreen);
+        result *= 37 + Float.floatToIntBits(mAlpha);
+        result *= 37 + Float.floatToIntBits(mHue);
+        result *= 37 + Float.floatToIntBits(mSaturation);
+        result *= 37 + Float.floatToIntBits(mValue);
+        return result;
+    }
+
+
+    /**
+     * @brief Helper function to get new pdecolor of this color combined with a extra alpha
+     */
+    public PDEColor newColorWithCombinedAlpha(int extraAlpha) {
+        return new PDEColor(newIntegerColorWithCombinedAlpha(extraAlpha));
+    }
+
+
+    /**
+     * @brief Helper function to get new integer color of this color combined with a extra alpha
+     */
+    public int newIntegerColorWithCombinedAlpha(int extraAlpha) {
+        int color = getIntegerColor();
+
+        return getIntegerColorCombinedWithAlpha(color,extraAlpha);
+    }
+
+
+    /**
+     * @brief Helper function to get a given integer color combined with a extra alpha
+     */
+    public static int getIntegerColorCombinedWithAlpha(int integerColor,int extraAlpha){
+        int alpha, red, green, blue;
+
+        // anything to calculate?
+        if (extraAlpha >= 255) return integerColor;
+
+        // split in color components
+        alpha = Color.alpha(integerColor);
+        red = Color.red(integerColor);
+        green = Color.green(integerColor);
+        blue = Color.blue(integerColor);
+
+        // create new color with colorAlpha and globalAlpha mixed
+        return Color.argb(Math.round(alpha*(extraAlpha/255.0f)),red,green,blue);
+    }
+
+
+    //----- debugging ------------------------------------------------------------------------------------------------------
 
 
 /**
@@ -806,9 +955,9 @@ public class PDEColor {
 
         // prepare the different outputs (normalize as necessary)
         rgbString = getHexColorString();
-        h = (float) (newColor.getHue() * 60.0f);
-        s = (float) (newColor.getSaturation() * 100.0f);
-        v = (float) (newColor.getValue() * 100.0f);
+        h = newColor.getHue() * 60.0f;
+        s = newColor.getSaturation() * 100.0f;
+        v = newColor.getValue() * 100.0f;
 
         // compose and return
         return String.format("RGB=%s; H=%.1f S=%.1f V=%.1f",rgbString,h,s,v);

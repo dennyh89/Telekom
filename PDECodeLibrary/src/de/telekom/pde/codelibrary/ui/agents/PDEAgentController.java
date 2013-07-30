@@ -37,7 +37,7 @@ import java.util.LinkedList;
  * It's not certain that this will stay this way - eventually it will make more sense to
  * build specialized agent behaviours.
  */
-public class PDEAgentController extends Object implements PDEIEventSource, PDEIEventSourceDelegate {
+public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDelegate {
 
 //----------------------------------------------------------------------------------------------------------------------
 //  Configuration
@@ -47,7 +47,6 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
      * @brief Global tag for log outputs.
      */
     private final static String LOG_TAG = PDEAgentController.class.getName();
-    private final static boolean DEBUGPARAMS = false;
 
     // debug configurations
     //
@@ -240,6 +239,10 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
     private PDEEventSource mEventSource;
 
 
+    /**
+     * @brief Input enabled. Has no effect on the looks of the agent. Visual disablement is a different entity.
+     */
+    private boolean mInputEnabled;
 
     //----- properties -----
 
@@ -409,6 +412,7 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
         mAgentAnimationCombinedFocusAndHighlight = 0.0;
         mAgentAnimationCombinedInteraction = 0.0;
         mTiming = false;
+        mInputEnabled = true;
 
         // set default values
         mInteractiveAttackTime = INTERACTIVE_ATTACK_TIME;
@@ -436,13 +440,11 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
         mStateAnimation = new PDELinearAnimation();
         mAnimations.addSubAnimation(mStateAnimation);
 
-        // ToDo PDEEventSource mixin
-
         // create DTEventSender instance
         mEventSource = new PDEEventSource();
         // set ourselves as the default sender (optional)
-        mEventSource.setEventDefaultSender(this, true); //ToDo:check if true is correct here
-        // set ourselves as delegate (optional)   // ToDo: check if this is the intended usage
+        mEventSource.setEventDefaultSender(this, true);
+        // set ourselves as delegate (optional)
         mEventSource.setEventSourceDelegate(this);
     }
 
@@ -454,6 +456,9 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
     {
         // any change?
         if (mState == state) return;
+        // todo check
+        //if (mState.equals(state)) return; // didn't work - but should be right?!
+
 
         // remember
         mState = state;
@@ -470,7 +475,49 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
         return mState;
     }
 
-        // ToDo check code in iOS dealloc() (self.timing = NO)
+    /**
+     * @brief Enable/disable input.
+     */
+    public void setInputEnabled(boolean enabled) {
+        // any change?
+        if (mInputEnabled == enabled) return;
+
+        // remember
+        mInputEnabled = enabled;
+
+        // adjust state to currently acting input
+        if (mInputEnabled) {
+            // enable current input
+            if (mNumFocus >= 1) {
+                addAction(PDE_AGENT_CONTROLLER_ACTION_FOCUS);
+            }
+            if (mNumHighlights >= 1) {
+                addAction(PDE_AGENT_CONTROLLER_ACTION_HIGHLIGHT);
+            }
+            if (mNumPresses >= 1) {
+                addAction(PDE_AGENT_CONTROLLER_ACTION_PRESS);
+            }
+        } else {
+            // disable current input (cancel current press)
+            if (mNumPresses >= 1) {
+                addAction(PDE_AGENT_CONTROLLER_ACTION_CANCEL_PRESS);
+            }
+            if (mNumHighlights >= 1) {
+                addAction(PDE_AGENT_CONTROLLER_ACTION_UNHIGHLIGHT);
+            }
+            if (mNumFocus >= 1) {
+                addAction(PDE_AGENT_CONTROLLER_ACTION_UNFOCUS);
+            }
+        }
+    }
+
+
+    /**
+     * @brief Check if input is enabled.
+     */
+    public boolean isInputEnabled() {
+        return mInputEnabled;
+    }
 
 
     // interaction functions
@@ -487,7 +534,7 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
         }
 
         // any relevant change? -> add to pending actions
-        if (mNumFocus == 1){
+        if (mNumFocus == 1 && mInputEnabled){
             addAction(PDE_AGENT_CONTROLLER_ACTION_FOCUS);
         }
     }
@@ -503,7 +550,7 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
             Log.d(LOG_TAG,"Removing focus; focuscount: "+mNumFocus);
         }
         // any relevant change? -> add to pending actions
-        if(mNumFocus==0){
+        if(mNumFocus==0 && mInputEnabled){
             addAction(PDE_AGENT_CONTROLLER_ACTION_UNFOCUS);
         }
     }
@@ -521,7 +568,7 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
         }
 
         // any relevant change? ->  add to pending actions
-        if(mNumHighlights==1){
+        if(mNumHighlights==1 && mInputEnabled){
             addAction(PDE_AGENT_CONTROLLER_ACTION_HIGHLIGHT);
         }
     }
@@ -540,7 +587,7 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
         }
 
         // any relevant change? -> add to pending actions
-        if (mNumHighlights == 0) {
+        if (mNumHighlights == 0 && mInputEnabled) {
             addAction(PDE_AGENT_CONTROLLER_ACTION_UNHIGHLIGHT);
         }
     }
@@ -558,7 +605,7 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
         }
 
         // any relevant change? -> add to pending actions
-        if (mNumPresses == 1) {
+        if (mNumPresses == 1 && mInputEnabled) {
             addAction(PDE_AGENT_CONTROLLER_ACTION_PRESS);
         }
     }
@@ -583,7 +630,7 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
         }
 
         // any relevant change? -> add to pending actions
-        if (mNumPresses==0) {
+        if (mNumPresses==0 && mInputEnabled) {
             addAction(PDE_AGENT_CONTROLLER_ACTION_DO_PRESS);
         }
     }
@@ -605,7 +652,7 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
         }
 
         // any relevant change? -> add to pending actions
-        if (mNumPresses==0) {
+        if (mNumPresses==0 && mInputEnabled) {
             addAction(PDE_AGENT_CONTROLLER_ACTION_CANCEL_PRESS);
         }
     }
@@ -895,8 +942,6 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
                         // now we can continue to doing.
                         setAgentState(PDE_AGENT_CONTROLLER_STATE_DOING);
                     }
-                } else {
-                    Log.e(LOG_TAG,"Failed state change: Timing not allowed");
                 }
                 break;
             case PDE_AGENT_CONTROLLER_STATE_DOING:
@@ -921,6 +966,7 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
         if (mAgentState==agentState) return;
 
         // remember old state, set new one
+        //noinspection UnusedAssignment
         oldState=mAgentState;
         mAgentState=agentState;
 
@@ -1078,7 +1124,7 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
         // determine value for highlight
         if (mAgentState== PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
             // in interactive state, we show the highlight if necessary
-            if (mInternalHighlight) show=true; else show=false;
+            show = mInternalHighlight;
         } else {
             // in all other states we don't show the highlight
             show = false;
@@ -1116,7 +1162,7 @@ public class PDEAgentController extends Object implements PDEIEventSource, PDEIE
             show=true;
         } else if (mAgentState== PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
             // in interactive state, we show pressed if necessary
-            if (mInternalPress) show=true; else show=false;
+            show = mInternalPress;
         } else {
             // in all other states we don't show pressed (for now. pressed might be shown longer
             // depending on configuration of gfx, this needs to be implemented)

@@ -45,8 +45,8 @@ public class PDEAnimationGroup extends PDEAnimation {
     /**
      * @brief Global tag for log outputs.
      */
+	@SuppressWarnings("unused")
     private final static String LOG_TAG = PDEAnimationGroup.class.getName();
-    private final static boolean DEBUGPARAMS = false;
 
     /**
      * @brief Helper class that offers us the possibility to store child-animations in weak or strong references.
@@ -99,7 +99,7 @@ public class PDEAnimationGroup extends PDEAnimation {
         }
     }
 
-    private class PDEAnimationGroupOperation extends Object {
+    private class PDEAnimationGroupOperation {
 
         private WeakReference<Object> mObject;
         private int mOperation;
@@ -187,38 +187,6 @@ public class PDEAnimationGroup extends PDEAnimation {
 
     }
 
-
-//    //ToDo adapt to AnimationHolder
-//    protected void finalize() throws Throwable {
-//        WeakReference<PDEAnimation> item;
-//        PDEAnimation animation;
-//        double time;
-//
-//        // get up-to-date-time (little hack)
-//        time = getTime();
-//
-//        // we hold unretained (or possibly retained) links to our subanimations. Be sure to clean them up directly,
-//        // otherwise the parent will be invalid in the subanimations afterwards. Only go through registered subanimations -
-//        // running subanimations are just a subset of these. Also don't clear the parent directly; this would lead to
-//        // callbacks into ourself, breaking a) the fast enumeration, and b) using lots of processing power due to each
-//        // element being removed seperately.
-//        Iterator it=mSubAnimations.iterator();
-//        while(it.hasNext())
-//        {
-//            //ToDo check type first?
-//            item=(WeakReference<PDEAnimation>)it.next();
-//            if(item != null && item.get()!= null){
-//                animation = item.get();
-//                // little hack: manually update subanimation's parent time
-//                animation.mCachedParentTime = time;
-//                // and forget it
-//                animation.forgetParentAnimation();
-//            }
-//            //ToDo delete when weakref == null?
-//        }
-//
-//    }
-
     /**
      * @brief Helper method to add an animation to a given list. Prevents code duplication.
      *
@@ -295,7 +263,7 @@ public class PDEAnimationGroup extends PDEAnimation {
         // linked to someone else??
         if (animation.getParentAnimation() != null) {
             // use proper removal, we need to remove it from the current parent
-            animation.removeFromParentAnimation();          // ToDo CHECK this
+            animation.removeFromParentAnimation();
         }
 
         // remember in our list of animations
@@ -454,7 +422,7 @@ public class PDEAnimationGroup extends PDEAnimation {
      * are notified.
      */
     @Override
-    void parentTimeDidChange() {
+    protected void parentTimeDidChange() {
         // don't do anything if not running and no children are running
         if (!isRunningWithSubAnimations()) {
             return;
@@ -492,7 +460,7 @@ public class PDEAnimationGroup extends PDEAnimation {
      *   - we're running ourself, and the parent time has changed
      *   - if our timebase is changed
      */
-    void propagateTime() {
+    protected void propagateTime() {
         PDEAnimation animation;
 
         // we're in propagation
@@ -501,11 +469,15 @@ public class PDEAnimationGroup extends PDEAnimation {
         for (Iterator<WeakReference<PDEAnimation>> iterator = mRunningSubAnimations.iterator(); iterator.hasNext(); ) {
             WeakReference<PDEAnimation> item = iterator.next();
 
-            // animation is probably not existing anymore
+
             if (item != null){
                 animation = item.get();
+                // animation is maybe not existing anymore
                 if(animation != null) {
                     animation.parentTimeDidChange();
+                } else {
+                    // remove the already deleted animation from the list
+                    iterator.remove();
                 }
             }
         }
@@ -601,7 +573,7 @@ public class PDEAnimationGroup extends PDEAnimation {
     void unregisterSubAnimationForChanged(PDEAnimation animation) {
         int i;
 
-        // ToDo: CHECK: iOS implementation logic is slightly different here, but I guess we don't need it here
+        // iOS implementation logic is slightly different here, but I guess we don't need it here
         // because it only depends on Thomas's special array handling that we don't use in android
 
         // are we currently processing the list?
@@ -610,7 +582,6 @@ public class PDEAnimationGroup extends PDEAnimation {
             for(i=0;i<mChangedSubAnimations.size();i++){
                 WeakReference<PDEAnimation> item = mChangedSubAnimations.get(i);
                 if( item != null && item.get() == animation){
-                    // ToDo check if this works as intended
                     mChangedSubAnimations.set(i,null);
                     return;
                 }
@@ -637,7 +608,7 @@ public class PDEAnimationGroup extends PDEAnimation {
      * First processes the subanimations, then sends out our own animations to get the correct order.
      */
     @Override
-    void sendChanges() {
+    protected void sendChanges() {
         PDEAnimation animation;
 
         // mark as "currently sending changes"

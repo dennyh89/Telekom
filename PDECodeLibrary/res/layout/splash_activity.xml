@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:pdecodelibrary="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/splash_activity_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pde_splash_activity_background" >
+
+    <!--
+    NOTE: the position of the app icon is set programmatically to get the golden ratio. 
+    See SplashActivity.setupLayout and PDEUiUtils.setGoldenRatio for more details
+    -->
+
+    <ImageView
+        android:id="@+id/splash_activity_app_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/splash_screen_app_icon_content_description"
+        android:src="@drawable/code_samples_splash_icon" />
+ 
+    <de.telekom.pde.codelibrary.ui.elements.wrapper.PDELayerTextView
+        android:id="@+id/splash_activity_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_below="@id/splash_activity_app_icon"
+        pdecodelibrary:paddingTop="@dimen/Telekom.BU"
+        pdecodelibrary:text="@string/app_name"
+        pdecodelibrary:textSize="@dimen/pde_splash_activity_text_height"
+        pdecodelibrary:textColor="@color/pde_full_grey_2"
+        pdecodelibrary:verticalAlignment="top"
+            />
+
+    <ImageView
+        android:id="@+id/splash_activity_footer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/pde_splash_activity_footer_margin_bottom"
+        android:contentDescription="@string/splash_screen_footer_content_description"
+        android:src="@drawable/pde_splash_activity_footer" />
+
+</RelativeLayout>

@@ -9,6 +9,7 @@ package de.telekom.pde.codelibrary.ui.timing;
 
 
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.Choreographer;
 
@@ -16,7 +17,8 @@ import android.view.Choreographer;
 //  PDEFrameTimingChoreographer
 //----------------------------------------------------------------------------------------------------------------------
 
-
+@SuppressLint("NewApi")
+@SuppressWarnings("unused")
 public class PDEFrameTimingChoreographer extends PDEFrameTiming implements Choreographer.FrameCallback{
 
     /**
@@ -57,7 +59,6 @@ public class PDEFrameTimingChoreographer extends PDEFrameTiming implements Chore
         mActive = active;
 
         if (mActive && !mFrameCallbackSet) {
-            //TODO: check if this is necessary!
             // ensure that the FrameCallback is executed in the mainloop
 
             mHandler.postAtFrontOfQueue(new Runnable() {

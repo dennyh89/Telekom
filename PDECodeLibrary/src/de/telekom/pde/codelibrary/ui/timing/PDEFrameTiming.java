@@ -5,11 +5,8 @@
  * Copyright (c) 2012. Neuland Multimedia GmbH.
  */
 
-package de.telekom.pde.codelibrary.ui.timing;/*
- * Copyright (c) 2012. Neuland Multimedia GmbH. All rights reserved.
- * 
- * de.telekom.pde.codelibrary.ui.timing
- */
+package de.telekom.pde.codelibrary.ui.timing;
+
 
 import android.os.Handler;
 import android.os.Looper;
@@ -45,6 +42,8 @@ public abstract class PDEFrameTiming {
     protected long mFrameTime;
     protected long mLastFrameTime;
     protected boolean mActive;
+    protected boolean mInTiming;
+    protected boolean mNeedsCleanup;
 
     protected boolean mLoopLocked;
     protected Handler mHandler;
@@ -103,12 +102,18 @@ public abstract class PDEFrameTiming {
         Method mMethod;
 
         /**
+         * @brief Helper for removal during timing.
+         */
+        boolean mNeedsRemoval;
+
+        /**
          * @brief Constructor
          *
          * @param target Reference to the listener class.
          * @param method The method to be called.
          */
         PDEFrameTimingListener(Object target, Method method, boolean strongReference) {
+            mNeedsRemoval = false;
             mMethod = method;
 
             if (strongReference) {
@@ -192,6 +197,8 @@ public abstract class PDEFrameTiming {
         mFrameTime = 0;
         mLastFrameTime = 0;
         mActive = false;
+        mInTiming = false;
+        mNeedsCleanup = false;
 
         mLoopLocked = false;
 
@@ -291,31 +298,58 @@ public abstract class PDEFrameTiming {
      * @brief Send timings to all listeners,
      */
     public void sendTimings() {
+        int i;
+        PDEFrameTimingListener listener;
+
+        // init
+        mInTiming = true;
+        mNeedsCleanup = false;
 
         try {
-            // go through all listeners and send it
-            for (Iterator<PDEFrameTimingListener> iterator = mListener.iterator(); iterator.hasNext(); ) {
-                PDEFrameTimingListener listener = iterator.next();
-
-                if (listener.mStrongTarget != null ){
-                    sendTiming(listener.mStrongTarget, listener.mMethod);
-                } else {
-                    Object target;
-                    //weak
-                    if (listener.mWeakTarget != null){
-                        target = listener.mWeakTarget.get();
-                        if (target!= null) {
-                            sendTiming(target, listener.mMethod);
-                        }
+            // go through all listeners and send it (use classical loop -> this has the ability to add on the fly)
+            for (i=0;i<mListener.size(); i++){
+                // which listener
+                listener = mListener.get(i);
+                // do we still have the target?
+                if (!listener.mNeedsRemoval){
+                    if (listener.mStrongTarget != null ){
+                        sendTiming(listener.mStrongTarget, listener.mMethod);
                     } else {
-                        iterator.remove();
+                        Object target;
+                        //weak
+                        if (listener.mWeakTarget != null){
+                            target = listener.mWeakTarget.get();
+                            if (target!= null) {
+                                sendTiming(target, listener.mMethod);
+                            }
+                        } else {
+                            // mark ourself for later cleanup
+                            mNeedsCleanup = true;
+                        }
                     }
+                } else {
+                    // mark ourself for later cleanup
+                    mNeedsCleanup = true;
                 }
             }
 
-            if (mListener.size() == 0) {
-                setActive(false);
+            // we're no longer in timing
+            mInTiming = false;
+
+            // if we need cleanup, do it now
+            if (mNeedsCleanup){
+                for (i=mListener.size()-1; i>=0; i--){
+                    listener = mListener.get(i);
+                    if ((listener.mStrongTarget == null && listener.mWeakTarget == null) || listener.mNeedsRemoval){
+                        mListener.remove(i);
+                    }
+                }
+
+                if (mListener.size() == 0) {
+                    setActive(false);
+                }
             }
+            mNeedsCleanup = false;
         } catch (ConcurrentModificationException e) {
             Log.w(LOG_TAG, "List of Listeners changed during iteration!");
         }
@@ -361,23 +395,36 @@ public abstract class PDEFrameTiming {
      */
     public boolean removeListener(Object listener) {
         boolean removed = false;
+        int i;
         if(DEBUGPARAMS){
             Log.d(LOG_TAG, "REMOVE Listener "+mFrameTime+ " "+listener.toString());
         }
         try {
-            // iterate through list
-            for (Iterator<PDEFrameTimingListener> iterator = mListener.iterator(); iterator.hasNext(); ) {
-                PDEFrameTimingListener element = iterator.next();
-                // check equality of references
-                if (element.getTarget() == listener) {
-                    // listener was found; remove it and stop further searching
-                    iterator.remove();
-                    // remember
-                    removed = true;
-                    if(DEBUGPARAMS){
-                        Log.d(LOG_TAG, "REMOVED Listener "+mFrameTime+ " "+listener.toString());
+            for (i=mListener.size()-1; i>=0; i--){
+                PDEFrameTimingListener l;
+                // get object
+                l = mListener.get(i);
+
+                // does it match?
+                if (l.getTarget() == listener) {
+                    // if we're currently in timing just mark the listener for removal ( we must not change the list)
+                    if (mInTiming){
+                       // mark all listener for removal, throw away reference immediately
+                        l.mNeedsRemoval = true;
+                        l.mStrongTarget = null;
+                        l.mWeakTarget.clear();
+                        // remember to actually do a cleanup step
+                        mNeedsCleanup = true;
+                    } else {
+                        // directly remove this entry
+                        mListener.remove(i);
+                        // remember
+                        removed = true;
+                        if(DEBUGPARAMS){
+                            Log.d(LOG_TAG, "REMOVED Listener "+mFrameTime+ " "+listener.toString());
+                        }
+                        // break?
                     }
-                    break;
                 }
             }
         } catch (ConcurrentModificationException e) {

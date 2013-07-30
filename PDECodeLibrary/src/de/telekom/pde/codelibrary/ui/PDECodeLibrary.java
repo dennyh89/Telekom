@@ -22,7 +22,7 @@ import de.telekom.pde.codelibrary.ui.errorhandling.PDERuntimeException;
  *
  * It is designed as a singleton class.
  */
-public final class PDECodeLibrary extends Object {
+public final class PDECodeLibrary {
 
     /**
      * @brief Global tag for log outputs.
@@ -37,6 +37,10 @@ public final class PDECodeLibrary extends Object {
     private static boolean PDECodeLibraryParentSoftwareRendering = false;
 
     private static Context mApplicationContext = null;
+
+    private static boolean DEBUG_SHOW_LOGS = true;
+
+    private static boolean mAssignmentOfDefaultFontToTextViewsEnabled = true;
 
 
     /**
@@ -94,7 +98,9 @@ public final class PDECodeLibrary extends Object {
         PDECodeLibraryInitialized = true;
 
         //debug
-        Log.d(LOG_TAG, "PDECodeLibrary.libraryInit: successfully initialized");
+        if (DEBUG_SHOW_LOGS) {
+            Log.d(LOG_TAG, "PDECodeLibrary.libraryInit: successfully initialized");
+        }
         return true;
     }
 
@@ -106,7 +112,9 @@ public final class PDECodeLibrary extends Object {
      */
     public void libraryDeinit() {
         // debug
-        Log.d(LOG_TAG, "PDECodeLibrary.libraryDeinit: called");
+        if (DEBUG_SHOW_LOGS) {
+            Log.d(LOG_TAG, "PDECodeLibrary.libraryDeinit: called");
+        }
 
         // library is no longer initialized
         PDECodeLibraryInitialized = false;
@@ -125,6 +133,7 @@ public final class PDECodeLibrary extends Object {
     public Context getApplicationContext() {
         if (!PDECodeLibraryInitialized) {
             // library is uninitalized
+            // we don't have resources at the moment, since there is no context!
             throw new PDERuntimeException("getApplicationContext was call on an uninitialized library");
         }
         return mApplicationContext;
@@ -133,8 +142,7 @@ public final class PDECodeLibrary extends Object {
     /**
      * @brief Set (or clear) dark style.
      */
-    public void setDarkStyle(boolean dark)
-    {
+    public void setDarkStyle(boolean dark) {
         // remember
         PDECodeLibraryDarkStyle = dark;
     }
@@ -143,8 +151,7 @@ public final class PDECodeLibrary extends Object {
     /**
      * @brief Check for dark style.
      */
-    public boolean isDarkStyle()
-    {
+    public boolean isDarkStyle() {
         // retrieve setting
         return PDECodeLibraryDarkStyle;
     }
@@ -153,8 +160,7 @@ public final class PDECodeLibrary extends Object {
     /**
      * @brief Set (or clear) software rendering.
      */
-    public void setSoftwareRenderingButton(boolean enable)
-    {
+    public void setSoftwareRenderingButton(boolean enable) {
         // remember
         PDECodeLibraryButtonSoftwareRendering = enable;
     }
@@ -163,8 +169,7 @@ public final class PDECodeLibrary extends Object {
     /**
      * @brief Check if we do only software rendering.
      */
-    public boolean isSoftwareRenderingButton()
-    {
+    public boolean isSoftwareRenderingButton() {
         // retrieve setting
         return PDECodeLibraryButtonSoftwareRendering;
     }
@@ -173,8 +178,7 @@ public final class PDECodeLibrary extends Object {
     /**
      * @brief Set (or clear) software rendering.
      */
-    public void setSoftwareRenderingParent(boolean enable)
-    {
+    public void setSoftwareRenderingParent(boolean enable) {
         // remember
         PDECodeLibraryParentSoftwareRendering = enable;
     }
@@ -183,11 +187,29 @@ public final class PDECodeLibrary extends Object {
     /**
      * @brief Check if we do only software rendering.
      */
-    public boolean isSoftwareRenderingParent()
-    {
+    public boolean isSoftwareRenderingParent() {
         // retrieve setting
         return PDECodeLibraryParentSoftwareRendering;
     }
 
+    /**
+     * @brief Enable or disable the PDEFontLayoutFactory which sets the default font to all newly
+     * created views within an activity.
+     * The PDEFontLayoutFactory is set in all PDEActivities (if enabled) when the activity is
+     * instanciated, thus changing this setting affects only newly created activities.
+     *
+     * @param enabled control the activation of the factory
+     */
+    public void setAssignmentOfDefaultFontToTextViews(boolean enabled) {
+        mAssignmentOfDefaultFontToTextViewsEnabled = enabled;
+    }
+
+    /**
+     * @brief check if PDEFontLayoutFactory is enabled.
+     * @return state
+     */
+    public boolean isAssignmentOfDefaultFontToTextViewsEnabled() {
+        return mAssignmentOfDefaultFontToTextViewsEnabled;
+    }
 
 }

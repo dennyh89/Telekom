@@ -7,21 +7,21 @@
 
 package de.telekom.pde.codelibrary.ui.components.buttons;
 
+import android.content.Context;
 import android.graphics.Rect;
+import android.util.AttributeSet;
 import android.util.Log;
 
-import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEAgentHelper;
-import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonLayoutHelper;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameter;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameterDictionary;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShape;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEViewBackground;
+import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableCornerBox;
+import de.telekom.pde.codelibrary.ui.elements.wrapper.PDEViewWrapper;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 
@@ -37,7 +37,7 @@ import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
  *
  * Color gradient, frame, inner shadow on pressed.
  */
-public class PDEButtonLayerBackgroundPlate extends Object implements PDEButtonLayerInterface {
+class PDEButtonLayerBackgroundPlate extends PDEAbsoluteLayout implements PDEButtonLayerInterface {
 
     /**
      * @brief Global tag for log outputs.
@@ -51,20 +51,15 @@ public class PDEButtonLayerBackgroundPlate extends Object implements PDEButtonLa
     PDEParameterDictionary mParameters;
     PDEParameter mParamColor;
 
-    // views
-    PDEViewBackground mMainView;
+    // drawables
+    //PDEDrawableShape mMainDrawable;
+    PDEDrawableCornerBox mMainDrawable;
 
     // additional helper variables
     float mCornerRadius;
 
-    // size of the background
-    protected PDEButtonLayoutHelper mLayout;
-
     // agent helpers
     PDEAgentHelper mAgentHelper;
-
-    // layout that holds the  main backgroundview
-    PDEAbsoluteLayout mLayer;
 
 
 
@@ -72,21 +67,33 @@ public class PDEButtonLayerBackgroundPlate extends Object implements PDEButtonLa
     //
     public static PDEDictionary PDEButtonLayerBackgroundPlateGlobalColorDefault = null;
 
+    public PDEButtonLayerBackgroundPlate(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
 
-
-
+    public PDEButtonLayerBackgroundPlate(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context);
+    }
 
     /**
      * @brief Class initialization.
      */
-    PDEButtonLayerBackgroundPlate() {
+    public PDEButtonLayerBackgroundPlate(Context context) {
+
+        super(context);
+        init(context);
+
+    }
+
+    private void init(Context context) {
         // read default dictionaries
         PDEButtonLayerBackgroundPlateGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary(
                 "dt_button_flat_color_defaults");
 
         // init
         mParameters = null;
-        mLayout = new PDEButtonLayoutHelper();
 
         // set empty complex parameters
         mParamColor = new PDEParameter();
@@ -94,10 +101,13 @@ public class PDEButtonLayerBackgroundPlate extends Object implements PDEButtonLa
         // agent helper
         mAgentHelper = new PDEAgentHelper();
 
-        mLayer = new PDEAbsoluteLayout(PDECodeLibrary.getInstance().getApplicationContext());
-        mLayer.setClipChildren(false);
-        mMainView = new PDEViewBackground(PDECodeLibrary.getInstance().getApplicationContext(),new PDEDrawableShape());
-        mLayer.addView(mMainView);
+
+        setClipChildren(false);
+        //mMainDrawable = new PDEDrawableShape();
+        mMainDrawable = new PDEDrawableCornerBox();
+        addView(mMainDrawable.getWrapperView());
+        //mMainDrawable.setElementRoundedCornerConfiguration(PDEDrawableCornerBox.PDEDrawableCornerBoxAllCorners);
+        mMainDrawable.setElementBorderColor(PDEColor.valueOf("DTTransparentBlack"));
 
         // further rasterization... -> not now, do more tests and only turn it on if the button is stable / not animated
         //mCollectionLayer.rasterizationScale = [PDEBuildingUnits scale];
@@ -112,13 +122,12 @@ public class PDEButtonLayerBackgroundPlate extends Object implements PDEButtonLa
 
 
 
-
     /**
      * @brief Layer access.
      */
     @Override
     public PDEAbsoluteLayout getLayer() {
-        return mLayer;
+        return this;
     }
 
     /**
@@ -161,6 +170,7 @@ public class PDEButtonLayerBackgroundPlate extends Object implements PDEButtonLa
 
         // non-animated parameters are simpler to handle: change management is in internal functions.
         prepareCornerRadius();
+        prepareRoundedCornerConfiguration();
     }
 
 
@@ -225,7 +235,28 @@ public class PDEButtonLayerBackgroundPlate extends Object implements PDEButtonLa
 
 
         // apply
-        getMainDrawable().setCornerRadius(mCornerRadius);
+        getMainDrawable().setElementCornerRadius(mCornerRadius);
+    }
+
+    /**
+     * @brief Prepare corner configuration parameter set.
+     *
+     * Corner configuration is a non-animated parameter at the moment.
+     */
+    protected void prepareRoundedCornerConfiguration() {
+        int config;
+
+        // create a copy of the new corner radius
+        config = (int) mParameters.parameterFloatForName(PDEButton.PDEButtonParameterRoundedCornerConfiguration,
+                PDEDrawableCornerBox.PDEDrawableCornerBoxAllCorners);
+
+        // check for changes
+        if (config == getMainDrawable().getElementRoundedCornerConfiguration()) {
+            return;
+        }
+
+        // remember & apply
+        getMainDrawable().setElementRoundedCornerConfiguration(config);
     }
 
 
@@ -246,7 +277,8 @@ public class PDEButtonLayerBackgroundPlate extends Object implements PDEButtonLa
                 PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
 
         // set the background color
-        getMainDrawable().setBackgroundColor(mainColor.getIntegerColor());
+        //getMainDrawable().setElementBackgroundColor(mainColor.getIntegerColor());
+        getMainDrawable().setElementBackgroundColor(mainColor);
     }
 
 
@@ -254,47 +286,20 @@ public class PDEButtonLayerBackgroundPlate extends Object implements PDEButtonLa
 //----- layout ---------------------------------------------------------------------------------------------------------
 
 
-    /**
-     * @brief Apply new layout when set from the outside.
-     */
+
     @Override
-    public void setLayout(PDEButtonLayoutHelper layout) {
-        // debug
-        if(DEBUGPARAMS){
-            Log.d(LOG_TAG,
-                  "screenRect left " + layout.mButtonRect.left + " top " + layout.mButtonRect.top + " right " + layout.mButtonRect.right +
-                  " bottom " + layout.mButtonRect.bottom);
-            Log.d(LOG_TAG,
-                  "outlineRect left " + layout.mLayoutRect.left + " top " + layout.mLayoutRect.top + " right " + layout.mLayoutRect.right +
-                  "  bottom " + layout.mLayoutRect.bottom);
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        if (DEBUGPARAMS) {
+            Log.d(LOG_TAG, "onSizeChanged "+w+", "+h);
         }
 
-        // any change & valid size?
-        if ((layout.mButtonRect.left == mLayout.mButtonRect.left) &&
-            (layout.mButtonRect.top == mLayout.mButtonRect.top) &&
-            (layout.mButtonRect.right == mLayout.mButtonRect.right) &&
-            (layout.mButtonRect.bottom == mLayout.mButtonRect.bottom) &&
-            (layout.mLayoutRect.left == mLayout.mLayoutRect.left) &&
-            (layout.mLayoutRect.top == mLayout.mLayoutRect.top) &&
-            (layout.mLayoutRect.right == mLayout.mLayoutRect.right) &&
-            (layout.mLayoutRect.bottom == mLayout.mLayoutRect.bottom) |
-            layout.mButtonRect.height() <=0 | layout.mButtonRect.width()<=0 |
-            layout.mLayoutRect.height()<=0 | layout.mLayoutRect.width()<=0 ) {
-            return;
-        }
-
-        // remember
-        mLayout = new PDEButtonLayoutHelper(layout);
-
-        // update main background
-        getMainDrawable().setBoundingRect(mLayout.mLayoutRect);
-
-        // ToDo: Not sure if this update is really needed, so it's commented out for now until we find a reason to
-        // use it again.
-//        // just to be sure, that all children get the layout changes
-//        mLayer.updateLayout(true, mOutlineRect.left, mOutlineRect.top, mOutlineRect.right,
-//                            mOutlineRect.bottom);
+        mMainDrawable.getWrapperView().setViewLayoutRect(new Rect(0, 0, w, h));
+        mMainDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
+                                               MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
     }
+
 
     /**
     * @brief Collect hints.
@@ -327,55 +332,32 @@ public class PDEButtonLayerBackgroundPlate extends Object implements PDEButtonLa
 //----- Properties Setter/Getter -----------------------------------------------------------------------------------
 
 
-
-
-    /**
-     * @brief Remember display size of background (internal helper).
-     *
-     * The outer shadow isn't considered in this size.
-     */
-    protected void setLayoutRect(Rect layoutRect){
-        mLayout.mLayoutRect = layoutRect;
-    }
-
-    /**
-     * @brief Get display size of background.
-     *
-     * The outer shadow isn't considered in this size.
-     */
-    public Rect getLayoutRect(){
-        return mLayout.mLayoutRect;
-    }
-
     /**
      * @brief Get view of main background
      */
-    public PDEViewBackground getMainView() {
-        return mMainView;
+    public PDEViewWrapper getMainView() {
+        return mMainDrawable.getWrapperView();
     }
 
-    /**
-     * @brief Set new view of main background
-     */
-    public void setMainView(PDEViewBackground view) {
-        mMainView = view;
-    }
 
     /**
      * @brief Set new drawable of main background
      */
-    public void setMainDrawable(PDEDrawableShape drawable) {
-        mMainView.setDrawable(drawable);
+    public void setMainDrawable(PDEDrawableCornerBox drawable) {
+        if(drawable == mMainDrawable || drawable == null) return;
+        // remove old view
+        if (mMainDrawable != null) removeView(mMainDrawable.getWrapperView());
+        // remember
+        mMainDrawable = drawable;
+        // add view
+        addView(mMainDrawable.getWrapperView());
     }
 
     /**
      * @brief Get drawable of main background
      */
-    public PDEDrawableShape getMainDrawable(){
-        if (mMainView.getDrawable() instanceof PDEDrawableShape){
-            return (PDEDrawableShape) mMainView.getDrawable();
-        } else {
-            return null;
-        }
+    public PDEDrawableCornerBox getMainDrawable(){
+        return mMainDrawable;
     }
+
 }

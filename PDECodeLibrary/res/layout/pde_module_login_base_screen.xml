@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:pdecodelibrary="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/LoginScreenRootView"
+        >
+    <!-- the max_width will be set programmatically to 30 BU -->
+    <de.telekom.pde.codelibrary.ui.layout.PDEBoundedRelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/LoginScreenBoundedPane"
+            android:layout_centerInParent="true"
+            pdecodelibrary:max_width="@dimen/Telekom.BU7">
+        <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/LoginScreenScrollView" android:clickable="true">
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                          android:orientation="vertical"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:id="@+id/LoginScreenInnerScrollView"
+                          android:gravity="top"
+                          android:layout_gravity="top"
+                          >
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/Telekom.BU6"
+                        android:id="@+id/LoginScreenHeaderArea"
+                        android:layout_alignParentTop="true"
+                        >
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/login_screen_header"
+                            android:id="@+id/LoginScreenHeaderLabel"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginBottom="@dimen/Telekom.BU_1_2"
+                            />
+                    <View android:layout_width="match_parent"
+                          android:layout_height="1px"
+                          android:layout_centerInParent="true"
+                          android:layout_alignParentBottom="true"
+                          android:id="@+id/LoginScreenHeaderDelimiter"
+                            />
+                </RelativeLayout>
+                <!-- DESCRIPTION AREA -->
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/LoginScreenDescriptionArea"
+                        android:focusable="true"
+                        android:layout_below="@id/LoginScreenHeaderArea">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/Telekom.BU2"
+                            android:layout_marginRight="@dimen/Telekom.BU2"
+                            android:layout_marginTop="@dimen/Telekom.BU3"
+                            android:layout_marginBottom="@dimen/Telekom.BU2_1_2"
+                            android:text="@string/login_screen_screen_description_idm"
+                            android:id="@+id/LoginScreenDescriptionLabel" android:layout_alignParentLeft="true"
+                            android:layout_centerInParent="true"
+                            android:textIsSelectable="false"
+                            />
+                </RelativeLayout>
+                <!-- Username AREA -->
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/Telekom.BU2" android:layout_marginLeft="@dimen/Telekom.BU2"
+                        android:layout_marginRight="@dimen/Telekom.BU2"
+                        android:focusable="true"
+                        android:id="@+id/LoginScreenUsernameArea"
+                        android:layout_below="@id/LoginScreenDescriptionArea">
+                        >
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/LoginScreenUsernameLabel" android:text="@string/login_screen_username_label"
+                            android:layout_centerVertical="true" android:layout_alignParentLeft="true"/>
+
+                </RelativeLayout>
+
+                <de.telekom.pde.codelibrary.ui.components.inputfields.PDEInputField
+                      android:layout_width="match_parent"
+                      android:layout_height="@dimen/Telekom.BU3"
+                      android:id="@+id/LoginScreenUsernameInputField"
+                      android:layout_marginLeft="@dimen/Telekom.BU2" android:layout_marginRight="@dimen/Telekom.BU2"
+                      android:layout_below="@id/LoginScreenUsernameArea"/>
+
+                <!-- Password AREA -->
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/Telekom.BU2" android:layout_marginLeft="@dimen/Telekom.BU2"
+                        android:layout_marginRight="@dimen/Telekom.BU2"
+                        android:layout_marginTop="@dimen/Telekom.BU"
+                        android:id="@+id/LoginScreenPasswordArea"
+                        android:layout_below="@id/LoginScreenUsernameInputField"
+                        >
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/login_screen_password_label"
+                            android:id="@+id/LoginScreenPasswordLabel" android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            />
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/login_screen_password_forgotten_link"
+                            android:id="@+id/LoginScreenForgotPasswordLabel"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignBaseline="@+id/LoginScreenPasswordLabel"/>
+                </RelativeLayout>
+
+                <de.telekom.pde.codelibrary.ui.components.inputfields.PDEInputField
+                      android:layout_width="match_parent"
+                      android:layout_height="@dimen/Telekom.BU3"
+                      android:id="@+id/LoginScreenPasswordInputField"
+                      android:layout_marginLeft="@dimen/Telekom.BU2" android:layout_marginRight="@dimen/Telekom.BU2"
+                      android:layout_below="@id/LoginScreenPasswordArea"
+                />
+
+                <!-- Checkbox AREA -->
+
+                <de.telekom.pde.codelibrary.ui.components.buttons.PDEButton
+                      android:layout_width="match_parent"
+                      android:layout_height="@dimen/Telekom.BU3"
+                      android:layout_marginTop="@dimen/Telekom.BU_1_2"
+                      android:layout_marginBottom="@dimen/Telekom.BU_1_2"
+                      android:layout_marginLeft="@dimen/Telekom.BU" android:layout_marginRight="@dimen/Telekom.BU2"
+                      android:id="@+id/LoginScreenStaySignedInCheckbox"
+                      pdecodelibrary:overlay="checkbox"
+                      pdecodelibrary:backgroundType="none"
+                      pdecodelibrary:textAlignment="left"
+                      pdecodelibrary:text="@string/login_screen_checkbox_stay_signed_in"
+                      android:layout_below="@id/LoginScreenPasswordInputField"
+                />
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/Telekom.BU2"
+                        android:id="@+id/LoginScreenAboveButtonLoginSpacer"
+                        android:layout_below="@id/LoginScreenStaySignedInCheckbox"
+                        />
+
+
+                <!-- Login Button -->
+                <de.telekom.pde.codelibrary.ui.components.buttons.PDEButton
+                      android:layout_width="match_parent"
+                      android:layout_height="@dimen/Telekom.BU4"
+                      android:layout_centerInParent="true"
+                      android:id="@+id/LoginScreenButtonLogin"
+                      android:layout_marginLeft="@dimen/Telekom.BU5"
+                      android:layout_marginRight="@dimen/Telekom.BU5"
+                      pdecodelibrary:text="@string/login_screen_button_login"
+                      android:layout_below="@id/LoginScreenAboveButtonLoginSpacer"
+                      />
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/Telekom.BU3"
+                        android:id="@+id/LoginScreenBelowButtonLoginSpacer"
+                        android:layout_below="@id/LoginScreenButtonLogin"
+                        />
+
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/LoginScreenFooterArea"
+                        android:layout_below="@id/LoginScreenBelowButtonLoginSpacer"
+                        >
+                    <View android:layout_width="match_parent"
+                          android:layout_height="1px"
+                          android:id="@+id/LoginScreenFooterDelimiter"
+                          android:layout_alignParentTop="true"
+                          />
+
+                    <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/Telekom.BU2"
+                            android:paddingBottom="@dimen/Telekom.BU2"
+                            android:layout_marginLeft="@dimen/Telekom.BU2"
+                            android:layout_marginRight="@dimen/Telekom.BU2"
+                            android:layout_centerInParent="true"
+                            >
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/LoginScreenNotRegisteredYetLabel"
+                                android:text="@string/login_screen_not_registered_label"
+                                android:layout_marginRight="@dimen/Telekom.BU_1_2"/>
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/LoginScreenRegisterHereLabel"
+                                android:text="@string/login_screen_register_now_link"
+                                android:layout_toRightOf="@+id/LoginScreenNotRegisteredYetLabel"
+                                android:layout_alignBaseline="@+id/LoginScreenNotRegisteredYetLabel"
+                                android:gravity="center"
+                                />
+                    </RelativeLayout>
+                </RelativeLayout>
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/Telekom.BU5"
+                        android:id="@+id/LoginScreenBrandArea"
+                        android:layout_below="@id/LoginScreenFooterArea"
+                        >
+                    <View android:layout_width="match_parent"
+                          android:layout_height="1px"
+                          android:id="@+id/LoginScreenBrandDelimiter"
+                          android:layout_alignParentTop="true"
+                            />
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/login_screen_brand_logo_content_description"
+                            android:src="@drawable/telekom_brand_logo_short_version"
+                            android:layout_centerInParent="true"/>
+                </RelativeLayout>
+
+                <de.telekom.pde.codelibrary.ui.modules.login.ToolTip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/LoginScreenButtonLogin"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/LoginScreenToolTipLoginButton"
+                        android:visibility="gone"
+                        android:layout_marginLeft="@dimen/Telekom.BU2"
+                        android:layout_marginRight="@dimen/Telekom.BU2"
+                        />
+
+                <de.telekom.pde.codelibrary.ui.modules.login.ToolTip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/LoginScreenUsernameInputField"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/LoginScreenUsernameInfoToolTip"
+                        android:visibility="gone"
+                        android:text="@string/login_screen_oneidm_activity_username_info_box"
+                        android:layout_marginLeft="@dimen/Telekom.BU2"
+                        android:layout_marginRight="@dimen/Telekom.BU2"
+                        />
+            </RelativeLayout>
+        </ScrollView>
+
+    </de.telekom.pde.codelibrary.ui.layout.PDEBoundedRelativeLayout>
+    <de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <de.telekom.pde.codelibrary.ui.modules.login.ToolTip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/LoginScreenPositionableToolTip"
+                android:visibility="gone"
+                android:text="pos"
+                android:layout_marginLeft="@dimen/Telekom.BU2"
+                android:layout_marginRight="@dimen/Telekom.BU2"
+                />
+
+    </de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout>
+</RelativeLayout>

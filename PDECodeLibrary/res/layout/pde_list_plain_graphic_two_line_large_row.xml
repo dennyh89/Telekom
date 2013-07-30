@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Deutsche Telekom AG owns the right of use concerning the following code taken from the Deutsche Telekom
+  ~ Experience Toolbox. You can obtain a copy of the terms and conditions of the Experience Toolbox at
+  ~ https://www.design.telekom.com/myaccount/terms-of-use/
+  ~
+  ~ Copyright (c) 2012. Neuland Multimedia GmbH.
+  -->
+
+
+<!-- *** XML-Template for a large sized list item with a graphic and two lines of text. *** -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+        >
+    <!-- If you want to ensure a fixed height of the layout, you have to nest two layouts... -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:pdecodelibrary="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/Telekom.BU5"
+            >
+
+
+        <de.telekom.pde.codelibrary.ui.elements.wrapper.PDEPhotoFrameView
+                android:id = "@+id/PDEList_ItemImage"
+                android:layout_width="@dimen/Telekom.BU4_1_2"
+                android:layout_height="@dimen/Telekom.BU4_1_2"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/Telekom.BU"
+                android:paddingTop="@dimen/Telekom.BU_1_2"
+                android:paddingBottom="@dimen/Telekom.BU_1_2"
+                />
+
+        <de.telekom.pde.codelibrary.ui.elements.wrapper.PDELayerTextView
+                android:id = "@+id/PDEList_ItemText"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/Telekom.BU2_1_2"
+                pdecodelibrary:paddingLeft="@dimen/Telekom.BU"
+                pdecodelibrary:textSize="@dimen/TeleGroteskDefaultSize"
+                pdecodelibrary:backgroundColor="@color/DTTransparentBlack"
+                pdecodelibrary:alignmentMode="capHeight"
+                pdecodelibrary:verticalAlignment="top"
+                pdecodelibrary:textColor="@color/DTUIText"
+                android:layout_toRightOf="@id/PDEList_ItemImage"
+                />
+
+        <de.telekom.pde.codelibrary.ui.elements.wrapper.PDELayerTextView
+                android:id = "@+id/PDEList_ItemSubText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                pdecodelibrary:paddingLeft="@dimen/Telekom.BU"
+                pdecodelibrary:textSize="83%"
+                pdecodelibrary:backgroundColor="@color/DTTransparentBlack"
+                pdecodelibrary:alignmentMode="capHeight"
+                pdecodelibrary:verticalAlignment="bottom"
+                pdecodelibrary:textColor="@color/DTUIIndicative"
+                android:layout_below="@id/PDEList_ItemText"
+                android:layout_toRightOf="@id/PDEList_ItemImage"
+                />
+
+    </RelativeLayout>
+</RelativeLayout>

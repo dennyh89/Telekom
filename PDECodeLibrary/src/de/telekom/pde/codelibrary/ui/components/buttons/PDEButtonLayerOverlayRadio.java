@@ -15,32 +15,32 @@ package de.telekom.pde.codelibrary.ui.components.buttons;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
+import android.content.Context;
+import android.graphics.Rect;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.ViewGroup;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
+import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEAgentHelper;
-import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonLayoutHelper;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameter;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameterDictionary;
+import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableSunkenArea;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShape;
-import de.telekom.pde.codelibrary.ui.elements.common.PDELayerSunken;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEViewBackground;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
-
-import android.content.Context;
-import android.graphics.RectF;
 
 
 /**
  * @brief Background for an Checkbox button.
  */
 
-public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayerInterface {
+class PDEButtonLayerOverlayRadio extends PDEAbsoluteLayout implements PDEButtonLayerInterface {
 
 
      /**
@@ -57,7 +57,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         PDEButtonLayerOverlayRadioSizeModeAutomatic,
         PDEButtonLayerOverlayRadioSizeModeStyleguide,
         PDEButtonLayerOverlayRadioSizeModeFixed
-    } ;
+    }
 
 
     // parameters needed
@@ -67,9 +67,8 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
     private PDEParameter mParamState;
 
     // content layers
-    private PDELayerSunken mSunkenLayer;
-    private PDEDrawableShape mMarkerLayer;
-    private PDEViewBackground mMarkerView;
+    private PDEDrawableSunkenArea mSunkenDrawable;
+    private PDEDrawableShape mMarkerDrawable;
 
     // configuration
     private float mRadioSize;
@@ -79,28 +78,47 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
     // configuration
     private float mRadioUsedSize;
     private float mMarkerUsedSize;
-
-    // layout info
-    private PDEButtonLayoutHelper mLayout;
+    private float mHeightUsedForPrepareSize;
+    private float mHeightUsedForUpdateSize;
 
     // agent helpers
     private PDEAgentHelper mAgentHelper;
-
-    // the layer
-    protected PDEAbsoluteLayout mLayer = null;
 
     // global variables
     //
     static PDEDictionary PDEButtonLayerOverlayRadioGlobalColorDefault = null;
     static PDEDictionary PDEButtonLayerOverlayRadioGlobalBorderDefault = null;
 
+    /**
+     * @brief Class initialization.
+     */
+    public PDEButtonLayerOverlayRadio(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
+        init(context);
+    }
 
     /**
      * @brief Class initialization.
      */
-    PDEButtonLayerOverlayRadio(Context context) {
+    public PDEButtonLayerOverlayRadio(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
 
+        init(context);
+    }
+
+    /**
+     * @brief Class initialization.
+     */
+    public PDEButtonLayerOverlayRadio(Context context) {
+
+        super (context);
+
+        init(context);
+
+    }
+
+    private void init(Context context) {
         // read default dictionaries
         PDEButtonLayerOverlayRadioGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_flat_color_defaults");
         PDEButtonLayerOverlayRadioGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
@@ -110,40 +128,35 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         mRadioUsedSize = 0.0f;
         mMarkerUsedSize = 0.0f;
 
-        mLayout = new PDEButtonLayoutHelper();
-
         // default configuration
         mRadioAlignment = PDEConstants.PDEAlignment.PDEAlignmentCenter;
         mRadioSizeMode = PDEButtonLayerOverlayRadioSizeMode.PDEButtonLayerOverlayRadioSizeModeStyleguide;
         mRadioSize = 0.0f;
 
-        // create the layer
-        mLayer = new PDEAbsoluteLayout(context);
-//        mLayer.masksToBounds = YES;
-
         // agent helper
         mAgentHelper = new PDEAgentHelper();
 
-        // create sunken layer
-        mSunkenLayer = new PDELayerSunken(PDECodeLibrary.getInstance().getApplicationContext());
-        mLayer.addView(mSunkenLayer);
-
-
+        // create sunken area drawable and add it with it's own wrapper view
+        mSunkenDrawable = new PDEDrawableSunkenArea();
+        addView(mSunkenDrawable.getWrapperView());
 
         // create marker circle layer
-        mMarkerLayer = new PDEDrawableShape();
-        mMarkerLayer.setBackgroundColor(PDEColor.valueOf("DTMagenta").getIntegerColor());
-        mMarkerView = new PDEViewBackground(PDECodeLibrary.getInstance().getApplicationContext(),mMarkerLayer);
-        mLayer.addView(mMarkerView);
-
+        mMarkerDrawable = new PDEDrawableShape();
+        mMarkerDrawable.setElementBackgroundColor(PDEColor.valueOf("DTMagenta").getIntegerColor());
+        addView(mMarkerDrawable.getWrapperView());
 
         // set empty complex parameters
         mParamColor = new PDEParameter();
         mParamBorderColor = new PDEParameter();
         mParamState = new PDEParameter();
 
+        mHeightUsedForPrepareSize = -1;
+        mHeightUsedForUpdateSize = -1;
+
         // forced set of parameter -> this sets defaults
         setParameters( new PDEParameterDictionary(),true);
+
+        //setBackgroundColor(0xff0000ff);
     }
 
 
@@ -156,7 +169,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      */
     @Override
     public PDEAbsoluteLayout getLayer() {
-        return mLayer;
+        return this;
     }
 
 
@@ -192,11 +205,6 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
     @Override
     public void setParameters(PDEParameterDictionary parameters, boolean force)
     {
-        PDEParameterDictionary oldParams;
-
-        // for change management, keep around the old params
-        oldParams = mParameters;
-
         // completely copy the new ones for further change management
         mParameters = parameters.copy();
 
@@ -212,7 +220,8 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
 
         // non-animatable properties do their change management internally
         prepareAlignment();
-        prepareSize();
+        //prepareSize();
+        requestLayout();
     }
 
 
@@ -245,7 +254,6 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         // basic propagation of colors (no agent states required), convert to colors
         PDEComponentHelpers.fillStateBaseValues(mParamColor, null);
         mParamColor.convertToColor();
-
 
         // calculate color agent states
         PDEComponentHelpers.buildColors(mParamColor, PDEButtonLayerOverlayRadioGlobalColorDefault, null, PDEAgentHelper.PDEAgentHelperAnimationInteractive);
@@ -318,10 +326,10 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         alignmentString = mParameters.parameterValueForNameWithDefault(PDEButton.PDEButtonParameterRadioAlignment, PDEConstants.PDEAlignmentStringLeft);
 
         // parse value
-        if ( alignmentString.equals(PDEConstants.PDEAlignmentStringLeft) ) alignment= PDEConstants.PDEAlignment.PDEAlignmentLeft;
-        else if ( alignmentString.equals(PDEConstants.PDEAlignmentStringCenter) ) alignment= PDEConstants.PDEAlignment.PDEAlignmentCenter;
-        else if ( alignmentString.equals(PDEConstants.PDEAlignmentStringRight) ) alignment= PDEConstants.PDEAlignment.PDEAlignmentRight;
-        else alignment= PDEConstants.PDEAlignment.PDEAlignmentLeft;
+        if ( alignmentString.equals(PDEConstants.PDEAlignmentStringLeft) ) alignment = PDEConstants.PDEAlignment.PDEAlignmentLeft;
+        else if ( alignmentString.equals(PDEConstants.PDEAlignmentStringCenter) ) alignment = PDEConstants.PDEAlignment.PDEAlignmentCenter;
+        else if ( alignmentString.equals(PDEConstants.PDEAlignmentStringRight) ) alignment = PDEConstants.PDEAlignment.PDEAlignmentRight;
+        else alignment = PDEConstants.PDEAlignment.PDEAlignmentLeft;
 
         // any change?
         if (alignment == mRadioAlignment) return;
@@ -339,7 +347,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      *
      * Preparation function for the font which evaluates the parameters. Note that we need to
      */
-    private void prepareSize()
+    private void prepareSize(float height)
     {
         Object sizeObject;
         PDEButtonLayerOverlayRadioSizeMode radioMode;
@@ -378,14 +386,15 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         }
 
         // changed?
-        if (radioMode==mRadioSizeMode && radioSize==mRadioSize) return;
+        if (radioMode == mRadioSizeMode && radioSize == mRadioSize && mHeightUsedForPrepareSize == height) return;
 
         // remember
         mRadioSizeMode = radioMode;
         mRadioSize = radioSize;
+        mHeightUsedForPrepareSize = height;
 
         // update size, and relayout
-        updateSize();
+        updateSize(height);
         relayout();
     }
 
@@ -410,8 +419,8 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         border = PDEComponentHelpers.interpolateColor(mParamBorderColor, mAgentHelper, PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
 
         // set color
-        mSunkenLayer.setSunkenBackgroundColor(color);
-        mSunkenLayer.setSunkenBorderColor(border);
+        mSunkenDrawable.setElementSunkenBackgroundColor(color);
+        mSunkenDrawable.setElementSunkenBorderColor(border);
     }
 
 
@@ -426,7 +435,7 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         alpha = PDEComponentHelpers.interpolateFloat(mParamState, mAgentHelper, PDEAgentHelper.PDEAgentHelperAnimationStateOnly, null);
 
         // show/hide marker
-        mMarkerLayer.setShapeOpacity(alpha);
+        mMarkerDrawable.setElementShapeOpacity(alpha);
     }
 
 
@@ -435,12 +444,12 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      *
      * The layouting positions the graphical element; the sizing of red dot and sunken layer is done here.
      */
-    private void updateSize()
+    private void updateSize(float height)
     {
-        float height,radioSize,markerSize;
-
-        // commonly used data
-        height = mLayout.mLayoutRect.height();
+        if (DEBUGPARAMS) {
+            Log.d(LOG_TAG, "updateSize(" + height + ")");
+        }
+        float radioSize,markerSize;
 
         // which mode?
         if (mRadioSizeMode == PDEButtonLayerOverlayRadioSizeMode.PDEButtonLayerOverlayRadioSizeModeAutomatic) {
@@ -472,51 +481,22 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
         }
 
         // compare with last value, stop if not changed
-        if (markerSize==mMarkerUsedSize && radioSize==mRadioUsedSize) return;
+        if (markerSize == mMarkerUsedSize && radioSize == mRadioUsedSize && height == mHeightUsedForUpdateSize) return;
+
+        if (DEBUGPARAMS) {
+            Log.d(LOG_TAG, "updateSize(" + height + ") - with changes");
+        }
 
         // remember
         mRadioUsedSize = radioSize;
         mMarkerUsedSize = markerSize;
+        mHeightUsedForUpdateSize = height;
 
-        // directly apply to the layers
-        mSunkenLayer.setShapeOval(new RectF(0,0,mRadioUsedSize,mRadioUsedSize));
 
-        // create new shape
-        mMarkerLayer.setShapeOval(new RectF(0,0,mMarkerUsedSize,mMarkerUsedSize));
     }
 
 
 //----- layout ---------------------------------------------------------------------------------------------------------
-
-
-
-    /**
-     * @brief Apply new layout when set from the outside.
-     */
-    @Override
-    public void setLayout(PDEButtonLayoutHelper layout)
-    {
-        // any change?
-        // make a own equals method in the PDEButtonLayoutHelper class if it exists after adjustments!!!!!!
-        if (mLayout.equals(layout)) {
-            return;
-        }
-
-
-        // remember
-        mLayout = layout;
-
-        // update the size
-        updateSize();
-
-// ToDo find out what to do with cliprect stuff
-        // set bounds and offset of our layer; we're clipping
-//        self.layer.anchorPoint = CGPointMake(0.0f,0.0f);
-//        self.layer.frame = layout->mClipRect;
-
-        // and perform a new layout (-> this might adjust further layout rects)
-        performLayout(layout);
-    }
 
 
     /**
@@ -527,101 +507,210 @@ public class PDEButtonLayerOverlayRadio extends Object implements PDEButtonLayer
      */
     private void relayout()
     {
-        PDEButtonLayoutHelper layout;
+        ViewGroup innerLayout = null;
+        ViewGroup overlaySlot = null;
 
-        // create a copy (the layout is changed during layouting)
-        layout = new PDEButtonLayoutHelper(mLayout);
+        overlaySlot = (ViewGroup) getParent();
 
-        // perform layout with stored layout data
-        performLayout(layout);
+        if (overlaySlot != null) {
+            innerLayout = (ViewGroup) overlaySlot.getParent().getParent();
+        }
+
+
+        // ToDo check if correct; replaced width by right and origin.x by left and origin.y by top
+        // check alignment, adjusts layout for further children
+        if (mRadioAlignment == PDEConstants.PDEAlignment.PDEAlignmentLeft) {
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_left)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+        } else if (mRadioAlignment == PDEConstants.PDEAlignment.PDEAlignmentCenter) {
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_center)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+
+        } else if (mRadioAlignment == PDEConstants.PDEAlignment.PDEAlignmentRight) {
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_right)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+        } else {
+            // should not happen
+        }
+    }
+
+    @Override
+    public void collectHints(PDEDictionary hints) {
+        // hints are not needed in this element
+    }
+
+    @Override
+    public void setHints(PDEDictionary hints) {
+        // hints are not needed in this element
+    }
+
+    @Override
+    public void collectButtonPaddingRequest(PDEButtonPadding padding) {
+        // no padding in this element
     }
 
 
-    /**
-     * @brief Perform the actual layouting tasks.
-     *
-     * Called when anything has changed. Performs the new layout for all elements and sets it
-     * accordingly. The member variables are already set correctly outside.
-     */
-    private void performLayout(PDEButtonLayoutHelper layout)
-    {
-        float xoffset,yoffset,width,height,radioX,radioY,markerX,markerY,dist,oldvalue;
+    //----- view layout ------------------------------------------------------------------------------------------------
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int height;
+        int width;
+
+        // measure the children (otherwise e.g. the sunkenlayer will not be visible!)
+        measureChildren(widthMeasureSpec,heightMeasureSpec);
+
+        // take the height from the parameter ...
+        height = MeasureSpec.getSize(heightMeasureSpec);
+
+        // .. and use it to calculate the sizes
+        prepareSize(height);
+
+        // now mRadioUsedSize contains the size (width = height) of the checkbox background
+        width = PDEBuildingUnits.roundToScreenCoordinates(PDEBuildingUnits.BU() + mRadioUsedSize);
+
+        // return the values
+        setMeasuredDimension(resolveSize(width, widthMeasureSpec),
+                resolveSize(height, heightMeasureSpec));
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        if (DEBUGPARAMS) {
+            Log.d(LOG_TAG, "onSizeChanged("+w+","+h+","+oldw+","+oldh+")");
+        }
+
+        super.onSizeChanged(w, h, oldw, oldh);    //To change body of overridden methods use File | Settings | File Templates.
+
+
+        float xoffset,yoffset,width,height,radioX,radioY,markerX,markerY;
 
         // commonly used data (adjusted for our special clipping logic)
-        xoffset = layout.mLayoutRect.left - layout.mClipRect.left;
-        yoffset = layout.mLayoutRect.top - layout.mClipRect.top;
-        width = layout.mLayoutRect.width();
-        height = layout.mLayoutRect.height();
+        xoffset = 0;
+        yoffset = 0;
+        width = w;
+        height = h;
 
-        // center radio in Y, round to screen
-        radioY = yoffset + PDEBuildingUnits.roundToScreenCoordinates((height-mRadioUsedSize)/2.0f);
+        updateSize(height);
 
+        // center checkbox in Y, round to screen
+        radioY = yoffset + PDEBuildingUnits.roundToScreenCoordinates((height - mRadioUsedSize) / 2.0f);
 
+        ViewGroup innerLayout = null;
+        ViewGroup overlaySlot = null;
+
+        overlaySlot = (ViewGroup) getParent();
+
+        if (overlaySlot != null) {
+            innerLayout = (ViewGroup) overlaySlot.getParent();
+        }
 
         // check alignment, adjusts layout for further children
         if (mRadioAlignment == PDEConstants.PDEAlignment.PDEAlignmentLeft) {
             // left, one BU from border
-            radioX = xoffset + PDEBuildingUnits.BU();
-            // adjusting distance
-            dist = PDEBuildingUnits.BU() + mRadioUsedSize;
-            // adjust layout rect
-            layout.mLayoutRect.left += dist;
-            layout.mLayoutRect.right -= dist; // ToDo: check if this is correct; original code was: width -=dist;
-            // and adjust clip rect
-            oldvalue = layout.mClipRect.left;
-            //on ios [PDEBuildingUnits nativePixel] -> 1.0f on android
-            layout.mClipRect.left = layout.mLayoutRect.left + 1;
-            layout.mClipRect.right -= layout.mClipRect.left - oldvalue;  // ToDo: check if this is correct;original code was: width -= ..;
+
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_left)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+
+            // left, one BU from border
+            radioX = PDEBuildingUnits.BU();
+
         } else if (mRadioAlignment == PDEConstants.PDEAlignment.PDEAlignmentCenter) {
             // centered, aligned to screen pixels
-            radioX = xoffset + PDEBuildingUnits.roundToScreenCoordinates((width-mRadioUsedSize)/2.0f);
+
+            // todo
+
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_center)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+
+
+            // centered, aligned to screen pixels
+            radioX = xoffset + PDEBuildingUnits.roundToScreenCoordinates((width - mRadioUsedSize) / 2.0f);
+
         } else if (mRadioAlignment == PDEConstants.PDEAlignment.PDEAlignmentRight) {
             // right, one BU from border
-            radioX = xoffset + PDEBuildingUnits.roundToScreenCoordinates(width- PDEBuildingUnits.BU()-mRadioUsedSize);
-            // adjusting distance
-            dist = PDEBuildingUnits.BU() + mRadioUsedSize;
-            // adjust layout rect
-            layout.mLayoutRect.right -= dist; // ToDo check if correct; replaced width by right
-            // and adjust clip rect
-            oldvalue = layout.mLayoutRect.left + layout.mLayoutRect.width();
-            layout.mClipRect.right = (int) oldvalue - 1 - layout.mClipRect.left;  // ToDo check if correct; replaced width by right
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_right)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+
+            // right, one BU from border
+            radioX = 0.0f;
         } else {
             // unknown, default
             radioX = 0.0f;
         }
 
-        // set positions
-        PDEAbsoluteLayout.LayoutParams sunkenLayerParams = (PDEAbsoluteLayout.LayoutParams) mSunkenLayer.getLayoutParams();
-        sunkenLayerParams.x = PDEBuildingUnits.roundToScreenCoordinates(radioX);
-        sunkenLayerParams.y = PDEBuildingUnits.roundToScreenCoordinates(radioY);
-        // also width & height???
-        mSunkenLayer.setLayoutParams(sunkenLayerParams);
+        // directly apply to the layers
+        mSunkenDrawable.getWrapperView().setViewLayoutRect(new Rect(0, 0, Math.round(mRadioUsedSize) + 0,
+                Math.round(mRadioUsedSize) + 0));
+        mSunkenDrawable.setElementShapeOval();
 
-        PDEAbsoluteLayout.LayoutParams iconLayerParams = (PDEAbsoluteLayout.LayoutParams) mMarkerView.getLayoutParams();
+        if (DEBUGPARAMS) {
+            Log.d(LOG_TAG, "onSizeChanged markerUsedSize: "+mMarkerUsedSize + " radioUsedSize: "+mRadioUsedSize);
+        }
+
+        // create new shape
+        mMarkerDrawable.setElementShapeOval();
+        mMarkerDrawable.getWrapperView().setViewLayoutRect(new Rect(0 , 0, Math.round(mMarkerUsedSize) + 0,
+                Math.round(mMarkerUsedSize) + 0));
+        mMarkerDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(Math.round(mMarkerUsedSize), MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(Math.round(mMarkerUsedSize), MeasureSpec.EXACTLY));
+
+        // set positions
+        mSunkenDrawable.getWrapperView().setViewOffset(radioX,radioY);
+        mSunkenDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(
+                mSunkenDrawable.getWrapperView().getLayoutParams().width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(mSunkenDrawable.getWrapperView().getLayoutParams().height, MeasureSpec.EXACTLY) );
+
+        PDEAbsoluteLayout.LayoutParams markerLayerParams =
+                (PDEAbsoluteLayout.LayoutParams) mMarkerDrawable.getWrapperView().getLayoutParams();
         // center marker Y inside radio, round to screen
         markerY = radioY + PDEBuildingUnits.roundToScreenCoordinates((mRadioUsedSize-mMarkerUsedSize)/2.0f);
         // marker X centered inside radio, round to screen
         markerX = radioX + PDEBuildingUnits.roundToScreenCoordinates((mRadioUsedSize-mMarkerUsedSize)/2.0f);
 
-        iconLayerParams.x = PDEBuildingUnits.roundToScreenCoordinates(markerX);
-        iconLayerParams.y = PDEBuildingUnits.roundToScreenCoordinates(markerY);
+        markerLayerParams.x = PDEBuildingUnits.roundToScreenCoordinates(markerX);
+        markerLayerParams.y = PDEBuildingUnits.roundToScreenCoordinates(markerY);
         // also width & height???
-        mMarkerView.setLayoutParams(iconLayerParams);
+        mMarkerDrawable.getWrapperView().setLayoutParams(markerLayerParams);
     }
 
 
-    @Override
-    public void collectHints(PDEDictionary hints) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
 
-    @Override
-    public void setHints(PDEDictionary hints) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void collectButtonPaddingRequest(PDEButtonPadding padding) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
 }

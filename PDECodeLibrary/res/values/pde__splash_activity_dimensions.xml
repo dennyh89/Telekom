@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SPLASH ACTIVITY -->
+    <dimen name="pde_splash_activity_app_name_margin_top">@dimen/Telekom.BU_1_3</dimen>
+    <dimen name="pde_splash_activity_text_height">@dimen/Telekom.BU2</dimen>
+    <dimen name="pde_splash_activity_footer_margin_bottom">@dimen/Telekom.BU2</dimen>
+</resources>

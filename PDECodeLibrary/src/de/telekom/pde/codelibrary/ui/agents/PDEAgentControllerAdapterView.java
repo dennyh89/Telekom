@@ -13,14 +13,17 @@ package de.telekom.pde.codelibrary.ui.agents;
 //----------------------------------------------------------------------------------------------------------------------
 
 
+import de.telekom.pde.codelibrary.ui.components.lists.PDEListItem;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 
 import android.graphics.Rect;
+import android.os.Handler;
 import android.util.Log;
 import android.view.InputEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 import java.lang.ref.WeakReference;
 
@@ -31,17 +34,25 @@ import java.lang.ref.WeakReference;
  * the button's events and passes them on to the AgentController in a
  * suitable form.
  */
-public class PDEAgentControllerAdapterView extends Object implements PDEIEventSource {
+public class PDEAgentControllerAdapterView implements PDEIEventSource {
 
     /**
      * @brief Global tag for log outputs.
      */
     private final static String LOG_TAG = PDEAgentControllerAdapterView.class.getName();
+    private final static boolean DEBUG = false;
 
     protected PDEAgentController mAgentController;
     protected WeakReference<View> mView;
     protected boolean mHighlight;
     protected boolean mDown;
+    // Special Handling for List
+    protected boolean mIsListItem;
+    protected boolean mTouchDownMode;
+    protected Runnable mPendingCheckForTap;
+    protected Handler mHandler;
+    protected View mTouchDownView;
+    protected MotionEvent mDownEvent;
 
     /**
      * @brief Event source functionality
@@ -63,6 +74,12 @@ public class PDEAgentControllerAdapterView extends Object implements PDEIEventSo
         mHighlight = false;
         mDown = false;
         //mHitRectView = new Rect();
+        mIsListItem = false;
+        mTouchDownMode = false;
+        mPendingCheckForTap = null;
+        mHandler = null;
+        mTouchDownView = null;
+        mDownEvent = null;
 
         mEventSource = new PDEEventSource();
     }
@@ -136,6 +153,12 @@ public class PDEAgentControllerAdapterView extends Object implements PDEIEventSo
         }
         //getView().getHitRect(mHitRectView);
 
+        // check if the delivered View is a item of our PDEListView
+        if (view instanceof PDEListItem){
+            mIsListItem = true;
+        } else {
+            mIsListItem = false;
+        }
         // set touch listener
         getView().setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -156,13 +179,61 @@ public class PDEAgentControllerAdapterView extends Object implements PDEIEventSo
                 // react on interesting motion events
                 switch (action) {
                     case MotionEvent.ACTION_DOWN:
-                        actionTouchDown(view, motionEvent);
+                        if (DEBUG) Log.d(LOG_TAG,"Agent: ActionDown");
+                        // if the view is a List-Item it should have a tap-timeout before it really reacts (like it is
+                        // also handled in the native android lists). So we remember the touchdown by setting the
+                        // touchdown-mode and check after a timeout if we're still in touchdown-mode. If we're still
+                        // in touchdown-mode the tap is accepted and we start the wisual reaction. Cancel- and
+                        // Up-Events during the timeout reset the touchdown-mode and therefore cancel the tap.
+                        // If the view is not an element of a list it can react immediately.
+                        if (mIsListItem){
+                            // set touch mode to true
+                            mTouchDownMode = true;
+                            // remember the view that was touched down and the motion event
+                            mTouchDownView = view;
+                            mDownEvent = motionEvent;
+                            // create the check for a valid tap
+                            mPendingCheckForTap = new CheckForTap();
+                            // post the tap check in order to be processed later on
+                            postDelayed(mPendingCheckForTap,ViewConfiguration.getTapTimeout());
+                        } else {
+                            // if we're not part of a list, we can react immediately
+                            actionTouchDown(view, motionEvent);
+                        }
                         break;
                     case MotionEvent.ACTION_CANCEL:
                         // Todo: find test case to proof cancel-message
-                        actionTouchCancel(view, motionEvent);
+                        doCancel(view,motionEvent);
+//                        if (DEBUG) Log.d(LOG_TAG,"Agent: ActionCancel");
+//                        // if we're part of a list and the touch down already occured we have to cancel the pending
+//                        // check for a valid tap and reset the touch mode
+//                        if (mIsListItem && mTouchDownMode){
+//                            // reset touch mode to false
+//                            mTouchDownMode = false;
+//                            // remove pending tap checks
+//                            mHandler.removeCallbacks(mPendingCheckForTap);
+//                        }
+//                        actionTouchCancel(view, motionEvent);
                         break;
                     case MotionEvent.ACTION_UP:
+                        if (DEBUG) Log.d(LOG_TAG,"Agent: ActionUp");
+                        // if we're part of a list and the touch down already occured we have to cancel the pending
+                        // check for a valid tap and reset the touch mode
+                        if (mIsListItem && mTouchDownMode){
+                            // reset touch mode to false
+                            mTouchDownMode = false;
+                            // remove pending tap checks
+                            mHandler.removeCallbacks(mPendingCheckForTap);
+                            // So, the touch down already occurred and we waited on the pending tap check. When the
+                            // touch up event occurred during this time of waiting and occurred on the same view as the
+                            // touch down event, we have a valid "quick tap". So we'll have to start the touch down
+                            // action immediately before the touch up action gets started.
+                            if (view == mTouchDownView){
+                                // start touch down action with the data we remembered before.
+                                actionTouchDown(mTouchDownView, mDownEvent);
+                            }
+
+                        }
                         // check if we released inside or outside of the view
                         if (hitRect.contains(currentXPosition, currentYPosition)) {
                             actionTouchUpInside(view, motionEvent);
@@ -171,6 +242,7 @@ public class PDEAgentControllerAdapterView extends Object implements PDEIEventSo
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
+                        if (DEBUG) Log.d(LOG_TAG,"Agent: ActionMove");
                         // check if we enter or leave the view with this move (--> change of highlight)
                         if (hitRect.contains(currentXPosition, currentYPosition)) {
                             if (!mHighlight) {
@@ -360,5 +432,81 @@ public class PDEAgentControllerAdapterView extends Object implements PDEIEventSo
         if (getAgentController() != null) {
             getAgentController().cancelPress();
         }
+    }
+
+
+
+
+// -------- List Specials ----------------------------------------------------------------------------------------------
+
+    /**
+     * @brief Causes the Runnable r to be added to the message queue, to be run after the specified amount of time elapses.
+     *
+     * Convenience function.
+     * We use this mechanism in order to start delayed the runnable which checks if we're still in touchdown-mode.
+     *
+     * @param r The Runnable that will be executed.
+     * @param delayMillis The delay (in milliseconds) until the Runnable will be executed.
+     *
+     * @return Returns true if the Runnable was successfully placed in to the message queue.
+     */
+    protected boolean postDelayed(Runnable r, long delayMillis) {
+        if (mHandler == null) {
+            mHandler = new Handler();
+        }
+        return mHandler.postDelayed(r,delayMillis);
+    }
+
+
+    /**
+     * @brief Helper class for a delayed check for a Tap.
+     *
+     * We set the touchdown-mode to true when the down-event occurs. Then we post this Runnable into the message
+     * queue in order to be started after a given delay. When the timeout has passed the Runnable gets started,
+     * checks if touchdownd-mode is still true and in this case starts the normal reaction to an accepted tap.
+     * If events occurred that resetted the touchdown-mode in the meantime, there will be no reaction at all.
+     */
+    final class CheckForTap implements Runnable {
+        /**
+         * @brief constructor.
+         */
+        public CheckForTap(){
+        }
+
+        /**
+         * @brief the actual tap check.
+         */
+        public void run() {
+            if (mTouchDownMode) {
+                // reset mode
+                mTouchDownMode = false;
+                // start action
+                actionTouchDown(mTouchDownView, mDownEvent);
+            }
+        }
+    }
+
+
+    /**
+     * @brief Public callable handling of a cancel event (hack).
+     *
+     * On Devices below Android 4.0 the event handling doesn't work as intended, so for proper handling of Cancel we
+     * have to be able to call the cancel-eventhandling manually (not by eventsystem). I don't like this workaround,
+     * but as long as we have to deal with lower devices it seems to be the only way.
+     *
+     * @param view the view that received the touch event.
+     * @param motionEvent the received touch event.
+     */
+    public void doCancel(View view, MotionEvent motionEvent) {
+        if (DEBUG) Log.d(LOG_TAG,"Agent: ActionCancel");
+        // if we're part of a list and the touch down already occured we have to cancel the pending
+        // check for a valid tap and reset the touch mode
+        if (mIsListItem && mTouchDownMode){
+            // reset touch mode to false
+            mTouchDownMode = false;
+            // remove pending tap checks
+            mHandler.removeCallbacks(mPendingCheckForTap);
+        }
+        actionTouchCancel(view, motionEvent);
     }
 }

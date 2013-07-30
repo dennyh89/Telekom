@@ -15,10 +15,15 @@ package de.telekom.pde.codelibrary.ui.components.buttons;
 //----------------------------------------------------------------------------------------------------------------------
 
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import android.content.Context;
-import android.graphics.RectF;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
@@ -26,24 +31,20 @@ import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEAgentHelper;
-import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonLayoutHelper;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameter;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameterDictionary;
-import de.telekom.pde.codelibrary.ui.elements.common.PDELayerSunken;
+import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableSunkenArea;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 
 /**
  * @brief Background for an Checkbox button.
  */
-public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLayerInterface {
+class PDEButtonLayerOverlayCheckbox extends PDEAbsoluteLayout implements PDEButtonLayerInterface {
 
 
     /**
@@ -52,6 +53,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
     private final static String LOG_TAG = PDEButtonLayerOverlayCheckbox.class.getName();
     // debug messages switch
     private final static boolean DEBUGPARAMS = false;
+    private final static boolean SHOW_DEBUG_LOGS = false;
 
 
     // size modes
@@ -60,7 +62,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         PDEButtonLayerOverlayCheckboxSizeModeAutomatic,
         PDEButtonLayerOverlayCheckboxSizeModeStyleguide,
         PDEButtonLayerOverlayCheckboxSizeModeFixed
-    } ;
+    }
 
     // global variables
     //
@@ -74,7 +76,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
     private PDEParameter mParamState;
 
     // content layers
-    private PDELayerSunken mSunkenLayer;
+    private PDEDrawableSunkenArea mSunkenDrawable;
     private ImageView mIconLayer;
 
     // configuration
@@ -86,54 +88,69 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
     private float mCheckboxUsedSize;
     private String mIconFile;
     private Drawable mIcon;
-
-    // layout info
-    private PDEButtonLayoutHelper mLayout;
+    private float mHeightUsedForSizeCalculation;
 
     // agent helpers
     private PDEAgentHelper mAgentHelper;
 
-
-    // the layer
-    protected PDEAbsoluteLayout mLayer = null;
-
     private static Method sImageViewSetAlphaMethod = null;
+
+    /**
+     * @brief Class initialization.
+     */
+    public PDEButtonLayerOverlayCheckbox(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
 
 
     /**
      * @brief Class initialization.
      */
-    PDEButtonLayerOverlayCheckbox(Context context) {
+    public PDEButtonLayerOverlayCheckbox(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context);
+    }
+
+
+    /**
+     * @brief Class initialization.
+     */
+    public PDEButtonLayerOverlayCheckbox(Context context) {
+        super (context);
+        init(context);
+    }
+
+
+    private void init(Context context) {
         // read default dictionaries
-        PDEButtonLayerOverlayCheckboxGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_flat_color_defaults");
-        PDEButtonLayerOverlayCheckboxGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
+        PDEButtonLayerOverlayCheckboxGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary(
+                "dt_button_flat_color_defaults");
+        PDEButtonLayerOverlayCheckboxGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary(
+                "dt_button_border_color_defaults");
+
 
         // init
         mParameters = null;
         mCheckboxUsedSize = 0.0f;
         mIcon = null;
 
-        mLayout = new PDEButtonLayoutHelper();
-
         // default configuration
         mCheckboxAlignment = PDEConstants.PDEAlignment.PDEAlignmentCenter;
         mCheckboxSizeMode = PDEButtonLayerOverlayCheckboxSizeMode.PDEButtonLayerOverlayCheckboxSizeModeStyleguide;
         mCheckboxSize = 0.0f;
 
-        // create the layer
-        mLayer = new PDEAbsoluteLayout(context);
-        //mLayer.masksToBounds = YES;
-
         // agent helper
         mAgentHelper = new PDEAgentHelper();
 
-        // create sunken layer
-        mSunkenLayer = new PDELayerSunken(PDECodeLibrary.getInstance().getApplicationContext());
-        mLayer.addView(mSunkenLayer);
+        // create sunken area drawable and add it with it's own wrapper view
+        mSunkenDrawable = new PDEDrawableSunkenArea();
+        mSunkenDrawable.setElementShapeRoundedRect(PDEBuildingUnits.oneThirdBU());
+        addView(mSunkenDrawable.getWrapperView());
 
-        // create icon layer
+        // create Icon layer
         mIconLayer = new ImageView(context);
-        mLayer.addView(mIconLayer);
+        addView(mIconLayer);
 
         // set empty complex parameters
         mParamColor = new PDEParameter();
@@ -142,6 +159,8 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
 
         // forced set of parameter -> this sets defaults
         setParameters(new PDEParameterDictionary(),true);
+
+        //setBackgroundColor(0xff0000ff);
     }
 
     //----- basic functions ------------------------------------------------------------------------------------------------
@@ -152,7 +171,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      */
     @Override
     public PDEAbsoluteLayout getLayer() {
-        return mLayer;
+        return this;
     }
 
 
@@ -187,11 +206,6 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
     @Override
     public void setParameters(PDEParameterDictionary parameters, boolean force)
     {
-        PDEParameterDictionary oldParams;
-
-        // for change management, keep around the old params
-        oldParams = mParameters;
-
         // completely copy the new ones for further change management
         mParameters = parameters.copy();
 
@@ -207,7 +221,8 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
 
         // non-animatable properties do their change management internally
         prepareAlignment();
-        prepareSize();
+        //prepareSize();
+        requestLayout();
     }
 
 
@@ -340,7 +355,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      *
      * Preparation function for the font which evaluates the parameters. Note that we need to
      */
-    private void prepareSize()
+    private void prepareSize(float height)
     {
         Object sizeObject;
         PDEButtonLayerOverlayCheckboxSizeMode checkboxMode;
@@ -379,16 +394,17 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         }
 
         // changed?
-        if (checkboxMode == mCheckboxSizeMode && checkboxSize == mCheckboxSize) {
+        if (checkboxMode == mCheckboxSizeMode && checkboxSize == mCheckboxSize && height == mHeightUsedForSizeCalculation) {
             return;
         }
 
         // remember
         mCheckboxSizeMode = checkboxMode;
         mCheckboxSize = checkboxSize;
+        mHeightUsedForSizeCalculation = height;
 
         // update size, and relayout
-        updateSize();
+        updateSize(height);
         relayout();
     }
 
@@ -413,13 +429,13 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         border = PDEComponentHelpers.interpolateColor(mParamBorderColor, mAgentHelper, PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
 
         // set color
-        mSunkenLayer.setSunkenBackgroundColor(color);
-        mSunkenLayer.setSunkenBorderColor(border);
+        mSunkenDrawable.setElementSunkenBackgroundColor(color);
+        mSunkenDrawable.setElementSunkenBorderColor(border);
     }
 
 
     /**
-     * @brief Private function - update state, show icon if required.
+     * @brief Private function - update state, show Icon if required.
      */
     private void updateState()
     {
@@ -429,7 +445,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         // interpolate colors by calling complex logic color interpolation helper
         alpha = PDEComponentHelpers.interpolateFloat(mParamState, mAgentHelper, PDEAgentHelper.PDEAgentHelperAnimationStateOnly, null);
 
-        // show/hide icon
+        // show/hide Icon
         // since the setAlpha(int) method is deprecated in API 16 we go by reflection.
         if (sImageViewSetAlphaMethod == null) {
             try {
@@ -447,7 +463,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
 
         if (sImageViewSetAlphaMethod != null) {
             try {
-                sImageViewSetAlphaMethod.invoke(mIconLayer,Integer.valueOf((int)alpha*255));
+                sImageViewSetAlphaMethod.invoke(mIconLayer, (int)alpha*255);
             } catch (IllegalAccessException e) {
                 Log.e(LOG_TAG,"can't invoke method for changing alpha of imageView - IllegalAccessException");
             } catch (InvocationTargetException e) {
@@ -462,15 +478,15 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      *
      * The layouting positions the graphical element; the sizing of red dot and sunken layer is done here.
      */
-    private void updateSize()
+    private void updateSize(float height)
     {
         Context context = PDECodeLibrary.getInstance().getApplicationContext();
         int resourceID = 0;
-        float height,checkboxSize;
+        float checkboxSize;
         String iconFile;
 
         // commonly used data
-        height = mLayout.mLayoutRect.height();
+        //height = mLayout.mLayoutRect.height();
         //height = 0.0f; //TO BE REMOVED
 
         //which mode?
@@ -497,7 +513,7 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
             return;
         }
 
-        //determine which icon to use from checkbox size. We have only two icons (button sizes 3 BU and 4 BU, giving
+        //determine which Icon to use from checkbox size. We have only two icons (button sizes 3 BU and 4 BU, giving
         //checkbox sizes of 2 and 8/3 BU, with the dividing size in the middle
         if (checkboxSize <= PDEBuildingUnits.exactPixelFromBU(7.0f / 3.0f) ) {
             iconFile = "checkmark_light_m.png";
@@ -514,22 +530,29 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
         mCheckboxUsedSize = checkboxSize;
         mIconFile = iconFile;
 
-        // load the icon
+        // load the Icon
 //        resourceID = R.drawable.checkmark_light_m;//context.getResources().getIdentifier(mIconFile, "drawable",context.getPackageName() );
         // this seems not to work -> workaround
-        if(mIconFile=="checkmark_light_m.png"){
+        if(mIconFile.equals("checkmark_light_m.png")){
             resourceID = R.drawable.checkmark_light_m;
         } else {
             resourceID = R.drawable.checkmark_light_l;
         }
         mIcon = context.getResources().getDrawable(resourceID);
 
-        //directly apply to the layers
-        mSunkenLayer.setShapeRoundedRect(new RectF(0,0,mCheckboxUsedSize,mCheckboxUsedSize), PDEBuildingUnits.oneThirdBU());
 
-        // set icon and bounds
+        //directly apply to the layers
+//        mSunkenDrawable.getWrapperView().setViewLayoutRect(new Rect(0,0,Math.round(mCheckboxUsedSize),
+//                                                    Math.round(mCheckboxUsedSize)));
+//        mSunkenDrawable.setElementShapeRoundedRect(PDEBuildingUnits.oneThirdBU());
+
+        if (SHOW_DEBUG_LOGS) {
+            Log.d(LOG_TAG,"mSunkenDrawable.setElementShapeRoundedRect "+mCheckboxUsedSize);
+        }
+
+        // set Icon and bounds
         if (mIcon!=null) {
-            //TODO maybe we have to set the iconlayer size to the icon size
+            //TODO maybe we have to set the iconlayer size to the Icon size
             //mIconLayer.bounds = CGRectMake (0,0,mIcon.getIntrinsicWidth(),mIcon.getIntrinsicHeight());
             mIconLayer.setImageDrawable(mIcon);
         } else {
@@ -541,32 +564,6 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
 //----- layout ---------------------------------------------------------------------------------------------------------
 
 
-    /**
-     * @brief Apply new layout when set from the outside.
-     */
-    @Override
-    public void setLayout(PDEButtonLayoutHelper layout)
-    {
-        // any change?
-        // make a own equals method in the PDEButtonLayoutHelper class if it exists after adjustments!!!!!!
-        if (mLayout.equals(layout)) {
-            return;
-        }
-
-        // remember
-        mLayout = new PDEButtonLayoutHelper(layout);
-
-        // update the size
-        updateSize();
-// ToDo find out what to do with cliprect stuff
-//
-//        // set bounds and offset of our layer; we're clipping
-//        self.layer.anchorPoint = CGPointMake(0.0f,0.0f);
-//        self.layer.frame = layout->mClipRect;
-
-        // and perform a new layout (-> this might adjust further layout rects)
-        performLayout(layout);
-    }
 
 
     /**
@@ -577,93 +574,50 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
      */
     private void relayout()
     {
-        PDEButtonLayoutHelper layout;
+        ViewGroup innerLayout = null;
+        ViewGroup overlaySlot = null;
 
-        // create a copy (the layout is changed during layouting)
-        layout = new PDEButtonLayoutHelper(mLayout);
+        overlaySlot = (ViewGroup) getParent();
 
-        // perform layout with stored layout data
-        performLayout(layout);
-    }
-
-
-    /**
-     * @brief Perform the actual layouting tasks.
-     *
-     * Called when anything has changed. Performs the new layout for all elements and sets it
-     * accordingly. The member variables are already set correctly outside.
-     */
-    private void performLayout(PDEButtonLayoutHelper layout)
-    {
-        float xoffset,yoffset,width,height,checkboxX,checkboxY,iconX,iconY,dist,oldvalue;
-
-        // commonly used data (adjusted for our special clipping logic)
-        xoffset = layout.mLayoutRect.left - layout.mClipRect.left;
-        yoffset = layout.mLayoutRect.top - layout.mClipRect.top;
-        width = layout.mLayoutRect.width();
-        height = layout.mLayoutRect.height();
-
-        // center checkbox in Y, round to screen
-        checkboxY = yoffset + PDEBuildingUnits.roundToScreenCoordinates((height - mCheckboxUsedSize) / 2.0f);
-
+        if (overlaySlot != null) {
+            innerLayout = (ViewGroup) overlaySlot.getParent().getParent();
+        }
 
 
         // ToDo check if correct; replaced width by right and origin.x by left and origin.y by top
         // check alignment, adjusts layout for further children
         if (mCheckboxAlignment == PDEConstants.PDEAlignment.PDEAlignmentLeft) {
-            // left, one BU from border
-            checkboxX = xoffset + PDEBuildingUnits.BU();
-            // adjusting distance
-            dist = PDEBuildingUnits.BU() + mCheckboxUsedSize;
-            // adjust layout rect
-            layout.mLayoutRect.left += dist;
-            layout.mLayoutRect.right -= dist; // ToDo: check if this is correct; original code was: width -=dist;
-            // and adjust clip rect
-            oldvalue = layout.mClipRect.left;
-            //on ios [PDEBuildingUnits nativePixel] -> 1.0f on android
-            layout.mClipRect.left = layout.mLayoutRect.left + 1;
-            layout.mClipRect.right -= layout.mClipRect.left - oldvalue;  // ToDo: check if this is correct;original code was: width -= ..;
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_left)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
         } else if (mCheckboxAlignment == PDEConstants.PDEAlignment.PDEAlignmentCenter) {
-            // centered, aligned to screen pixels
-            checkboxX = xoffset + PDEBuildingUnits.roundToScreenCoordinates((width - mCheckboxUsedSize) / 2.0f);
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_center)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+
         } else if (mCheckboxAlignment == PDEConstants.PDEAlignment.PDEAlignmentRight) {
-            // right, one BU from border
-            checkboxX = xoffset + width - PDEBuildingUnits.BU() - mCheckboxUsedSize;
-            // adjusting distance
-            dist = PDEBuildingUnits.BU() + mCheckboxUsedSize;
-            // adjust layout rect
-            layout.mLayoutRect.right -= dist; // ToDo check if correct; replaced width by right
-            // and adjust clip rect
-            oldvalue = layout.mLayoutRect.left + layout.mLayoutRect.width();
-            layout.mClipRect.right = (int) oldvalue - 1 - layout.mClipRect.left;  // ToDo check if correct; replaced width by right
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_right)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
         } else {
-            // unknown, default
-            checkboxX = 0.0f;
+            // should not happen
         }
-
-        // set positions
-        PDEAbsoluteLayout.LayoutParams sunkenLayerParams = (PDEAbsoluteLayout.LayoutParams) mSunkenLayer.getLayoutParams();
-        sunkenLayerParams.x = PDEBuildingUnits.roundToScreenCoordinates(checkboxX);
-        sunkenLayerParams.y = PDEBuildingUnits.roundToScreenCoordinates(checkboxY);
-        // also width & height???
-        mSunkenLayer.setLayoutParams(sunkenLayerParams);
-
-        PDEAbsoluteLayout.LayoutParams iconLayerParams = (PDEAbsoluteLayout.LayoutParams) mIconLayer.getLayoutParams();
-        // measure to get width & height of icon correctly
-        mIconLayer.measure(0,0);
-        // icon X centered inside checkbox, round to screen
-        iconX = checkboxX
-                + PDEBuildingUnits.roundToScreenCoordinates((mCheckboxUsedSize-mIconLayer.getMeasuredWidth()) / 2.0f);
-        // center icon Y inside checkbox, round to screen
-        iconY = checkboxY
-                + PDEBuildingUnits.roundToScreenCoordinates((mCheckboxUsedSize-mIconLayer.getMeasuredHeight())
-                / 2.0f);
-        iconLayerParams.x = PDEBuildingUnits.roundToScreenCoordinates(iconX);
-        iconLayerParams.y = PDEBuildingUnits.roundToScreenCoordinates(iconY);
-        // also width & height???
-        mIconLayer.setLayoutParams(iconLayerParams);
     }
-
 
     @Override
     public void collectHints(PDEDictionary hints) {
@@ -680,5 +634,148 @@ public class PDEButtonLayerOverlayCheckbox extends Object implements PDEButtonLa
     @Override
     public void collectButtonPaddingRequest(PDEButtonPadding padding) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int height;
+        int width;
+
+        if (SHOW_DEBUG_LOGS) {
+            Log.d(LOG_TAG, "onMeasure "+MeasureSpec.toString(widthMeasureSpec)+" x "+MeasureSpec.toString(heightMeasureSpec));
+        }
+
+        // measure the children (otherwise e.g. the sunkenlayer will not be visible!)
+        measureChildren(widthMeasureSpec,heightMeasureSpec);
+
+        // take the height from the parameter ...
+        height = MeasureSpec.getSize(heightMeasureSpec);
+
+        // .. and use it to calculate the sizes
+        prepareSize(height);
+
+        // now mCheckboxUsedSize contains the size (width = height) of the checkbox background
+        width = PDEBuildingUnits.roundToScreenCoordinates(PDEBuildingUnits.BU() + mCheckboxUsedSize);
+
+        if (SHOW_DEBUG_LOGS) {
+            Log.d(LOG_TAG, "onMeasure result: "+resolveSize(width, widthMeasureSpec)+" x "+resolveSize(height, heightMeasureSpec)+" mCheckboxUsedSize:"+mCheckboxUsedSize);
+        }
+
+        // return the values
+        setMeasuredDimension(resolveSize(width, widthMeasureSpec),
+                resolveSize(height, heightMeasureSpec));
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        float xoffset;
+        float yoffset;
+        float width;
+        float height;
+        float checkboxX;
+        float checkboxY;
+        float widthFromX = 0.0f;
+        float iconX;
+        float iconY;
+        ViewGroup innerLayout = null;
+        ViewGroup overlaySlot = null;
+
+
+        // commonly used data (adjusted for our special clipping logic)
+        //xoffset = layout.mLayoutRect.left - layout.mClipRect.left;
+        //yoffset = layout.mLayoutRect.top - layout.mClipRect.top;
+        xoffset = 0;
+        yoffset = 0;
+        width = w;
+        height = h;
+
+        updateSize(height);
+
+        // center checkbox in Y, round to screen
+        checkboxY = yoffset + PDEBuildingUnits.roundToScreenCoordinates((height - mCheckboxUsedSize) / 2.0f);
+
+        overlaySlot = (ViewGroup) getParent();
+
+        if (overlaySlot != null) {
+            innerLayout = (ViewGroup) overlaySlot.getParent();
+        }
+
+        // ToDo check if correct; replaced width by right and origin.x by left and origin.y by top
+        // check alignment, adjusts layout for further children
+        if (mCheckboxAlignment == PDEConstants.PDEAlignment.PDEAlignmentLeft) {
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_left)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+
+            widthFromX =  mCheckboxUsedSize;
+
+            // left, one BU from border
+            checkboxX = PDEBuildingUnits.BU();
+        } else if (mCheckboxAlignment == PDEConstants.PDEAlignment.PDEAlignmentCenter) {
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_center)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+
+            // centered, aligned to screen pixels
+            checkboxX = xoffset + PDEBuildingUnits.roundToScreenCoordinates((width - mCheckboxUsedSize) / 2.0f);
+
+            widthFromX = width;
+        } else if (mCheckboxAlignment == PDEConstants.PDEAlignment.PDEAlignmentRight) {
+            if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
+                // remove from old slot
+                overlaySlot.removeView(this);
+            }
+            if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_right)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+
+            widthFromX = PDEBuildingUnits.BU() + mCheckboxUsedSize;
+
+            // right, one BU from border
+            checkboxX = 0.0f;
+        } else {
+            // unknown, default
+            checkboxX = 0.0f;
+        }
+
+        // set positions
+        if (SHOW_DEBUG_LOGS) {
+            Log.d(LOG_TAG, "mCheckboxUsedSize: "+mCheckboxUsedSize);
+        }
+        mSunkenDrawable.getWrapperView().setViewLayoutRect(new Rect(Math.round(checkboxX), Math.round(checkboxY),
+                Math.round(mCheckboxUsedSize) + Math.round(checkboxX),
+                Math.round(mCheckboxUsedSize) + Math.round(checkboxY)));
+                                               // todo: check if not widthFromY
+
+//
+        mSunkenDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(Math.round(mCheckboxUsedSize), MeasureSpec.EXACTLY),
+                            MeasureSpec.makeMeasureSpec(Math.round(mCheckboxUsedSize), MeasureSpec.EXACTLY));
+
+        PDEAbsoluteLayout.LayoutParams iconLayerParams = (PDEAbsoluteLayout.LayoutParams) mIconLayer.getLayoutParams();
+        // measure to get width & height of Icon correctly
+        mIconLayer.measure(0,0);
+        // Icon X centered inside checkbox, round to screen
+        iconX = checkboxX
+                + PDEBuildingUnits.roundToScreenCoordinates((mCheckboxUsedSize-mIconLayer.getMeasuredWidth()) / 2.0f);
+        // center Icon Y inside checkbox, round to screen
+        iconY = checkboxY
+                + PDEBuildingUnits.roundToScreenCoordinates((mCheckboxUsedSize-mIconLayer.getMeasuredHeight())
+                / 2.0f);
+        iconLayerParams.x = PDEBuildingUnits.roundToScreenCoordinates(iconX);
+        iconLayerParams.y = PDEBuildingUnits.roundToScreenCoordinates(iconY);
+        // also width & height???
+        mIconLayer.setLayoutParams(iconLayerParams);
     }
 }

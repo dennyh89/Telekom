@@ -10,7 +10,12 @@ package de.telekom.pde.codelibrary.ui.components.helpers;
 
 import android.graphics.Rect;
 
-public class PDEButtonPadding extends Object{
+//----------------------------------------------------------------------------------------------------------------------
+//  PDEButtonPadding
+//----------------------------------------------------------------------------------------------------------------------
+
+
+public class PDEButtonPadding {
     protected Rect mPaddingRect;
 
     public PDEButtonPadding(){

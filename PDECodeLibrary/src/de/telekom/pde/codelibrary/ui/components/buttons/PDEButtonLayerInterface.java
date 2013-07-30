@@ -7,12 +7,15 @@
 
 package de.telekom.pde.codelibrary.ui.components.buttons;
 
-import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonLayoutHelper;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameterDictionary;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
+
+//----------------------------------------------------------------------------------------------------------------------
+//  PDEButtonLayerInterface
+//----------------------------------------------------------------------------------------------------------------------
 
 /**
  * @brief Interface for basic button layers
@@ -29,7 +32,6 @@ public interface PDEButtonLayerInterface {
     // common data setting
     //public void setButtonData(PDEButtonData data);
     public void setParameters(PDEParameterDictionary parameters, boolean force);
-    public void setLayout(PDEButtonLayoutHelper layout);
 
     // hinting
     public void collectHints (PDEDictionary hints);

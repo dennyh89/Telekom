@@ -23,7 +23,7 @@ import android.util.Log;
  *
  * Instantiate this class in your project and check if the functions / properties can be accessed.
  */
-public class PDELibraryTest extends Object {
+public class PDELibraryTest {
 
     // member variables
     private String mTestString;
@@ -49,6 +49,7 @@ public class PDELibraryTest extends Object {
     protected void finalize() throws Throwable {
         // debug
         Log.d(LOGTAG, "PDELibraryTest.finalize: called");
+        super.finalize();
     }
 
     /**

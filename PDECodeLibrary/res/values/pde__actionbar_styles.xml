@@ -1,0 +1,60 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="ActionBar.Solid.Pde" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">
+        <item name="background">@drawable/action_mode_background</item>
+        <item name="backgroundStacked">@drawable/ab_stacked_solid_pde</item>
+        <item name="backgroundSplit">@drawable/action_mode_split_background</item>
+        <item name="progressBarStyle">@style/ProgressBar.Pde</item>
+    </style>
+
+    <style name="ActionBar.Transparent.Pde" parent="@style/Widget.Sherlock.Light.ActionBar">
+        <item name="background">@drawable/ab_transparent_pde</item>
+        <item name="progressBarStyle">@style/ProgressBar.Pde</item>
+    </style>
+	
+    <style name="PopupMenu.Pde" parent="@style/Widget.Sherlock.Light.ListPopupWindow">	
+        <item name="android:popupBackground">@drawable/ab_dropdown_background</item>	
+    </style>
+	
+    <style name="DropDownListView.Pde" parent="@style/Widget.Sherlock.Light.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_pde</item>
+        <item name="android:divider">@color/pde_actionbar_divider_color</item>
+        <item name="android:dividerHeight">@dimen/pde_actionbar_divider_height</item>
+    </style>
+
+    <style name="ActionBarTabStyle.Pde" parent="@style/Widget.Sherlock.Light.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_pde</item>
+    </style>
+	
+    <style name="DropDownNav.Pde" parent="@style/Widget.Sherlock.Light.Spinner.DropDown.ActionBar">
+        <item name="android:background">@drawable/spinner_background_ab_pde</item>
+        <item name="android:popupBackground">@drawable/ab_dropdown_background</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_pde</item>
+        <item name="android:divider">@color/pde_actionbar_divider_color</item>
+        <item name="android:dividerHeight">@dimen/pde_actionbar_divider_height</item>
+    </style>
+    
+    <style name="ProgressBar.Pde" parent="@style/Widget.Sherlock.Light.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_pde</item>
+    </style>
+    
+    <style name="ActionButton.CloseMode.Pde" parent="@style/Widget.Sherlock.Light.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_pde</item>
+    </style>
+    
+
+    <style name="Theme.Pde.Widget" parent="@style/Theme.Sherlock">
+        <item name="popupMenuStyle">@style/PopupMenu.Pde</item>
+        <item name="dropDownListViewStyle">@style/DropDownListView.Pde</item>
+    </style>
+    
+    <style name="SlidingMenu.Btn" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/leftmenu_button_selector</item>
+        <item name="android:drawablePadding">@dimen/Telekom.BU</item>
+    </style>
+
+    <style name="OverFlow.PDE" parent="@style/Widget.Sherlock.ActionButton.Overflow">
+        <item name="android:src">@drawable/ab_ic_menu_overflow_normal</item>
+    </style>
+    
+</resources>

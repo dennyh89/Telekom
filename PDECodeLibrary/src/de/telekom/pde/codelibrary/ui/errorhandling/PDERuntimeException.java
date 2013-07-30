@@ -9,6 +9,12 @@ package de.telekom.pde.codelibrary.ui.errorhandling;
 
 import java.lang.RuntimeException;import java.lang.String;import java.lang.Throwable;
 
+
+//----------------------------------------------------------------------------------------------------------------------
+//  PDERuntimeException
+//----------------------------------------------------------------------------------------------------------------------
+
+
 /**
  * PDERuntimeExceptions are thrown e.g. if the PDECodeComponent Library is used without
  * initialization.
@@ -16,6 +22,7 @@ import java.lang.RuntimeException;import java.lang.String;import java.lang.Throw
  * @author kdanner
  * @see RuntimeException
  */
+@SuppressWarnings("unused")
 public class PDERuntimeException extends RuntimeException {
 
 	/**

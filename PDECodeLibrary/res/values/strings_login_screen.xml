@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_screen_header">Login</string>
+    <string name="login_screen_screen_description_idm">"Ein Benutzername und ein Passwort für alle &lt;a href=\"tooltip:Nutzen Sie nur einen Login, zum Beispiel für das Mediencenter, E-Mail Center, Entertain und vieles mehr.\"&gt;Telekom Dienste&lt;/a&gt;."</string>
+    <string name="login_screen_username_label">Benutzername</string>
+    <string name="login_screen_username_input_field_hint">Benutzername</string>
+    <string name="login_screen_password_label">Passwort</string>
+    <string name="login_screen_password_forgotten_link">"&lt;a href=\"http://www.t-online.de/service/kundencenter/index_passwortvergessen.html\"&gt;Passwort vergessen?&lt;/a&gt;"</string>
+    <string name="login_screen_password_input_field_hint">Passwort</string>
+    <string name="login_screen_checkbox_stay_signed_in">Eingeloggt bleiben</string>
+    <string name="login_screen_button_login">Login</string>
+    <string name="login_screen_not_registered_label"></string>
+    <string name="login_screen_register_now_link">"Noch nicht registriert?&lt;br/&gt;&lt;a href=\"https://meinkonto.telekom-dienste.de/konto/registrierung/mobile/extmail/index.xhtml\"&gt;Jetzt kostenlos registrieren&lt;/a&gt;"</string>
+    <string name="login_screen_brand_logo_content_description">T-Brand Logo</string>
+
+    <string name="login_screen_oneidm_activity_token_request_active_msg">"There is already a token request active!"</string>
+    <string name="login_screen_oneidm_activity_general_error_title">"Error!"</string>
+    <string name="login_screen_oneidm_activity_oauth_error_title">"OAuth - Error!"</string>
+
+    <string name="login_screen_oneidm_activity_error_login_failed_title">"Login Fehler"</string>
+
+    <string name="login_screen_oneidm_activity_error_oauth_credentials_wrong_temp_title">"Login wiederholen"</string>
+    <string name="login_screen_oneidm_activity_error_oauth_credentials_wrong_temp_msg">"Benutzername oder Passwort ist nicht korrekt. Sie können sich in %d Sekunden erneut einloggen."</string>
+
+    <string name="login_screen_oneidm_activity_error_oauth_credentials_wrong_title">"Benutzerkonto gesperrt"</string>
+    <string name="login_screen_oneidm_activity_error_oauth_credentials_wrong_msg">"Bitte wenden Sie sich an &lt;adresse&gt;, um Ihr Benutzerkonto zu entsperren."</string>
+
+    <string name="login_screen_oneidm_activity_error_oauth_account_locked_temp_title">"Login nicht verfügbar"</string>
+    <string name="login_screen_oneidm_activity_error_oauth_account_locked_temp_msg">"Sie können sich in %d Sekunden erneut einloggen."</string>
+
+    <string name="login_screen_oneidm_activity_error_oauth_account_locked_title">"Benutzerkonto gesperrt"</string>
+    <string name="login_screen_oneidm_activity_error_oauth_account_locked_msg">"Bitte wenden Sie sich an &lt;adresse&gt;, um Ihr Benutzerkonto zu entsperren."</string>
+
+    <string name="login_screen_oneidm_activity_error_500_title">"Login nicht möglich"</string>
+    <string name="login_screen_oneidm_activity_error_500_msg">"Der Server ist im Moment nicht verfügbar. Bitte versuchen Sie es später noch einmal."</string>
+
+    <string name="login_screen_oneidm_activity_error_developer_title">"Login nicht möglich"</string>
+    <string name="login_screen_oneidm_activity_error_developer_msg">"Bitte versuchen Sie es später noch einmal."</string>
+
+
+    <string name="login_screen_oneidm_activity_error_no_network_title">"Keine Netzwerkverbindung"</string>
+    <string name="login_screen_oneidm_activity_error_no_network_msg">"Bitte überprüfen Sie Ihre Netzwerkverbindung und versuchen Sie es noch einmal."</string>
+
+    <string name="login_screen_oneidm_activity_timeout_error_title">"Keine Netzwerkverbindung"</string>
+    <string name="login_screen_oneidm_activity_timeout_error_msg">"Bitte überprüfen Sie Ihre Netzwerkverbindung und versuchen Sie es noch einmal."</string>
+
+
+    <string name="login_screen_oneidm_activity_progess_login_title">"Ihre Benutzerdaten werden überprüft …"</string>
+    <string name="login_screen_oneidm_activity_progess_login_msg">"Dies kann einen Moment dauern."</string>
+
+    <string name="login_screen_oneidm_activity_username_info_box">"Als Benutzernamen können Sie Ihre E-Mail-Adresse, Ihre Zugangsnummer oder Ihre Mobilfunk-Nummer verwenden."</string>
+</resources>

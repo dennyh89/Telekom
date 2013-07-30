@@ -7,25 +7,35 @@
 
 package de.telekom.pde.codelibrary.ui.helpers;
 
+import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.util.DisplayMetrics;
 import android.util.FloatMath;
 import android.util.Log;
 import android.util.TypedValue;
+import android.widget.TextView;
+import de.telekom.pde.codelibrary.ui.R;
+import de.telekom.pde.codelibrary.ui.R.string;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
+import de.telekom.pde.codelibrary.ui.elements.text.PDELayerText;
+import de.telekom.pde.codelibrary.ui.elements.wrapper.PDELayerTextView;
+import de.telekom.pde.codelibrary.ui.utils.PDETypefaceSpan;
 
+import javax.annotation.Nonnull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-/**
- * Created with IntelliJ IDEA.
- * User: kdanner
- * Date: 08.10.12
- * Time: 16:57
- * To change this template use File | Settings | File Templates.
- */
+//----------------------------------------------------------------------------------------------------------------------
+//  PDEFontHelpers
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
 public class PDEFontHelpers {
 
     /**
@@ -39,9 +49,9 @@ public class PDEFontHelpers {
 
     /**
      * @brief checks if font is valid
-     * If font is falid or contains empty android typeface the default is returned
+     * If font is valid or contains empty android typeface the default is returned
      * @param font font
-     * @return the dttypeface or default font
+     * @return the PDETypeface or default font
      */
     public static PDETypeface validFont(PDETypeface font)
     {
@@ -59,7 +69,7 @@ public class PDEFontHelpers {
 
     /**
      * @brief Parse the font size string.
-     * The string may has to be of the folloing format: float[unit]
+     * The string may has to be of the following format: float[unit]
      * - a float value followed by a optional unit. A float value with no unit means a standard point size for the font.
      * Recognized units are:
      *  % - percentage of the default copy size (as defined in the Styleguide)
@@ -89,9 +99,7 @@ public class PDEFontHelpers {
             }
         }
 
-        //todo NaN != is always true....
-
-        if (size != Float.NaN && endOfFloatIndex > -1 && endOfFloatIndex < fontSizeString.length()) {
+        if (!Float.isNaN(size) && endOfFloatIndex > -1 && endOfFloatIndex < fontSizeString.length()) {
             String unitPart = fontSizeString.substring(endOfFloatIndex);
             if (unitPart.compareToIgnoreCase("%") == 0) {
                 // percent of default copy size (styleguide definition)
@@ -125,7 +133,6 @@ public class PDEFontHelpers {
         return size;
     }
 
-    // todo How do we handle this in android? We don't have the font name here
     /**
      * @brief Returns a minimum font size based on the font name.
      * Caution: Font name is not available most of the time -> and thus not evaluated here.
@@ -136,14 +143,12 @@ public class PDEFontHelpers {
      */
     public static float assureReadableFontSize(PDETypeface font, float size)
     {
-
-        if (size < 12 ) {
-            size=12.0f;
+        if (size < 12) {
+            size = 12.0f;
         }
         return size;
     }
 
-    // todo How do we handle this in android? We don't have the font name here
     /**
      * @brief Returns the default font size for certain fonts.
      * Caution: we don't have always the font name!!!
@@ -154,7 +159,7 @@ public class PDEFontHelpers {
     public static float calculateFontSizeByPercent(PDETypeface font, float percent) {
         float fontSize = Float.NaN;
 
-        if( font==null ) return Float.NaN;
+        if (font == null) return Float.NaN;
 
         try {
             if ( font.isTeleGroteskFont() ){
@@ -190,7 +195,7 @@ public class PDEFontHelpers {
         }
 
         // iterate as long as an appropriate value is found
-        for (int i=0;i<50;i++) {
+        for (int i = 0; i < 50; i++) {
             // calc size
             capHeight = getCapHeight(font, size);
             // calc distance
@@ -231,7 +236,7 @@ public class PDEFontHelpers {
         paint.setAntiAlias(false);
         // set font
         paint.setTypeface(font.getTypeface());
-        // set startsize
+        // set font size
         paint.setTextSize(size);
         // get start values
         return paint.getFontMetrics();
@@ -332,7 +337,7 @@ public class PDEFontHelpers {
     }
 
     /**
-     * @brief Get the height of the bounding rect for a caption D - equals CapHeiht.
+     * @brief Get the height of the bounding rect for a caption D - equals CapHeight.
      * @param font
      * @param textSize
      * @return
@@ -385,5 +390,99 @@ public class PDEFontHelpers {
         metrics = paint.getFontMetrics();
 
         return Math.abs(metrics.top);
+    }
+
+
+    /**
+     * Helper function to get PDETypeface of normal telekom font
+     * @param context
+     * @return typeface
+     */
+    public static PDETypeface getTeleGroteskNormal(final Context context) {
+        return PDETypeface.createFromAsset(context.getResources().getString(R.string.Tele_GroteskNor));
+    }
+
+
+    /**
+     * Helper function to get PDETypeface of fett telekom font
+     * @param context
+     * @return typeface
+     */
+    public static PDETypeface getTeleGroteskFett(final Context context) {
+        return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_GroteskFet));
+    }
+
+
+    /**
+     * Helper function to get PDETypeface of halbfett telekom font
+     * @param context
+     * @return typeface
+     */
+    public static PDETypeface getTeleGroteskHalbFettl(final Context context) {
+        return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_GroteskHal));
+    }
+
+
+    /**
+     * Helper function to get PDETypeface of ultra telekom font
+     * @param context
+     * @return typeface
+     */
+    public static PDETypeface getTeleGroteskUltra(final Context context) {
+        return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_GroteskUlt));
+    }
+
+
+    /**
+     * Helper function to get PDETypeface of telekom iconfont
+     * @param context
+     * @return typeface
+     */
+    public static PDETypeface getTeleGroteskIconFont(final Context context) {
+        return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_Iconfont));
+    }
+
+
+    public static void setViewFontTo(@Nonnull final TextView view, @Nonnull final Typeface typeface) {
+        if(view==null) throw new NullPointerException("TextView is NULL!!!");
+        if(typeface==null)  throw new NullPointerException("typeface is NULL!!!");
+
+        view.setTypeface(typeface);
+    }
+
+    public static void setViewFontTo(@Nonnull final PDELayerTextView view, @Nonnull final Typeface typeface) {
+        if(view==null) throw new NullPointerException("PDELayerTextView is NULL!!!");
+        if(typeface==null)  throw new NullPointerException("typeface is NULL!!!");
+
+        view.setTypeface(PDETypeface.createByNameAndTypeface(typeface.toString(),typeface));
+    }
+
+    public static SpannableString createSpannableDefaultFontString(final CharSequence text) {
+        return createSpannableString(text, PDETypeface.sDefaultFont);
+    }
+
+
+
+    public static SpannableString createSpannableDefaultFontString(final String text) {
+        return createSpannableString(text, PDETypeface.sDefaultFont);
+    }
+
+
+    public static SpannableString createSpannableString(final CharSequence text, final PDETypeface typeface) {
+        if (text == null) {
+            return new SpannableString("");
+        }
+
+        final SpannableString spannableString = new SpannableString(text);
+
+        // todo remove again!!!! -> is here to check if this causes the error!!
+        if (spannableString.length() == 0) {
+            Log.e(LOG_TAG, "::createSpannableString text with length null! -> Error! Do something");
+        }
+
+        spannableString.setSpan(new PDETypefaceSpan(typeface.getTypeface()), 0, spannableString.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        return spannableString;
     }
 }

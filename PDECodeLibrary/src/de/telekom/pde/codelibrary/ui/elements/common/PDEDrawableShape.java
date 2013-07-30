@@ -7,118 +7,110 @@
 
 package de.telekom.pde.codelibrary.ui.elements.common;
 
-import android.graphics.Color;
-import android.graphics.ColorFilter;
+import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
+import de.telekom.pde.codelibrary.ui.color.PDEColor;
+import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
+
+//----------------------------------------------------------------------------------------------------------------------
+//  PDEDrawableShape
+//----------------------------------------------------------------------------------------------------------------------
 
 
-public class PDEDrawableShape extends Drawable {
-    protected float mCornerRadius;
-    protected int mColor;
-    private Paint mPaint = null;
-    private ColorFilter mColorFilter;
-    private Rect mBoundingRect;
+/**
+ * @brief Draws various shapes like rectangle, rounded rectangle, oval or custom path.
+ *
+ * Does only fill and no stroke (borderline) so far. Maybe we should extend this to save another class (like
+ * PDEDrawableShape).
+ */
+public class PDEDrawableShape extends PDEDrawableBase {
+
+//-----  properties ---------------------------------------------------------------------------------------------------
+    protected float mElementCornerRadius;
+    protected int mElementBackgroundColor;
+    private Paint mBackgroundPaint = null;
     private int mShapeType;
     private Path mShapePath;
 
+//----- init -----------------------------------------------------------------------------------------------------------
 
+    // initialization
     public PDEDrawableShape(){
-        mCornerRadius = 0.0f;
-        mColor = 0xFF000000;
-        mPaint = new Paint();
-        mBoundingRect = new Rect(0,0,0,0);
+        mElementCornerRadius = 0.0f;
+        mElementBackgroundColor = 0xFF000000;
+        mBackgroundPaint = new Paint();
         mShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
         mShapePath = new Path();
+
+        //init paints for drawing
+        update(true);
     }
 
-    @Override
-    public void setAlpha(int alpha) {
-        mColor = Color.argb(alpha,Color.red(mColor),Color.green(mColor),Color.blue(mColor));
-        invalidateSelf();
-    }
 
-    @Override
-    public void draw(android.graphics.Canvas canvas){
-        if(mBoundingRect.width()>0 && mBoundingRect.height()>0){
-            RectF boundsRect = new RectF(mBoundingRect);
 
-            mPaint.setAntiAlias(true);
-            mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setColor(mColor);
-            // ToDo: other shapes than roundedRect need testing
-            switch (mShapeType) {
-                case PDEAvailableShapes.SHAPE_RECT:
-                    canvas.drawRect(boundsRect, mPaint);
-                    break;
-                case PDEAvailableShapes.SHAPE_ROUNDED_RECT:
-                    canvas.drawRoundRect(boundsRect, mCornerRadius, mCornerRadius, mPaint);
-                    break;
-                case PDEAvailableShapes.SHAPE_OVAL:
-                    canvas.drawOval(boundsRect, mPaint);
-                    break;
-                case PDEAvailableShapes.SHAPE_CUSTOM_PATH:
-                    canvas.drawPath(mShapePath, mPaint);
-                    break;
-            }
-        }
-
-    }
+//---------------------------------------------------------------------------------------------------------------------
+// ----- general setters and getters ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
     /**
-     * @brief abstract in Drawable, need to override
+     * @brief Set corner radius.
      *
+     * @param radius
      */
-    @Override
-    public int getOpacity(){
-        return PixelFormat.OPAQUE;
+    public void setElementCornerRadius(float radius){
+        // any change?
+        if (radius == mElementCornerRadius) return;
+        // remember
+        mElementCornerRadius = radius;
+        // update
+        update();
     }
+
 
     /**
-     * @brief abstract in Drawable, need to override
+     * @brief Get corner radius.
      *
+     * @return corner radius.
      */
-    @Override
-    public void setColorFilter(android.graphics.ColorFilter cf){
-        mColorFilter = cf;
-    }
-
-    public void setCornerRadius(float radius){
-        mCornerRadius = radius;
-        invalidateSelf();
-    }
-
-    public float getCornerRadius(){
-        return mCornerRadius;
-    }
-
-    public void setBackgroundColor(int color){
-        mColor = color;
-        invalidateSelf();
-    }
-
-    public int getBackgroundColor(){
-        return mColor;
-    }
-
-    public void setBoundingRect(Rect bounds){
-        if(mBoundingRect.width() != bounds.width() || mBoundingRect.height() != bounds.height()){
-            mBoundingRect = bounds;
-            invalidateSelf();
-        }
-    }
-
-    public Rect getBoundingRect(){
-        return mBoundingRect;
+    public float getElementCornerRadius(){
+        return mElementCornerRadius;
     }
 
 
-    public void setShapePath(Path path) {
+    /**
+     * @brief Set background color of the element.
+     *
+     * @param color background color.
+     */
+    public void setElementBackgroundColor(int color){
+        // any change?
+        if (color == mElementBackgroundColor) return;
+        // remember
+        mElementBackgroundColor = color;
+        // update
+        update(true);
+    }
+
+
+    /**
+     * @brief Get background color.
+     *
+     * @return background color.
+     */
+    public int getElementBackgroundColor(){
+        return mElementBackgroundColor;
+    }
+
+
+    /**
+     * @brief Set a path as custom shape.
+     *
+     * @param path
+     */
+    public void setElementShapePath(Path path) {
         // ToDo: Don't know if equals() is meaningful overriden here.
         // any change?
         if (mShapePath.equals(path)) {
@@ -128,44 +120,124 @@ public class PDEDrawableShape extends Drawable {
         // store the path
         mShapePath = path;
         mShapeType = PDEAvailableShapes.SHAPE_CUSTOM_PATH;
-        invalidateSelf();
+        // update
+        update();
     }
 
-    public Path getShapePath() {
+
+    /**
+     * @brief Get custom shaped path.
+     *
+     * @return
+     */
+    public Path getElementShapePath() {
         return mShapePath;
     }
+
 
     /**
      * @brief Set a rectangular path
      */
-    public void setShapeRect(RectF rect) {
-        mBoundingRect = new Rect((int)rect.left,(int)rect.top,(int)rect.right,(int)rect.bottom);
+    public void setElementShapeRect() {
         mShapeType = PDEAvailableShapes.SHAPE_RECT;
-        invalidateSelf();
+        // update
+        update();
     }
 
 
     /**
      * @brief Set a rectangular path with rounded corners.
      */
-    public void setShapeRoundedRect(RectF rect, float cornerRadius) {
-        mBoundingRect = new Rect((int)rect.left,(int)rect.top,(int)rect.right,(int)rect.bottom);
-        mCornerRadius = cornerRadius;
+    public void setElementShapeRoundedRect(float cornerRadius) {
+        mElementCornerRadius = cornerRadius;
         mShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
-        invalidateSelf();
+        // update
+        update();
     }
+
 
     /**
      * @brief Set a oval inscribing the rect. Use a square to get a circle
      */
-    public void setShapeOval(RectF rect) {
-        mBoundingRect = new Rect((int)rect.left,(int)rect.top,(int)rect.right,(int)rect.bottom);
+    public void setElementShapeOval() {
         mShapeType = PDEAvailableShapes.SHAPE_OVAL;
-        invalidateSelf();
+        // update
+        update();
     }
 
-    public void setShapeOpacity (float opacity){
+
+    /**
+     * @brief Convenience function.
+     *
+     * @param opacity
+     */
+    public void setElementShapeOpacity(float opacity){
         int alpha = Math.round(opacity*255);
         setAlpha(alpha);
     }
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- Helpers ------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+    /**
+     * @brief update background and border paint values
+     */
+    protected void updateAllPaints() {
+        createBackgroundPaint();
+    }
+
+
+    /**
+     * @brief create background paint for drawing
+     */
+    private void createBackgroundPaint() {
+        mBackgroundPaint = new Paint();
+        mBackgroundPaint.setAntiAlias(true);
+        mBackgroundPaint.setStyle(Paint.Style.FILL);
+        mBackgroundPaint.setColorFilter(mColorFilter);
+        mBackgroundPaint.setDither(mDither);
+        mBackgroundPaint.setColor(PDEColor.getIntegerColorCombinedWithAlpha(mElementBackgroundColor,mAlpha));
+    }
+
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- Drawing Bitmap ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+
+    /**
+     * @brief Updates our drawing bitmap and triggers a redraw of this element.
+     *
+     * If a drawing parameter changes, we need to call this function in order to update our drawing-bitmap and
+     * in order to trigger the draw of our updated bitmap to the canvas.
+     */
+    protected void updateDrawingBitmap(Canvas c, Rect bounds) {
+
+        // security
+        if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
+        // normalized
+        RectF frame = new RectF(0,0,bounds.width(),bounds.height());
+
+        // ToDo: other shapes than roundedRect need testing
+        switch (mShapeType) {
+            case PDEAvailableShapes.SHAPE_RECT:
+                c.drawRect(frame, mBackgroundPaint);
+                break;
+            case PDEAvailableShapes.SHAPE_ROUNDED_RECT:
+                c.drawRoundRect(frame, mElementCornerRadius, mElementCornerRadius,mBackgroundPaint);
+                break;
+            case PDEAvailableShapes.SHAPE_OVAL:
+                c.drawOval(frame, mBackgroundPaint);
+                break;
+            case PDEAvailableShapes.SHAPE_CUSTOM_PATH:
+                c.drawPath(mShapePath, mBackgroundPaint);
+                break;
+        }
+    }
+
 }

@@ -1,0 +1,25 @@
+<!--
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+
+   <gradient android:startColor="@color/pde_actionbar_background_start_color"        android:endColor="@color/pde_actionbar_background_end_color"        android:angle="270"/>
+</shape>
+-->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android" >
+            <solid android:color="@color/pde_actionbar_divider_color" />
+        </shape>
+    </item>
+    
+    <item android:bottom="1dp">
+        <shape>
+            <gradient
+                android:angle="270"
+                android:endColor="@color/pde_actionbar_background_end_color"
+                android:startColor="@color/pde_actionbar_background_start_color" />
+        </shape>
+    </item>
+
+</layer-list>

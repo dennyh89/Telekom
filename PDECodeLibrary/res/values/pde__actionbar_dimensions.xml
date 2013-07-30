@@ -1,0 +1,11 @@
+<resources>
+
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">@dimen/Telekom.BU</dimen>
+    <dimen name="activity_vertical_margin">@dimen/Telekom.BU</dimen>
+
+
+
+    <dimen name="pde_actionbar_divider_height">1px</dimen>
+</resources>

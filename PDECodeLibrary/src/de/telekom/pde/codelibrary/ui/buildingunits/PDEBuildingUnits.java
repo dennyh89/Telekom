@@ -14,6 +14,18 @@ import android.util.FloatMath;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.R;
 
+//----------------------------------------------------------------------------------------------------------------------
+//  PDEBuildingUnits
+//----------------------------------------------------------------------------------------------------------------------
+
+/**
+ * @brief Helper class for handling Styleguide Building Units.
+ *
+ * Class calculates Pixel from Building Units und also holds some often used static members for this purpose. How many
+ * pixels are in a building unit depends on the screen density. The intention is that a component / layout based on
+ * Building Units has the same size on all devices.
+ */
+@SuppressWarnings("unused")
 public class PDEBuildingUnits {
 
     private static float BU;
@@ -54,7 +66,15 @@ public class PDEBuildingUnits {
     public static int pixelFromBU (float bu)
     {
         // calculate exact and then round
-        return (int) FloatMath.floor(exactPixelFromBU(bu) + 0.5f);
+        return (int) Math.floor(exactPixelFromBU(bu) + 0.5f);
+    }
+
+    /**
+     * @brief Convert pixels to BuildingUnits (BU)
+     */
+    public static float buildingUnitsFromPixel(float px)
+    {
+        return px / BU;
     }
 
 
@@ -65,7 +85,7 @@ public class PDEBuildingUnits {
      */
     public static int BU ()
     {
-        return (int) Math.round(BU);
+        return Math.round(BU);
     }
 
     /**
@@ -75,7 +95,7 @@ public class PDEBuildingUnits {
      */
     public static int oneThirdBU ()
     {
-        return (int) Math.round(BU_1_3);
+        return Math.round(BU_1_3);
     }
 
     /**
@@ -85,7 +105,7 @@ public class PDEBuildingUnits {
      */
     public static int oneHalfBU ()
     {
-        return (int) Math.round(BU_1_2);
+        return Math.round(BU_1_2);
     }
 
 
@@ -96,7 +116,7 @@ public class PDEBuildingUnits {
      */
     public static int twoThirdsBU ()
     {
-        return (int) Math.round(BU_2_3);
+        return Math.round(BU_2_3);
     }
 
 
@@ -107,7 +127,7 @@ public class PDEBuildingUnits {
      */
     public static int oneFourthBU ()
     {
-        return (int) Math.round(BU_1_4);
+        return Math.round(BU_1_4);
     }
 
     /**
@@ -117,7 +137,7 @@ public class PDEBuildingUnits {
      */
     public static int oneSixthBU ()
     {
-        return (int) Math.round(BU_1_6);
+        return Math.round(BU_1_6);
     }
 
 
@@ -128,7 +148,7 @@ public class PDEBuildingUnits {
      */
     public static int oneTwelfthsBU()
     {
-        return (int) Math.round(BU_1_12);
+        return Math.round(BU_1_12);
     }
 
 
@@ -205,7 +225,14 @@ public class PDEBuildingUnits {
     }
 
 
-
+    /**
+     * @brief Check if the device is a tablet.
+     *
+     * The android screenLayout of configuration is evaluated. Every device with Configuration.SCREENLAYOUT_SIZE_LARGE
+     * or bigger is considered as a tablet.
+     *
+     * @return true if the device is a tablet
+     */
     public static boolean isTablet() {
         //we assume that we are on a tablet if the screen size is above large
 
@@ -214,25 +241,25 @@ public class PDEBuildingUnits {
         Context appContext = PDECodeLibrary.getInstance().getApplicationContext();
         if (appContext != null) {
             int screenLayoutSizeMask = appContext.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
-            if ( screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_LARGE ||
-                    screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_NORMAL ||
+            if (screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_NORMAL ||
                     screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_SMALL ||
                     screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_UNDEFINED
                     ) {
                 tablet = false;
 
-            } else if (screenLayoutSizeMask == 4 ) {
+            } else if ( screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_LARGE) {
+                tablet = true;
+             }else if (screenLayoutSizeMask == 4 ) {
                 // Configuration.SCREENLAYOUT_SIZE_XLARGE == 4
                 tablet = true;
             } else {
                 //e.g. a new screenlayout size? XXL?
                 tablet = true;
-
             }
         }
         return tablet;
-
     }
+    
 
     //function is just dummy on android, always returns 1 !!! -> Don't use it!
     @Deprecated
@@ -241,19 +268,34 @@ public class PDEBuildingUnits {
 
     }
 
-    // todo not needed in android, is it?
+    // not needed in Android since Android uses always integer screen coordinates
     public static float exactRoundToScreenCoordinates(float coordinate) {
-        return FloatMath.floor(coordinate+0.5f);
+        return (float) Math.floor(coordinate+0.5f);
     }
 
-    // todo not needed in android, is it?
+    /**
+     * @brief Mathematically round to screen pixel coordinates.
+     *
+     * Pixels are always at whole numbers in android.
+     *
+     * @param coordinate size of coordinate as float value
+     * @return rounded value of coordinate
+     */
     public static int roundToScreenCoordinates(float coordinate) {
-        return (int)FloatMath.floor(coordinate+0.5f);
+        return (int)Math.floor(coordinate+0.5f);
     }
 
-    public static int ceilToScreenCoordinates(float coordinate) {
-        return (int)FloatMath.ceil(coordinate);
+
+    /**
+     * @brief Mathematically round up to screen pixel coordinates.
+     *
+     * @param coordinate size or coordinate as float value
+     * @return ceil of the coordinate
+     */
+    public static int roundUpToScreenCoordinates(float coordinate) {
+        return (int)Math.ceil(coordinate);
     }
+
 
     //----- parsing helpers ------------------------------------------------------------------------------------------------
 
@@ -269,7 +311,6 @@ public class PDEBuildingUnits {
         float size;
 
         // init defaults
-        unit = "";
         size = 0.0f;
 
         // security

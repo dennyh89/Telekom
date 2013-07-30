@@ -1099,7 +1099,7 @@ public class PDEParameter {
      */
     public boolean isEqual(PDEParameter parameter)
     {
-        return mParameters.equals(parameter);
+        return mParameters.equals(parameter.getParameters());
     }
 
 

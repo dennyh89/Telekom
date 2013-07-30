@@ -14,6 +14,7 @@ public class PDEConstants {
     /**
      * @brief Global tag for log outputs.
      */
+	@SuppressWarnings("unused")
     private final static String LOG_TAG = PDEConstants.class.getName();
 
     //static variable to have a default font name
@@ -32,10 +33,19 @@ public class PDEConstants {
         PDEAlignmentRight
     }
 
+    public enum PDEVerticalAlignment {
+        PDEAlignmentTop,
+        PDEAlignmentVerticalCenter,
+        PDEAlignmentBottom
+    }
+
     public static final String PDEAlignmentStringLeft = "left";
     public static final String PDEAlignmentStringCenter = "center";
     public static final String PDEAlignmentStringRight = "right";
     public static final String PDEAlignmentStringLeftAttached = "left_attached";
     public static final String PDEAlignmentStringRightAttached = "right_attached";
+
+
+
 
 }

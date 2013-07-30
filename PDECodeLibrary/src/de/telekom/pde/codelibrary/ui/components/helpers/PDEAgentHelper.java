@@ -17,6 +17,12 @@ import de.telekom.pde.codelibrary.ui.agents.PDEEventAgentControllerState;
 import de.telekom.pde.codelibrary.ui.components.buttons.PDEButton;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 
+
+//----------------------------------------------------------------------------------------------------------------------
+//  PDEAgentHelper
+//----------------------------------------------------------------------------------------------------------------------
+
+
 public class PDEAgentHelper {
 
     private String mCurrentState;
@@ -85,7 +91,7 @@ public class PDEAgentHelper {
         if (event.isType(PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION)) {
             PDEEventAgentControllerState e = (PDEEventAgentControllerState)event;
             // animation phase did change -> extract from data packet
-            changed |= updateCurrentState_priv(e.getCurrentState());
+            changed = updateCurrentState_priv(e.getCurrentState());
             changed |= updateNextState_priv(e.getNextState());
             changed |= updateStateProgress_priv(e.getStateAnimationProgress());
             changed |= updateInteractiveState_priv(e.getAgentAnimationCombinedInteraction());
@@ -103,6 +109,8 @@ public class PDEAgentHelper {
     {
         // any change?
         if (mCurrentState == currentState) return false;
+        // todo check
+        //if (mCurrentState.equals(currentState)) return false; //this should be the right check - but then it doesn't work
 
         // remember
         mCurrentState = currentState;
@@ -119,6 +127,8 @@ public class PDEAgentHelper {
     {
         // any change?
         if (mNextState == nextState) return false;
+        // todo check
+        //if (mNextState.equals(nextState)) return false;  //this should be the right check - but then it doesn't work
 
         // remember
         mNextState = nextState;

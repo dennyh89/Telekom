@@ -50,7 +50,6 @@ public class PDEEventSource implements PDEIEventSource {
      */
     private class Listener {
         // @new
-        // ToDo: find solution
         /**
          * @brief Source of this listener.
          *
@@ -140,7 +139,6 @@ public class PDEEventSource implements PDEIEventSource {
      */
     private LinkedList<Listener> mForwardEventSources = null;
 
-    // ToDo check if weak references are correct here
     /**
      * @brief An optional delegate which gets notified when listeners are added.
      */
@@ -172,24 +170,6 @@ public class PDEEventSource implements PDEIEventSource {
         // @new
         mEventOverrideSender = false;
     }
-
-    // @new
-    // ToDo: check if necessary; we don't wan destructors in java
-    /**
-     * @brief Destructor.
-     *
-     * Setting all listeners to invalid. Not sure if it's meaningful to send out deinit functionality to all
-     * listeners (or to request it). At the moment, classes implementing Event sources are responsible for this
-     * step and should do it in their dealloc routines.
-     */
-    /*- (void) dealloc
-    {
-        // set all listeners we still hold to invalid
-        for (PDEEventSourceListener *listener in self.listeners_priv) {
-        listener.source = nil;
-    }
-    } */
-
 
     @Override
     public PDEEventSource getEventSource() {
@@ -250,7 +230,7 @@ public class PDEEventSource implements PDEIEventSource {
             method = target.getClass().getMethod(methodName, new Class[] {PDEEvent.class});
 
         } catch (NoSuchMethodException e) {
-
+            // try to solve in the next block
         }
 
         if (method == null) {
@@ -258,7 +238,7 @@ public class PDEEventSource implements PDEIEventSource {
                 // check if the given method really is declared for target object
                 method = target.getClass().getMethod(methodName);
             } catch (NoSuchMethodException e) {
-
+                // try to solve in the next block
             }
         }
 
@@ -378,11 +358,9 @@ public class PDEEventSource implements PDEIEventSource {
         PDEEventSource source;
 
         // tell our delegate
-        if ( getEventSourceDelegate() != null
-            && getEventSourceDelegate() instanceof PDEIEventSourceDelegate){
+        if (getEventSourceDelegate() != null){
             getEventSourceDelegate().eventSourceDidAddListener(listener);
         }
-
 
         // request from all event sources we're listening on
         needsCleanup = false;
@@ -510,7 +488,6 @@ public class PDEEventSource implements PDEIEventSource {
             // error handling, if method was not part of target-object
             e.printStackTrace();
             //error
-            return;
         }
     }
 
@@ -545,7 +522,6 @@ public class PDEEventSource implements PDEIEventSource {
             // error handling, if method was not part of target-object
             e.printStackTrace();
             //error
-            return;
         }
     }
 
@@ -668,9 +644,19 @@ public class PDEEventSource implements PDEIEventSource {
             // as convenience, return the processed status
             returnValue = event.isProcessed();
         } catch (IllegalAccessException e) {
+            Log.d(LOG_TAG,"sendEvent: IllegalAccessException "+e.getCause().getLocalizedMessage()+
+                    "\ntarget: "+target.toString()+
+                    "\nevent: "+event.getType());
             e.printStackTrace();
+            returnValue = false;
         } catch (InvocationTargetException e) {
+            // there was an exception in the method we called -> fail
+            Log.e(LOG_TAG,"sendEvent: InvocationTargetException "+e.getCause().getLocalizedMessage()+
+                    "\ntarget: "+target.toString()+
+                    "\nevent: "+event.getType());
             e.printStackTrace();
+
+            throw new RuntimeException(e);
         }
 
         // back to original

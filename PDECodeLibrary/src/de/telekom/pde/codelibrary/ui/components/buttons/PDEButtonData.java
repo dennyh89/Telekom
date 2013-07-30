@@ -18,7 +18,7 @@ import android.graphics.Bitmap;
  * react to these and can completely build on their own functionality. However, if these parameters fit,
  * it's more easy for the user to actually use the button.
  */
-public class PDEButtonData extends Object{
+public class PDEButtonData {
     protected String mTitle;
     protected Bitmap mIcon;
     protected PDEButtonColorDefinition mColorDefinition;

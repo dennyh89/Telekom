@@ -11,25 +11,26 @@ package de.telekom.pde.codelibrary.ui.components.buttons;
 // 10.10.2012 - only changed the innershadow parameter things.
 
 
-import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
+import android.content.Context;
+import android.graphics.PointF;
+import android.graphics.Rect;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.ViewGroup;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEAgentHelper;
-import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonLayoutHelper;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameter;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameterDictionary;
-import de.telekom.pde.codelibrary.ui.elements.common.*;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEViewShapedInnerShadow;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBorderLine;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableGradientShape;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedInnerShadow;
+import de.telekom.pde.codelibrary.ui.elements.wrapper.PDEViewWrapper;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
-
-import android.graphics.PointF;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.util.Log;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -43,14 +44,15 @@ import android.util.Log;
  *
  * Color gradient, frame, inner shadow on pressed.
  */
-public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButtonLayerInterface {
+class PDEButtonLayerBackgroundBeveled extends PDEAbsoluteLayout implements PDEButtonLayerInterface {
 
     /**
      * @brief Global tag for log outputs.
      */
-    private final static String LOG_TAG = PDEButtonLayerBackgroundEmbossed.class.getName();
+    private final static String LOG_TAG = PDEButtonLayerBackgroundBeveled.class.getName();
     // debug messages switch
     private final static boolean DEBUGPARAMS = false;
+    private final static boolean SHOW_DEBUG_LOGS = false;
 
 
     // local parameters needed
@@ -63,23 +65,21 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
     PDEColor mDefaultColor;
     float mInnerShadowOpacity;
 
-    // views
-    PDEViewShapedInnerShadow mInnerShadowView;
-    PDEViewBackground mMainView;
-    PDEViewBorderLine mBorderLineView;
+    // drawables
+    PDEDrawableGradientShape mMainDrawable;
+    PDEDrawableBorderLine mBorderLineDrawable;
+    PDEDrawableShapedInnerShadow mInnerShadowDrawable;
 
     // additional helper variables
     float mCornerRadius;
     float mOutlineWidth;
 
     // size of the background
-    protected PDEButtonLayoutHelper mLayout;
+    //protected PDEButtonLayoutHelper mLayout;
 
     // agent helpers
     PDEAgentHelper mAgentHelper;
 
-    // layout that holds the outer shadow-, main background- & inner shadow-view in correct z-order
-    PDEAbsoluteLayout mCollectionLayer;
 
 
 
@@ -89,12 +89,25 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
     public static PDEDictionary PDEButtonLayerBackgroundBeveledGlobalBorderDefault = null;
 
 
+    public PDEButtonLayerBackgroundBeveled(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
 
+    public PDEButtonLayerBackgroundBeveled(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context);
+    }
 
     /**
      * @brief Class initialization.
      */
-    PDEButtonLayerBackgroundBeveled() {
+    public PDEButtonLayerBackgroundBeveled(Context context) {
+        super(context);
+        init(context);
+    }
+
+    private void init(Context context) {
         // read default dictionaries
         PDEButtonLayerBackgroundBeveledGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary(
                 "dt_button_gradient_color_defaults");
@@ -103,7 +116,7 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
 
         // init
         mParameters = null;
-        mLayout = new PDEButtonLayoutHelper();
+        //mLayout = new PDEButtonLayoutHelper();
         mDefaultColor = PDEColor.valueOf("DTUIInteractive");
 
         // constants for derivation in parameter setting
@@ -118,18 +131,18 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
         mAgentHelper = new PDEAgentHelper();
 
         // create the layer structure
-        mCollectionLayer = new PDEAbsoluteLayout(PDECodeLibrary.getInstance().getApplicationContext());
-        mCollectionLayer.setClipChildren(false);
+        setClipChildren(false);
 
         // create & add main background
-        mMainView = new PDEViewBackground(PDECodeLibrary.getInstance().getApplicationContext(),new PDEDrawableGradientShape());
-        mCollectionLayer.addView(mMainView);
+        mMainDrawable = new PDEDrawableGradientShape();
+        addView(mMainDrawable.getWrapperView());
         // create & add border line
-        mBorderLineView = new PDEViewBorderLine(PDECodeLibrary.getInstance().getApplicationContext());
-        mCollectionLayer.addView(mBorderLineView);
+        mBorderLineDrawable = new PDEDrawableBorderLine();
+        addView(mBorderLineDrawable.getWrapperView());
         // create & add inner shadow
-        mInnerShadowView = new PDEViewShapedInnerShadow(PDECodeLibrary.getInstance().getApplicationContext());
-        mCollectionLayer.addView(mInnerShadowView);
+        mInnerShadowDrawable = new PDEDrawableShapedInnerShadow();
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        addView(mInnerShadowDrawable.getWrapperView(),lp);
 
 
         // take over the default parameters from layer (iOS defaults of CALayer)
@@ -141,9 +154,9 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
         setOutlineWidth(1.0f);
 
         // inner shadow
-        mInnerShadowView.setShapeColor(PDEColor.valueOf("DTBlack"));
-        mInnerShadowView.setBlurRadius(PDEBuildingUnits.exactOneForthBU());
-        mInnerShadowView.setShadowOffset(new PointF(0.0f,PDEBuildingUnits.oneTwelfthsBU()));
+        mInnerShadowDrawable.setElementShapeColor(PDEColor.valueOf("DTBlack"));
+        mInnerShadowDrawable.setElementBlurRadius(PDEBuildingUnits.exactOneForthBU());
+        mInnerShadowDrawable.setElementLightIncidenceOffset(new PointF(0.0f,PDEBuildingUnits.oneTwelfthsBU()));
 
         // forced set of parameter -> this sets defaults
         setParameters(new PDEParameterDictionary(), true);
@@ -157,7 +170,7 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
      */
     @Override
     public PDEAbsoluteLayout getLayer() {
-        return mCollectionLayer;
+        return this;
     }
 
     /**
@@ -317,9 +330,8 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
 
 
         // apply
-        getMainDrawable().setCornerRadius(mCornerRadius);
-
-        mBorderLineView.setCornerRadius(mCornerRadius);
+        getMainDrawable().setElementCornerRadius(mCornerRadius);
+        mBorderLineDrawable.setElementCornerRadius(mCornerRadius);
     }
 
 
@@ -341,7 +353,7 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
         mOutlineWidth = width;
 
         // apply
-        mBorderLineView.setBorderWidth(mOutlineWidth);
+        mBorderLineDrawable.setElementBorderWidth(mOutlineWidth);
     }
 
 
@@ -384,9 +396,9 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
                 PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
 
         // set the gradient and border colors
-        getMainDrawable().setColors(topColor.getIntegerColor(), mainColor.getIntegerColor(),
-                                    bottomColor.getIntegerColor());
-        mBorderLineView.setBorderColor(borderColor.getIntegerColor());
+        getMainDrawable().setElementColors(topColor.getIntegerColor(), mainColor.getIntegerColor(),
+                                           bottomColor.getIntegerColor());
+        mBorderLineDrawable.setElementBorderColor(borderColor.getIntegerColor());
     }
 
 
@@ -402,73 +414,37 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
                 PDEAgentHelper.PDEAgentHelperAnimationDown, null);
 
         // set opacity
-        getInnerShadowView().setShapeOpacity(innerShadowFactor * mInnerShadowOpacity);
+        mInnerShadowDrawable.setElementShapeOpacity(innerShadowFactor * mInnerShadowOpacity);
     }
 
 
     /**
      * @brief Update paths for shadow layers.
      */
-    protected void updatePaths() {
-        RectF rect;
+    protected void updatePaths(int width, int height) {
+        Rect rect;
+
+        if (SHOW_DEBUG_LOGS) {
+            Log.d(LOG_TAG, "updatePaths getWidth: "+ width + " getHeight: "+height);
+        }
 
         // inner shadow rect is main rect minus the border (bordersize is always 1)
-        rect = new RectF(mLayout.mLayoutRect);
-        rect.set(rect.left, rect.top, rect.right - 2.0f, rect.bottom - 2.0f);
-        getInnerShadowView().setShapeRoundedRect(rect, mCornerRadius-1.0f);
+        //rect = new Rect(mLayout.mLayoutRect);
+        rect = new Rect(0, 0, width, height);
+
+        rect.set(rect.left, rect.top, rect.right - 2, rect.bottom - 2);
+        mInnerShadowDrawable.getWrapperView().setViewLayoutRect(rect);
+        mInnerShadowDrawable.setElementShapeRoundedRect(mCornerRadius - 1.0f);
         // set the offset to 1,1 so the border completely surrounds the inner shadow
-        getInnerShadowView().setShapeOffset(new PointF(1.0f, 1.0f));
+        mInnerShadowDrawable.getWrapperView().setViewOffset(1.0f, 1.0f);
+        mInnerShadowDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(rect.width(), MeasureSpec.EXACTLY),
+                                                      MeasureSpec.makeMeasureSpec(rect.height(), MeasureSpec.EXACTLY));
     }
 
 
 //----- layout ---------------------------------------------------------------------------------------------------------
 
 
-    /**
-     * @brief Apply new layout when set from the outside.
-     */
-    @Override
-    public void setLayout(PDEButtonLayoutHelper layout) {
-        // debug
-        if(DEBUGPARAMS){
-            Log.d(LOG_TAG,
-                  "screenRect left " + layout.mButtonRect.left + " top " + layout.mButtonRect.top + " right " + layout.mButtonRect.right +
-                  " bottom " + layout.mButtonRect.bottom);
-            Log.d(LOG_TAG,
-                  "outlineRect left " + layout.mLayoutRect.left + " top " + layout.mLayoutRect.top + " right " + layout.mLayoutRect.right +
-                  " bottom " + layout.mLayoutRect.bottom);
-        }
-
-        // any change & valid size?
-        if ((layout.mButtonRect.left == mLayout.mButtonRect.left) &&
-            (layout.mButtonRect.top == mLayout.mButtonRect.top) &&
-            (layout.mButtonRect.right == mLayout.mButtonRect.right) &&
-            (layout.mButtonRect.bottom == mLayout.mButtonRect.bottom) &&
-            (layout.mLayoutRect.left == mLayout.mLayoutRect.left) &&
-            (layout.mLayoutRect.top == mLayout.mLayoutRect.top) &&
-            (layout.mLayoutRect.right == mLayout.mLayoutRect.right) &&
-            (layout.mLayoutRect.bottom == mLayout.mLayoutRect.bottom) |
-            layout.mButtonRect.height() <=0 | layout.mButtonRect.width()<=0 |
-            layout.mLayoutRect.height()<=0 | layout.mLayoutRect.width()<=0 ) {
-            return;
-        }
-
-        // remember
-        mLayout = new PDEButtonLayoutHelper(layout);
-
-        // update main background
-        getMainDrawable().setBoundingRect(mLayout.mLayoutRect);
-        mBorderLineView.setBoundingRect(mLayout.mLayoutRect);
-
-        // update the shadow path and inner shadow path
-        updatePaths();
-
-        // ToDo: Not sure if this update is really needed, so it's commented out for now until we find a reason to
-        // use it again.
-//        // just to be sure, that all children get the layout changes
-//        mCollectionLayer.updateLayout(true, mOutlineRect.left, mOutlineRect.top, mOutlineRect.right,
-//                                      mOutlineRect.bottom);
-    }
 
     /**
      * @brief Set hints for other layers.
@@ -477,8 +453,9 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
      */
     @Override
     public void collectHints(PDEDictionary hints) {
-        hints.put(PDEButton.PDEButtonHint3DStyle, new Boolean(true));
+        hints.put(PDEButton.PDEButtonHint3DStyle, true);
     }
+
 
     /**
      * @brief Set hints.
@@ -491,6 +468,7 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
         setDefaultColor(PDEComponentHelpers.extractDefaultColorHint(hints));
     }
 
+
     public void collectButtonPaddingRequest(PDEButtonPadding padding){
 
     }
@@ -499,110 +477,115 @@ public class PDEButtonLayerBackgroundBeveled extends Object implements PDEButton
 
 //----- Properties Setter/Getter -----------------------------------------------------------------------------------
 
-    /**
-     * @brief Set new Collection Layer
-     */
-    public void setCollectionLayer(PDEAbsoluteLayout layer) {
-        mCollectionLayer = layer;
-    }
 
     /**
      * @brief Get Collection Layer
      */
     public PDEAbsoluteLayout getCollectionLayer() {
-        return mCollectionLayer;
+        return this;
     }
 
 
     /**
      * @brief Get view of main background
      */
-    public PDEViewBackground getMainView() {
-        return mMainView;
+    public PDEViewWrapper getMainView() {
+        return mMainDrawable.getWrapperView();
     }
 
-    /**
-     * @brief Set new view of main background
-     */
-    public void setMainView(PDEViewBackground view) {
-        mMainView = view;
-    }
+// setting of new drawables makes no sense because we would change the order of layers
+// if we want to do this we have to store the Views again seperately.
 
-    /**
-     * @brief Set new drawable of main background
-     */
-    public void setMainDrawable(PDEDrawableGradientShape drawable) {
-        mMainView.setDrawable(drawable);
-    }
+//    /**
+//     * @brief Set new drawable of main background
+//     */
+//    public void setMainDrawable(PDEDrawableGradientShape drawable) {
+//        if(drawable == mMainDrawable || drawable == null) return;
+//        // remove old view
+//        if (mMainDrawable != null) removeView(mMainDrawable.getWrapperView());
+//        // remember
+//        mMainDrawable = drawable;
+//        // add view
+//        addView(mMainDrawable.getWrapperView());
+//    }
+
 
     /**
      * @brief Get drawable of main background
      */
     public PDEDrawableGradientShape getMainDrawable(){
-        if (mMainView.getDrawable() instanceof PDEDrawableGradientShape){
-            return (PDEDrawableGradientShape) mMainView.getDrawable();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @brief Get drawable of main background
-     */
-    public PDEDrawableBorderLine getBorderLineDrawable(){
-        if (mBorderLineView.getDrawable() instanceof PDEDrawableBorderLine){
-            return (PDEDrawableBorderLine) mBorderLineView.getDrawable();
-        } else {
-            return null;
-        }
+//        if (mMainView.getDrawable() instanceof PDEDrawableGradientShape){
+//            return (PDEDrawableGradientShape) mMainView.getDrawable();
+//        } else {
+//            return null;
+//        }
+        return mMainDrawable;
     }
 
 
-    /**
-     * @brief Set new drawable of inner shadow
-     */
-    public void setInnerShadowDrawable(PDEDrawableShapedInnerShadow drawable) {
-        mInnerShadowView.setDrawable(drawable);
-    }
+//    /**
+//     * @brief Set new drawable of inner shadow
+//     */
+//    public void setInnerShadowDrawable(PDEDrawableShapedInnerShadow drawable) {
+//        if(drawable == mInnerShadowDrawable || drawable == null) return;
+//        // remove old view
+//        if (mInnerShadowDrawable != null) removeView(mInnerShadowDrawable.getWrapperView());
+//        // remember
+//        mInnerShadowDrawable = drawable;
+//        // add view
+//        addView(mMainDrawable.getWrapperView());
+//    }
 
     /**
      * @brief Get drawable of inner shadow
      */
     public PDEDrawableShapedInnerShadow getInnerShadowDrawable() {
-        return mInnerShadowView.getDrawable();
+        return mInnerShadowDrawable;
     }
 
     /**
      * @brief Get view of inner shadow
      */
-    public PDEViewShapedInnerShadow getInnerShadowView() {
-        return mInnerShadowView;
-    }
-
-    /**
-     * @brief Set new view of inner shadow
-     */
-    public void setInnerShadowView(PDEViewShapedInnerShadow view) {
-        mInnerShadowView = view;
+    public PDEViewWrapper getInnerShadowView() {
+        return mInnerShadowDrawable.getWrapperView();
     }
 
 
-    /**
-     * @brief Remember display size of background (internal helper).
-     *
-     * The outer shadow isn't considered in this size.
-     */
-    protected void setLayoutRect(Rect layoutRect){
-        mLayout.mLayoutRect = layoutRect;
+
+//----- View Layout -----------------------------------------------------------------------------------
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec,heightMeasureSpec);
+
+        if (SHOW_DEBUG_LOGS) {
+            Log.d(LOG_TAG, "onMeasure result: "+getMeasuredWidth()+" x "+getMeasuredHeight());
+        }
+
     }
 
-    /**
-     * @brief Get display size of background.
-     *
-     * The outer shadow isn't considered in this size.
-     */
-    public Rect getLayoutRect(){
-        return mLayout.mLayoutRect;
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        if (SHOW_DEBUG_LOGS) {
+            Log.d(LOG_TAG, "onSizeChanged "+w+", "+h);
+        }
+
+        //getMainDrawable().setBoundingRect(new Rect(0, 0, w, h));
+        getMainView().setViewLayoutRect(new Rect(0, 0, w, h));
+        getMainView().measure(MeasureSpec.makeMeasureSpec(w,MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h,MeasureSpec.EXACTLY));
+
+        mBorderLineDrawable.getWrapperView().setViewLayoutRect(new Rect(0, 0, w, h));
+        //mBorderLineView.setElementBoundingRect(new Rect(0, 0, w, h));
+        mBorderLineDrawable.setElementShapeRoundedRect(mCornerRadius);
+        mBorderLineDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
+                                                     MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
+
+        // update the shadow path and inner shadow path
+        updatePaths(w, h);
     }
 }
 

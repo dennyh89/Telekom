@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- ActionBar -->
+    <color name="pde_actionbar_background_start_color">@color/DTLightUIBackground</color>
+    <color name="pde_actionbar_background_end_color">@color/DTGrey4</color>
+    <color name="pde_actionbar_background_dropdown">@color/DTWhite</color>
+    <color name="pde_actionbar_divider_color">@color/DTGrey6</color>
+   
+    <color name="pde_pressed_state_color">@color/DTGrey237_TakingInput</color>
+	
+    <!-- TODO: gabriel, we'll need to change those to PDE colors -->
+    <color name="list_item_normal">@color/DTLightUIBackground</color>
+    <color name="list_item_selected">@color/DTGrey237_TakingInput</color>
+    <color name="list_item_pressed">@color/DTGrey237_TakingInput</color>
+    
+</resources>

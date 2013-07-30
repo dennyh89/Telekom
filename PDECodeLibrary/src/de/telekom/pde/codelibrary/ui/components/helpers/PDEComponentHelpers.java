@@ -31,6 +31,7 @@ import java.util.Set;
 //----------------------------------------------------------------------------------------------------------------------
 //  DTParameterHelpers
 //----------------------------------------------------------------------------------------------------------------------
+
 public class PDEComponentHelpers {
 
     /**
@@ -54,12 +55,12 @@ public class PDEComponentHelpers {
      *
      * If no main values or default values can be found, the property values are unchanged. No default state is added.
      */
-    public static void fillStateBaseValues(PDEParameter parameter,Object externalDefault)
+    public static void fillStateBaseValues(PDEParameter parameter, Object externalDefault)
     {
         Object defaultObject;
 
         // get the main value
-        defaultObject = parameter.getBaseValue();
+        defaultObject = parameter.getBaseObject();
 
         // if there is no main object, try to use the default state object
         if (defaultObject==null) {
@@ -295,24 +296,37 @@ public class PDEComponentHelpers {
     {
         String key2;
         PDEColor color;
-        PDEColor color2;
+        PDEColor color2 = null;
 
         // get the original color (check that it's a color, we now have additional helper values of other types)
-        color = (PDEColor)parameter.getObjectForKey(key);
-        if (color==null || !(color instanceof PDEColor)) return;
+        try {
+            color = (PDEColor)parameter.getObjectForKey(key);
+        } catch (ClassCastException e) {
+            return;
+        }
+
+        if (color == null) return;
 
         // do we already have the lighter color?
         key2 = key + PDEButton.PDEButtonColorSuffixLighter;
-        color2 = (PDEColor)parameter.getObjectForKey(key2);
-        if (color2==null) {
+        try {
+            color2 = (PDEColor)parameter.getObjectForKey(key2);
+        } catch (ClassCastException e) {
+            //nothing done here
+        }
+        if (color2 == null) {
             // if not add it
             parameter.addObject(color.styleguideGradientLighterColor(),key2);
         }
 
         // do we already have the darker color?
         key2 = key + PDEButton.PDEButtonColorSuffixDarker;
-        color2 = (PDEColor)parameter.getObjectForKey(key2);
-        if (color2==null) {
+        try {
+            color2 = (PDEColor)parameter.getObjectForKey(key2);
+        } catch (ClassCastException e) {
+            // nothing done here
+        }
+        if (color2 == null) {
             // if not add it
             parameter.addObject(color.styleguideGradientDarkerColor(),key2);
         }
@@ -337,16 +351,36 @@ public class PDEComponentHelpers {
             pos = key.indexOf(indexOfStr);
             if (pos == -1) continue;
             // check key -> second dot must not be present
-            searchStartPos = searchStartPos = pos+indexOfStr.length();
-            pos = key.indexOf(indexOfStr,searchStartPos);
+            searchStartPos = pos+indexOfStr.length();
+            pos = key.indexOf(indexOfStr, searchStartPos);
             if (pos != -1) continue;
             // check if key alrady exists in border
-            if (borderToFill.getObjectForKey(key)!=null) continue;
+            if (borderToFill.getObjectForKey(key) != null) continue;
             // build darker color and set it
             c = mainColor.getObjectForKey(key);
-            if (c==null || !(c instanceof PDEColor)) continue;
+            if (c == null || !(c instanceof PDEColor)) continue;
             c = ((PDEColor)c).styleguideBorderColor();
             borderToFill.addObject(c,key);
+        }
+    }
+
+
+    /**
+     * @brief Brighten all colors (for use in text field).
+     *
+     * Usually done before calculating agent state colors. There's no default table at the moment.
+     */
+    public static void brightenColors(PDEParameter color)
+    {
+        Object c;
+
+        // go through keys in color ###2do we're changing the keys, so basic enumeration does not work, now using a copy in allKeys => find a better way for this!
+        for (String key: color.getParameters().keySet()) {
+            // build lighter color and set it
+            c = color.getObjectForKey(key);
+            if (c==null || !(c instanceof PDEColor)) continue;
+            c = ((PDEColor)c).styleguideBrightColor();
+            color.addObject(c,key);
         }
     }
 
@@ -484,7 +518,7 @@ public class PDEComponentHelpers {
      *
      * Can use dictionaries for defaults.
      */
-    public static void buildValues(PDEParameter parameter,PDEDictionary reference,Object defaultObject,int animation)
+    public static void buildValues(PDEParameter parameter, PDEDictionary reference, Object defaultObject, int animation)
     {
         Object defaultSet;
         String key;
@@ -844,8 +878,8 @@ public class PDEComponentHelpers {
         }
 
         // get color (if not defined, use black)
-        color = (PDEColor)parameter.getColorForKey(str);
-        if (color==null) return PDEColor.valueOf("DTBlack");
+        color = parameter.getColorForKey(str);
+        if (color == null) return PDEColor.valueOf("DTBlack");
 
         // done
         return color;

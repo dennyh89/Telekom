@@ -9,14 +9,24 @@ package de.telekom.pde.codelibrary.ui.activity;
 
 
 import android.app.Activity;
+import android.os.Bundle;
+
+import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
+import de.telekom.pde.codelibrary.ui.inflater.PDEInflaterUtils;
 
 public class PDEActivity extends Activity {
-
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (PDECodeLibrary.getInstance().isAssignmentOfDefaultFontToTextViewsEnabled()) {
+            PDEInflaterUtils.setFontFactory(getLayoutInflater());
+        }
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //TODO add code here
+        //add code here
 
         //(re-)start PDECodeLibrary animation
 
@@ -24,7 +34,7 @@ public class PDEActivity extends Activity {
 
     @Override
     protected void onPause() {
-        //TODO add code here
+        //add code here
 
         //pause PDECodeLibrary animation
 

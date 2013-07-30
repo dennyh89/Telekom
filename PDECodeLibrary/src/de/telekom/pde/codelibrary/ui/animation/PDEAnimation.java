@@ -11,7 +11,6 @@ package de.telekom.pde.codelibrary.ui.animation;
 // PDEAnimation
 //----------------------------------------------------------------------------------------------------------------------
 
-// ToDo check all documentations
 
 import android.util.Log;
 
@@ -32,13 +31,12 @@ import java.lang.reflect.Method;
  * ultimately derived from PDEFrameTiming times, but they may be modified by subsequent animations in the
  * animation tree.
  */
-public class PDEAnimation extends Object {
+public class PDEAnimation {
 
     /**
      * @brief Global tag for log outputs.
      */
     private final static String LOG_TAG = PDEAnimation.class.getName();
-    private final static boolean DEBUGPARAMS = false;
 
     // running  (internal)
     /**
@@ -116,16 +114,6 @@ public class PDEAnimation extends Object {
     }
 
 
-//    // destructor...
-//    protected void finalize() throws Throwable {
-//        // ToDo check if that really works ; wouldn't remove be better? Otherwise parent has a dead link??
-//        // we need to clear the parent for cleanup. This unlinks ourself from any parents and
-//        // does all necessary cleanup.
-//        setParentAnimation(null);
-//    }
-//
-
-
     /**
      * @brief Link to the animation's parent, which must be an animation group.
      *
@@ -163,7 +151,7 @@ public class PDEAnimation extends Object {
      *
      * @return True if we're registered at the parent for running.
      */
-    boolean isRunningRegisteredWithParent() {
+    public boolean isRunningRegisteredWithParent() {
         return mRunningRegisteredWithParent;
     }
 
@@ -175,7 +163,7 @@ public class PDEAnimation extends Object {
      *
      * @return True if we're registered at the parent for explicit change handling.
      */
-    boolean isChangedRegisteredWithParent() {
+    public boolean isChangedRegisteredWithParent() {
         return mChangedRegisteredWithParent;
     }
 
@@ -188,7 +176,7 @@ public class PDEAnimation extends Object {
      *
      * @return True if we're currently within the animation phase.
      */
-    boolean isInAnimation() {
+    public boolean isInAnimation() {
         return mInAnimation;
     }
 
@@ -197,7 +185,7 @@ public class PDEAnimation extends Object {
      *
      * internal use only.
      */
-    void setInAnimation(boolean inAnimation) {
+    protected void setInAnimation(boolean inAnimation) {
         mInAnimation = inAnimation;
     }
 
@@ -215,7 +203,7 @@ public class PDEAnimation extends Object {
      *
      * @param parentAnimation The new parent animation.
      */
-    void setParentAnimation(PDEAnimationGroup parentAnimation) {
+    protected void setParentAnimation(PDEAnimationGroup parentAnimation) {
         // unlink from old parent if we have one
         if (getParentAnimation() != null) {
             // clear all changes without sending notifications
@@ -241,8 +229,6 @@ public class PDEAnimation extends Object {
         }
     }
 
-    // ToDo check if this method is still used, since we do without destructors/finalize in java
-
     /**
      * @brief Called internally when the parent is being destructed.
      *
@@ -250,7 +236,7 @@ public class PDEAnimation extends Object {
      * because the parent is already in the process of destruction, and is cleaning itself. Any parent functions called
      * might result in unexpected behaviour.
      */
-    void forgetParentAnimation() {
+    protected void forgetParentAnimation() {
         // forget the parent
         mParentAnimation = null;
 
@@ -270,14 +256,10 @@ public class PDEAnimation extends Object {
     /**
      * @brief Remove the animation from the parent.
      */
-    public void removeFromParentAnimation() {
-        // security
+    protected void removeFromParentAnimation() {
         if (getParentAnimation() != null) {
-            return;
+            getParentAnimation().removeSubAnimation(this);
         }
-
-        // remove from it
-        getParentAnimation().removeSubAnimation(this);
     }
 
 //----- running status -------------------------------------------------------------------------------------------------
@@ -330,7 +312,7 @@ public class PDEAnimation extends Object {
      * Reimplement the isRunningWithSubAnimations method to provide information if your animation should
      * actually be running.
      */
-    void checkRunning() {
+    protected void checkRunning() {
         // just propagate our run state to the parent
         setRunningRegisteredWithParent(isRunningWithSubAnimations());
     }
@@ -346,7 +328,7 @@ public class PDEAnimation extends Object {
      *
      * @param running true if we should be running.
      */
-    void setRunningRegisteredWithParent(boolean running) {
+    protected void setRunningRegisteredWithParent(boolean running) {
         // check for parent
         if (getParentAnimation() == null) {
             // don't accept it
@@ -428,7 +410,7 @@ public class PDEAnimation extends Object {
      *
      * @result Parent time (local to parent) in milliseconds.
      */
-    long getParentTime() {
+    public long getParentTime() {
         if (isRunningWithSubAnimations() || getParentAnimation() == null) {
             // we use the cached time
             return mCachedParentTime;
@@ -516,7 +498,7 @@ public class PDEAnimation extends Object {
      * The function is at the moment also called if a parent's time base changed. This behaviour will change - parent
      * time base changes should not affect subanimations, so a different adjustment function is necessary.
      */
-    void parentTimeDidChange() {
+    protected void parentTimeDidChange() {
         // don't do anything if not running
         if (!isRunningWithSubAnimations()) {
             return;
@@ -608,7 +590,7 @@ public class PDEAnimation extends Object {
      * This flag is completely independent from the changed flag itself - it manages if we're actually
      * called, not if we're changed.
      */
-    void setChangedRegisteredWithParent() {
+    public void setChangedRegisteredWithParent() {
         // don't accept if we have no parent
         if (getParentAnimation() == null) {
             return;
@@ -678,9 +660,7 @@ public class PDEAnimation extends Object {
      * We don't need to unregister from parent changed list (which would be expensive); the caller is responsible
      * for properly cleaning the list of registered subanimations.
      */
-    void sendChanges() {
-        boolean wasChanged;
-
+    protected void sendChanges() {
         // send change notification if we're really changed. The change sending might have been processed earlier.
         if (mChanged) {
             // send our own change

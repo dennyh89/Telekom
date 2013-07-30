@@ -7,142 +7,130 @@
 
 package de.telekom.pde.codelibrary.ui.elements.common;
 
-import de.telekom.pde.codelibrary.ui.color.PDEColor;
-
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
+import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
+import de.telekom.pde.codelibrary.ui.color.PDEColor;
+import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
+
+//----------------------------------------------------------------------------------------------------------------------
+// PDEDrawableShapedShadow
+//----------------------------------------------------------------------------------------------------------------------
 
 
-public class PDEDrawableShapedShadow extends Drawable {
+/**
+ * @brief Graphics primitive - an outer shadow with several possible shapes.
+ *
+ * This class is used for outer shadows of elements. The possible shapes are:
+ * rectangle, rounded rectangle, oval or a custom shape by path.
+ */
+public class PDEDrawableShapedShadow extends PDEDrawableBase {
 
     /**
      * @brief Global tag for log outputs.
      */
+	@SuppressWarnings("unused")
     private final static String LOG_TAG = PDEDrawableShapedShadow.class.getName();
 
-    private PDEColor mShapeColor;
-    private float mBlurRadius;
-    private float mMaxBlurRadius;
-    private float mLastBlurRadius;
-    private Path mShapePath;
-    private int mShapeType;
-    private RectF mBoundingRect;
-    private float mCornerRadius;
-    private int mAlpha;
-    private Paint mPaint = null;
-
-//    protected static final int SHAPE_RECT = 0;
-//    protected static final int SHAPE_ROUNDED_RECT = 1;
-//    protected static final int SHAPE_OVAL = 2;
-//    protected static final int SHAPE_CUSTOM_PATH = 3;
+//-----  properties ---------------------------------------------------------------------------------------------------
+    private PDEColor mElementShapeColor;
+    private float mElementBlurRadius;
+    private Path mElementShapePath;
+    private int mElementShapeType;
+    private float mElementCornerRadius;
+    private Paint mBackgroundPaint = null;
 
 
 
+//----- init -----------------------------------------------------------------------------------------------------------
     public PDEDrawableShapedShadow() {
+        // init drawable basics
+        super();
         // take over the default locally (these are the iOS default values for now)
-        mShapeColor = PDEColor.valueOf(Color.BLACK);
-        mBlurRadius = 3.0f;
-        mMaxBlurRadius = mBlurRadius;
-        mLastBlurRadius = mBlurRadius;
-        mAlpha = 255;
-
-        mShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
-        mBoundingRect = new RectF(0.0f, 0.0f, 0.0f, 0.0f);
-        mCornerRadius = 0.0f;
-        mPaint = new Paint();
-        mShapePath = new Path();
+        mElementShapeColor = PDEColor.valueOf(Color.BLACK);
+        mElementBlurRadius = 3.0f;
+        mElementShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
+        mElementCornerRadius = PDEBuildingUnits.oneThirdBU();//0.0f;
+        mBackgroundPaint = new Paint();
+        mElementShapePath = new Path();
+        update(true);
     }
+
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- general setters and getters ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
     /**
      * @brief Set shadow opacity.
      */
-    public void setShapeOpacity(float opacity) {
+    public void setElementShapeOpacity(float opacity) {
         int alpha = Math.round(opacity * 255);
         setAlpha(alpha);
     }
 
-    public float getShapeOpacity() {
+
+    /**
+     * @brief Get the shadow opacity of the shape.
+     *
+     * @return opacity of the shape
+     */
+    public float getElementShapeOpacity() {
         return mAlpha / 255;
     }
+
 
     /**
      * @brief Set shape color.
      */
-    public void setShapeColor(PDEColor color) {
-        // ToDo: override PDEColor:equals()  (optional)
+    public void setElementShapeColor(PDEColor color) {
         // any change?
-        if (color.getIntegerColor() == mShapeColor.getIntegerColor()) {
-            return;
-        }
-
+        if (color.getIntegerColor() == mElementShapeColor.getIntegerColor()) return;
         // remember the color
-        mShapeColor = color;
-
-        invalidateSelf();
+        mElementShapeColor = color;
+        // update
+        update(true);
     }
 
-    public PDEColor getShapeColor() {
-        return mShapeColor;
+
+    /**
+     * @brief Get shape color.
+     *
+     * @return shape color
+     */
+    public PDEColor getElementShapeColor() {
+        return mElementShapeColor;
     }
 
 
     /**
      * @brief Set shadow blur radius.
      */
-    public void setBlurRadius(float radius) {
+    public void setElementBlurRadius(float radius) {
         // any change?
-        if (mBlurRadius == radius) {
-            return;
-        }
-        // remember old radius
-        mLastBlurRadius = mBlurRadius;
-        // remember new radius
-        mBlurRadius = radius;
-
-        // remember maximum blur radius for dirty rect
-        if(mBlurRadius>mMaxBlurRadius){
-            mMaxBlurRadius = mBlurRadius;
-        }
-
-        invalidateSelf();
+        if (mElementBlurRadius == radius) return;
+        // remember
+        mElementBlurRadius = radius;
+        // update
+        createDrawingBitmap();
+        update(true);
     }
+
 
     /**
      * @brief Get current blur radius.
      */
-    public float getBlurRadius() {
-        return mBlurRadius;
+    public float getElementBlurRadius() {
+        return mElementBlurRadius;
     }
 
-    /**
-     * @brief Get maximum blur radius.
-     *
-     * Delivers the maximum blur radius that was set in the lifetime of this object.
-     * We need the maximum blur radius for the calculation of a proper dirty rect.
-     * It's not the most efficient solution, since the dirty rect will in many cases be
-     * bigger than it would have to be, but it prevents drawing errors. Maybe we find a better solution
-     * later on.
-     */
-    public float getMaxBlurRadius() {
-        return mMaxBlurRadius;
-    }
-
-    /**
-     * @brief Compares current and last blur radius and delivers bigger one.
-     *
-     * The blur radius can grow or shrink. For a quite optimal dirty rect calculation we need
-     * to compare the current radius with the last one and use the bigger one of both.
-     */
-    public float getBiggerBlurRadius() {
-        return (mBlurRadius>mLastBlurRadius)? mBlurRadius: mLastBlurRadius;
-    }
 
     /**
      * @brief Set the path to use.
@@ -150,164 +138,177 @@ public class PDEDrawableShapedShadow extends Drawable {
      * Paths are always filled using the count rule (which is an iOS feature and cannot be changed at
      * the moment). So something like shapes with holes etc. cannot be done through this layer.
      */
-    public void setShapePath(Path path) {
+    public void setElementShapePath(Path path) {
         // ToDo: Don't know if equals() is meaningful overriden here.
         // any change?
-        if (mShapePath.equals(path)) {
-            return;
-        }
-
+   //     if (mElementShapePath.equals(path)) return;
         // store the path
-        mShapePath = path;
-        mShapeType = PDEAvailableShapes.SHAPE_CUSTOM_PATH;
-        invalidateSelf();
+        mElementShapePath = path;
+        mElementShapeType = PDEAvailableShapes.SHAPE_CUSTOM_PATH;
+        update();
     }
 
-    public Path getShapePath() {
-        return mShapePath;
+
+    /**
+     * @brief Get the used custom path.
+     *
+     * @return custom path
+     */
+    public Path getElementShapePath() {
+        return mElementShapePath;
     }
+
 
     /**
      * @brief Set a rectangular path
      */
-    public void setShapeRect(RectF rect) {
-        mBoundingRect = rect;
-        mShapeType = PDEAvailableShapes.SHAPE_RECT;
-        invalidateSelf();
+    public void setElementShapeRect() {
+        mElementShapeType = PDEAvailableShapes.SHAPE_RECT;
+        update();
     }
 
 
     /**
      * @brief Set a rectangular path with rounded corners.
      */
-    public void setShapeRoundedRect(RectF rect, float cornerRadius) {
-        mBoundingRect = rect;
-        mCornerRadius = cornerRadius;
-        mShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
-        invalidateSelf();
+    public void setElementShapeRoundedRect(float cornerRadius) {
+        mElementCornerRadius = cornerRadius;
+        mElementShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
+        update();
     }
+
 
     /**
      * @brief Set a oval inscribing the rect. Use a square to get a circle
      */
-    public void setShapeOval(RectF rect) {
-        mBoundingRect = rect;
-        mShapeType = PDEAvailableShapes.SHAPE_OVAL;
-        invalidateSelf();
+    public void setElementShapeOval() {
+        mElementShapeType = PDEAvailableShapes.SHAPE_OVAL;
+        update();
     }
 
 
-    @Override
-    public void setAlpha(int alpha) {
-        if (mAlpha == alpha) {
-            return;
-        }
-        mAlpha = alpha;
-        invalidateSelf();
-    }
 
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- Drawable overrides ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+    /**
+     * @brief draws the shadow
+     */
     @Override
     public void draw(android.graphics.Canvas canvas) {
+        Rect bounds = getBounds();
+
+        // security
+        if (bounds.width() <=0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
+        canvas.drawBitmap(mDrawingBitmap, bounds.left - mElementBlurRadius, bounds.top - mElementBlurRadius, new Paint());
+    }
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- Helpers ------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+    /**
+     * @brief update background and border paint values
+     */
+    @Override
+    protected void updateAllPaints() {
+        createBackgroundPaint();
+    }
+
+
+    /**
+     * @brief create background paint for drawing
+     */
+    private void createBackgroundPaint() {
+        mBackgroundPaint = new Paint();
+        mBackgroundPaint.setAntiAlias(true);
+        mBackgroundPaint.setStyle(Paint.Style.FILL);
+        mBackgroundPaint.setColorFilter(mColorFilter);
+        mBackgroundPaint.setDither(mDither);
+        mBackgroundPaint.setColor(mElementShapeColor.newIntegerColorWithCombinedAlpha(mAlpha));
+    }
+
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- Drawing Bitmap ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @brief Creates the bitmap in which we draw our element.
+     *
+     * We draw our element in a bitmap first before we draw this bitmap on the canvas.
+     * The reason for this detour is that we can avoid annoying graphic acceleration bugs in this way.
+     * If the size of the element changes, we have to recreate the bitmap by calling this function.
+     */
+    @Override
+    protected void createDrawingBitmap(){
+        Rect bounds = getBounds();
+
+        // security
+        if (bounds.width() <= 0 || bounds.height() <= 0) return;
+        // use bitmap to avoid gfx-acceleration bug
+        if (mDrawingBitmap != null) mDrawingBitmap.recycle();
+        // create bitmap
+        mDrawingBitmap = Bitmap.createBitmap(bounds.width() + 2 * (int) mElementBlurRadius,
+                                             bounds.height() + 2 * (int) mElementBlurRadius,
+                                             Bitmap.Config.ARGB_8888);
+    }
+
+
+    /**
+     * @brief Updates our drawing bitmap and triggers a redraw of this element.
+     *
+     * If a drawing parameter changes, we need to call this function in order to update our drawing-bitmap and
+     * in order to trigger the draw of our updated bitmap to the canvas.
+     */
+    @Override
+    protected void updateDrawingBitmap(Canvas c, Rect bounds) {
         BlurMaskFilter blur;
         RectF drawRect;
         RectF normalizedBoundsRect;
 
-        if(mBoundingRect.width()<=0 || mBoundingRect.height()<=0){
-            return;
-        }
+        // security
+        if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
 
-        Bitmap b = Bitmap.createBitmap((int)mBoundingRect.width()+2*(int)mBlurRadius,(int)mBoundingRect.height()+2*(int)mBlurRadius,
-                                       Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
+        // normalized and pixelshifted
+        normalizedBoundsRect = new RectF(mPixelShift, mPixelShift, bounds.right - bounds.left - mPixelShift,
+                                         bounds.bottom - bounds.top - mPixelShift);
 
-        normalizedBoundsRect=new RectF(0.0f,0.0f,mBoundingRect.right-mBoundingRect.left,
-                                      mBoundingRect.bottom-mBoundingRect.top);
-        mPaint.reset();
-        mPaint.setAntiAlias(true);
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(mShapeColor.getIntegerColor());
-//        Log.d(LOG_TAG,"MyShadow Radius: "+mBlurRadius);
-        if (mBlurRadius <= 0.0) {
+        if (mElementBlurRadius <= 0.0) {
             // blur mask with 0.0 radius blur crashes, so don't set blur filter and make the rest invisible
-            mPaint.setAlpha(0);
+            mBackgroundPaint.setColor(mElementShapeColor.newIntegerColorWithCombinedAlpha(0));
         } else {
-            blur = new BlurMaskFilter(mBlurRadius, BlurMaskFilter.Blur.NORMAL);
-            mPaint.setMaskFilter(blur);
-            mPaint.setAlpha(mAlpha);
+            blur = new BlurMaskFilter(mElementBlurRadius, BlurMaskFilter.Blur.NORMAL);
+            mBackgroundPaint.setMaskFilter(blur);
+            mBackgroundPaint.setColor(mElementShapeColor.newIntegerColorWithCombinedAlpha(mAlpha));
         }
 
-        // ToDo: Newer changes are tested with rounded rect only; test with others
-        // ToDo: custom path will most likely not work anymore
-        drawRect = new RectF(normalizedBoundsRect.left+mBlurRadius,normalizedBoundsRect.top+mBlurRadius,
-                             normalizedBoundsRect.right+mBlurRadius,normalizedBoundsRect.bottom+mBlurRadius);
-        switch (mShapeType) {
+        drawRect = new RectF(normalizedBoundsRect.left + mElementBlurRadius,
+                             normalizedBoundsRect.top + mElementBlurRadius,
+                             normalizedBoundsRect.right + mElementBlurRadius,
+                             normalizedBoundsRect.bottom + mElementBlurRadius);
+        switch (mElementShapeType) {
             case PDEAvailableShapes.SHAPE_RECT:
-                c.drawRect(drawRect, mPaint);
+                c.drawRect(drawRect, mBackgroundPaint);
                 break;
             case PDEAvailableShapes.SHAPE_ROUNDED_RECT:
-                c.drawRoundRect(drawRect, mCornerRadius, mCornerRadius, mPaint);
+                c.drawRoundRect(drawRect, mElementCornerRadius, mElementCornerRadius, mBackgroundPaint);
                 break;
             case PDEAvailableShapes.SHAPE_OVAL:
-                c.drawOval(drawRect, mPaint);
+                c.drawOval(drawRect, mBackgroundPaint);
                 break;
             case PDEAvailableShapes.SHAPE_CUSTOM_PATH:
-                c.drawPath(mShapePath, mPaint);
+                c.drawPath(mElementShapePath, mBackgroundPaint);
                 break;
         }
-        Paint p = new Paint();
-        p.setAntiAlias(true);
-        p.setStyle(Paint.Style.FILL);
-        canvas.drawBitmap(b,mBoundingRect.left-mBlurRadius,mBoundingRect.top-mBlurRadius,p);
-
-        // Alternative
-//
-//            mPaint.reset();
-//            mPaint.setAntiAlias(true);
-//            mPaint.setStyle(Paint.Style.FILL);
-//            mPaint.setColor(mShapeColor.getIntegerColor());
-//            if (mBlurRadius <= 0.0) {
-//                // blur mask with 0.0 radius blur crashes, so don't set blur filter and make the rest invisible
-//                mPaint.setAlpha(0);
-//            } else {
-//                blur = new BlurMaskFilter(mBlurRadius, BlurMaskFilter.Blur.NORMAL);
-//                mPaint.setMaskFilter(blur);
-//                mPaint.setAlpha(mAlpha);
-//            }
-//
-//
-//            switch (mShapeType) {
-//                case SHAPE_RECT:
-//                    canvas.drawRect(mBoundingRect, mPaint);
-//                    break;
-//                case SHAPE_ROUNDED_RECT:
-//                    canvas.drawRoundRect(mBoundingRect, mCornerRadius, mCornerRadius, mPaint);
-//                    break;
-//                case SHAPE_OVAL:
-//                    canvas.drawOval(mBoundingRect, mPaint);
-//                    break;
-//                case SHAPE_CUSTOM_PATH:
-//                    canvas.drawPath(mShapePath, mPaint);
-//                    break;
-//            }
-//
-    }
-
-    /**
-     * @brief abstract in Drawable, need to override
-     *
-     */
-    @Override
-    public int getOpacity() {
-        // ToDo: does int realy make sense for opacity? Otherwise we could simply forward getShapeOpacity here?!?
-        return PixelFormat.OPAQUE;
-    }
-
-    /**
-     * @brief abstract in Drawable, need to override
-     *
-     */
-    @Override
-    public void setColorFilter(android.graphics.ColorFilter cf) {
-        // ToDo: Don't know if we really need this
     }
 }
