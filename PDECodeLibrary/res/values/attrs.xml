@@ -72,7 +72,7 @@
             <enum name="radio" value="17"/>
         </attr>
         <attr name="iconColored" format="boolean"/>
-        <attr name="cornerRadius" format="float"/>
+        <attr name="cornerRadius" format="dimension"/>
         <attr name="borderColor" format="color"/>
         <attr name="minButtonPadding" format="dimension"/>
         <attr name="minButtonPaddingLeft" format="dimension"/>
