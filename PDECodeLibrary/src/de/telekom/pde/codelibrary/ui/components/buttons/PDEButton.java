@@ -9,6 +9,7 @@ package de.telekom.pde.codelibrary.ui.components.buttons;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.res.TypedArray;
@@ -34,6 +35,7 @@ import de.telekom.pde.codelibrary.ui.PDEConstants.PDEAlignment;
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentControllerAdapterView;
+import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonLayoutHelper;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
@@ -446,7 +448,6 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
                     setBorderColorWithInt(sa.getColor(R.styleable.PDEButton_borderColor, R.color.DTBlack));
                 }
             }
-
             // check text color attribute, if there is none use title color attribute if there is one
             // both do the same, but setTextColor is more Android style
             if (sa.hasValue(R.styleable.PDEButton_textColor)) {
@@ -471,8 +472,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
                 } else {
                     setTextColorWithInt(sa.getColor(R.styleable.PDEButton_textColor, R.color.DTBlack));
                 }
-            }
-            else if (sa.hasValue(R.styleable.PDEButton_titleColor)) {
+            } else if (sa.hasValue(R.styleable.PDEButton_titleColor)) {
                 // check if we have a light/dark style dependent symbolic color.
                 int symbolicColor;
                 String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","titleColor");
@@ -509,7 +509,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
                         setTextColorWithInt(PDEColor.DTUIInteractiveColor().getIntegerColor());
                     } else if (symbolicColor == R.color.DTUIIndicative) {
                         setTextColorWithInt(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                    }else {
+                    } else {
                         setColorWithInt(sa.getColor(R.styleable.PDEButton_buttonColor, R.color.DTBlue));
                     }
                     // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
@@ -523,13 +523,12 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
             if (sa.hasValue(R.styleable.PDEButton_src)) {
                 //check if this is a resource value
                 int resourceID = sa.getResourceId(R.styleable.PDEButton_src,0);
-                if(resourceID==0){
+                if(resourceID == 0){
                     setIcon(sa.getString(R.styleable.PDEButton_src));
                 } else {
                     setIcon(getContext().getResources().getDrawable(resourceID));
                 }
-            }
-            else {
+            } else {
                 int res = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android","src",-1);
                 if (res != -1) {
                     setIcon(getContext().getResources().getDrawable(res));
@@ -539,49 +538,45 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
             if (sa.hasValue(R.styleable.PDEButton_iconColored)) {
                 setIconColored(sa.getBoolean(R.styleable.PDEButton_iconColored, false));
             }
-
             if (sa.hasValue(R.styleable.PDEButton_textAlignment)) {
                 setAlignment(PDEAlignment.values()[sa.getInt(R.styleable.PDEButton_textAlignment, 0)]);
             }
-            if( sa.hasValue(R.styleable.PDEButton_textSize)) {
+            if (sa.hasValue(R.styleable.PDEButton_textSize)) {
                 String text_size = sa.getString(R.styleable.PDEButton_textSize);
                 setFontSize(text_size);
             }
-            if( sa.hasValue(R.styleable.PDEButton_typeface)) {
+            if (sa.hasValue(R.styleable.PDEButton_typeface)) {
                 setFont(PDETypeface.createByName(sa.getString(R.styleable.PDEButton_typeface)));
             }
-
-            if( sa.hasValue(R.styleable.PDEButton_minButtonPadding)) {
-                setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding,0),
-                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding,0),
-                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding,0),
-                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding,0));
+            if (sa.hasValue(R.styleable.PDEButton_minButtonPadding)) {
+                setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding, 0),
+                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding, 0),
+                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding, 0),
+                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding, 0));
             }
-            if( sa.hasValue(R.styleable.PDEButton_minButtonPaddingLeft)) {
-                setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingLeft,0),
+            if (sa.hasValue(R.styleable.PDEButton_minButtonPaddingLeft)) {
+                setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingLeft, 0),
                                     mMinButtonPadding.top,
-                                    mMinButtonPadding.right,mMinButtonPadding.bottom);
+                                    mMinButtonPadding.right, mMinButtonPadding.bottom);
             }
-            if( sa.hasValue(R.styleable.PDEButton_minButtonPaddingTop)) {
+            if (sa.hasValue(R.styleable.PDEButton_minButtonPaddingTop)) {
                 setMinButtonPadding(mMinButtonPadding.left,
-                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingTop,0),
-                                    mMinButtonPadding.right,mMinButtonPadding.bottom);
+                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingTop, 0),
+                                    mMinButtonPadding.right, mMinButtonPadding.bottom);
             }
-            if( sa.hasValue(R.styleable.PDEButton_minButtonPaddingRight)) {
-                setMinButtonPadding(mMinButtonPadding.left,mMinButtonPadding.top,
-                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingRight,0),
+            if (sa.hasValue(R.styleable.PDEButton_minButtonPaddingRight)) {
+                setMinButtonPadding(mMinButtonPadding.left, mMinButtonPadding.top,
+                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingRight, 0),
                                     mMinButtonPadding.bottom);
             }
-            if( sa.hasValue(R.styleable.PDEButton_minButtonPaddingBottom)) {
-                setMinButtonPadding(mMinButtonPadding.left,mMinButtonPadding.top,
+            if (sa.hasValue(R.styleable.PDEButton_minButtonPaddingBottom)) {
+                setMinButtonPadding(mMinButtonPadding.left, mMinButtonPadding.top,
                                     mMinButtonPadding.right,
-                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingBottom,0));
+                                    sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingBottom, 0));
             }
-
             if (sa.hasValue(R.styleable.PDEButton_overlay)) {
-                setButtonOverlayLayerWithLayerType(sa.getInt(R.styleable.PDEButton_overlay,0));
+                setButtonOverlayLayerWithLayerType(sa.getInt(R.styleable.PDEButton_overlay, 0));
             }
-
             if (sa.hasValue(R.styleable.PDEButton_selected)) {
                 setSelected(sa.getBoolean(R.styleable.PDEButton_selected, false));
             }
@@ -591,14 +586,16 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
             if (sa.hasValue(R.styleable.PDEButton_radioAlignment)) {
                 setRadioAlignment(PDEAlignment.values()[sa.getInt(R.styleable.PDEButton_radioAlignment, 0)]);
             }
-
             if (sa.hasValue(R.styleable.PDEButton_roundedCornerConfiguration)) {
                 setRoundedCornerConfiguration(sa.getInt(R.styleable.PDEButton_roundedCornerConfiguration,
                         PDEDrawableCornerBox.PDEDrawableCornerBoxAllCorners));
             }
-
             if (sa.hasValue(R.styleable.PDEButton_iconToTextHeightRatio)) {
-                setIconToTextHeightRatio(sa.getFloat(R.styleable.PDEButton_iconToTextHeightRatio,2.0f));
+                setIconToTextHeightRatio(sa.getFloat(R.styleable.PDEButton_iconToTextHeightRatio, 2.0f));
+            }
+            if (sa.hasValue(R.styleable.PDEButton_cornerRadius)) {
+                setCornerRadius(sa.getDimension(R.styleable.PDEButton_cornerRadius,
+                        (float) PDEBuildingUnits.oneThirdBU()));
             }
 
             sa.recycle();
@@ -745,7 +742,6 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
             Log.e(LOG_TAG, "should not happen");
         }
 
-
         // hints might have changed -> collect and send them again
         collectHintsFromLayers();
         sendHintsToLayers();
@@ -758,7 +754,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
         // send complete agent initialization
         mButtonLayerToInitialize = layer;
         mAgentAdapter.getEventSource().requestOneTimeInitialization(this, "cbAgentControllerSingle",
-                                                                    PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION);
+                                                          PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION);
         mButtonLayerToInitialize = null;
     }
 
@@ -864,7 +860,6 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
 
         // create and set the new layer, remember type
         switch (layerType) {
-
             case BackgroundNone:
                 break;
             case BackgroundUser:
@@ -984,8 +979,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
     /**
      * @brief Select one of the default foregrounds
      */
-    public void setButtonOverlayLayerWithLayerType(PDEButtonLayerType layerType)
-    {
+    public void setButtonOverlayLayerWithLayerType(PDEButtonLayerType layerType) {
         PDEButtonLayerInterface layer;
         PDEButtonLayerType type;
 
@@ -1212,13 +1206,13 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      * No change handling here, this has to be done in the child implementations.
      */
     public void setTitleColorWithInt(int color) {
-        String colorstr;
+        String colorStr;
 
         // create a string from the color to integrate into parameters
-        colorstr = PDEColor.stringFromIntColor(color);
+        colorStr = PDEColor.stringFromIntColor(color);
 
         // set the parameters
-        mParameters.setParameter(PDEButtonParameterTitleColor, colorstr);
+        mParameters.setParameter(PDEButtonParameterTitleColor, colorStr);
 
         // tell all sub layers the new state
         sendParametersToLayers();
@@ -1433,8 +1427,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      *
      * @param font for the button
      */
-    public void setFont(PDETypeface font)
-    {
+    public void setFont(PDETypeface font) {
         // set the parameters
         setParameter(PDEButtonParameterFont, font);
 
@@ -1448,8 +1441,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      *
      * Only retrieves basic parameters, and only if a font was explicitly set before.
      */
-    public PDETypeface getFont()
-    {
+    public PDETypeface getFont() {
         Object object;
 
         // get the object
@@ -1468,8 +1460,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      *
      * @param fontSize of the font (in point)
      */
-    public void setFontSize(float fontSize)
-    {
+    public void setFontSize(float fontSize) {
         // set directly as number
         setParameter(PDEButtonParameterFontSize, fontSize);
 
@@ -1486,8 +1477,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      *
      * @param sizeString
      */
-    public void  setFontSize(String sizeString)
-    {
+    public void  setFontSize(String sizeString) {
         // set the string
         setParameter(PDEButtonParameterFontSize, sizeString);
 
@@ -1503,8 +1493,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      * If you used setFontSizeWithString use fontSizeString to get the font size.
      * @return the set font size in float or 0.0f if the parameter was not set or was set as a string.
      */
-    public float getFontSize()
-    {
+    public float getFontSize() {
         if(mParameters.parameterObjectForName(PDEButtonParameterFontSize) instanceof Float) {
             return mParameters.parameterFloatForName(PDEButtonParameterFontSize);
         }
@@ -1518,8 +1507,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      *
      * Only retrieves basic parameters, and only if a string was previously set
      */
-    public String getFontSizeString()
-    {
+    public String getFontSizeString() {
         // retrieve parameter main value
         return mParameters.parameterValueForName(PDEButtonParameterFontSize);
     }
@@ -1529,7 +1517,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
     */
     public void setCornerRadius(float cornerRadius) {
         // set the parameters
-        mParameters.setParameter(PDEButtonParameterCornerRadius, String.format("%.02f", cornerRadius));
+        mParameters.setParameter(PDEButtonParameterCornerRadius, String.format(Locale.ENGLISH, "%.02f", cornerRadius));
 
         // tell all sub layers the new state
         sendParametersToLayers();
@@ -1550,8 +1538,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      *
      * @param alignment left, right and center alignment are available. center is the default.
      */
-    public void setAlignment(PDEConstants.PDEAlignment alignment)
-    {
+    public void setAlignment(PDEConstants.PDEAlignment alignment) {
         String parameterString = null;
 
         // set as string
@@ -1569,8 +1556,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
         sendParametersToLayers();
     }
 
-    public void setCheckboxAlignment(PDEConstants.PDEAlignment alignment)
-    {
+    public void setCheckboxAlignment(PDEConstants.PDEAlignment alignment) {
         String parameterString = null;
 
         // set as string
@@ -1588,8 +1574,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
         sendParametersToLayers();
     }
 
-    public void setRadioAlignment(PDEConstants.PDEAlignment alignment)
-    {
+    public void setRadioAlignment(PDEConstants.PDEAlignment alignment) {
         String parameterString = null;
 
         // set as string
@@ -1611,8 +1596,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
     /**
      * @brief Get alignment of ForegroundIconTextLayer
      */
-    public PDEConstants.PDEAlignment getAlignment()
-    {
+    public PDEConstants.PDEAlignment getAlignment() {
         String textAlignmentString = mParameters.parameterValueForNameWithDefault(PDEButtonParameterAlignment, PDEConstants.PDEAlignmentStringCenter);
         PDEConstants.PDEAlignment textAlignment;
 
@@ -1636,8 +1620,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      *
      * @param alignment left, right and left-attached, right-attached alignment are available. leftAttached is the default.
      */
-    public void setIconAlignment(PDEButtonIconAlignment alignment)
-    {
+    public void setIconAlignment(PDEButtonIconAlignment alignment) {
         String parameterString;
         // set as string
         if (alignment == PDEButtonIconAlignment.PDEButtonIconAlignmentLeft) {
@@ -1661,8 +1644,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
     /**
      * @brief Get Icon alignment of ForegroundIconTextLayer
      */
-    public PDEButtonIconAlignment getIconAlignment()
-    {
+    public PDEButtonIconAlignment getIconAlignment() {
         String iconAlignmentString = mParameters.parameterValueForNameWithDefault(PDEButton.PDEButtonParameterIconAlignment, PDEConstants.PDEAlignmentStringCenter);
         PDEButtonIconAlignment iconAlignment;
 
@@ -1695,7 +1677,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      *
      * Works only for plate background for now.
      */
-    public void setRoundedCornerConfiguration(int config){
+    public void setRoundedCornerConfiguration(int config) {
         // set the parameters
         mParameters.setParameter(PDEButtonParameterRoundedCornerConfiguration, config);
 
@@ -1707,7 +1689,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
     /**
      * @brief Set ratio of icon height to text height.
      */
-    public void setIconToTextHeightRatio(float ratio){
+    public void setIconToTextHeightRatio(float ratio) {
         // set the parameters
         mParameters.setParameter(PDEButtonParameterIconToTextHeightRatio, ratio);
 
@@ -1719,8 +1701,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
     /**
      * @brief Get ratio of icon height to text height.
      */
-    public float getIconToTextHeightRatio()
-    {
+    public float getIconToTextHeightRatio() {
         if(mParameters.parameterObjectForName(PDEButtonParameterIconToTextHeightRatio) instanceof Float) {
             return mParameters.parameterFloatForName(PDEButtonParameterIconToTextHeightRatio);
         }

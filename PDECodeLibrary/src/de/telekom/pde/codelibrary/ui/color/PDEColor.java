@@ -10,6 +10,9 @@ package de.telekom.pde.codelibrary.ui.color;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
+
+import java.util.Locale;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 
 
@@ -748,7 +751,7 @@ public class PDEColor {
      */
     public String getColorString(){
         // return formatted string
-        return String.format("%01f,%01f,%01f,%01f", mRed, mGreen, mBlue, mAlpha);
+        return String.format(Locale.ENGLISH, "%01f,%01f,%01f,%01f", mRed, mGreen, mBlue, mAlpha);
     }
 
 
@@ -757,7 +760,7 @@ public class PDEColor {
      */
     public String getHexColorString() {
         // return hex formatted string
-        return String.format("#%08x", getIntegerColor());
+        return String.format(Locale.ENGLISH,"#%08x", getIntegerColor());
     }
 
 
@@ -870,7 +873,8 @@ public class PDEColor {
      */
     public static String stringFromIntColor(int color){
         // return formatted string
-        return String.format("#%02x%02x%02x%02x",(color>>24)&0xff,(color>>16)&0xff,(color>>8)&0xff,color&0xff);
+        return String.format(Locale.ENGLISH, "#%02x%02x%02x%02x",
+                (color >> 24) & 0xff, (color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff);
     }
 
     @Override
@@ -960,6 +964,6 @@ public class PDEColor {
         v = newColor.getValue() * 100.0f;
 
         // compose and return
-        return String.format("RGB=%s; H=%.1f S=%.1f V=%.1f",rgbString,h,s,v);
+        return String.format(Locale.ENGLISH,"RGB=%s; H=%.1f S=%.1f V=%.1f", rgbString, h, s, v);
     }
 }
