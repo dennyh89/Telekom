@@ -4,15 +4,12 @@
 The Code Library
 ================
 
-Target
-------
-
-The Code Library project creates standardized and re-usable source code
-to support cross-product development and increase efficiency and speed in
+The Code Library project creates standardized and reusable source code to
+support cross-product development and increase efficiency and speed in
 product development.
 
 Description
------------
+-----
 
 The Code Library is a platform for sharing software components to build
 graphical user interfaces. The components developed by Deutsche Telekom
@@ -20,260 +17,279 @@ Product Design implement standard elements of graphical user interfaces to
 support a consistent user experience and efficient development across Telekom
 products.
 
-Content
--------
-
-The Code Library is available for Android, iOS, and HTML. All software
+The Code Library is available for Android, iOS and HTML. All software
 components are provided in source code with examples of application and API
 documentation.
 
-Version Control System
-----------------------
+The components are developed in collaboration with an external
+software-development agency. The development is based on the agile
+software-development methodology.
 
-The content within the Code Library is continuously updated and extended.
-The updates and previous versions are managed by the version control system
-'git', the use of which is well supported by developer tools like Eclipse,
-IntelliJ and Xcode.
+How to use
+-----
 
-The server is `git.design.telekom.com`. The protocol is HTTPS. Note, that
-the system is not configured to handle access to the repositories using a
-Web-browser. Zip files are also not provided because of the missing update
-process after download. 
+The Code Library supports user-interface developments on all levels from just
+reviewing the code to full migration of your user-interface developments in
+order to use the Code Library components.
 
-We recommend to integrate the git repositories directly into your developer
-tools. If that does not work you can use a simple git client like
-[GitExtensions](code.google.com/p/gitextensions/) or
-[TortoiseGit](code.google.com/p/tortoisegit/).
+### Best practice ###
 
-For more information go to the Experience Toolbox
-[FAQ](https://www.design.telekom.com/meta/faq/).
+Review the source code available in the Code Library to identify ways to
+implement visual appearance and behavior in your user-interface development.
+Reuse experience and knowledge from other developers. Keep your build path
+unmodified.
+
+Recommendation: use the Code Library as best practices if you are looking for
+a solution to a small part of your user interface that is not worth the
+effort of fully integrating the Code Library.
+
+### Utilizing of code from the Code Library ###
+
+Review the source code available in the Code Library to identify code
+fragments that help you solve specific issues. Extend classes available in
+the Code Library, derive your user-interface development from the components
+or use modified code from the components in your user-interface developments.
+Keep your build path unmodified.
+
+Recommendation: utilize code from the Code Library into your user-interface
+developments if your project has specific requirements such as a different
+style or behavior.
+
+### Use of the Code Library in conjunction with your existing implementation
+###
+
+Integrate the Code Library into your build path. Use components from the Code
+Library to implement new features and behavior. Keep the components you
+already have developed unmodified.
+
+Recommendation: use the Code Library in conjunction with your developed
+components if your project is already in an advanced stage but still has a
+substantial set of user-interface developments open.
+
+### Full switch to the Code Library ###
+
+Integrate the Code Library into your build path. Use the components for all
+new user-interface developments. Modify your existing source code to replace
+components you have already implemented with the components from the Code
+Library.
+
+Recommendation: use all of the Code Library when you start a new project
+from scratch. Because of the effort required to rewrite your existing source
+code, we recommend a full migration if the development is in the early stages
+with few components already implemented.
+
+Version control system
+-----
+
+The content within the Code Library is continuously updated and expanded. The
+updates and previous versions are managed by the version control system "Git."
+
+The server is "git.design.telekom.com". The protocol is HTTPS. The Git-system
+and the Experience Toolbox use Single Sign On (SSO). Please use your
+Experience Toolbox e-mail and password to access the repositories.
+
+We recommend integrating the git-repositories directly into your developer
+tools like Eclipse and IntelliJ. Refer to your tool manual and enter the URL
+in the configuration. If that does not work, you can use a simple Git-client
+such as [Git-Extensions](http://code.google.com/p/gitextensions/) or
+[Tortoise-Git](http://code.google.com/p/tortoisegit/).
+
+Note: the system is not configured to handle access to the repositories using
+a Web-browser. Zip files are also not provided because of the missing update
+process after a download.
+
+For more information, see the
+[Experience Toolbox FAQ](https://www.design.telekom.com/meta/faq/).
 
 Terms of use
-------------
+-----
 
 The content of the Code Library can be used for required software
-developments for Telekom products in line with the terms of use of Experience
-Toolbox Deutsche Telekom. Full compliance with these terms is mandatory. They
-are available in the Experience Toolbx at: Account > Terms of use & legal
-notices.
+developments for Deutsche Telekom products in accordance with the terms of
+use of the Experience Toolbox Deutsche Telekom. Full compliance with these
+terms is mandatory. They are available in the Experience Toolbox at:
+Account > Terms of Use & Imprint.
 
-Licensing for Telegrotesk Font
-------------------------------
+### Licensing information - Telegrotesk Font ###
 
 For licensing reasons, only employees of the Deutsche Telekom Group are
 authorized to download the typefaces free of charge. They must not be passed
-to third parties.
+on to third parties.
 
-All agencies, subcontractors, business partners, etc. are required to purcha
-the typefaces from URW++.
+All agencies, subcontractors, business partners, etc. are required to
+purchase the typefaces from URW++.
 
-URW++ Design & Development
-PoppenbÎáÎ÷Î÷ÎáÎùÎåtteler Bogen 36
-22399 Hamburg, Germany
-Tel. +49 40 60605 0
-E-mail: info@urwpp.de
+URW++ Design & Development<br />
+Poppenbuetteler Bogen 36<br />
+22399 Hamburg, Germany<br />
+Tel. +49 40 60605 0<br />
+E-mail: info@urwpp.de<br />
 www.urwpp.de (IdentiType)
 
-User Authorization
-------------------
+User authorization
+-----
 
-The git and the Experience Toolbox use Single Sign On (SSO). Please use your
-login and password from the Experience Toolbox for accessing the
-repositories.
+The Git-system and the Experience Toolbox use Single Sign On (SSO). Please
+use your Experience Toolbox e-mail and password to access the repositories.
 
-Special permission is not required. All employees of Deutsche Telekom and the
-national companies requiring the Code Library for their work can register
-under the following link: (design.telekom.com/register/).
-
-Development
------------
-
-The components are developed in collaboration with an external
-software development agency. The development is based on the agile
-software development methodology.
+Special permission is not required. All Deutsche Telekom employees and the
+national companies requiring the Code Library for their work can register at
+http://design.telekom.com/register/.
 
 How to contribute
------------------
+-----
 
-A direct contribution to further developments of the Code Library is
-currently not possible. All repositories are read-only, all branches are
-protected. Write-access to repositories within the git system is only given
-to authorized users.
+A direct contribution to further develop the Code Library is currently not
+possible. All repositories are read-only, and all branches are protected.
+Write-access to repositories within the Git-system is only given to
+authorized users.
 
-If you want to modify or add source code considered to be valuable for a
-larger community of user interfaces developers, please contact the Helpdesk.
+If you want to modify or add source code considered valuable for a larger
+community of user-interface developers, please contact the help desk.
 
-Helpdesk
---------
+Help desk
+-----
 
 Please send your bug reports, change requests and other feedback to the
-design helpdesk
-(E-mail: design-support@telekom.de - Phone: +49 (0) 228 181-22222).
+design help desk.<br />
+E-mail: design-support@telekom.de<br />
+Phone: +49 (0) 228 181-22222
 
 The Code Library for Android
 ============================
                 
-Structure
----------
+Getting the Code Library
+---
 
-1. `PDECodeLibrary_Android` - The library, including source code, minimal
-set of resources and doxygen file to generate documentation.
-2. `PDECodeSamples_Android` - The sample project for Android.
-3. `PDECodeLibrary_Android_Docu` - The documentation of the Android library
-in html. Auto-generated from the doxygen file. The documentation is also
-available online.
+You can clone from three repositories:
 
+1. The library for Android, including source code and minimal set of
+resources: https://git.design.telekom.com/git/PDECodeLibrary_Android.git
+2. The sample project for Android:
+https://git.design.telekom.com/git/PDECodeSamples_Android.git
+3. The documentation of the Android library in html for offline use:
+https://git.design.telekom.com/git/PDECodeLibrary_Android_Docu.git <br />
+The documentation is also available online as part of the Experience Toolbox.
 
-Getting the Library
----------------
-
-You can clone the repositories using a git tool. Use 
-commands such as
-
-    git clone https://git.design.telekom.com/git/PDECodeLibrary_Android.git
-    git clone https://git.design.telekom.com/git/PDECodeSamples_Android.git
-    git clone https://git.design.telekom.com/git/PDECodeLibrary_Android_Docu.git
-
-In addition, modern development environments support sharing source code
-with git. Refer to the manual of your tool and enter the URL in the
-configuration.
-
-If you get an SSL certificate problem, turn off the SSL verification for
-git. You have two options to turn it off:
-
-    git config --global http.sslVerify false
-    export GIT_SSL_NO_VERIFY=true
+Modern development environments support sharing source code with Git. Please
+refer to the manual of your tool and enter the URL in the configuration.
     
 Branches
 --------
 
-The master branch of the git system contains the latest version of the
-software components. Previous versions will be available in specific branches
-named after the version of the underlying operating system. Software
-components of a specific branch can be cloned directly by using the option
-“-b”.
+The master branch of the Git-system contains the latest version of the
+software components. Currently, the Code Library version 2.0 is available
+in the master branch.
 
-At present the Code Library only contains one version of software components.
-No other branches are specified.
-
-Versioning
--------------------
-
-A version number takes the form `X.Y.Z` where `X`, `Y`, and `Z` are
-non-negative integers. X is the major version, Y is the minor version, and Z
-is the patch version.
-
-Each element increases numerically by increments of one. The patch version Z
-(x.y.Z) is incremented if bug fixes are introduced. A bug fix is an internal
-change that fixes incorrect behavior. The minor version Y (x.Y.z) is
-incremented if substantial new functionality or improvements are introduced.
-Patch version is reset to 0 when minor version is incremented. Major version
-X (X.y.z) is incremented if dedicated milestones are completed that change
-the API of the library. Changing the major version might request modification
-in the code using the library. Patch and minor version are reset to 0 when
-major version is incremented.
-
-	For instance: 1.9.0 -> 1.9.1 -> 1.10.0 -> 1.11.0 -> 1.11.1 -> 1.11.2 ->
-	2.0.0 -> 2.1.0. 
-
-Major version zero (0.y.z) is for initial development. The code should not
-be considered stable. Version 1.0.0 defines the initial release to the public. 
-
-A pre-release version may be denoted by appending a dash and an identifier
-immediately following the patch version. Identifiers are comprised of only
-ASCII alphanumerics and dash [0-9A-Za-z-]. Pre-release versions satisfy but
-have a lower precedence than the associated normal version. Use dedicated
-branches. They do not appear at the master branch.
-
-	For instance: 1.0.0-alpha, 1.3.7-rc1.
+Previous versions are available in specific branches. Currently, the Code
+Library version 1.0.2 is available in the branch "release-1.0.2". You can
+clone directly by using the option "-b release-1.0.2".
 
 Installation
 ============
 
-System requirements
--------------------
+The Code Library and code samples for Android include project files for
+easy integration into Eclipse. The preceding sections list the steps to
+integrate the Code Library into Eclipse and IntelliJ. For the use of other
+development environments, please refer to your tool's manual on how to work
+with external libraries and existing source code.
 
-There are no specific requirements for using the library and
-the sample. You need a development environment for developing Android
-applications. This includes the correct version of the SDK supporting your
-Android target. You also need a web browser to view the
-documentation online or offline.
+System requirements
+---
+
+There are no specific requirements for using the Code Library and samples.
+You need a development environment for developing Android applications.
+This includes the correct version of the SDK that supports your Android
+target. You also need a web browser to view the documentation online or
+offline.
 
 Dependencies
-------------
+---
 
-The library was built for Android 4.1.2 (API16). You need this version of
-Android to build the library. You can include the pre-compiled library for
-older versions of Android. There are no other dependencies.
+The Code Library was built for Android 4.1.2 (API16). Since version 1.10.0
+(Integration of the action bar, the Code Library depends on the
+ActionBarSherlock. Its repository on GitHub has been added as submodule.
 
-The samples were build for Android 2.3.3 (API10) or higher. To build and run
-the samples, you need the library. The bundle contains a project file with
-the correct use of the library in Eclipse. Without the library, you can only
-browse the source code.
+Note: do not forget to use the flag "\—\-recursive" for cloning (or activate
+the checkbox "submodules" in your tool).
 
-Note for Mac-users: If you are running OS X Mountain Lion (OS 10.8.x) you may
-need to additionally install the latest Java Plug-in to use the components.
+The samples were built for Android 2.3.3 (API10) or higher. To build and run
+the samples, you need the Code Library. The bundle contains a project file
+with the correct use of the library in Eclipse. Without the library, you can
+only browse the source code.
+
+Note for Mac-users: if you are running OS X Mountain Lion (OS 10.8.x), you
+may need to additionally install the latest Java plug-in to use the
+components.
 
 The documentation has no dependencies.
+
 
 Installation in Eclipse
 ---------------------------
 
-Creating a Library Project
+### Creating a library project ###
 
-1. Open "File", then select "New" and then "Project".
-2. Unfold "Android" and select "Android Project from Existing Code".
-3. Select "Next".
-4. Enter the root directory: Navigate to the folder "PDECodeLibrary_Android"
-and select the sub-folder "PDECodeLibrary".
-5. The project appears. Select the checkbox. If the checkbox is disabled,
-check if you already have a project with the same name.
-6. Select "Finish".
+1.	Open "File"; select "New" and then "Project".
+2.	Expand "Android" and select "Android Project from Existing Code".
+3.	Select "Next".
+4.	Enter the root directory. Navigate to the folder
+"PDECodeLibrary_Android", and select the subfolder "PDECodeLibrary".
+5.	The project appears. Select the checkbox. If the checkbox is
+disabled, check if you already have a project with the same name.
+6.	Select "Finish".
 
-Creating the Sample Project
+### Creating the sample project ###
 
-1. Open "File", then "New" and then "Project".
-2. Unfold "Android" and select "Android Project from Existing Code".
-3. Select "Next".
-4. Enter the root directory: Navigate to the folder "PDECodeSamples_Android"
-and select the sub-folder "PDECodeSamples".
-5. The project appears. Select the checkbox. If the checkbox is disabled,
-check if you already have a project with the same name.
-6. Select "Finish".
+1.	Open "File", then "New" and then "Project".
+2.	Expand "Android", and select "Android Project from Existing Code".
+3.	Select "Next".
+4.	Enter the root directory. Navigate to the folder
+"PDECodeSamples_Android", and select the subfolder "PDECodeSamples".
+5.	The project appears. Select the checkbox. If the checkbox is
+disabled, check if you already have a project with the same name.
+6.	Select "Finish".
 
 You should now be able to build and run the sample in the emulator or on
 your device, if connected.
 
+
 Installation in IntelliJ
 ------------------------
 
-Creating the Library Project
+### Creating the library project ###
 
-1. Open "File" and select "New Project".
-2. Select "Create project from existing sources" and select "Next".
-3. Enter the project root. Select the project files location and PDECodeLibrary folder.
-4. The name of the project is selected. Select "Next".
-5. A list with two entries ("gen" and "src" folder) appears. Select "Next".
-6. A list with two entries ("classes.jar" and "pdecodelibrary.jar") in the
-library and one entry in the library contents ("classes.jar") appears. Select "Next".
-7. A list with one entry in the modules ("PDECodeLibrary") appears. Select "Next".
-8. Several frameworks are detected in the project
-(Android - AndroidManifest.xml file). Select "Finish".
-
-Creating the Sample Project
-
-1. Open "File" and select "New Project".
-2. Select "Create project from existing sources" and select "Next".
-3. Enter the project root. Select the project files location and PDECodeSamples folder.
-4. The name of the project is selected. Select "Next".
-5. A list with two entries ("gen" and "src" folder) appears. Select "Next".
-6. A list with one entry ("classes.jar") in the library and one entry in
-the library contents ("classes.jar") appears. Select "Next".
-7. A list with one entry in the modules ("PDECodeSamples") and one entry
-in the module dependencies ("classes.jar") appears. Select "Next".
-8. Several frameworks are detected in the project (Android -
+1.	Open "File", and select "New Project".
+2.	Select "Create project from existing sources", and select "Next".
+3.	Enter the project root. Select the project files location and
+PDECodeLibrary folder.
+4.	The name of the project is selected. Select "Next".
+5.	A list with two entries ("gen" and "src" folder) appears. Select
+"Next".
+6.	A list with two entries ("classes.jar" and "pdecodelibrary.jar") in
+the library and one entry in the library contents ("classes.jar") appears.
+Select "Next".
+7.	A list with one entry in the modules ("PDECodeLibrary") appears.
+Select "Next".
+8.	Several frameworks are detected in the project (Android -
 AndroidManifest.xml file). Select "Finish".
-9. A popup appears to import Android dependencies from property files
+
+### Creating the sample project ###
+
+1.	Open "File", and select "New Project".
+2.	Select "Create project from existing sources", and select "Next".
+3.	Enter the project root. Select the project files location and
+PDECodeSamples folder.
+4.	The name of the project is selected. Select "Next".
+5.	A list with two entries ("gen" and "src" folder) appears. Selec
+"Next".
+6.	A list with one entry ("classes.jar") in the library and one entry
+in the library contents ("classes.jar") appears. Select "Next".
+7.	A list with one entry in the modules ("PDECodeSamples") and one
+entry in the module dependencies ("classes.jar") appears. Select "Next".
+8.	Several frameworks are detected in the project (Android -
+AndroidManifest.xml file). Select "Finish".
+9.	A popup appears to import Android dependencies from property files
 (Import library module PDECodeLibrary from path....). Add the dependency
 "PDECodeSamples" to "PDECodeLibrary". Select the checkboxes. Select "OK".
 
@@ -282,15 +298,15 @@ your device, if connected.
 
 Installing the Documentation
 ---------------------------------
+The latest version of the documentation is available online as part of the
+Experience Toolbox. Please refer to
+https://www.design.telekom.com/code-library/.
 
-The latest version of the documentation is available online at
-https://www.design.telekom.com/code-library/
-
-For offline use, simply clone the documentation to your favorite folder. Go
-to the root directory of your project (the one containing src, classes and
-so on) and clone the documentation into this folder. To avoid that the folder
-will be named after the repository, provide the target folder as parameter in the
-clone command.
+For offline use, simply clone the documentation repository to your favorite
+folder. Go to the root directory of your project (the one containing src,
+classes and so on), and clone the documentation into this folder. To avoid
+the folder being named after the repository, provide the target folder as
+the parameter in the clone command.
 
 Example to clone to the folder "./doc"
 
@@ -299,12 +315,13 @@ Example to clone to the folder "./doc"
 First Steps
 -----------
 
-To use the library it is required to initialize the library first:
+To use the library, you must first initialize it:
+
 1. Import the class `de.telekom.pde.codelibrary.ui.PDECodeLibrary`
 2. Enter a new line into your App's or main Activity's `onCreate`-method:
 			`PDECodeLibrary.getInstance().libraryInit(this);`
 
-Example:
+### Example initialization ###
 
 	public class MainActivity extends Activity {
 
@@ -318,10 +335,10 @@ Example:
 		}
 	}
 
-You can now add the components either in your layout files or in the source of
-your application.
+You can now add the components either in your layout files or in the source
+of your application.
 
-Example layout file:
+### Example layout file ###
 
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dt_codecomponents="http://schemas.android.com/apk/res/com.example.mystarterpackage"
@@ -344,7 +361,7 @@ Example layout file:
 
 	</RelativeLayout>
 
-Example source code:
+### Example source code ###
 
 	public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -377,40 +394,49 @@ Example source code:
 Uninstallation
 ===============
 
-Uninstalling the Library
------------------------------
+The preceding sections illustrate how to remove the Code Library, the samples
+and the documentation from your development environment.
+
+Uninstalling the Code Library
+---
 
 The library does not require specific uninstallation. Simply remove the
 folder PDECodeLibrary_Android from your local hard drive.
 
-Be aware of dependencies from your projects to the library. Remove all links
-to the library from your project settings.
+Please consider the possible dependencies of your projects with the library.
+Delete all such references to the library from your project settings when you
+delete this library.
 
-Uninstalling the Samples
-------------------------------
+Uninstalling the samples
+---
 
 The samples do not require specific uninstallation. Simply remove the folder
 PDECodeSamples_Android from your local hard drive.
 
-Uninstalling the Documentation
-------------------------------------
+Uninstalling the documentation
+---
 
 Simply remove the folder from your local hard drive.
+
 
 Known issues
 ============
 
-+ Version 1.12.9: The progress indicator is not styled to meet the
+__Version 1.12.9__<br />
+The progress indicator is not styled to meet the
 requirements of Deutsche Telekom.
-+ Version 1.12.4: The icon font has problems with the visual appearance
+
+__Version 1.12.4__<br />
+The icon font has problems with the visual appearance
 if the size of the displayed icons varies.
-+	Version 1.10.3
-++ The height of the action bar does not conform to the Styleguide of
-Deutsche Telekom.
-++ The action bar does not support vertical divider between icons. It only
+
+__Version 1.10.3__<br />
+The height of the action bar does not conform to the Styleguide of
+Deutsche Telekom.<br />
+The action bar does not support vertical divider between icons. It only
 provides a styled vertical divider to be used between a text and an icon.
-The styling uses standard color and thickness.
-++ The width of the areas in the bottom bar on the phone do not conform to
+The styling uses standard color and thickness.<br />
+The width of the areas in the bottom bar on the phone do not conform to
 the Styleguide of Deutsche Telekom. The width is set by the Android system,
 according to the number of the items. The case of a single item uses the full
 screen width for the single area. The cases of 2 and 3 items use areas of
@@ -418,49 +444,74 @@ rather small width placed at the corners and the central position. Cases of
 more items scale the width of the areas to fill the full screen width. The
 right and left corner item are misplaced. It runs out of the screen,
 therefore it looks smaller and the icon does not appear central aligned
-(actually it is, but using invisible screen parts).
-++ All tooltips should appear close to the control it relates to. Currently,
-the tooltips in the split action bar appear horizontal centralized.
-++ The drop down panels for spinner, context menu and overflow should have a
-shadow. The default shadow would be fine, it is getting lost when switching
-to the Telekom-theme. It is not possible to re-activate the shadow because
-it uses an implementation based on default 9-patch files. There are two
-options: (a) Telekom creates 9-patches of just 1px in background color and a
-second one of 1px for the line. These will be stretched over the areas; or
-(b) Telekom accepts to simply use a frame of 1px in Telekom color.
-++ The grey color of the squares in the default icon to launch the overflow
-menu does not conform the Styleguide of Deutsche Telekom. The color cannot be
-modified – the icon needs to be replaced by an own one. Telekom must provide
-the icon to be used, or accept the use of the default icon. We will use the
-icon “more” and turn it by 90 degree: https://www.design.telekom.com/icon-library/#/detail/204/hst// 
-+	Version 1.7.0: The components for list header, text labels, and text
-links have not been implemented yet. The login module uses simple elements
-from standard Android UI Kit.
-+	Version 1.6.0: Central vertical alignment of font Telegrotesk 2.7 is
-incorrect. The distance to the top is one pixel too small, whereas the
-distance to the bottom is one pixel too large. The font will be fixed in
-another development. The new version of the font will request an additional
-improvement of the library.
-+	Version 1.4.0: List is work in progress.
+(actually it is, but using invisible screen parts).<br />
+All tooltips should appear close to the control it relates to. Currently,
+the tooltips in the split action bar appear horizontal centralized.<br />
    
 Release Notes
 =============
 
-+	Current public version: 1.2.0
-+	Current non-public version: 1.12.11
+__Current public version__<br />
+2.0.1
 
-Major 2.0 (planned)
+__Current non-public version__<br />
+2.0.1
+
+Patch 2.0.1 (public)
 -------------------
 
-### date: 2nd quarter 2013
-### server: git.design.telekom.com
-### repositories: PDECodeLibrary_Android.git, PDECodeSamples_Android.git, PDECodeLibrary_Android_Docu.git
-### branch: master
+__Date__<br />
+01.08.2013
 
-Release: version 2.0
---------------------
-The second release will extend the code library with new components for
-lists, input fields, scrollbars, progressbars, list header, and text link.
+__Server__<br />
+git.design.telekom.com
+
+__Repositories__<br />
+PDECodeLibrary_Android.git, PDECodeLibrary_Android_Docu.git
+
+__Branch__<br />
+master
+
+__Content__<br />
+
+hotfix-2.0.1: corner radius of buttons fixed
+
+The feature of setting the corner radius of the buttons was not
+implemented correctly.
+
+In XML, it was available as float instead of dimension. In code, corner
+radius was implemented using a String. This could lead to crashes in
+several APIs.
+
+The corner radius has been corrected for XML as well as in code.
+
+Major 2.0 (public)
+-------------------
+
+__Date__<br />
+30.07.2013
+
+__Server__<br />
+git.design.telekom.com
+
+__Repositories__<br />
+PDECodeLibrary_Android.git, PDECodeSamples_Android.git,
+PDECodeLibrary_Android_Docu.git
+
+__Branch__<br />
+master
+
+__Content__<br />
+
+The Code Library version 2.0 contains the __components__ for Buttons,
+Checkboxes, Radiobuttons, Inputfields, and Lists.
+
+It also contains __activities__ for splash screen, actionbar, and login
+(app-login and login connetected with OneIDM-service).
+
+Additionally, it contains the __graphical elements__ to build Boxes,
+Notification frames (Tooltip), , Listheader, Scrollbars, Progressbars,
+Methaphors, Icons and Tele IconFont, Text, Delimiters, Shadows, and Areas.
 
 Feature 1.12.11 (closed beta)
 ----------------------------
@@ -795,10 +846,18 @@ Elements Samples`.
 Patch 1.0.2  (public)
 ---------------------
 
-### date: 14.12.2012
-### server: git.design.telekom.com
-### repositories: PDECodeLibrary_Android.git
-### branch: master
+__Date__<br />
+14.12.2012
+
+__Server__<br />
+git.design.telekom.com
+
+__Repositories__<br />
+PDECodeLibrary_Android.git, PDECodeSamples_Android.git,
+PDECodeLibrary_Android_Docu.git
+
+__Branch__<br />
+release-1.0.2
 
 config: project.properties added
 
@@ -811,10 +870,18 @@ project with the library. The properties to set are:
 Patch 1.0.1 (public)
 --------------------
 
-### date: 14.12.2012
-### server: git.design.telekom.com
-### repositories: PDECodeLibrary_Android.git, PDECodeSamples_Android.git
-### branch: master
+__Date__<br />
+14.12.2012
+
+__Server__<br />
+git.design.telekom.com
+
+__Repositories__<br />
+PDECodeLibrary_Android.git, PDECodeSamples_Android.git,
+PDECodeLibrary_Android_Docu.git
+
+__Branch__<br />
+release-1.0.2
 
 hotfix: fix of setAlpha for checkboxes
 
@@ -828,12 +895,20 @@ fix has been implemented in order to be future save.
 Major 1.0 (public)
 ------------------
 
-### date: 14.12.2012
-### server: git.design.telekom.com
-### repositories: PDECodeLibrary_Android.git, PDECodeSamples_Android.git, PDECodeLibrary_Android_Docu.git
-### branch: master
+__Date__<br />
+14.12.2012
 
-release: version 1.0
+__Server__<br />
+git.design.telekom.com
+
+__Repositories__<br />
+PDECodeLibrary_Android.git, PDECodeSamples_Android.git,
+PDECodeLibrary_Android_Docu.git
+
+__Branch__<br />
+release-1.0.2
+
+__Content__<br />
 
 Version 1.0 of the code library contains all buttons, checkboxes and
 radiobuttons.
@@ -938,7 +1013,7 @@ the package `de.telekom.pde.codelibrary.ui.color` and the XML files in
 Init 0.1.0 (non-public)
 -----------------------
 
-###### init: project and structure defined
+init: project and structure defined
 
 The project has been initialized. The project structure has been defined.
 The development environment has been created. A set of constants has been
