@@ -53,7 +53,6 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     private PDEDrawableShapedInnerShadow mElementInnerShadowDrawable;
     private PDEDrawableShape mElementProgressDrawable;
     private PDEDrawableShape mElementPreloadDrawable;
-
     protected PDEViewWrapper mWrapperView;
 
 
@@ -681,6 +680,4 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
         }
         return mWrapperView;
     }
-
-
 }

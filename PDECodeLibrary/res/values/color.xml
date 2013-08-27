@@ -59,18 +59,20 @@
     <color name="DTLightUIBackground">@color/DTWhite</color>
     <color name="DTLightUIIndicativeText">@color/DTGrey140</color>
     <color name="DTDarkUIText">@color/DTWhite</color>
-    <color name="DTDarkUITextCursor">@color/DTDarkUIText</color>
     <color name="DTDarkUIInteractive">@color/DTGrey100</color>
     <color name="DTDarkUIBackground">@color/DTGrey75</color>
     <color name="DTDarkUIIndicativeText">@color/DTGrey189</color>
 
-    <!-- will be overwriten for all PDEViews in code depending on current dark or light style setting -->
-    <color name="DTUIText">@color/DTLightUIText</color>
-    <color name="DTUITextHighlight">@color/DTLightUITextHighlight</color>
-    <color name="DTUITextCursor">@color/DTLightUITextCursor</color>
-    <color name="DTUIInteractive">@color/DTLightUIInteractive</color>
-    <color name="DTUIBackground">@color/DTLightUIBackground</color>
-    <color name="DTUIIndicative">@color/DTLightUIIndicativeText</color>
+    <!-- will be overwritten for all PDEViews/PDE Elements in code depending on current dark or light style setting
+    Can only be used with PDEColor to get style dependent color
+    A Color must be set here to have explicit id else DTUIText->@Color/DTGrey189 for example returns id of DTGrey189
+    We set all to #FF0000, so the user should notice something is wrong!!
+    Don't know better solution at the moment
+    -->
+    <color name="DTUIText">#FF0000</color>
+    <color name="DTUIInteractive">#FF0000</color>
+    <color name="DTUIBackground">#FF0000</color>
+    <color name="DTUIIndicativeText">#FF0000</color>
 
     <!-- known (measured) interactive colors, where they differ from calculatable colors -->
     <color name="DTGrey237_Idle_GradientCenter">#F2F2F2</color>

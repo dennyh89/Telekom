@@ -189,6 +189,7 @@
     <declare-styleable name="PDESlider">
         <attr name="contentType">
             <enum name="progressBar" value="0"/>
+            <enum name="scrollbarHorizontal" value="1" />
         </attr>
     </declare-styleable>
     <declare-styleable name="PDELayerTextView">

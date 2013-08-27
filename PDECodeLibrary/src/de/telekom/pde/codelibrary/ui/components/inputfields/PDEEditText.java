@@ -253,7 +253,7 @@ class PDEEditText extends EditText implements TextWatcher {
             newTextColor = (PDEColor)colorObject;
         } else {
             // use default
-            newTextColor = PDEColor.valueOf("DTLightUIText");
+            newTextColor = PDEColor.valueOf(getContext().getResources().getColor(color.DTLightUIText));
         }
 
         // check color change
@@ -301,7 +301,7 @@ class PDEEditText extends EditText implements TextWatcher {
             newHintTextColor = (PDEColor)colorObject;
         } else {
             // use default
-            newHintTextColor = PDEColor.valueOf("DTLightUIIndicativeText");
+            newHintTextColor = PDEColor.valueOf(getContext().getResources().getColor(color.DTLightUIIndicativeText));
         }
 
         // check color change
@@ -823,7 +823,7 @@ class PDEEditText extends EditText implements TextWatcher {
     public void setMainState(String state) {
         // !!!!!!!!!!!!!!! TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // WE ONLY HAVE TO USE 1 AGENTCONTROLLER, (AT THE MOMENT backgroundbutton and textfield both have one used)
-        // IN THE FUTURE REPLACE ONE BY THE OTHER, AT THE MOMENT USE TEXFIELD CONTROLLER
+        // IN THE FUTURE REPLACE ONE BY THE OTHER, AT THE MOMENT USE TEXTFIELD CONTROLLER
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // map to agent controller
         mAgentController.setState(state);

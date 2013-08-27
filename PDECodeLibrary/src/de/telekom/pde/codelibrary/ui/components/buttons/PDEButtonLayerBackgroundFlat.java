@@ -107,7 +107,7 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
 
         // init
         mParameters = null;
-        mDefaultColor = PDEColor.valueOf("DTUIInteractive");
+        mDefaultColor = PDEColor.DTUIInteractiveColor();
 
         // set empty complex parameters
         mParamColor = new PDEParameter();

@@ -46,27 +46,38 @@ class PDESliderContentProgressBar extends PDEAbsoluteLayout implements PDESlider
     private PDEDrawableProgressBar mProgressBarLayer;
 
     // layout
-    private int mProgressBarHeight = PDEBuildingUnits.pixelFromBU(1.0f);
+    private static int mProgressBarHeight = PDEBuildingUnits.pixelFromBU(1.0f);
 
 
     /**
-     * Constructor
+     * @brief Constructor for PDESliderContentProgressbar
+     *
+     * @param context
+     * @param attrs
      */
     public PDESliderContentProgressBar (Context context, AttributeSet attrs) {
         super(context,attrs);
         init(context);
     }
 
+
     /**
-     * Constructor
+     * @brief Constructor for PDESliderContentProgressbar
+     *
+     * @param context
+     * @param attrs
+     * @param defStyle
      */
     public PDESliderContentProgressBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }
 
+
     /**
-     * @brief Class initialization.
+     * @brief Constructor for PDESliderContentProgressbar
+     *
+     * @param context
      */
     public PDESliderContentProgressBar(Context context) {
         super(context);
@@ -74,6 +85,11 @@ class PDESliderContentProgressBar extends PDEAbsoluteLayout implements PDESlider
     }
 
 
+    /**
+     * @brief Initialisation of the Progressbar Content
+     *
+     * @param context
+     */
     private void init(Context context) {
 
         // create the layer structure
@@ -85,7 +101,7 @@ class PDESliderContentProgressBar extends PDEAbsoluteLayout implements PDESlider
     }
 
 
-//----- basic functions ------------------------------------------------------------------------------------------------
+//----- PDESliderContentInterface implementation -----------------------------------------------------------------------
 
 
     /**
@@ -98,12 +114,14 @@ class PDESliderContentProgressBar extends PDEAbsoluteLayout implements PDESlider
 
 
     /**
-     * @brief Process agent events.
+     * @brief Process sliding events
+     *
+     * @param event
      */
     @Override
-    public void agentEvent(PDEEvent event) {
+    public void sliderEvent(PDEEvent event) {
 
-        PDESliderControllerState slideEvent;
+        PDEEventSliderControllerState slideEvent;
         float progressValue, preloadValue;
         int sliderChangeID;
 
@@ -111,7 +129,7 @@ class PDESliderContentProgressBar extends PDEAbsoluteLayout implements PDESlider
         if (!event.isType(PDESliderController.PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION)) return;
 
         // process the event
-        slideEvent = (PDESliderControllerState) event;
+        slideEvent = (PDEEventSliderControllerState) event;
         sliderChangeID = slideEvent.getSliderControllerId();
 
         // handle different change types
@@ -183,10 +201,12 @@ class PDESliderContentProgressBar extends PDEAbsoluteLayout implements PDESlider
         if (oldw == w && oldh == h) return;
 
         // message
-        Log.d(LOG_TAG, "onSizeChanged " + w + ", " + h);
+        if (DEBUGPARAMS) {
+            Log.d(LOG_TAG, "onSizeChanged " + w + ", " + h);
+        }
 
-       // calculate vertical position
-       centerVertical = (h-mProgressBarHeight)/2;
+        // calculate vertical position
+        centerVertical = (h-mProgressBarHeight)/2;
 
         // is height big enough? -> center vertical
         if (centerVertical < 0) {

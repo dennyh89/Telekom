@@ -25,7 +25,6 @@ import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
@@ -161,24 +160,10 @@ public class PDELayerTextView extends View {
 
         // set color of text
         if (sa.hasValue(R.styleable.PDELayerTextView_textColor)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","textColor");
-            if (text != null && text.startsWith("@")) {
-                symbolicColor = Integer.valueOf(text.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setTextColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setTextColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setTextColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setTextColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                } else {
-                    setTextColor(sa.getColor(R.styleable.PDELayerTextView_textColor, R.color.DTBlack));
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(R.styleable.PDELayerTextView_textColor, 0);
+            if (resourceID!=0) {
+                setTextColor(PDEColor.valueOfColorID(resourceID));
             } else {
                 setTextColor(sa.getColor(R.styleable.PDELayerTextView_textColor, R.color.DTBlack));
             }
@@ -186,50 +171,21 @@ public class PDELayerTextView extends View {
 
         // set background color
         if (sa.hasValue(R.styleable.PDELayerTextView_backgroundColor)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","backgroundColor");
-
-            if (text != null && text.startsWith("@")) {
-                symbolicColor = Integer.valueOf(text.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setBackgroundColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setBackgroundColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setBackgroundColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setBackgroundColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                } else {
-                    setBackgroundColor(sa.getColor(R.styleable.PDELayerTextView_backgroundColor, R.color.DTTransparentWhite));
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(R.styleable.PDELayerTextView_backgroundColor, 0);
+            if (resourceID!=0) {
+                setBackgroundColor(PDEColor.valueOfColorID(resourceID));
             } else {
-               setBackgroundColor(sa.getColor(R.styleable.PDELayerTextView_backgroundColor, R.color.DTTransparentWhite));
+                setBackgroundColor(sa.getColor(R.styleable.PDELayerTextView_backgroundColor, R.color.DTTransparentWhite));
             }
         }
 
         // set shadow color
         if (sa.hasValue(R.styleable.PDELayerTextView_shadowColor)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","shadowColor");
-            if (text != null && text.startsWith("@")) {
-                symbolicColor = Integer.valueOf(text.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setShadowColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setShadowColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setShadowColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setShadowColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                }  else {
-                    setShadowColor(sa.getColor(R.styleable.PDELayerTextView_shadowColor, R.color.DTWhite));
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(R.styleable.PDELayerTextView_shadowColor,0);
+            if (resourceID!=0) {
+                setShadowColor(PDEColor.valueOfColorID(resourceID));
             } else {
                 setShadowColor(sa.getColor(R.styleable.PDELayerTextView_shadowColor, R.color.DTWhite));
             }
@@ -632,7 +588,7 @@ public class PDELayerTextView extends View {
      * @brief Set text color.
      */
     public void setTextColor(PDEColor color) {
-        mLayerText.setElementBackgroundColor(color);
+        mLayerText.setElementTextColor(color);
         requestLayout();
     }
 
@@ -922,6 +878,7 @@ public class PDELayerTextView extends View {
         if (heightSpecMode == MeasureSpec.UNSPECIFIED && height == 0) {
             height = newheight;
         }
+
 
         // return the values
         setMeasuredDimension(resolveSize(width, widthMeasureSpec),

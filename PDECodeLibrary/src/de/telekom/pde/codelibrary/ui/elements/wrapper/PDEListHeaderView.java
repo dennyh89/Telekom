@@ -15,6 +15,7 @@ import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEListHeaderView
 //----------------------------------------------------------------------------------------------------------------------
@@ -122,93 +123,45 @@ public class PDEListHeaderView extends View {
 
         // set text color
         if (sa.hasValue(R.styleable.PDEListHeaderView_textColor)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","textColor");
-            if (text != null && text.startsWith("@")) {
-                symbolicColor = Integer.valueOf(text.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setTextColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setTextColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setTextColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setTextColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_textColor,0);
+            if (resourceID!=0) {
+                setTextColor(PDEColor.valueOfColorID(resourceID));
             } else {
-                setTextColor(sa.getColor(R.styleable.PDEIconView_iconColor, R.color.DTBlack));
+                setTextColor(sa.getColor(R.styleable.PDEListHeaderView_textColor, R.color.DTBlack));
             }
         }
 
         // set subtext color
         if (sa.hasValue(R.styleable.PDEListHeaderView_subTextColor)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","subTextColor");
-            if (text != null && text.startsWith("@")) {
-                symbolicColor = Integer.valueOf(text.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setSubTextColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setSubTextColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setSubTextColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setSubTextColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_subTextColor,0);
+            if (resourceID!=0) {
+                setSubTextColor(PDEColor.valueOfColorID(resourceID));
             } else {
-                setSubTextColor(sa.getColor(R.styleable.PDEIconView_iconColor, R.color.DTBlack));
+                setSubTextColor(sa.getColor(R.styleable.PDEListHeaderView_subTextColor, R.color.DTBlack));
             }
         }
 
         // set background color
         if (sa.hasValue(R.styleable.PDEListHeaderView_backgroundColor)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","backgroundColor");
-            if (text != null && text.startsWith("@")) {
-                symbolicColor = Integer.valueOf(text.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setBackgroundColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setBackgroundColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setBackgroundColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setBackgroundColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_backgroundColor,0);
+            if (resourceID!=0) {
+                setBackgroundColor(PDEColor.valueOfColorID(resourceID));
             } else {
-                setBackgroundColor(sa.getColor(R.styleable.PDEIconView_iconColor, R.color.DTBlack));
+                setBackgroundColor(sa.getColor(R.styleable.PDEListHeaderView_backgroundColor, R.color.DTBlack));
             }
         }
 
         // set delimiter background color
         if (sa.hasValue(R.styleable.PDEListHeaderView_delimiterBackgroundColor)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","delimiterBackgroundColor");
-            if (text != null && text.startsWith("@")) {
-                symbolicColor = Integer.valueOf(text.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setDelimiterBackgroundColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setDelimiterBackgroundColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setDelimiterBackgroundColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setDelimiterBackgroundColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_delimiterBackgroundColor,0);
+            if (resourceID!=0) {
+                setDelimiterBackgroundColor(PDEColor.valueOfColorID(resourceID));
             } else {
-                setDelimiterBackgroundColor(sa.getColor(R.styleable.PDEIconView_iconColor, R.color.DTBlack));
+                setDelimiterBackgroundColor(sa.getColor(R.styleable.PDEListHeaderView_delimiterBackgroundColor, R.color.DTBlack));
             }
         }
         
