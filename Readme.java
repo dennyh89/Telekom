@@ -452,10 +452,35 @@ Release Notes
 =============
 
 __Current public version__<br />
-2.0.1
+2.0.2
 
 __Current non-public version__<br />
-2.0.1
+2.0.2
+
+Patch 2.0.2 (public)
+--------------------
+
+__Date__<br />
+27.08.2013
+
+__Server__<br />
+git.design.telekom.com
+
+__Repositories__<br />
+PDECodeLibrary_Android.git, PDECodeSamples_Android.git
+
+__Branch__<br />
+master
+
+__Content__<br />
+
+hotfix: colors of dark style and text layer fixed
+
+Some colors of dark style were not set, some were not correkt. Switching
+from light to dark style would have lead to incorrect visual
+appearenace. The colors have been fixed, in code as well as XML settings.
+
+The handling of long strings inside the text components has been fixed.
 
 Patch 2.0.1 (public)
 -------------------
