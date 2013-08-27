@@ -54,7 +54,7 @@
                 pdecodelibrary:backgroundColor="@color/DTTransparentBlack"
                 pdecodelibrary:alignmentMode="capHeight"
                 pdecodelibrary:verticalAlignment="bottom"
-                pdecodelibrary:textColor="@color/DTUIIndicative"
+                pdecodelibrary:textColor="@color/DTUIIndicativeText"
                 android:layout_below="@id/PDEList_ItemText"
                 android:layout_toRightOf="@id/PDEList_ItemImage"
                 />

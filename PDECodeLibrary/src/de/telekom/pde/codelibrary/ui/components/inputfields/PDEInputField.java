@@ -237,24 +237,10 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         // set color of text
         if (sa.hasValue(R.styleable.PDEInputField_textColor)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String txt = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","textColor");
-            if (txt != null && txt.startsWith("@")) {
-                symbolicColor = Integer.valueOf(txt.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setTextColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setTextColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setTextColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setTextColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                } else {
-                    setTextColor(sa.getColor(R.styleable.PDEInputField_textColor, R.color.DTBlack));
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(styleable.PDEInputField_textColor,0);
+            if (resourceID!=0) {
+                setTextColor(PDEColor.valueOfColorID(resourceID));
             } else {
                 setTextColor(sa.getColor(R.styleable.PDEInputField_textColor, R.color.DTBlack));
             }
@@ -283,24 +269,10 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         // set hint color
         if(sa.hasValue(R.styleable.PDEInputField_hintColor)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String txt = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","hintColor");
-            if (txt != null && txt.startsWith("@")) {
-                symbolicColor = Integer.valueOf(txt.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setHintTextColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setHintTextColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setHintTextColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setHintTextColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                } else {
-                    setHintTextColor(sa.getColor(R.styleable.PDEInputField_hintColor, R.color.DTBlack));
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(styleable.PDEInputField_hintColor,0);
+            if (resourceID!=0) {
+                setHintTextColor(PDEColor.valueOfColorID(resourceID));
             } else {
                 setHintTextColor(sa.getColor(R.styleable.PDEInputField_hintColor, R.color.DTBlack));
             }
@@ -313,24 +285,10 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         // set highlight text color
         if(sa.hasValue(R.styleable.PDEInputField_textColorHighlight)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String txt = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","textColorHighLight");
-            if (txt != null && txt.startsWith("@")) {
-                symbolicColor = Integer.valueOf(txt.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setHighlightColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setHighlightColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setHighlightColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setHighlightColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                } else {
-                    setHighlightColor(sa.getColor(R.styleable.PDEInputField_textColorHighlight, R.color.DTMagenta));
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(styleable.PDEInputField_textColorHighlight,0);
+            if (resourceID!=0) {
+                setHighlightColor(PDEColor.valueOfColorID(resourceID));
             } else {
                 setHighlightColor(sa.getColor(R.styleable.PDEInputField_textColorHighlight, R.color.DTMagenta));
             }

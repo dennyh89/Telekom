@@ -1246,31 +1246,26 @@ public class PDELayerText extends PDEDrawableBase {
 
     /**
      * @brief Returns necessary height for text, based on given width
+     *
+     * Caution, paddings are not considered in this calculation, for text height with paddings use
+     * getElementHeightForWidth(String text, float width)
      */
     public float getTextHeightForWidth(String text, float width) {
         Rect bounds = new Rect(0,0,Math.round(width),10000);
-        float boundsleft = -bounds.left+2*mPaddingLeft;
+        float boundsleft = 0;
 
         refreshMetrics();
-
-        if (mAlignmentMode == PDELayerTextAlignmentMode.PDELayerTextAlignmentModeStandard) {
-            mMetricsTopDistance = Math.round(-mMetrics.top)+mPaddingTop;
-            mMetricsBottomDistance =  Math.round(mMetrics.bottom);
-        } else if (mAlignmentMode == PDELayerTextAlignmentMode.PDELayerTextAlignmentModeCapHeight) {
-            mMetricsTopDistance = mCapHeight+mPaddingTop;
-            mMetricsBottomDistance =  0;
-        }
 
         //get height from draw function
         return drawMultilineText(text, boundsleft, mMetricsTopDistance, null, bounds, mTextPaint, false);
     }
 
     /**
-     * @brief Returns necessary height of element, which consists of text height and padding bottom
+     * @brief Returns necessary height of element, which consists of text height and paddings
      */
     public float getElementHeightForWidth(String text, float width) {
         //1.0f is added because of pixel shift in PDELayerText, which reduces the bounds by 1 pixel
-        return mPaddingTop + getTextHeightForWidth(text, width) + mPaddingBottom +1.0f;
+        return mPaddingTop + getTextHeightForWidth(text, width - mPaddingLeft - mPaddingRight) + mPaddingBottom +1.0f;
     }
 
 
@@ -1382,6 +1377,7 @@ public class PDELayerText extends PDEDrawableBase {
             mTextOffset = mBaseLine+mPaddingTop - mCapHeight;
             mInternalBaseLine = mBaseLine+mPaddingTop;
         }
+
     }
 }
 

@@ -16,7 +16,6 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import de.telekom.pde.codelibrary.ui.R;
@@ -24,7 +23,6 @@ import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.icon.PDEDrawableIcon;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
@@ -154,24 +152,10 @@ public class PDEIconView extends View {
 
         // set icon color
         if (sa.hasValue(R.styleable.PDEIconView_iconColor)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","iconColor");
-            if (text != null && text.startsWith("@")) {
-                symbolicColor = Integer.valueOf(text.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setIconColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setIconColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setIconColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setIconColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                } else {
-                    setIconColor(sa.getColor(R.styleable.PDEIconView_iconColor, R.color.DTBlack));
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(R.styleable.PDEIconView_iconColor, 0);
+            if (resourceID!=0) {
+                setIconColor(PDEColor.valueOfColorID(resourceID));
             } else {
                 setIconColor(sa.getColor(R.styleable.PDEIconView_iconColor, R.color.DTBlack));
             }
@@ -179,24 +163,10 @@ public class PDEIconView extends View {
 
         // set shadow color
         if (sa.hasValue(R.styleable.PDEIconView_shadowColor)) {
-            // check if we have a light/dark style dependent symbolic color.
-            int symbolicColor;
-            String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","shadowColor");
-            if (text != null && text.startsWith("@")) {
-                symbolicColor = Integer.valueOf(text.substring(1));
-                if (symbolicColor == R.color.DTUIText) {
-                    setShadowColor(PDEColor.DTUITextColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIBackground) {
-                    setShadowColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIInteractive) {
-                    setShadowColor(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                } else if (symbolicColor == R.color.DTUIIndicative) {
-                    setShadowColor(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                } else {
-                    setShadowColor(sa.getColor(R.styleable.PDEIconView_shadowColor, R.color.DTWhite));
-                }
-                // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                // It seems it was no symbolic color, so just set it.
+            //to have dark/light style use PDEColor with color id
+            int resourceID = sa.getResourceId(R.styleable.PDEIconView_shadowColor,0);
+            if (resourceID!=0) {
+                setShadowColor(PDEColor.valueOfColorID(resourceID));
             } else {
                 setShadowColor(sa.getColor(R.styleable.PDEIconView_shadowColor, R.color.DTWhite));
             }

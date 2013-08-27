@@ -165,7 +165,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         mTextHasShadow = false;
         mIconColored = false;
         mIconToTextHeightRatio = 2.0f;
-        mDefaultColor = PDEColor.valueOf("DTUIInteractive");
+        mDefaultColor = PDEColor.DTUIInteractiveColor();
         mTextOnTransparentColor = PDEColor.DTUITextColor();
         mBackgroundColor = PDEColor.DTUIBackgroundColor();
 

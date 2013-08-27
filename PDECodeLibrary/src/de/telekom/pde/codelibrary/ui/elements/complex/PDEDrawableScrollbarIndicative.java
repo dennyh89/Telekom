@@ -13,6 +13,7 @@ package de.telekom.pde.codelibrary.ui.elements.complex;
 //----------------------------------------------------------------------------------------------------------------------
 
 
+import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableMultilayer;
@@ -20,6 +21,7 @@ import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableRoundedBox;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import de.telekom.pde.codelibrary.ui.elements.wrapper.PDEViewWrapper;
 
 
 /**
@@ -58,6 +60,9 @@ public class PDEDrawableScrollbarIndicative extends PDEDrawableMultilayer {
     private PDEDrawableRoundedBox mElementBackgroundDrawable;
     private PDEDrawableRoundedBox mElementIndicatorDrawable;
 
+    // wrapper view
+    protected PDEViewWrapper mWrapperView;
+
 
 
 //----- init -----------------------------------------------------------------------------------------------------------
@@ -91,6 +96,8 @@ public class PDEDrawableScrollbarIndicative extends PDEDrawableMultilayer {
             mElementIndicatorDrawable.setElementCornerRadius(mElementBackgroundDrawable.getElementCornerRadius());
             mElementIndicatorDrawable.setElementBorderWidth(1.0f);
         }
+
+        mWrapperView = null;
     }
 
 
@@ -306,11 +313,10 @@ public class PDEDrawableScrollbarIndicative extends PDEDrawableMultilayer {
         if (pos == mElementScrollPos) {
             return;
         }
-
         // remember
         mElementScrollPos = pos;
-
-        invalidateSelf();
+        // perform the layout
+        doLayout();
     }
 
 
@@ -434,5 +440,18 @@ public class PDEDrawableScrollbarIndicative extends PDEDrawableMultilayer {
         frame = new Rect(pos.x, pos.y, pos.x + Math.round(width), pos.y + Math.round(height));
         // set as new bounds
         mElementIndicatorDrawable.setBounds(frame);
+    }
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// ----- Wrapper View  ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+    public PDEViewWrapper getWrapperView() {
+        if (mWrapperView == null) {
+           mWrapperView = new PDEViewWrapper(PDECodeLibrary.getInstance().getApplicationContext(),this);
+        }
+       return mWrapperView;
     }
 }

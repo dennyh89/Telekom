@@ -128,7 +128,7 @@ class PDEButtonLayerBackgroundEmbossed extends PDEAbsoluteLayout implements PDEB
         mParameters = null;
         //mLayout = new PDEButtonLayoutHelper();
         mButtonRect = new RectF();
-        mDefaultColor = PDEColor.valueOf("DTUIInteractive");
+        mDefaultColor = PDEColor.DTUIInteractiveColor();
 
         // set empty complex parameters
         mParamColor = new PDEParameter();

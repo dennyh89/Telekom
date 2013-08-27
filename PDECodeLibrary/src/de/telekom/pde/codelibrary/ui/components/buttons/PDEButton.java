@@ -10,7 +10,6 @@ package de.telekom.pde.codelibrary.ui.components.buttons;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
-
 import android.app.Activity;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
@@ -37,7 +36,6 @@ import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentControllerAdapterView;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonLayoutHelper;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameter;
@@ -285,7 +283,6 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
 
 
     // layout stuff
-    PDEButtonLayoutHelper mLayout;
     Rect mMinButtonPadding;
 
     protected PDEEventSource mEventSource;
@@ -329,7 +326,6 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
 
         // init
         mButtonLayerToInitialize = null;
-        mLayout = new PDEButtonLayoutHelper();
         mButtonPadding = new PDEButtonPadding();
         mMinButtonPadding = new Rect(0,0,0,0);
 
@@ -359,6 +355,8 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
         setFocusable(true);
 
         setClipChildren(true);
+
+        setClipToPadding(false);
 
         LayoutInflater.from(getContext()).inflate(R.layout.pdebutton, this, true);
 
@@ -426,24 +424,10 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
                 setIconAlignment(PDEButtonIconAlignment.values()[sa.getInt(R.styleable.PDEButton_iconAlignment, 0)]);
             }
             if (sa.hasValue(R.styleable.PDEButton_borderColor)) {
-                // check if we have a light/dark style dependent symbolic color.
-                int symbolicColor;
-                String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","borderColor");
-                if (text != null && text.startsWith("@")) {
-                    symbolicColor = Integer.valueOf(text.substring(1));
-                    if (symbolicColor == R.color.DTUIText) {
-                        setBorderColorWithInt(PDEColor.DTUITextColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIBackground) {
-                        setBorderColorWithInt(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIInteractive) {
-                        setBorderColorWithInt(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIIndicative) {
-                        setBorderColorWithInt(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                    } else {
-                        setBorderColorWithInt(sa.getColor(R.styleable.PDEButton_borderColor, R.color.DTBlack));
-                    }
-                    // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                    // It seems it was no symbolic color, so just set it.
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEButton_borderColor,0);
+                if (resourceID!=0) {
+                    setBorderColor(PDEColor.valueOfColorID(resourceID));
                 } else {
                     setBorderColorWithInt(sa.getColor(R.styleable.PDEButton_borderColor, R.color.DTBlack));
                 }
@@ -451,69 +435,27 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
             // check text color attribute, if there is none use title color attribute if there is one
             // both do the same, but setTextColor is more Android style
             if (sa.hasValue(R.styleable.PDEButton_textColor)) {
-                // check if we have a light/dark style dependent symbolic color.
-                int symbolicColor;
-                String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","textColor");
-                if (text != null && text.startsWith("@")) {
-                    symbolicColor = Integer.valueOf(text.substring(1));
-                    if (symbolicColor == R.color.DTUIText) {
-                        setTextColorWithInt(PDEColor.DTUITextColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIBackground) {
-                        setTextColorWithInt(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIInteractive) {
-                        setTextColorWithInt(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIIndicative) {
-                        setTextColorWithInt(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                    } else {
-                        setTextColorWithInt(sa.getColor(R.styleable.PDEButton_textColor, R.color.DTBlack));
-                    }
-                    // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                    // It seems it was no symbolic color, so just set it.
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEButton_textColor,0);
+                if (resourceID!=0) {
+                    setTextColor(PDEColor.valueOfColorID(resourceID));
                 } else {
                     setTextColorWithInt(sa.getColor(R.styleable.PDEButton_textColor, R.color.DTBlack));
                 }
             } else if (sa.hasValue(R.styleable.PDEButton_titleColor)) {
-                // check if we have a light/dark style dependent symbolic color.
-                int symbolicColor;
-                String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","titleColor");
-                if (text != null && text.startsWith("@")) {
-                    symbolicColor = Integer.valueOf(text.substring(1));
-                    if (symbolicColor == R.color.DTUIText) {
-                        setTitleColorWithInt(PDEColor.DTUITextColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIBackground) {
-                        setTitleColorWithInt(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIInteractive) {
-                        setTitleColorWithInt(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIIndicative) {
-                        setTitleColorWithInt(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                    } else {
-                        setTitleColorWithInt(sa.getColor(R.styleable.PDEButton_titleColor, R.color.DTBlack));
-                    }
-                    // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                    // It seems it was no symbolic color, so just set it.
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEButton_titleColor,0);
+                if (resourceID!=0) {
+                    setTitleColor(PDEColor.valueOfColorID(resourceID));
                 } else {
                     setTitleColorWithInt(sa.getColor(R.styleable.PDEButton_titleColor, R.color.DTBlack));
                 }
             }
             if (sa.hasValue(R.styleable.PDEButton_buttonColor)) {
-                // check if we have a light/dark style dependent symbolic color.
-                int symbolicColor;
-                String text = attrs.getAttributeValue("http://schemas.android.com/apk/res-auto","buttonColor");
-                if (text != null && text.startsWith("@")) {
-                    symbolicColor = Integer.valueOf(text.substring(1));
-                    if (symbolicColor == R.color.DTUIText) {
-                        setTextColorWithInt(PDEColor.DTUITextColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIBackground) {
-                        setTextColorWithInt(PDEColor.DTUIBackgroundColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIInteractive) {
-                        setTextColorWithInt(PDEColor.DTUIInteractiveColor().getIntegerColor());
-                    } else if (symbolicColor == R.color.DTUIIndicative) {
-                        setTextColorWithInt(PDEColor.DTUIIndicativeTextColor().getIntegerColor());
-                    } else {
-                        setColorWithInt(sa.getColor(R.styleable.PDEButton_buttonColor, R.color.DTBlue));
-                    }
-                    // ToDo: ggf. noch DTUITextHighlight und DTUITextCursor abfragen, sobald in PDEColor nachgezogen (Andy)
-                    // It seems it was no symbolic color, so just set it.
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEButton_buttonColor,0);
+                if (resourceID!=0) {
+                    setColor(PDEColor.valueOfColorID(resourceID));
                 } else {
                     setColorWithInt(sa.getColor(R.styleable.PDEButton_buttonColor, R.color.DTBlue));
                 }
@@ -2106,8 +2048,8 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
                 resolveSize(maxHeight, heightMeasureSpec));
 
         //update the background
-        findViewById(R.id.pdebutton_background_slot).measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth()-getPaddingLeft()-getPaddingRight(),MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(getMeasuredHeight()-getPaddingTop()-getPaddingBottom(),MeasureSpec.EXACTLY));
+        findViewById(R.id.pdebutton_background_slot).measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth()/*-getPaddingLeft()-getPaddingRight()*/,MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(getMeasuredHeight()/*-getPaddingTop()-getPaddingBottom()*/,MeasureSpec.EXACTLY));
 
         if(DEBUGPARAMS){
             Log.d(LOG_TAG, "onMeasure result: "+getMeasuredWidth()+" x "+getMeasuredHeight());
@@ -2120,9 +2062,31 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
         if(DEBUGPARAMS){
             Log.d(LOG_TAG, "onLayout " + l + "," + t + "," + r + "," + b);
         }
-        // ToDo Do we also have to use mWorkLayer here? and how?
-        super.onLayout(changed, l, t, r, b);
+
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            if (child.getVisibility() != GONE) {
+                if (child.getId() == R.id.pdebutton_background_slot) {
+                    PDEAbsoluteLayout.LayoutParams lp = (PDEAbsoluteLayout.LayoutParams) child
+                            .getLayoutParams();
+                    int childLeft =  lp.x;
+                    int childTop = lp.y;
+                    child.layout(childLeft, childTop, childLeft + child.getMeasuredWidth(), childTop
+                            + child.getMeasuredHeight());
+                } else {
+                    PDEAbsoluteLayout.LayoutParams lp = (PDEAbsoluteLayout.LayoutParams) child
+                            .getLayoutParams();
+                    int childLeft = getPaddingLeft() + lp.x;
+                    int childTop = getPaddingTop() + lp.y;
+                    child.layout(childLeft, childTop, childLeft + child.getMeasuredWidth(), childTop
+                            + child.getMeasuredHeight());
+                }
+            }
+        }
     }
+
+
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -2354,6 +2318,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
+
         SavedState ss = (SavedState) state;
 
         super.onRestoreInstanceState(ss.getSuperState());

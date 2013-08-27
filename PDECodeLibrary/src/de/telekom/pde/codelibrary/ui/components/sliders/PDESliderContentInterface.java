@@ -24,7 +24,7 @@ public interface PDESliderContentInterface {
     public PDEAbsoluteLayout getLayer();
 
     // agent control
-    public void agentEvent(PDEEvent event);
+    public void sliderEvent(PDEEvent event);
 }
 
 /// @endcond CLASS_UNDER_DEVELOPMENT__NOT_RELEASED

@@ -8,12 +8,13 @@
 package de.telekom.pde.codelibrary.ui.color;
 
 import android.content.Context;
+import android.content.res.Resources.NotFoundException;
 import android.graphics.Color;
 import android.text.TextUtils;
-
 import java.util.Locale;
-
+import android.util.Log;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
+import de.telekom.pde.codelibrary.ui.R;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -38,10 +39,10 @@ public class PDEColor {
     // luminance
     private float mValue;
 
-    public static final String DTUIText = "DTUITextAuto";
-    public static final String DTUIBackground = "DTUIBackgroundAuto";
-    public static final String DTUIInteractive = "DTUIInteractiveAuto";
-    public static final String DTUIIndicativeText = "DTUIIndicativeTextAuto";
+    public static final String DTUIText = "DTUIText";
+    public static final String DTUIBackground = "DTUIBackground";
+    public static final String DTUIInteractive = "DTUIInteractive";
+    public static final String DTUIIndicativeText = "DTUIIndicativeText";
 
     // define parsing character sets as regular expression
     final static String PDEColorGlobal_hexCharacterSet = "[0-9a-fA-F]*";
@@ -205,11 +206,28 @@ public class PDEColor {
     /**
      * @brief just little helper for resolveColorForSymbolicName function
      */
-    private int getColorNameIdentifier(String symbolicName)
+    static private int getIdentifierForColorName(String symbolicName)
     {
         Context context = PDECodeLibrary.getInstance().getApplicationContext();
         return context.getResources().getIdentifier(symbolicName, "color", context.getPackageName() );
     }
+
+    
+    /**
+     * @brief just little helper for resolveColorForSymbolicName function
+     */
+    static private String getColorNameForIdentifier(int id)
+    {
+        Context context = PDECodeLibrary.getInstance().getApplicationContext();
+        try {
+            return context.getResources().getResourceEntryName(id);
+        } catch (NotFoundException exception) {
+            Log.e(LOG_TAG, "No color resource with id:" + id + " was found!");
+            return null;
+        }
+
+    }
+
 
     /**
      * @brief Resolve a symbolic color name.
@@ -220,41 +238,20 @@ public class PDEColor {
         int resourceID;
         Context context = PDECodeLibrary.getInstance().getApplicationContext();
 
-        resourceID = getColorNameIdentifier(symbolicName);
-        if( resourceID == 0 ){
-            // some colors depend on the library color setting
-            //!!!!!!!!
-            //!!!! no recursion like on ios -> just try to get identifier with new name!!!!
-            //!!!!!!!!
-            if (symbolicName.equals(DTUIText) ) {
-                if ( PDECodeLibrary.getInstance().isDarkStyle() ){
-                    resourceID = getColorNameIdentifier("DTDarkUIText");
-                }
-                else {
-                    resourceID = getColorNameIdentifier("DTLightUIText");
-                }
-            } else if ( symbolicName.equals(DTUIInteractive) ) {
-                if ( PDECodeLibrary.getInstance().isDarkStyle() ){
-                    resourceID = getColorNameIdentifier("DTDarkUIInteractive");
-                }
-                else {
-                    resourceID = getColorNameIdentifier("DTLightUIInteractive");
-                }
-            } else if ( symbolicName.equals(DTUIBackground) ) {
-                if ( PDECodeLibrary.getInstance().isDarkStyle() ){
-                    resourceID = getColorNameIdentifier("DTDarkUIBackground");
-                }
-                else {
-                    resourceID = getColorNameIdentifier("DTLightUIBackground");
-                }
-            } else if ( symbolicName.equals(DTUIIndicativeText) ) {
-                if ( PDECodeLibrary.getInstance().isDarkStyle() ){
-                    resourceID = getColorNameIdentifier("DTDarkUIIndicativeText");
-                }
-                else {
-                    resourceID = getColorNameIdentifier("DTLightUIIndicativeText");
-                }
-            }
+        // some colors depend on the library color setting
+        //!!!!!!!!
+        //!!!! no recursion like on ios -> just try to get identifier with new name!!!!
+        //!!!!!!!!
+        if (symbolicName.equals(DTUIText) ) {
+            resourceID =  ( PDECodeLibrary.getInstance().isDarkStyle())? R.color.DTDarkUIText:R.color.DTLightUIText;
+        } else if ( symbolicName.equals(DTUIInteractive) ) {
+            resourceID =  ( PDECodeLibrary.getInstance().isDarkStyle())?R.color.DTDarkUIInteractive:R.color.DTLightUIInteractive;
+        } else if ( symbolicName.equals(DTUIBackground) ) {
+            resourceID =  ( PDECodeLibrary.getInstance().isDarkStyle())?R.color.DTDarkUIBackground:R.color.DTLightUIBackground;
+        } else if ( symbolicName.equals(DTUIIndicativeText) ) {
+            resourceID =  ( PDECodeLibrary.getInstance().isDarkStyle())?R.color.DTDarkUIIndicativeText:R.color.DTLightUIIndicativeText;
+        } else {
+            resourceID = getIdentifierForColorName(symbolicName);
         }
 
         if( resourceID!=0){
@@ -833,14 +830,22 @@ public class PDEColor {
 
 
     /**
+     * @brief Resolve color by color id of xml reference.
+     * Translate id into color name to be able to switch between dark/light style
+     *
+     */
+    public static PDEColor valueOfColorID(int colorID){
+        return PDEColor.valueOf(getColorNameForIdentifier(colorID));
+    }
+
+
+    /**
      * @brief Resolve colors.
      *
      * + (PDEColor *) colorWithString:(NSString *)colorString
      */
-    static public PDEColor valueOf(String colorString){
+    public static PDEColor valueOf(String colorString){
         PDEColor newColor = new PDEColor();
-
-        // parse the string into a color (this resolves to black if there's an error)
         newColor.resolveColor(colorString);
 
         return newColor;
