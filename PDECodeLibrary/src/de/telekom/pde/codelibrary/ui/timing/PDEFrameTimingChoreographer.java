@@ -25,13 +25,13 @@ public class PDEFrameTimingChoreographer extends PDEFrameTiming implements Chore
      * @brief Global tag for log outputs.
      */
     protected final static String LOG_TAG = PDEFrameTimingChoreographer.class.getName();
-    private final static boolean DEBUGPARAMS = false;
+    private final static boolean DEBUG_PARAMS = false;
 
 
     protected boolean mFrameCallbackSet = false;
 
     /**
-     * @brief Constructor - protected since it is instanciated as singleton via PDEFrameTiming
+     * @brief Constructor - protected since it is instantiated as singleton via PDEFrameTiming
      */
     protected PDEFrameTimingChoreographer() {
         super();
@@ -52,7 +52,7 @@ public class PDEFrameTimingChoreographer extends PDEFrameTiming implements Chore
 
         if (active == mActive)
             return;
-        if(DEBUGPARAMS){
+        if (DEBUG_PARAMS){
             Log.d(LOG_TAG, "setActive "+(active?"active":"inactive"));
         }
 
@@ -71,8 +71,9 @@ public class PDEFrameTimingChoreographer extends PDEFrameTiming implements Chore
         }
     }
 
+
     /**
-     * @brief: get current frame time
+     * @brief get current frame time
      * @return current frame time in milliseconds
      */
     @Override
@@ -99,7 +100,7 @@ public class PDEFrameTimingChoreographer extends PDEFrameTiming implements Chore
      */
     @Override
     public void doFrame(long frameTimeNanos) {
-        if(DEBUGPARAMS){
+        if (DEBUG_PARAMS){
             Log.d(LOG_TAG, "doFrame "+frameTimeNanos);
         }
         //frame callback is removed automatically
@@ -109,12 +110,13 @@ public class PDEFrameTimingChoreographer extends PDEFrameTiming implements Chore
         if (isActive()) {
             postFrameCallback();
         } else {
-            if(DEBUGPARAMS){
+            if(DEBUG_PARAMS){
                 Log.d(LOG_TAG, "notActive anymore");
             }
         }
         sendTimings();
     }
+
 
     /**
      * @brief set callback for choreographer which will be called at next frame time.
@@ -128,6 +130,7 @@ public class PDEFrameTimingChoreographer extends PDEFrameTiming implements Chore
             Choreographer.getInstance().postFrameCallback(this);
         }
     }
+
 
     /**
      * @brief remove callback from choreographer.

@@ -6,16 +6,11 @@
  */
 package de.telekom.pde.codelibrary.ui.elements.text;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.*;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -51,7 +46,6 @@ public class PDELayerText extends PDEDrawableBase {
     private boolean mDither;
     private ColorFilter mColorFilter;
 
-    private Bitmap mDrawingBitmap;
 
     private float mTextSize;
     private PDETypeface mTypeface;
@@ -96,7 +90,6 @@ public class PDELayerText extends PDEDrawableBase {
         mDither = false;
         mColorFilter = null;
         mText = text;
-        mDrawingBitmap = null;
         mTypeface = null;
         mLineDistanceFactor = 1;
 

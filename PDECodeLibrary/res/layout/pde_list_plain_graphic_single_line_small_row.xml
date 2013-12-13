@@ -21,7 +21,7 @@
             >
 
 
-        <de.telekom.pde.codelibrary.ui.elements.wrapper.PDEPhotoFrameView
+        <de.telekom.pde.codelibrary.ui.components.elementwrappers.metaphors.PDEPhotoFrameView
                 android:id = "@+id/PDEList_ItemImage"
                 android:layout_width="@dimen/Telekom.BU2_1_2"
                 android:layout_height="@dimen/Telekom.BU2_1_2"
@@ -31,7 +31,7 @@
                 android:layout_marginBottom="@dimen/Telekom.BU_1_3"
                 />
 
-        <de.telekom.pde.codelibrary.ui.elements.wrapper.PDELayerTextView
+        <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDELayerTextView
                 android:id = "@+id/PDEList_ItemText"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/Telekom.BU3"

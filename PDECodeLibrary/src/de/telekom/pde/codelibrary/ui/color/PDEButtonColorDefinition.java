@@ -15,6 +15,7 @@ public class PDEButtonColorDefinition {
     protected PDEButtonStateColorDefinition mTakingInput;
     protected PDEButtonStateColorDefinition mInputDone;
 
+    @SuppressWarnings("unused")
     public PDEButtonColorDefinition(){
         mNormal=null;
         mFocus=null;
@@ -22,6 +23,7 @@ public class PDEButtonColorDefinition {
         mInputDone=null;
     }
 
+    @SuppressWarnings("unused")
     public PDEButtonColorDefinition(int mainColor, PDEButtonStateColorDefinition normal,
                                     PDEButtonStateColorDefinition focus, PDEButtonStateColorDefinition takingInput,
                                     PDEButtonStateColorDefinition inputDone){
@@ -58,18 +60,22 @@ public class PDEButtonColorDefinition {
         return mMainColor;
     }
 
+    @SuppressWarnings("unused")
     public PDEButtonStateColorDefinition getNormalStateColorDefinition(){
         return mNormal;
     }
 
+    @SuppressWarnings("unused")
     public PDEButtonStateColorDefinition getFocusStateColorDefinition(){
         return mFocus;
     }
 
+    @SuppressWarnings("unused")
     public PDEButtonStateColorDefinition getTakingInputStateColorDefinition(){
         return mTakingInput;
     }
 
+    @SuppressWarnings("unused")
     public PDEButtonStateColorDefinition getInputDoneStateColorDefinition(){
         return mInputDone;
     }

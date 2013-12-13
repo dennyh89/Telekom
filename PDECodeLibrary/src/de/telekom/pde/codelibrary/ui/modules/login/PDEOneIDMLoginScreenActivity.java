@@ -7,24 +7,23 @@
 
 package de.telekom.pde.codelibrary.ui.modules.login;
 
-import android.accounts.NetworkErrorException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
-
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
+import android.widget.Toast;
+import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.components.inputfields.PDEInputField;
 import de.telekom.pde.codelibrary.ui.components.inputfields.PDEInputFieldEvent;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
+import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.helpers.PDEString;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 
@@ -43,11 +42,17 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
  * extra bundle. E.g clientId and scope. It handles the login and returns the access token (and refresh token, further
  * information) to the calling app.
  */
-public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity implements DialogInterface.OnCancelListener {
+public class PDEOneIDMLoginScreenActivity
+        extends PDEBaseLoginScreenActivity
+        implements DialogInterface.OnCancelListener {
 
     // private members
     private PDEOneIDMModule mOneIDM;
+    
+    // because scope is unused in the current library version -> suppress warnings 
+    @SuppressWarnings("unused")
     private String mScope;
+    
     private boolean mPersistentRequest;
     private ToolTip mUsernameInfoToolTip;
     private Runnable mUsernameShowInfoRunnable;
@@ -55,15 +60,29 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
     private ProgressIndicatorFragment mProgressIndicatorFragment;
 
     // Intent key definitions
-    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CLIENT_ID = "PDEOneIDMLoginScreenActivity.Extra.ClientID";
-    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SCOPE = "PDEOneIDMLoginScreenActivity.Extra.Scope";
-    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_URL = "PDEOneIDMLoginScreenActivity.Extra.URL";
-    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SHOW_STAY_SIGNED_IN_CHECKBOX = "PDEOneIDMLoginScreenActivity.Extra.ShowSignedInCheckbox";
-    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_USERNAME = "PDEOneIDMLoginScreenActivity.Extra.User.UserName";
-    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_USER_PASSWORD = "PDEOneIDMLoginScreenActivity.Extra.User.Password";
-    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SHOW_T_BRAND_LOGO = "PDEOneIDMLoginScreenActivity.Extra.ShowTBrandLogo";
+    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CLIENT_ID
+            = "PDEOneIDMLoginScreenActivity.Extra.ClientID";
+    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SCOPE
+            = "PDEOneIDMLoginScreenActivity.Extra.Scope";
+    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_URL
+            = "PDEOneIDMLoginScreenActivity.Extra.URL";
+    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SHOW_STAY_SIGNED_IN_CHECKBOX
+            = "PDEOneIDMLoginScreenActivity.Extra.ShowSignedInCheckbox";
+    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_USERNAME
+            = "PDEOneIDMLoginScreenActivity.Extra.User.UserName";
+    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_USER_PASSWORD
+            = "PDEOneIDMLoginScreenActivity.Extra.User.Password";
+    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SHOW_T_BRAND_LOGO
+            = "PDEOneIDMLoginScreenActivity.Extra.ShowTBrandLogo";
+    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CONTENTSTYLE
+            = "PDEOneIDMLoginScreenActivity.Extra.ContentStyle";
+    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CONTENTSTYLE_VALUE_HAPTIC
+            = "HAPTIC";
+    public final static String ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CONTENTSTYLE_VALUE_FLAT
+            = "FLAT";
 
-    public final static String ONE_IDM_LOGIN_SCREEN_RETURNED_INTENT_EXTRA_RESULT = "PDEOneIDMLoginScreenActivity.Return.Extra.Result";
+    public final static String ONE_IDM_LOGIN_SCREEN_RETURNED_INTENT_EXTRA_RESULT
+            = "PDEOneIDMLoginScreenActivity.Return.Extra.Result";
 
     // live server
     private final static String DEFAULT_AUTH_URL = "https://logint3.idm.toon.sul.t-online.de/oauth2/tokens";
@@ -76,6 +95,14 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
     private final static boolean DEBUG_SHOW_FUNCTION_LOGS = false;
 
     public void onCreate(Bundle savedInstanceState) {
+        Intent startIntent = getIntent();
+        if (startIntent.hasExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CONTENTSTYLE)) {
+            if (ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CONTENTSTYLE_VALUE_HAPTIC
+                    .equals(startIntent.getStringExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CONTENTSTYLE))) {
+                mStyle = PDEConstants.PDEContentStyle.PDEContentStyleHaptic;
+            }
+        }
+
         super.onCreate(savedInstanceState);
 
         String url = DEFAULT_AUTH_URL;
@@ -88,7 +115,7 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
         mUsernameShowInfoRunnable = null;
         mHandler = new Handler();
 
-        Intent startIntent = getIntent();
+
         if (startIntent.hasExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CLIENT_ID)) {
             clientID = startIntent.getStringExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CLIENT_ID);
         } else {
@@ -120,7 +147,8 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
         // there is a splash screen in this kind of apps - so no logo needed
         setTBrandLogoVisible(startIntent.getBooleanExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SHOW_T_BRAND_LOGO, false));
         // show or hide stay signed in checkbox
-        setStaySignedInVisible(startIntent.getBooleanExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SHOW_STAY_SIGNED_IN_CHECKBOX, true));
+        setStaySignedInVisible(startIntent
+                .getBooleanExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SHOW_STAY_SIGNED_IN_CHECKBOX, true));
 
         // get instance of OneIDMModule which connects to the OneIDM Server
         mOneIDM = new PDEOneIDMModule(clientID, url);
@@ -151,41 +179,52 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
 
     /**
      * @brief Login-Button was pressed by the user - fire the login to the server.
-     * @param email
-     * @param password
-     * @param staySignedIn
      */
     @Override
-    public void loginButtonClicked(String email, String password, boolean staySignedIn) {
-        String scope = mScope;
-        if (staySignedIn) {
-            scope += " persistent";
-            mPersistentRequest = true;
-        }
+    public void loginButtonClicked(final String email, final String password, final boolean staySignedIn) {
 
-        boolean result = false;
-        try {
-            result = mOneIDM.requestAccessToken(email, password, scope);
-            if (!result) {
-                showLoginFailNotification("", getResources().getString(R.string.login_screen_oneidm_activity_token_request_active_msg));
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(PDEOneIDMLoginScreenActivity.this, "Start validating the credentials with OneIDM!"
+                        + "\nemail: " + email
+                        + "\npassword: " + password
+                        + "\nstaySignedIn: " + (staySignedIn ? "true" : "false"),
+                        Toast.LENGTH_SHORT)
+                        .show();
             }
-        } catch (NetworkErrorException e) {
-            showLoginFailNotification(getResources().getString(R.string.login_screen_oneidm_activity_error_no_network_title), getResources().getString(R.string.login_screen_oneidm_activity_error_no_network_msg));
-        }
+        });
 
-        if (result) {
-            // disable user interaction components
-            enableUserInteractionFields(false);
-
-            // show progress dialog
-            showProgressIndicator();
-        }
+        // since the OneIDMModule is not approved by the Group for Internet Security (GIS) we cannot show it!!
+//        String scope = mScope;
+//        if (staySignedIn) {
+//            scope += " persistent";
+//            mPersistentRequest = true;
+//        }
+//
+//        boolean result = false;
+//        try {
+//            result = mOneIDM.requestAccessToken(email, password, scope);
+//            if (!result) {
+//                showLoginFailNotification("", getResources().getString(R.string.login_screen_oneidm_activity_token_request_active_msg));
+//            }
+//        } catch (NetworkErrorException e) {
+//            showLoginFailNotification(getResources().getString(R.string.login_screen_oneidm_activity_error_no_network_title), getResources().getString(R.string.login_screen_oneidm_activity_error_no_network_msg));
+//        }
+//
+//        if (result) {
+//            // disable user interaction components
+//            enableUserInteractionFields(false);
+//
+//            // show progress dialog
+//            showProgressIndicator();
+//        }
     }
 
 
     /**
      * @brief Callback from the OneIDMModule, evaluates the response.
-     * @param event
      */
     @SuppressWarnings("unused")
     public void oneIDMEvent (PDEEvent event) {
@@ -219,9 +258,9 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
             Intent returnIntent = new Intent();
             PDEDictionary result = (PDEDictionary)event.getResult();
             if (mPersistentRequest) {
-                result.put("persistent_refresh_token_requested","true");
+                result.put("persistent_refresh_token_requested", "true");
             }
-            returnIntent.putExtra(ONE_IDM_LOGIN_SCREEN_RETURNED_INTENT_EXTRA_RESULT,result);
+            returnIntent.putExtra(ONE_IDM_LOGIN_SCREEN_RETURNED_INTENT_EXTRA_RESULT, result);
             setResult(RESULT_OK,returnIntent);
 
             // exit activity (back to startActivityForResult caller :: onActivityResult)
@@ -304,20 +343,23 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
                     if (PDEString.contains(errorDescription,"temporarily")) {
                         // user name and password false - tarpit time
                         int seconds = 0;
-                        String[] parts = TextUtils.split(errorDescription,";");
+                        String[] parts = TextUtils.split(errorDescription, ";");
                         try {
-                            seconds = Integer.valueOf(PDEString.trim(parts[parts.length-1]));
+                            seconds = Integer.valueOf(PDEString.trim(parts[parts.length - 1]));
                         } catch (NumberFormatException e) {
                             // don't do anything
                         }
 
                         errorMessage += String.format(getResources().getString(
-                                R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_temp_msg),seconds);
-                        errorTitle = getResources().getString(R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_temp_title);
+                                R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_temp_msg), seconds);
+                        errorTitle = getResources().getString(
+                                R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_temp_title);
                     } else {
                         // to tarpit time -> looks like it is really locked
-                        errorMessage += getResources().getString(R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_msg);
-                        errorTitle = getResources().getString(R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_title);
+                        errorMessage += getResources().getString(
+                                R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_msg);
+                        errorTitle = getResources().getString(
+                                R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_title);
                     }
                 } else if (PDEString.contains(errorDescription,"Account locked temporarily")) {
                     int seconds = 0;
@@ -328,11 +370,14 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
                         // don't do anything
                     }
                     errorMessage += String.format(getResources().getString(
-                            R.string.login_screen_oneidm_activity_error_oauth_account_locked_temp_msg),seconds);
-                    errorTitle = getResources().getString(R.string.login_screen_oneidm_activity_error_oauth_account_locked_temp_title);
+                            R.string.login_screen_oneidm_activity_error_oauth_account_locked_temp_msg), seconds);
+                    errorTitle = getResources().getString(
+                            R.string.login_screen_oneidm_activity_error_oauth_account_locked_temp_title);
                 } else if (PDEString.contains(errorDescription, "Account locked")) {
-                    errorMessage += getResources().getString(R.string.login_screen_oneidm_activity_error_oauth_account_locked_msg);
-                    errorTitle = getResources().getString(R.string.login_screen_oneidm_activity_error_oauth_account_locked_title);
+                    errorMessage += getResources().getString(
+                            R.string.login_screen_oneidm_activity_error_oauth_account_locked_msg);
+                    errorTitle = getResources().getString(
+                            R.string.login_screen_oneidm_activity_error_oauth_account_locked_title);
                 } else {
                     // unknown error
                     errorMessage += getResources().getString(R.string.login_screen_oneidm_activity_error_developer_msg);
@@ -392,9 +437,6 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
 
     /**
      * @brief Hide tooltips if touch events come through.
-     *
-     * @param ev
-     * @return
      */
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -444,8 +486,6 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
 
     /**
      * @brief Shows an OKButton - to report login errors.
-     * @param title
-     * @param message
      */
     protected void showLoginFailNotification(String title, final String message) {
         if (TextUtils.isEmpty(title)) {
@@ -454,25 +494,25 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
         Intent intent = new Intent(this.getBaseContext(), OKDialog.class);
         intent.putExtra(OKDialog.PDE_OK_DIALOG_INTENT_EXTRA_MESSAGE, message);
         intent.putExtra(OKDialog.PDE_OK_DIALOG_INTENT_EXTRA_TITLE, title);
+        intent.putExtra(OKDialog.PDE_OK_DIALOG_INTENT_EXTRA_STYLE, mStyle.name());
         startActivity(intent);
     }
 
 
     /**
-     * @brief Callback for the Username PDEInputField -> used to controll the info tooltip.
-     * @param ev
+     * @brief Callback for the Username PDEInputField -> used to control the info tooltip.
      */
     @SuppressWarnings("unused")
     public void onUsernameInputFieldAction(PDEEvent ev) {
         PDEInputFieldEvent inputFieldEvent = (PDEInputFieldEvent)ev;
-        if (inputFieldEvent.getType() == PDEInputField.PDEInputFieldEventActionGotFocus) {
+        if (inputFieldEvent.getType().equals(PDEInputField.PDE_INPUTFIELD_EVENT_ACTION_GOT_FOCUS)) {
             if (mUsernameInputField.getText().length() == 0) {
                 //start timer
                 reStartUsernameShowInfoRunnable();
             }
-        } else if (inputFieldEvent.getType() == PDEInputField.PDEInputFieldEventActionLostFocus) {
+        } else if (inputFieldEvent.getType().equals(PDEInputField.PDE_INPUTFIELD_EVENT_ACTION_LOST_FOCUS)) {
             removeUsernameShowInfoRunnable();
-        } else if (inputFieldEvent.getType() == PDEInputField.PDEInputFieldEventActionAfterTextChanged) {
+        } else if (inputFieldEvent.getType().equals(PDEInputField.PDE_INPUTFIELD_EVENT_ACTION_AFTER_TEXT_CHANGED)) {
             if (inputFieldEvent.getCurrentText().length() == 0) {
                 reStartUsernameShowInfoRunnable();
             } else {
@@ -486,6 +526,7 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
     /**
      * @brief show the progress dialog.
      */
+    @SuppressWarnings("unused")
     void showProgressIndicator() {
 
         // DialogFragment.show() will take care of adding the fragment
@@ -520,11 +561,10 @@ public class PDEOneIDMLoginScreenActivity extends PDEBaseLoginScreenActivity imp
 
     /**
      * @brief onCancelListener of the progress indicator fragment, cancels the OneIDM request.
-     * @param dialog
      */
     @Override
     public void onCancel(DialogInterface dialog) {
         // cancel the currently running OneIDM request (the user has pressed back during the execution)
-        mOneIDM.cancelRequest();
+        // mOneIDM.cancelRequest();
     }
 }

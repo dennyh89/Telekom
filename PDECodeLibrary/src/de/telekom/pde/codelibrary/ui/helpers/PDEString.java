@@ -13,7 +13,7 @@ import de.telekom.pde.codelibrary.ui.color.PDEColor;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-
+@SuppressWarnings("unused")
 public class PDEString {
 
     /**
@@ -80,24 +80,15 @@ public class PDEString {
     {
         // special cases
         if (string1 == null) {
-            if (string2 == null || string2.length()==0) {
-                return true;
-            }
-            else return false;
+            return TextUtils.isEmpty(string2);
         }
         if (string2 == null) {
-            if (string1.length() == 0) {
-                return true;
-            }
-            else return false;
+            return (string1.length() == 0);
         }
 
         // case insensitive string comparison
         // normal string comparison
-        if ( string1.equalsIgnoreCase(string2) ){
-            return true;
-        }
-        else return false;
+        return string1.equalsIgnoreCase(string2);
     }
 
 
@@ -159,10 +150,7 @@ public class PDEString {
         if (isEmpty(string)) return false;
 
         // check it
-        if ( string.contains(containString) ){
-            return true;
-        }
-        else return false;
+        return string.contains(containString);
     }
 
 
@@ -181,7 +169,7 @@ public class PDEString {
         char c;
 
         // check all characters
-        for (i=0; i<string.length(); i++) {
+        for (i = 0; i < string.length(); i++) {
             // get character
             c = string.charAt(i);
             // is it the sought character?
@@ -202,7 +190,7 @@ public class PDEString {
         char c;
 
         // check all characters
-        for (i=0; i<string.length(); i++) {
+        for (i = 0; i < string.length(); i++) {
             // get character
             c = string.charAt(i);
             // is it the sought character?
@@ -259,7 +247,7 @@ public class PDEString {
     }
 
 
-//----- substrings -----------------------------------------------------------------------------------------------------
+//----- sub-strings -----------------------------------------------------------------------------------------------------
 
 
     /**
@@ -759,51 +747,51 @@ public class PDEString {
     {
 
         // simple number test
-        Log.d(LOG_TAG,String.format("%d",PDEString.stringToInt("10")));
+        Log.d(LOG_TAG,String.format("%d", PDEString.stringToInt("10")));
        // Log.d(LOG_TAG,String.format("%d",PDEString.stringToInt("10x"))); // Result not defined -> may go wrong
        // Log.d(LOG_TAG,String.format("%d",PDEString.stringToInt("10.2"))); // Result not defined -> may go wrong
        // Log.d(LOG_TAG,String.format("%d",PDEString.stringToInt(" 10"))); // Result not defined -> may go wrong
-        Log.d(LOG_TAG,String.format("%d",PDEString.stringToInt("-10")));
-        Log.d(LOG_TAG,String.format("%f",PDEString.stringToDouble("10")));
+        Log.d(LOG_TAG,String.format("%d", PDEString.stringToInt("-10")));
+        Log.d(LOG_TAG,String.format("%f", PDEString.stringToDouble("10")));
        // Log.d(LOG_TAG,String.format("%f",PDEString.stringToDouble("10x"))); // Result not defined -> may go wrong
-        Log.d(LOG_TAG,String.format("%f",PDEString.stringToDouble("10.2")));
-        Log.d(LOG_TAG,String.format("%f",PDEString.stringToDouble(" 10.3"))); //works // Result not defined -> may go wrong
-        Log.d(LOG_TAG,String.format("%f",PDEString.stringToDouble("-10.3")));
-        Log.d(LOG_TAG,String.format("%f",PDEString.stringToDouble(" -10.3")));
+        Log.d(LOG_TAG,String.format("%f", PDEString.stringToDouble("10.2")));
+        Log.d(LOG_TAG,String.format("%f", PDEString.stringToDouble(" 10.3"))); //works // Result not defined -> may go wrong
+        Log.d(LOG_TAG,String.format("%f", PDEString.stringToDouble("-10.3")));
+        Log.d(LOG_TAG,String.format("%f", PDEString.stringToDouble(" -10.3")));
        // Log.d(LOG_TAG,String.format("%f",PDEString.stringToDouble("--10.3"))); // Result not defined -> may go wrong
 
         // boolean test
-        Log.d(LOG_TAG,String.format("%b",PDEString.stringToBool("tRuE")));
-        Log.d(LOG_TAG,String.format("%b",PDEString.stringToBool("YES")));
-        Log.d(LOG_TAG,String.format("%b",PDEString.stringToBool("y")));
-        Log.d(LOG_TAG,String.format("%b",PDEString.stringToBool("1")));
-        Log.d(LOG_TAG,String.format("%b",PDEString.stringToBool("01"))); // Result not defined -> may go wrong
+        Log.d(LOG_TAG,String.format("%b", PDEString.stringToBool("tRuE")));
+        Log.d(LOG_TAG,String.format("%b", PDEString.stringToBool("YES")));
+        Log.d(LOG_TAG,String.format("%b", PDEString.stringToBool("y")));
+        Log.d(LOG_TAG,String.format("%b", PDEString.stringToBool("1")));
+        Log.d(LOG_TAG,String.format("%b", PDEString.stringToBool("01"))); // Result not defined -> may go wrong
 
         // hex test
-        Log.d(LOG_TAG,String.format("%x",PDEString.hexStringToInt("012a")));
-        Log.d(LOG_TAG,String.format("%x",PDEString.hexStringToInt(" 012a"))); //geht ist aber 0 // Ergebnis nicht definiert => darf fehlschlagen
-        Log.d(LOG_TAG,String.format("%x",PDEString.hexStringToInt("ax"))); // geht ist aber a //Ergebnis nicht definiert => darf fehlschlagen
-        Log.d(LOG_TAG,String.format("%x",PDEString.hexStringToInt("-12a")));
+        Log.d(LOG_TAG,String.format("%x", PDEString.hexStringToInt("012a")));
+        Log.d(LOG_TAG,String.format("%x", PDEString.hexStringToInt(" 012a"))); //geht ist aber 0 // Ergebnis nicht definiert => darf fehlschlagen
+        Log.d(LOG_TAG,String.format("%x", PDEString.hexStringToInt("ax"))); // geht ist aber a //Ergebnis nicht definiert => darf fehlschlagen
+        Log.d(LOG_TAG,String.format("%x", PDEString.hexStringToInt("-12a")));
 
         // numbers mixed with hex test
-        Log.d(LOG_TAG,String.format("%d",PDEString.stringToIntNumber("-10")));
-        Log.d(LOG_TAG,String.format("%d",PDEString.stringToIntNumber("0x10")));
-        Log.d(LOG_TAG,String.format("%d",PDEString.stringToIntNumber("-0x10")));
-        Log.d(LOG_TAG,String.format("%f",PDEString.stringToDoubleNumber("-10.2e-1")));
-        Log.d(LOG_TAG,String.format("%f",PDEString.stringToDoubleNumber("-10.3")));
-        Log.d(LOG_TAG,String.format("%f",PDEString.stringToDoubleNumber("0x10")));
-        Log.d(LOG_TAG,String.format("%f",PDEString.stringToDoubleNumber("-0x10")));
+        Log.d(LOG_TAG,String.format("%d", PDEString.stringToIntNumber("-10")));
+        Log.d(LOG_TAG,String.format("%d", PDEString.stringToIntNumber("0x10")));
+        Log.d(LOG_TAG,String.format("%d", PDEString.stringToIntNumber("-0x10")));
+        Log.d(LOG_TAG,String.format("%f", PDEString.stringToDoubleNumber("-10.2e-1")));
+        Log.d(LOG_TAG,String.format("%f", PDEString.stringToDoubleNumber("-10.3")));
+        Log.d(LOG_TAG,String.format("%f", PDEString.stringToDoubleNumber("0x10")));
+        Log.d(LOG_TAG,String.format("%f", PDEString.stringToDoubleNumber("-0x10")));
 
         // complex string conversions
         PointF point;
         PointF size;
         RectF rect;
         point = PDEString.stringToPoint(" 1.2 , 0x12 ");
-        Log.d(LOG_TAG,String.format("%f,%f",point.x,point.y));
+        Log.d(LOG_TAG,String.format("%f,%f", point.x, point.y));
         size = PDEString.stringToSize("1.2,3.4");
-        Log.d(LOG_TAG,String.format("%f,%f",size.x,size.y));
+        Log.d(LOG_TAG, String.format("%f,%f", size.x, size.y));
         rect = PDEString.stringToRect("1.2,3.4,5.6,.02");
-        Log.d(LOG_TAG,String.format("%f,%f,%f,%f",rect.left,rect.top,rect.right,rect.bottom));
+        Log.d(LOG_TAG, String.format("%f,%f,%f,%f", rect.left, rect.top, rect.right, rect.bottom));
     }
 
 

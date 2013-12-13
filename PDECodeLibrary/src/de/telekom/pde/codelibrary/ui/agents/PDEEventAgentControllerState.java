@@ -37,6 +37,10 @@ public class PDEEventAgentControllerState extends PDEEvent {
      */
     protected double mStateAnimationProgress;
     /**
+     * @brief Visual Enabled animation. Range is 0..1
+     */
+    protected double mAgentAnimationVisualEnabled;
+    /**
      * @brief Focus animation. Range is 0..1
      */
     protected double mAgentAnimationFocus;
@@ -73,6 +77,10 @@ public class PDEEventAgentControllerState extends PDEEvent {
     }
     public void setStateAnimationProgress(double stateAnimationProgress){
         mStateAnimationProgress = stateAnimationProgress;
+    }
+
+    public void setAgentAnimationVisualEnabled(double visualEnabled) {
+        mAgentAnimationVisualEnabled = visualEnabled;
     }
 
     public void setAgentAnimationFocus(double focus) {
@@ -112,14 +120,21 @@ public class PDEEventAgentControllerState extends PDEEvent {
         return mStateAnimationProgress;
     }
 
+    public double getAgentAnimationVisualEnabled(){
+        return mAgentAnimationVisualEnabled;
+    }
+
+    @SuppressWarnings("unused")
     public double getAgentAnimationFocus(){
         return mAgentAnimationFocus;
     }
 
+    @SuppressWarnings("unused")
     public double getAgentAnimationHighlight(){
         return mAgentAnimationHighlight;
     }
 
+    @SuppressWarnings("unused")
     public double getAgentAnimationPress(){
         return mAgentAnimationPress;
     }
@@ -128,6 +143,7 @@ public class PDEEventAgentControllerState extends PDEEvent {
         return mAgentAnimationDown;
     }
 
+    @SuppressWarnings("unused")
     public double getAgentAnimationCombinedFocusAndHighlight(){
         return mAgentAnimationCombinedFocusAndHighlight;
     }

@@ -12,12 +12,12 @@ package de.telekom.pde.codelibrary.ui.components.lists;
 // PDEHolder
 //----------------------------------------------------------------------------------------------------------------------
 
-import java.util.HashMap;
-
 import android.view.View;
-import de.telekom.pde.codelibrary.ui.elements.wrapper.PDEIconView;
-import de.telekom.pde.codelibrary.ui.elements.wrapper.PDELayerTextView;
-import de.telekom.pde.codelibrary.ui.elements.wrapper.PDEPhotoFrameView;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEIconView;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDELayerTextView;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.metaphors.PDEPhotoFrameView;
+
+import java.util.HashMap;
 
 /**
  * @brief Holder class for List Item Elements.

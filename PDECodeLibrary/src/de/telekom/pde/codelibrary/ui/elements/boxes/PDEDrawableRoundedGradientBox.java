@@ -16,13 +16,14 @@ import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
 
 
 /**
  * @brief Graphics primitive - a box in the shape of a rounded rectangle with a gradient background.
  */
+@SuppressWarnings("unused")
 public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
 
 //-----  properties ---------------------------------------------------------------------------------------------------
@@ -122,7 +123,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
             // keep current shadow position, just update the size
             Rect frame;
             Rect bounds = mElementShadowDrawable.getBounds();
-            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x, bounds.top + elementSize.y);
+            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x+(2*(int)mElementShadowDrawable.getElementBlurRadius()), bounds.top + elementSize.y+(2*(int)mElementShadowDrawable.getElementBlurRadius()));
             mElementShadowDrawable.setBounds(frame);
             mElementShadowDrawable.setElementShapeRoundedRect(mElementCornerRadius);
         }
@@ -368,6 +369,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
 
         // update shadow drawable
         updateElementShadowDrawable(elementSize);
+
     }
 
 

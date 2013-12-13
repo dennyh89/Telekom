@@ -8,18 +8,17 @@
 
 package de.telekom.pde.codelibrary.ui.components.lists;
 
-import de.telekom.pde.codelibrary.ui.color.PDEColor;
-
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ListView;
-
-// ToDo: PDEEvents
+import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
+import de.telekom.pde.codelibrary.ui.color.PDEColor;
+import de.telekom.pde.codelibrary.ui.events.PDEEvent;
+import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
+import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 
 //----------------------------------------------------------------------------------------------------------------------
 // PDEListView
@@ -29,7 +28,7 @@ import android.widget.ListView;
  * @brief List that can deal with styleguide conform list items (those with agent states).
  *
  */
-public class PDEListView extends ListView {
+public class PDEListView extends ListView implements PDEIEventSource {
     /**
      * @brief Global tag for log outputs.
      */
@@ -37,12 +36,10 @@ public class PDEListView extends ListView {
 
     private final static boolean DEBUG = false;
 
-//-----  properties ---------------------------------------------------------------------------------------------------
-    // list position of the item that received the touch-down-event
-    protected int mTapDownPosition;
-    // flag that indicates if the list is currently scrolling or not.
-    protected boolean mIsScrolling;
-    protected boolean mTapped;
+    /**
+     * @brief PDEEventSource instance that provides the event sending behaviour.
+     */
+    private PDEEventSource mEventSource;
 
 
 //----- init -----------------------------------------------------------------------------------------------------------
@@ -79,9 +76,6 @@ public class PDEListView extends ListView {
      */
     public void init(){
         // init
-        mTapDownPosition = 0;
-        mIsScrolling = false;
-        mTapped = false;
 
         // make the native list selector invisible
         setSelector(new ColorDrawable(0));
@@ -91,113 +85,134 @@ public class PDEListView extends ListView {
         // set Cache Color Hint
         setCacheColorHint(PDEColor.DTUIBackgroundColor().getIntegerColor());
 
-        // callback for scrolling in order to determine current scrolling state of the list
-        this.setOnScrollListener(new OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-               if (scrollState == OnScrollListener.SCROLL_STATE_IDLE){
-                   mIsScrolling = false;
-                   if (DEBUG) Log.d(LOG_TAG,"Scrolling IDLE!");
-               } else if(scrollState == OnScrollListener.SCROLL_STATE_FLING) {
-                   if (DEBUG) Log.d(LOG_TAG,"Scrolling FLING!");
-               } else if(scrollState == OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                   mIsScrolling = true;
-                   if (DEBUG) Log.d(LOG_TAG,"Scrolling TOUCH_SCROLL!");
-               }
-            }
-
-            // empty implementation
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            }
-        });
+        // init event source
+        mEventSource = new PDEEventSource();
+        // set ourselves as the default sender (optional)
+        mEventSource.setEventDefaultSender(this, true);
     }
 
 
     /**
-     * @brief Intercept touch events on the way down to the actual list items.
+     * @brief Listener for clicked list items.
      *
-     * We want to have list elements with their own agentstate-selection-behaviour when they get touched. Not the
-     * native behaviour of android list elements. In order to do this, our list-elements have to be clickable and
-     * have to process the touch elements themselves. This means when they consume the motion events,
-     * the list itself doesn't get them anymore and therefore its OnItemClickListener won't fire anymore. So users of
-     * the list wouldn't be informed anymore which item of the list was clicked.
-     * In order to avoid this we intercept the motion events on their way down to the list items. When we get an
-     * UP-Event we have to put it in the onTouchEvent-Listener manually to be sure,
-     * that the list itself is informed about the click.
+     *  All PDEListItems which are added by PDEListAdapter add this listener function.
+     *  So it receives the PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED and
+     *  PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED events of any clicked PDEListItem. In this way we inform the
+     *  PDEListView about the click on one of its items. Now the PDEListView can publish the information about the
+     *  click on one of its items to the world by sending its own events. The user has the choice to listen to this
+     *  PDE list events by the use of addListener() or he registers the standard android OnItemClickListener.
+     *  Listening to the PDE events has the advantage that it is possible to distinguish between will_be_selected and
+     *  selected events.
      *
-     * @param ev The motion/touch event that occured on the list / list item.
-     *
-     * @return  If the list view handles the event itself true is returned. When we return true the list item doesn't
-     * receive the original motion event anymore. Instead it receives a cancel-event. When we return false,
-     * the original motion event can pass to the list item.
+     * @param event PDEEvent which is sent by a list item.
      */
-    public boolean onInterceptTouchEvent (MotionEvent ev){
-        // inform list about the up-event
-        if (ev.getAction() == MotionEvent.ACTION_UP)onTouchEvent(ev);
-        // continue normal processing
-        return super.onInterceptTouchEvent(ev);
-    }
-
-
-    /**
-     * @brief Intercept events before they get dispatched.
-     *
-     * In order to give list elements our own behaviour we have to manipulate events that are send to the list (see
-     * description of onInterceptTouchEvent for more explanation).
-     * Formerly we had an approach that worked only with the onInterceptTouchEvent-Handler to intercept and
-     * manipulate events if necessary. This approach worked completly fine with Android 4.0+ devices,
-     * but didn't really work with lower devices. On lower devices when the finger moves out of the tapped element,
-     * onInterceptTouchEvent stops receiving further events and so we can't manipulate them any more. So now we
-     * capture them at an earlier point and manipulate where necessary.
-     *
-     * @param ev The motion/touch event that occured on the list / list item.
-     * @return
-     */
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        int action = ev.getAction();
-        int currentXPosition = Math.round(ev.getX());
-        int currentYPosition = Math.round(ev.getY());
-
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                if (DEBUG) Log.d(LOG_TAG,"List:DISPATCH: ActionDown");
-                // remember that we're touched and at which list position.
-                mTapDownPosition = pointToPosition(currentXPosition, currentYPosition);
-                if (DEBUG) Log.d(LOG_TAG,"List:DISPATCH: Set scrolling false manually (HACK)!");
-                mIsScrolling = false; // hack for Devices below Android 4.0
-                mTapped = true;
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                if (DEBUG) Log.d(LOG_TAG,"List:DISPATCH: ActionCancel");
-                // not touched any more
-                mTapped=false;
-                break;
-            case MotionEvent.ACTION_UP:
-                if (DEBUG) Log.d(LOG_TAG,"List:DISPATCH: ActionUp");
-                // not touched any more
-                mTapped=false;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (DEBUG) Log.d(LOG_TAG,"List:DISPATCH: ActionMove");
-                if (mTapped){
-                    if (pointToPosition(currentXPosition, currentYPosition) != mTapDownPosition || mIsScrolling) {
-                        if (DEBUG) Log.d(LOG_TAG,"List:DISPATCH: Cancel manually");
-                        // get the element where the touch started
-                        View tappedElement;
-                        tappedElement = getChildAt(mTapDownPosition);
-                        // call cancel manually (not by event) -> workaround
-                        if(tappedElement!=null && tappedElement instanceof PDEListItem) {
-                            if(tappedElement!=null) ((PDEListItem)tappedElement).getAgentAdapter().doCancel(tappedElement,ev);
-                        }
-                        // not touched any more
-                        mTapped=false;
-                    }
-                }
-                break;
+    @SuppressWarnings("unused")
+    public void onPDEListItemClicked (PDEEvent event) {
+        // check type of event
+        if (TextUtils.equals(event.getType(), PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED)){
+            // debug message
+            if (DEBUG) Log.d(LOG_TAG,"WILL BE SELECTED!");
+            // determine list position of clicked item
+            int listPosition = ((PDEListItem)event.getSender()).getListPosition();
+            // check if the standard android onItemClickedListener is registered. In this case perform a click
+            // programmatically in order to trigger this listener with the correct list element.
+            if (getOnItemClickListener() != null) {
+                performItemClick(getAdapter().getView(listPosition, null, this),
+                        listPosition,
+                        getAdapter().getItemId(listPosition));
+            }
+            // send PDEListItem event
+            sendListEvent(PDEListItem.PDE_LIST_ITEM_EVENT_ACTION_WILL_BE_SELECTED, listPosition);
+        } else if(TextUtils.equals(event.getType(), PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED)) {
+            // debug message
+            if (DEBUG) Log.d(LOG_TAG,"SELECTED");
+            // determine list position of clicked item
+            int listPosition = ((PDEListItem)event.getSender()).getListPosition();
+            // send PDEListItem event
+            sendListEvent(PDEListItem.PDE_LIST_ITEM_EVENT_ACTION_SELECTED, listPosition);
         }
-        // continue normal processing
-        return super.dispatchTouchEvent(ev);
     }
 
+
+
+//----- Event Handling -------------------------------------------------------------------------------------------------
+
+    /**
+     * @brief Helper function for sending events.
+     *
+     * @param type type of the event
+     * @param listPosition position of the list element that triggered the sending of the event.
+     */
+    protected void sendListEvent(String type, int listPosition){
+        // init list event
+        PDEEventListItem pdeListEvent = new PDEEventListItem();
+        pdeListEvent.setSender(this);
+        pdeListEvent.setType(type);
+        pdeListEvent.setListPosition(listPosition);
+        // send event
+        getEventSource().sendEvent(pdeListEvent);
+    }
+
+
+
+    /**
+     * @brief Get the eventSource which is responsible for sending PDEEvents events.
+     * Most of the events are coming form the PDEAgentController.
+     * @return PDEEventSource
+     */
+    @Override
+    public PDEEventSource getEventSource() {
+        return mEventSource;
+    }
+
+
+    /**
+     * @brief Add event Listener.
+     *
+     * PDEIEventSource Interface implementation.
+     *
+     * @param target    Object which will be called in case of an event.
+     * @param methodName Function in the target object which will be called.
+     *                   The method must accept one parameter of the type PDEEvent
+     * @return Object which can be used to remove this listener
+     *
+     * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
+     */
+    @Override
+    public Object addListener(Object target, String methodName) {
+        return mEventSource.addListener(target, methodName);
+    }
+
+
+    /**
+     * @brief Add event Listener.
+     *
+     * PDEIEventSource Interface implementation.
+     *
+     * @param target    Object which will be called in case of an event.
+     * @param methodName Function in the target object which will be called.
+     *                   The method must accept one parameter of the type PDEEvent
+     * @param eventMask PDEAgentController event mask.
+     *                  Will be most of the time PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED or
+     *                  PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED
+     * @return Object which can be used to remove this listener
+     *
+     * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
+     */
+    @Override
+    public Object addListener(Object target, String methodName, String eventMask) {
+        return mEventSource.addListener(target, methodName, eventMask);
+    }
+
+
+    /**
+     * @brief Remove event listener that was added before.
+     *
+     * @param listener the event listener that should be removed
+     * @return Returns whether we have found & removed the listener or not
+     */
+    @SuppressWarnings("unused")
+    public boolean removeListener(Object listener) {
+        return mEventSource.removeListener(listener);
+    }
 }

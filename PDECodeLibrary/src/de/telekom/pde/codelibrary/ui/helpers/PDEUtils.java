@@ -15,7 +15,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.hardware.Camera;
 import android.os.Build;
 import android.util.Log;
 import android.view.Display;
@@ -25,10 +24,9 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.RelativeLayout;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import javax.annotation.Nonnull;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -49,7 +47,7 @@ public class PDEUtils {
 
     /**
      * @brief Set a drawable as background to a view using reflection.
-     * The setBackground or setBackgroundDrawable do basically the same, but in order to avoid deprecation warings we
+     * The setBackground or setBackgroundDrawable do basically the same, but in order to avoid deprecation warnings we
      * call the by reflection
      * @param view which background shall be drawn by the drawable
      * @param drawable for the background
@@ -88,7 +86,8 @@ public class PDEUtils {
         }
 
         // everything goes wrong -> SHOULD NOT HAPPEN
-        Log.e(LOG_TAG, "there is no setBackground or setBackgroundDrawable function for this object:" + view.getClass().toString());
+        Log.e(LOG_TAG, "there is no setBackground or setBackgroundDrawable function for this object:"
+                + view.getClass().toString());
     }
 
 
@@ -194,11 +193,22 @@ public class PDEUtils {
     View setGoldenRatioTo(@Nonnull final View view, @Nonnull final Display display) {
         if(view == null)  throw new NullPointerException("view is NULL!!!");
         if(display == null)  throw new NullPointerException("display is NULL!!!");
-        if(!(RelativeLayout.class.isAssignableFrom(view.getParent().getClass()))) throw new IllegalStateException("parent of view is no RelativeLayout");
+
+        if (view.getParent() == null) {
+            throw new IllegalStateException("parent of view is no RelativeLayout");
+        }
+        if(!(RelativeLayout.class.isAssignableFrom(view.getParent().getClass()))) {
+            throw new IllegalStateException("parent of view is no RelativeLayout");
+        }
 
         final float newYPosition = getGoldenRatioYFor(view, display);
 
         final ViewGroup.LayoutParams source = view.getLayoutParams();
+
+        if (source == null) {
+            throw new IllegalStateException("no layout");
+        }
+
         final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(source);
 
         params.topMargin = (int) newYPosition;
@@ -208,6 +218,11 @@ public class PDEUtils {
     }
 
 
+    /**
+     * @brief Get status bar height bei status bar resource dimension.
+     * @param context Context
+     * @return height of status bar in pixel.
+     */
     public static int getStatusBarHeight(final Context context) {
         int result = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");

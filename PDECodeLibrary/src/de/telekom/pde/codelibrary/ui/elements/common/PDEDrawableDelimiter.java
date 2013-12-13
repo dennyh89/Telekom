@@ -12,7 +12,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
 
 //----------------------------------------------------------------------------------------------------------------------
 // PDEDrawableDelimiter
@@ -22,6 +21,7 @@ import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
 /**
  * @brief Graphics primitive - a simple line for e.g. separating list entries.
  */
+@SuppressWarnings("unused")
 public class PDEDrawableDelimiter extends PDEDrawableBase {
 
     public enum PDEDrawableDelimiterType {
@@ -41,7 +41,7 @@ public class PDEDrawableDelimiter extends PDEDrawableBase {
     public PDEDrawableDelimiter() {
         super();
         mElementType = PDEDrawableDelimiterType.PDEDrawableDelimiterTypeHorizontal;
-        mElementBackgroundColor= PDEColor.valueOf("DTGrey220");
+        mElementBackgroundColor = PDEColor.valueOf("DTGrey220");
 
         update(true);
     }
@@ -157,7 +157,7 @@ public class PDEDrawableDelimiter extends PDEDrawableBase {
     @Override
     public void setBounds(int left, int top, int right, int bottom) {
         Rect newBounds = limitBounds(new Rect(left,top, right, bottom));
-        super.setBounds(newBounds.left, newBounds.top, newBounds.right, newBounds.bottom);    //To change body of overridden methods use File | Settings | File Templates.
+        super.setBounds(newBounds.left, newBounds.top, newBounds.right, newBounds.bottom);
     }
 
 
@@ -184,7 +184,7 @@ public class PDEDrawableDelimiter extends PDEDrawableBase {
 
 // todo Alex: please check this function:
     /**
-     * @brief In order to be useable als delimiter in android native list, there has to be an intrinsic height.
+     * @brief In order to be usable als delimiter in android native list, there has to be an intrinsic height.
      * @return 1 if it is an element of type horizontal
      */
     @Override
@@ -198,7 +198,7 @@ public class PDEDrawableDelimiter extends PDEDrawableBase {
 
 // todo Alex: please check this function:
     /**
-     * @brief In order to be useable als delimiter in android native list, there has to be an intrinsic width.
+     * @brief In order to be usable als delimiter in android native list, there has to be an intrinsic width.
      * @return 1 if it is an element of type vertical
      */
     @Override
@@ -258,6 +258,6 @@ public class PDEDrawableDelimiter extends PDEDrawableBase {
         // security
         if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
         // draw normalized rect
-        c.drawRect(0,0,bounds.width(),bounds.height(),mBackgroundPaint);
+        c.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
     }
 }

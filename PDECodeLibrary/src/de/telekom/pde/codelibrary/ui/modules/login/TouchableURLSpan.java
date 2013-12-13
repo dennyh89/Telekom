@@ -41,21 +41,23 @@ class TouchableURLSpan extends CharacterStyle implements UpdateAppearance     {
         mURL = url;
     }
 
+    @SuppressWarnings("unused")
     public TouchableURLSpan(Parcel src) {
         mURL = src.readString();
     }
 
+    @SuppressWarnings("unused")
     public int describeContents() {
         return 0;
     }
 
+    @SuppressWarnings("unused")
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mURL);
     }
 
     /**
      * Performs the touch action associated with this span.
-     * @return
      */
     public boolean onTouch(View widget, MotionEvent m) {
         return false;

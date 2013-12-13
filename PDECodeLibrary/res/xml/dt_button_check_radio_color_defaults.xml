@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+    <dict>
+
+        <!-- Override definitions for button border colors -->
+
+        <!-- Grey237 measured values -->
+        <key>DTGrey237</key>
+        <dict>
+            <key>idle</key>
+            <string>Black7Alpha</string>
+            <key>focus</key>
+            <string>Black14Alpha</string>
+            <key>takinginput</key>
+            <string>Black22Alpha</string>
+        </dict>
+
+        <!-- Grey237 measured values -->
+        <key>DTGrey100</key>
+        <dict>
+            <key>idle</key>
+            <string>DTGrey100</string>
+            <key>focus</key>
+            <string>DTGrey100_Focus</string>
+            <key>takinginput</key>
+            <string>DTGrey100_TakingInput</string>
+        </dict>
+    </dict>
+</plist>

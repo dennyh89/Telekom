@@ -13,7 +13,7 @@ import android.graphics.LightingColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEDrawableIconImage
@@ -74,7 +74,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     }
 
 
-
+    @SuppressWarnings("unused")
     public void setElementAspectRatio(float aspectRatio) {
         // any change?
         if (aspectRatio == mImageAspectRatio) return;
@@ -84,6 +84,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
         update();
     }
 
+    @SuppressWarnings("unused")
     public void enableAspectRatio(boolean enable) {
         // any change?
         if (mAspectRatioEnabled == enable) return;
@@ -234,6 +235,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     /**
      * @brief Get Image Color
      */
+    @SuppressWarnings("unused")
     public PDEColor getElementIconColor() {
         return mIconColor;
     }
@@ -254,6 +256,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     /**
      * @brief Get if shadow is enabled
      */
+    @SuppressWarnings("unused")
     public boolean getElementShadowEnabled() {
         return mShadowEnabled;
     }
@@ -273,6 +276,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     /**
      * @brief Get shadow x offset
      */
+    @SuppressWarnings("unused")
     public float getElementShadowXOffset() {
         return mShadowXOffset;
     }
@@ -292,6 +296,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     /**
      * @brief Get shadow y offset
      */
+    @SuppressWarnings("unused")
     public float getElementShadowYOffset() {
         return mShadowYOffset;
     }
@@ -320,6 +325,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     /*
      * @brief Get shadow Color
      */
+    @SuppressWarnings("unused")
     public PDEColor getElementShadowColor() {
         return mShadowColor;
     }
@@ -340,6 +346,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     /**
      * @brief Get padding
      */
+    @SuppressWarnings("unused")
     public float getElementPadding() {
         return mPadding;
     }

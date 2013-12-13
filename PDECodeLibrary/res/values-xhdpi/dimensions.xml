@@ -18,12 +18,11 @@
     <dimen name="Telekom.BU6">72dp</dimen>
     <dimen name="Telekom.BU7">84dp</dimen>
     <dimen name="Telekom.BU8">96dp</dimen>
-    <dimen name="Telekom.BU9">118dp</dimen>
-    <dimen name="Telekom.BU10">130dp</dimen>
+    <dimen name="Telekom.BU9">108dp</dimen>
+    <dimen name="Telekom.BU10">120dp</dimen>
 
     <dimen name="TeleGroteskDefaultSize">18sp</dimen>
     <dimen name="OtherFontsDefaultSize">16sp</dimen>
     <dimen name="StandardListItemHeight">@dimen/Telekom.BU4</dimen>
     <dimen name="StandardButtonHeight">@dimen/Telekom.BU3</dimen>
-    <dimen name="StandardEmbossedButtonHeight">@dimen/Telekom.BU4</dimen>
 </resources>

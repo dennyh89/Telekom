@@ -36,15 +36,16 @@ public class PDEResourceAttributesHelper {
      * @brief Check if an integer exists in an attribute integer array.
      */
     static public boolean isInEnum(Context context, int enumId, int toCheck ) {
-        return isInIntArray(context,enumId,toCheck);
+        return isInIntArray(context, enumId, toCheck);
     }
 
 
     /**
      * @brief Check if an flag exists in an attribute flag array.
      */
+    @SuppressWarnings("unused")
     static public boolean isInFlags(Context context, int flagId, int toCheck ) {
-        return isInIntArray(context,flagId,toCheck);
+        return isInIntArray(context, flagId, toCheck);
     }
 
 
@@ -52,11 +53,11 @@ public class PDEResourceAttributesHelper {
      * @brief Helper function to read out integer of array.
      */
     static private boolean isInIntArray(Context context, int arrayId, int toCheck) {
-        int i=0;
+        int i;
         int[] attributeValues = getIntArray(context,arrayId);
 
-        for(i=0;i<attributeValues.length;i++) {
-            if(attributeValues[i]==toCheck) return true;
+        for (i = 0; i < attributeValues.length; i++) {
+            if (attributeValues[i] == toCheck) return true;
         }
 
         // nothing found
@@ -66,7 +67,7 @@ public class PDEResourceAttributesHelper {
 
     /**
      * @brief Get the array with the values declared in the enum/flag attribute in the attr.xml
-     *         !!!!!!!!!!!!ONLY RETURNS ARRAY WITH VALUES, COULD BE EMTY ARRAY !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     *         !!!!!!!!!!!!ONLY RETURNS ARRAY WITH VALUES, COULD BE EMPTY ARRAY !!!!!!!!!!!!!!!!!!!!!!!!!!!!
      *         normally the array we get by "getIntArray" contains the attribute itself at the first position
      *
      * @param context current context
@@ -81,10 +82,10 @@ public class PDEResourceAttributesHelper {
         // null -> no array with this id
         // length <=1 no array or no entries (If attribute has no enum/flag entries, size is always 1)
         // -> seems that the id of the proper attribute is always saved at the first position
-        if(attributeValues==null || attributeValues.length<=1){
-            Log.e(LOG_TAG, "Emty or not existing integer resource array:" + res.getResourceName(arrayId));
+        if (attributeValues == null || attributeValues.length <= 1){
+            Log.e(LOG_TAG, "Empty or not existing integer resource array:" + res.getResourceName(arrayId));
             return new int[0];
         }
-        return Arrays.copyOfRange(attributeValues,1,attributeValues.length);
+        return Arrays.copyOfRange(attributeValues, 1, attributeValues.length);
     }
 }

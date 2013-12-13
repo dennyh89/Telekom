@@ -11,16 +11,15 @@ package de.telekom.pde.codelibrary.ui.elements.complex;
 
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.text.TextUtils;
 import android.util.Log;
-
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableMultilayer;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableDelimiter;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableMultilayer;
 import de.telekom.pde.codelibrary.ui.elements.text.PDELayerText;
 import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
-import de.telekom.pde.codelibrary.ui.helpers.PDEFontMetricsHolder;
 import de.telekom.pde.codelibrary.ui.helpers.PDEString;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -79,7 +78,7 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
         // init main label to PDE defaults
         mElementMainLabel.setElementText("");
         mElementMainLabel.setElementHorizontalAlignment(PDEConstants.PDEAlignment.PDEAlignmentLeft);
-        mElementMainLabel.setElementTextColor(PDEColor.valueOf("DTGrey5"));
+        mElementMainLabel.setElementTextColor(PDEColor.valueOf("DTLightUIText"));
         mElementMainLabel.setElementEllipsize(true);
         mElementMainLabel.setLayoutOffset(0,0);
         mElementMainLabel.setLayoutSize(0,0);
@@ -93,7 +92,7 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
 
         // init sub label to PDE defaults
         mElementSubLabel.setElementHorizontalAlignment(PDEConstants.PDEAlignment.PDEAlignmentLeft);
-        mElementSubLabel.setElementTextColor(PDEColor.valueOf("DTGrey140"));
+        mElementSubLabel.setElementTextColor(PDEColor.valueOf("DTLightUIIndicativeText"));
         mElementSubLabel.setElementEllipsize(true);
         mElementSubLabel.setElementText("");
         mElementSubLabel.setElementTextSize(
@@ -105,7 +104,7 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
         mTextWidthSubLabel = mElementSubLabel.getTextWidth();
 
         // init delimiter to PDE defaults
-        mElementDelimiter.setElementBackgroundColor(PDEColor.valueOf("DTGrey1"));
+        mElementDelimiter.setElementBackgroundColor(PDEColor.valueOf("Black30Alpha"));
 
         // init backgroundcolor and alignment
         mElementBackgroundColor = PDEColor.valueOf("DTTransparentBlack");
@@ -139,7 +138,7 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
      */
     public void setElementText(String text){
         // any change?
-        if (text == mElementMainLabel.getElementText()) {
+        if (TextUtils.equals(text,mElementMainLabel.getElementText())) {
             return;
         }
 
@@ -169,7 +168,7 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
      */
     public void setElementSubText(String text) {
         // any change?
-        if (text == mElementSubLabel.getElementText()) {
+        if (TextUtils.equals(text,mElementSubLabel.getElementText())) {
             return;
         }
 

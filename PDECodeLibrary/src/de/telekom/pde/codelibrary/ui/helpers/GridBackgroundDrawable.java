@@ -7,10 +7,15 @@
 
 package de.telekom.pde.codelibrary.ui.helpers;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
+
+/// @cond INTERNAL_CLASS
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDECharacterSet
@@ -118,3 +123,5 @@ public class GridBackgroundDrawable extends Drawable {
         return 0;
     }
 }
+
+/// @endcond INTERNAL_CLASS

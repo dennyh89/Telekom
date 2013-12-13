@@ -14,14 +14,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Browser;
-import android.text.Html;
-import android.text.InputType;
-import android.text.Layout;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.TextUtils;
+import android.text.*;
 import android.text.style.CharacterStyle;
 import android.text.style.URLSpan;
 import android.util.TypedValue;
@@ -31,7 +24,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.activity.PDESherlockFragmentActivity;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
@@ -45,11 +38,7 @@ import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableNotificationFrame
 import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableRoundedBox;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableDelimiter;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
-import de.telekom.pde.codelibrary.ui.helpers.GridBackgroundDrawable;
-import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
-import de.telekom.pde.codelibrary.ui.helpers.PDEString;
-import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
-import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
+import de.telekom.pde.codelibrary.ui.helpers.*;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 import de.telekom.pde.codelibrary.ui.layout.PDEBoundedRelativeLayout;
 
@@ -85,20 +74,41 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
 
     // calculate all used font sizes
-    protected final static float FONTSIZE_HEADER = PDEFontHelpers.calculateFontSizeByPercent(PDETypeface.sDefaultFont, 133);
-    protected final static float FONTSIZE_LARGE = PDEFontHelpers.calculateFontSize(PDETypeface.sDefaultFont, PDEBuildingUnits.pixelFromBU(7.0f / 6.0f));
-    protected final static float FONTSIZE_DEFAULT = PDEFontHelpers.calculateFontSize(PDETypeface.sDefaultFont, PDEBuildingUnits.BU());
-    protected final static float FONTSIZE_SMALL = PDEFontHelpers.calculateFontSize(PDETypeface.sDefaultFont, PDEBuildingUnits.pixelFromBU(5.0f / 6.0f));
-    protected final static float FONTSIZE_SMALLER = PDEFontHelpers.calculateFontSizeByPercent(PDETypeface.sDefaultFont, 75);
+    protected final static float FONTSIZE_HEADER = PDEFontHelpers.calculateFontSizeByPercent(PDETypeface.sDefaultFont,
+            133);
+    protected final static float FONTSIZE_LARGE = PDEFontHelpers.calculateFontSize(PDETypeface.sDefaultFont,
+            PDEBuildingUnits.pixelFromBU(7.0f / 6.0f));
+    protected final static float FONTSIZE_DEFAULT = PDEFontHelpers.calculateFontSize(PDETypeface.sDefaultFont,
+            PDEBuildingUnits.BU());
+    protected final static float FONTSIZE_SMALL = PDEFontHelpers.calculateFontSize(PDETypeface.sDefaultFont,
+            PDEBuildingUnits.pixelFromBU(5.0f / 6.0f));
+    protected final static float FONTSIZE_SMALLER = PDEFontHelpers.calculateFontSizeByPercent(PDETypeface.sDefaultFont,
+            75);
 
     // the default typeface
     protected final static Typeface DEFAULT_TYPEFACE = PDETypeface.sDefaultFont.getTypeface();
     
     protected final static int DTUI_LINKCOLOR = 0xff427BAB; //DTDarkBlue
 
+    protected PDEConstants.PDEContentStyle mStyle = PDEConstants.PDEContentStyle.PDEContentStyleFlat;
+
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent callIntent = getIntent();
+        if (callIntent != null) {
+            String text = callIntent.getStringExtra(PDEConstants.PDE_CODELIB_EXTRA_CONTENTSTYLE);
+            if (!TextUtils.isEmpty(text)){
+                if (PDEString.contains(text.toUpperCase(), "haptic".toUpperCase()))  {
+                    mStyle = PDEConstants.PDEContentStyle.PDEContentStyleHaptic;
+                } else if (PDEString.contains(text.toUpperCase(), "flat".toUpperCase())) {
+                    mStyle = PDEConstants.PDEContentStyle.PDEContentStyleFlat;
+                }
+            }
+        }
+
 
         int textColor = PDEColor.DTUITextColor().getIntegerColor();
 
@@ -115,14 +125,16 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
         mLoginScreenFooterArea = findViewById(R.id.LoginScreenFooterArea);
 
         // set maximum width for LoginPane
-        ((PDEBoundedRelativeLayout)findViewById(R.id.LoginScreenBoundedPane)).setMaxWidth(PDEBuildingUnits.pixelFromBU(30.0f));
+        ((PDEBoundedRelativeLayout)findViewById(R.id.LoginScreenBoundedPane))
+                        .setMaxWidth(PDEBuildingUnits.pixelFromBU(30.0f));
 
         // set default background color
 
 
         if (DEBUG_SHOW_GRID_BACKGROUND) {
             // overwrite the background with the grid to see the BU layout
-            PDEUtils.setViewBackgroundDrawable(findViewById(R.id.LoginScreenRootView), new GridBackgroundDrawable(PDEColor.valueOf("#2C3366AA")));
+            PDEUtils.setViewBackgroundDrawable(findViewById(R.id.LoginScreenRootView),
+                    new GridBackgroundDrawable(PDEColor.valueOf("#2C3366AA")));
         } else {
             findViewById(R.id.LoginScreenRootView).setBackgroundColor(PDEColor.DTUIBackgroundColor().getIntegerColor());
         }
@@ -185,17 +197,30 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
         // email input-field
         mUsernameInputField = (PDEInputField) findViewById(R.id.LoginScreenUsernameInputField);
+        if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleHaptic) {
+            mUsernameInputField.setInputFieldBackgroundLayerWithLayerType(
+                    PDEButton.PDEButtonLayerType.BackgroundTextHaptic);
+        }
         mUsernameInputField.setHint(getResources().getString(R.string.login_screen_username_input_field_hint));
-        mUsernameInputField.addListener(this, "onInputFieldEmailChanged", PDEInputField.PDEInputFieldEventMask);
+        mUsernameInputField.addListener(this, "onInputFieldEmailChanged", PDEInputField.PDE_INPUTFIELD_EVENT_MASK_ACTION);
 
         // password input-field
         mPasswordInputField = (PDEInputField) findViewById(R.id.LoginScreenPasswordInputField);
+        if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleHaptic) {
+            mPasswordInputField.setInputFieldBackgroundLayerWithLayerType(
+                    PDEButton.PDEButtonLayerType.BackgroundTextHaptic);
+        }
+
         mPasswordInputField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         mPasswordInputField.setHint(getResources().getString(R.string.login_screen_password_input_field_hint));
-        mPasswordInputField.addListener(this,"onInputFieldPasswordChanged",PDEInputField.PDEInputFieldEventMask);
+        mPasswordInputField.addListener(this,"onInputFieldPasswordChanged",PDEInputField.PDE_INPUTFIELD_EVENT_MASK_ACTION);
 
         // stay signed in checkbox
         mCheckbox = (PDEButton) findViewById(R.id.LoginScreenStaySignedInCheckbox);
+        if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleHaptic) {
+            mCheckbox.setButtonOverlayLayerWithLayerType(PDEButton.PDEButtonLayerType.OverlayCheckboxHaptic);
+        }
+
         mCheckbox.setTag(R.id.LoginScreenStaySignedInCheckbox);
         // add listener for the checkbox
         mCheckbox.addListener(this,"onButtonCheckboxPressed",
@@ -203,6 +228,9 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
         // login button
         mButtonLogin  = (PDEButton) findViewById(R.id.LoginScreenButtonLogin);
+        if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleHaptic) {
+            mButtonLogin.setButtonBackgroundLayerWithLayerType(PDEButton.PDEButtonLayerType.BackgroundHaptic);
+        }
         mButtonLogin.addListener(this,"onButtonLoginPressed",
                 PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED);
 
@@ -214,7 +242,9 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
         // prevent keyboard from showing in beginning
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        RelativeLayout.MarginLayoutParams marginLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.MarginLayoutParams marginLayoutParams =
+                new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                ViewGroup.LayoutParams.WRAP_CONTENT);
 
         updateLoginState();
     }
@@ -240,7 +270,6 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
     /**
      * @brief Set text (or html text) for the description label
-     * @param text
      */
     public void setDescriptionHTML(final String text) {
         setTelekomTextLinkBehaviour((TextView)findViewById(R.id.LoginScreenDescriptionLabel), text);
@@ -249,7 +278,6 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
     /**
      * @brief Set text (or html text) for the register here label
-     * @param text
      */
     protected void setRegisterHereHTML(final String text) {
         setTelekomTextLinkBehaviour((TextView)findViewById(R.id.LoginScreenRegisterHereLabel), text);
@@ -258,7 +286,6 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
     /**
      * @brief Set text (or html text) for the password forgotten label
-     * @param text
      */
     protected void setForgotPasswordHTML(final String text) {
         setTelekomTextLinkBehaviour((TextView)findViewById(R.id.LoginScreenForgotPasswordLabel), text);
@@ -267,8 +294,6 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
     /**
      * @brief Helper function to set HTML to a TextView and replace the URLSpans in it with some custom behaviour Span.
-     * @param textView
-     * @param text
      */
     private void setTelekomTextLinkBehaviour(final TextView textView, final String text) {
         if (textView != null) {
@@ -359,7 +384,6 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
     /**
      * @brief Set default value for the username.
-     * @param username
      */
     protected void setUsername(String username) {
         if (mUsernameInputField != null) {
@@ -370,7 +394,6 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
     /**
      * @brief Set default value for the password.
-     * @param password
      */
     protected void setPassword(String password) {
         if (mPasswordInputField != null) {
@@ -381,7 +404,6 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
     /**
      * @brief Query if the stay signed in checkbox is selected.
-     * @return
      */
     protected boolean isStaySignedIn() {
         return mCheckbox.isSelected();
@@ -411,11 +433,11 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
         final PDEInputFieldEvent inputEvent = (PDEInputFieldEvent)event;
 
         // if text did changed check if its a valid mail or not
-        if (inputEvent.isType(PDEInputField.PDEInputFieldEventActionAfterTextChanged)) {
+        if (inputEvent.isType(PDEInputField.PDE_INPUTFIELD_EVENT_ACTION_AFTER_TEXT_CHANGED)) {
             // if there is a text -> validate and set new stat
             mUsernameInputField.setMainState(PDEButton.PDEButtonStateDefault);
             updateLoginState();
-        } else if (inputEvent.isType(PDEInputField.PDEInputFieldEventActionDidClearText)) {
+        } else if (inputEvent.isType(PDEInputField.PDE_INPUTFIELD_EVENT_ACTION_DID_CLEAR_TEXT)) {
             // if text was cleared, go back to default state
             mUsernameInputField.setMainState(PDEButton.PDEButtonStateDefault);
             updateLoginState();
@@ -432,9 +454,9 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
         final PDEInputFieldEvent inputEvent = (PDEInputFieldEvent)event;
 
         // if text did changed check if its a valid mail or not
-        if (inputEvent.isType(PDEInputField.PDEInputFieldEventActionAfterTextChanged)) {
+        if (inputEvent.isType(PDEInputField.PDE_INPUTFIELD_EVENT_ACTION_AFTER_TEXT_CHANGED)) {
             updateLoginState();
-        } else if (inputEvent.isType(PDEInputField.PDEInputFieldEventActionDidClearText)) {
+        } else if (inputEvent.isType(PDEInputField.PDE_INPUTFIELD_EVENT_ACTION_DID_CLEAR_TEXT)) {
             // if text was cleared, go back to default state
             updateLoginState();
         }
@@ -448,11 +470,7 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
      */
     protected boolean checkValidUsername(final String inputString) {
         // valid?
-        if (TextUtils.isEmpty(inputString)) {
-            return false;
-        } else {
-            return true;
-        }
+        return (!TextUtils.isEmpty(inputString));
     }
 
 
@@ -463,11 +481,7 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
      */
     protected boolean checkValidPassword(final String inputString) {
         // valid?
-        if (TextUtils.isEmpty(inputString)) {
-            return false;
-        } else {
-            return true;
-        }
+        return (!TextUtils.isEmpty(inputString));
     }
 
 
@@ -515,11 +529,7 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
                 @Override
                 public boolean onTouch(View widget, MotionEvent m) {
-                    if (m.getAction() == MotionEvent.ACTION_DOWN) {
-                        pressed = true;
-                    } else {
-                        pressed = false;
-                    }
+                    pressed = (m.getAction() == MotionEvent.ACTION_DOWN) ;
                     widget.invalidate();
                     //Log.d(LOG_TAG, "touch " + m.getAction());
                     return false;
@@ -678,7 +688,7 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
                 lp = (PDEAbsoluteLayout.LayoutParams)
                 toolTip.getLayoutParams();
         lp.x = parentTextViewLocation[0];
-        lp.y = spanRect.top-toolTipHeight;
+        lp.y = spanRect.top - toolTipHeight;
         toolTip.setLayoutParams(lp);
 
         // measure it again to ensure that the right position is shown

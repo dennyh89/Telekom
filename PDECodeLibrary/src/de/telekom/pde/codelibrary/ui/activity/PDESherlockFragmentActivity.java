@@ -13,7 +13,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
 import de.telekom.pde.codelibrary.ui.inflater.PDEInflaterUtils;

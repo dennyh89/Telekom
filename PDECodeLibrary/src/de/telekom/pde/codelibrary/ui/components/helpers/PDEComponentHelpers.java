@@ -20,10 +20,11 @@ import android.util.Log;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.buttons.PDEButton;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameter;
+import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameter;
+import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;

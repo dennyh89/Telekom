@@ -9,39 +9,28 @@
 package de.telekom.pde.codelibrary.ui.elements.boxes;
 
 
-import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableMultilayer;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBorderLine;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShape;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedInnerShadow;
-import de.telekom.pde.codelibrary.ui.elements.wrapper.PDEViewWrapper;
 
 //----------------------------------------------------------------------------------------------------------------------
 // PDEDrawableSunkenArea
 //----------------------------------------------------------------------------------------------------------------------
 
-
-public class PDEDrawableSunkenArea extends PDEDrawableMultilayer {
+@SuppressWarnings("unused")
+public class PDEDrawableSunkenArea extends PDEDrawableArea {
 
     //-----  properties ---------------------------------------------------------------------------------------------------
-    protected PDEDrawableBorderLine mElementBorderLine;
-    protected PDEDrawableShapedInnerShadow mElementInnerShadow;
-    protected PDEDrawableShape mElementBackground;
 
-    protected PDEColor mElementSunkenBackgroundColor;
-    protected PDEColor mElementSunkenBorderColor;
+    protected PDEDrawableShapedInnerShadow mElementInnerShadow;
     protected PDEColor mElementInnerShadowColor;
 
     protected float mElementInnerShadowOpacity;
     protected Point mElementInnerShadowOffset;
     protected float mElementInnerShadowBlurRadius;
-
-    protected PDEViewWrapper mWrapperView;
-
 
 
 //----- init -----------------------------------------------------------------------------------------------------------
@@ -52,20 +41,24 @@ public class PDEDrawableSunkenArea extends PDEDrawableMultilayer {
      *
      */
     public PDEDrawableSunkenArea() {
-        mElementSunkenBackgroundColor = PDEColor.valueOf("DTWhite");
-        mElementSunkenBorderColor = PDEColor.valueOf("DTUIBorder");
-        mElementInnerShadowColor = PDEColor.valueOf("DTBlack");
+        mElementBackgroundColor = PDEColor.valueOf("DTWhite");
+        mElementBorderColor = PDEColor.valueOf("DTUIBorder");
+//        mElementInnerShadowColor = PDEColor.valueOf("DTBlack");
+        mElementInnerShadowColor = PDEColor.valueOf("Black34Alpha");
+        mElementInnerShadowOpacity = 1.0f;
+        mElementInnerShadowBlurRadius = (float) PDEBuildingUnits.oneSixthBU();
+
         // Todo: Shape path
 
         // init sub layers
         initLayers();
 
         // init borderline
-        mElementBorderLine.setElementBorderColor(mElementSunkenBorderColor.getIntegerColor());
+        mElementBorderLine.setElementBorderColor(mElementBorderColor.getIntegerColor());
         mElementBorderLine.setElementBorderWidth(1.0f);
         mElementBorderLine.setElementShapeRect();
         // init background
-        mElementBackground.setElementBackgroundColor(mElementSunkenBackgroundColor.getIntegerColor());
+        mElementBackground.setElementBackgroundColor(mElementBackgroundColor.getIntegerColor());
         mElementBackground.setElementShapeRect();
 
         // init inner shadow
@@ -75,6 +68,9 @@ public class PDEDrawableSunkenArea extends PDEDrawableMultilayer {
         //mElementInnerShadow.setShapeOffset(mElementInnerShadowOffset);
         mElementInnerShadow.setLayoutOffset(mElementInnerShadowOffset);
         mElementInnerShadow.setElementShapeRect();
+        mElementInnerShadow.setElementShapeOpacity(mElementInnerShadowOpacity);
+        mElementInnerShadow.setElementBlurRadius(mElementInnerShadowBlurRadius);
+
 
         //mElementInnerShadowOpacity = 0.24f;
         //mElementInnerShadowBlurRadius = (float) PDEBuildingUnits.oneFourthBU();
@@ -87,15 +83,13 @@ public class PDEDrawableSunkenArea extends PDEDrawableMultilayer {
 
 
     // internal helpers
-    private void initLayers() {
+    protected void initLayers() {
+        // base class init
+        super.initLayers();
         // initialize sublayers
-        mElementBorderLine = new PDEDrawableBorderLine();
         mElementInnerShadow = new PDEDrawableShapedInnerShadow();
-        mElementBackground = new PDEDrawableShape();
 
         // hang in layers
-        addLayer(mElementBackground);
-        addLayer(mElementBorderLine);
         addLayer(mElementInnerShadow);
     }
 
@@ -105,54 +99,6 @@ public class PDEDrawableSunkenArea extends PDEDrawableMultilayer {
 // ----- general setters and getters ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
 
-    /**
-     * @brief Get the background color.
-     *
-     * @return background color
-     */
-    public PDEColor getElementSunkenBackgroundColor(){
-        return mElementSunkenBackgroundColor;
-    }
-
-
-    /**
-     * @brief Set a new background color.
-     *
-     * @param color new background color
-     */
-    public void setElementSunkenBackgroundColor(PDEColor color){
-        // anything to do?
-        if (color.getIntegerColor() == mElementSunkenBackgroundColor.getIntegerColor()) return;
-        // remember
-        mElementSunkenBackgroundColor = color;
-        // forward
-        mElementBackground.setElementBackgroundColor(mElementSunkenBackgroundColor.getIntegerColor());
-    }
-
-
-    /**
-     * @brief Get border color.
-     *
-     * @return border color
-     */
-    public PDEColor getElementSunkenBorderColor(){
-        return mElementSunkenBorderColor;
-    }
-
-
-    /**
-     * @brief Set new border color.
-     *
-     * @param color new border color
-     */
-    public void setElementSunkenBorderColor(PDEColor color){
-        // anything to do?
-        if (color.getIntegerColor() == mElementSunkenBorderColor.getIntegerColor()) return;
-        // remember
-        mElementSunkenBorderColor = color;
-        // forward
-        mElementBorderLine.setElementBorderColor(mElementSunkenBorderColor.getIntegerColor());
-    }
 
 
     /**
@@ -226,7 +172,6 @@ public class PDEDrawableSunkenArea extends PDEDrawableMultilayer {
         // remember
         mElementInnerShadowOffset = offset;
         // forward
-        // todo: check correctness
         mElementInnerShadow.setLayoutOffset(mElementInnerShadowOffset);
     }
 
@@ -254,7 +199,7 @@ public class PDEDrawableSunkenArea extends PDEDrawableMultilayer {
     public void setElementInnerShadowBlurRadius(float radius){
         if (mElementInnerShadowBlurRadius == radius) return;
         mElementInnerShadowBlurRadius = radius;
-        mElementInnerShadow.setElementShapeOpacity(mElementInnerShadowOpacity);
+        mElementInnerShadow.setElementBlurRadius(mElementInnerShadowBlurRadius);
     }
 
 
@@ -273,39 +218,21 @@ public class PDEDrawableSunkenArea extends PDEDrawableMultilayer {
     protected void doLayout() {
         Rect bounds;
 
+        // base class
+        super.doLayout();
+
         bounds = getBounds();
-        updateBackgroundDrawable(bounds);
-        updateBorderLine(bounds);
         updateInnerShadow(bounds);
     }
 
 
-    /**
-     * @brief update the backgroundLayer when the bounds change.
-     *
-     * @param bounds new bounds
-     */
-    private void updateBackgroundDrawable(Rect bounds) {
-        mElementBackground.setBounds(bounds);
-    }
-
-    /**
-     * @brief update the border line when the bounds change.
-     *
-     * @param bounds new bounds
-     */
-    private void updateBorderLine(Rect bounds) {
-        mElementBorderLine.setBounds(bounds);
-    }
 
     /**
      * @brief update the inner shadow when the bounds change.
      *
      * @param bounds new bounds
      */
-    private void updateInnerShadow(Rect bounds) {
-        //mElementInnerShadow.setBounds(bounds);
-        // todo: check
+    protected void updateInnerShadow(Rect bounds) {
         mElementInnerShadow.setLayoutRect(new Rect(mElementInnerShadowOffset.x + bounds.left,
                                                    mElementInnerShadowOffset.y + bounds.top,
                                                    bounds.right -  mElementInnerShadowOffset.x,
@@ -326,13 +253,12 @@ public class PDEDrawableSunkenArea extends PDEDrawableMultilayer {
      * @brief Set the shape of the layer to a rectangle with the given size.
      *
      */
+    @Override
     public void setElementShapeRect(){
-        // config background
-        mElementBackground.setElementShapeRect();
+        // base class
+        super.setElementShapeRect();
         // config inner shadow
         mElementInnerShadow.setElementShapeRect();
-        // config borderline
-        mElementBorderLine.setElementShapeRect();
     }
 
 
@@ -341,13 +267,12 @@ public class PDEDrawableSunkenArea extends PDEDrawableMultilayer {
      *
      * @param cornerRadius radius of the rounded corners
      */
+    @Override
     public void setElementShapeRoundedRect(float cornerRadius) {
-        // background
-        mElementBackground.setElementShapeRoundedRect(cornerRadius);
+        // base class
+        super.setElementShapeRoundedRect(cornerRadius);
         // inner shadow
         mElementInnerShadow.setElementShapeRoundedRect(cornerRadius - 1.0f);
-        // border line
-        mElementBorderLine.setElementShapeRoundedRect(cornerRadius);
     }
 
 
@@ -355,29 +280,12 @@ public class PDEDrawableSunkenArea extends PDEDrawableMultilayer {
      * @brief Set the shape of the sunken layer to an oval.
      *
      */
+    @Override
     public void setElementShapeOval() {
-        // background
-        mElementBackground.setElementShapeOval();
-        // border line
-        mElementBorderLine.setElementShapeOval();
+        // base class
+        super.setElementShapeOval();
         // inner shadow
         mElementInnerShadow.setElementShapeOval();
-    }
-
-
-
-
-
-//---------------------------------------------------------------------------------------------------------------------
-// ----- Wrapper View  ----------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------
-
-
-    public PDEViewWrapper getWrapperView() {
-        if (mWrapperView == null) {
-            mWrapperView = new PDEViewWrapper(PDECodeLibrary.getInstance().getApplicationContext(),this);
-        }
-        return mWrapperView;
     }
 
 }

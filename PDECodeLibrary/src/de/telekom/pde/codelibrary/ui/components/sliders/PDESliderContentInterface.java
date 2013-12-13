@@ -9,22 +9,47 @@
 package de.telekom.pde.codelibrary.ui.components.sliders;
 
 
+import android.graphics.Rect;
+import android.view.View;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
-import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 
-/// @cond CLASS_UNDER_DEVELOPMENT__NOT_RELEASED
 
 /**
  * @brief Interface for basic slider contents
  */
 public interface PDESliderContentInterface {
 
+    // ----- constants -----
+
+    /**
+     * @brief Slider Content Orientation
+     */
+    public enum PDESliderContentOrientation {
+        PDESliderContentOrientationHorizontal,
+        PDESliderContentOrientationVertical
+    }
 
     // drawable access
-    public PDEAbsoluteLayout getLayer();
+    public View getLayer();
 
-    // agent control
+    // slider control
     public void sliderEvent(PDEEvent event);
+
+    // padding
+    public Rect getSliderContentPadding();
+
+    /**
+     * @brief Get handle frame.
+     * Relative to the PDESlider.
+     * @return the frame or ZeroRect if the content has no handle.
+     */
+    public Rect getHandleFrame();
+
+
+    /**
+     * @brief Get content frame.
+     * Relative to the PDESlider
+     */
+    public Rect getContentFrame();
 }
 
-/// @endcond CLASS_UNDER_DEVELOPMENT__NOT_RELEASED

@@ -3,7 +3,6 @@ package de.telekom.pde.codelibrary.ui.inflater;
 
 import android.content.Context;
 import android.os.Build;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.widget.TextView;
 import com.actionbarsherlock.view.MenuItem;
 import de.telekom.pde.codelibrary.ui.R;
-import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 
 
@@ -28,17 +26,29 @@ public class PDEFontLayoutFactory implements Factory
 	public View onCreateView(final String name, final Context context, final AttributeSet attrs)
 	{
 		if (name.equalsIgnoreCase("com.android.internal.view.menu.IconMenuItemView")
-				|| name.equalsIgnoreCase("TextView"))
+				|| name.equalsIgnoreCase("TextView")
+                || name.equals(TextView.class.getName())
+                )
 		{
 			try
 			{
 				final LayoutInflater li = LayoutInflater.from(context);
-				final View view = li.createView(name, null, attrs);
-                //set default font to textviews
-                ((TextView) view).setTypeface(PDETypeface.sDefaultFont.getTypeface());
+                View view;
+
+                // this solution prevents an exception...
+                if (name.equalsIgnoreCase("TextView")){
+                    view = li.createView(TextView.class.getName(), null, attrs);
+                } else {
+                    view = li.createView(name, null, attrs);
+                }
+
+                //set default font for TextViews to telegrotesk font
+                if (view instanceof TextView) {
+                    ((TextView) view).setTypeface(PDETypeface.sDefaultFont.getTypeface());
+                }
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
                 {
-                    // If pre-honeycomb device set the background programatically,
+                    // If pre-honeycomb device set the background programmatically,
                     view.setBackgroundResource(R.drawable.selectable_background_pde);
                 }
 				/*new Handler().post(new Runnable()
@@ -51,18 +61,16 @@ public class PDEFontLayoutFactory implements Factory
 						((TextView) view).setTypeface(PDEFontHelpers.getTeleGroteskNormal(context).getTypeface());
 						if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
 						{
-							// If pre-honeycomb device set the background programatically,
+							// If pre-honeycomb device set the background programmatically,
 							view.setBackgroundResource(R.drawable.selectable_background_pde);
 						}
 					}
 				});*/
 				return view;
-			} catch (final InflateException e)
-			{
+			} catch (final InflateException e) {
 				e.printStackTrace();
 				// Handle any inflation exception here
-			} catch (final ClassNotFoundException e)
-			{
+			} catch (final ClassNotFoundException e) {
 				e.printStackTrace();
 				// Handle any ClassNotFoundException here
 			}

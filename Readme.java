@@ -177,13 +177,18 @@ refer to the manual of your tool and enter the URL in the configuration.
 Branches
 --------
 
-The master branch of the Git-system contains the latest version of the
-software components. Currently, the Code Library version 2.0 is available
-in the master branch.
+The master branch of the Git-system contains the latest version of the software
+components. Currently, the Code Library version 3.0 is available in the master
+branch. Previous versions are available in specific branches.
 
-Previous versions are available in specific branches. Currently, the Code
-Library version 1.0.2 is available in the branch "release-1.0.2". You can
-clone directly by using the option "-b release-1.0.2".
+The Code Library versions 1.0 and 2.0 are available in the branches
+"release-X.Y". The branch can be cloned directly by using the option "-b".
+Please replace "X" with the major release number and "Y" with the minor release
+number.
+
+Example
+
+   git clone -b release-2.0 https://git.design.telekom.com/git/PDECodeLibrary_Android.git
 
 Installation
 ============
@@ -210,7 +215,7 @@ The Code Library was built for Android 4.1.2 (API16). Since version 1.10.0
 (Integration of the action bar, the Code Library depends on the
 ActionBarSherlock. Its repository on GitHub has been added as submodule.
 
-Note: do not forget to use the flag "\—\-recursive" for cloning (or activate
+Note: do not forget to use the flag "--recursive" for cloning (or activate
 the checkbox "submodules" in your tool).
 
 The samples were built for Android 2.3.3 (API10) or higher. To build and run
@@ -422,10 +427,6 @@ Simply remove the folder from your local hard drive.
 Known issues
 ============
 
-__Version 1.12.9__<br />
-The progress indicator is not styled to meet the
-requirements of Deutsche Telekom.
-
 __Version 1.12.4__<br />
 The icon font has problems with the visual appearance
 if the size of the displayed icons varies.
@@ -448,14 +449,45 @@ therefore it looks smaller and the icon does not appear central aligned
 All tooltips should appear close to the control it relates to. Currently,
 the tooltips in the split action bar appear horizontal centralized.<br />
    
-Release Notes
+Release notes
 =============
 
 __Current public version__<br />
-2.0.2
+3.0
 
 __Current non-public version__<br />
-2.0.2
+3.0
+
+Major 3.0 (public)
+--------------------
+
+__Date__<br />
+13.12.2013
+ 
+__Server__<br />
+git.design.telekom.com
+ 
+__Repositories__<br />
+PDECodeLibrary_Android.git, PDECodeSamples_Android.git, PDECodeLibrary_Android_Docu.git
+ 
+__Branch__<br />
+master
+ 
+__Content__<br />
+
+The Code Library version 3 implements the major update of the visual design
+for Deutsche Telekom Apps. The components are available in the styles "flat"
+and "haptic" The other stiles of previous versions are deprecated.
+
+Patch 2.0.4 (non-public)
+------------------------
+
+Minor list improvements and list documentation updates.
+
+Patch 2.0.3 (non-public)
+------------------------
+
+Minor slider improvements.
 
 Patch 2.0.2 (public)
 --------------------
@@ -470,7 +502,7 @@ __Repositories__<br />
 PDECodeLibrary_Android.git, PDECodeSamples_Android.git
 
 __Branch__<br />
-master
+release-2.0
 
 __Content__<br />
 
@@ -495,7 +527,7 @@ __Repositories__<br />
 PDECodeLibrary_Android.git, PDECodeLibrary_Android_Docu.git
 
 __Branch__<br />
-master
+release-2.0
 
 __Content__<br />
 
@@ -524,7 +556,7 @@ PDECodeLibrary_Android.git, PDECodeSamples_Android.git,
 PDECodeLibrary_Android_Docu.git
 
 __Branch__<br />
-master
+release-2.0
 
 __Content__<br />
 
@@ -748,7 +780,7 @@ activities: splash screen
 The splash screen is the first screen of the application. It is
 shown right after activation, the launch of the application is 
 performed in background. The splash screen informs the user that
-the application has successfulyy been started. The design of the splash
+the application has successfully been started. The design of the splash
 screen enables the user to link the application with Deutsche Telekom.
 
 The splash screen of Deutsche Telekom uses standard colors, font and layout.

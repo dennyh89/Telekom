@@ -7,9 +7,8 @@
 
 package de.telekom.pde.codelibrary.ui.components.buttons;
 
-import de.telekom.pde.codelibrary.ui.color.PDEButtonColorDefinition;
-
 import android.graphics.Bitmap;
+import de.telekom.pde.codelibrary.ui.color.PDEButtonColorDefinition;
 
 /**
  * @brief Common state stuff for buttons.
@@ -23,12 +22,14 @@ public class PDEButtonData {
     protected Bitmap mIcon;
     protected PDEButtonColorDefinition mColorDefinition;
 
+    @SuppressWarnings("unused")
     public PDEButtonData(){
         mTitle = "";
         mIcon = null;
         mColorDefinition = null;
     }
 
+    @SuppressWarnings("unused")
     public PDEButtonData(PDEButtonData data){
         this.mTitle = data.mTitle;
         this.mIcon = data.mIcon;
@@ -51,10 +52,12 @@ public class PDEButtonData {
         return mIcon;
     }
 
+    @SuppressWarnings("unused")
     public void setColorDefinition(PDEButtonColorDefinition definition){
         mColorDefinition = definition;
     }
 
+    @SuppressWarnings("unused")
     public PDEButtonColorDefinition getColorDefinition(){
         return mColorDefinition;
     }

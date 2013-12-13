@@ -138,6 +138,7 @@ public class PDEAnimation {
     /**
      * @brief The method called for change notification.
      */
+    @SuppressWarnings("unused")
     public Method getDidChangeMethod() {
         return mDidChangeMethod;
     }
@@ -236,6 +237,7 @@ public class PDEAnimation {
      * because the parent is already in the process of destruction, and is cleaning itself. Any parent functions called
      * might result in unexpected behaviour.
      */
+    @SuppressWarnings("unused")
     protected void forgetParentAnimation() {
         // forget the parent
         mParentAnimation = null;
@@ -367,7 +369,7 @@ public class PDEAnimation {
      * This function tells the base logic if the instance actually should be running. This class should be overloaded
      * if running behaviour changes (e.g. groups should also run if any subanimation is running).
      *
-     * @result true if the instance is actually running and should be timed.
+     * @return true if the instance is actually running and should be timed.
      */
     boolean isRunningWithSubAnimations() {
         // the base class has no access to trees -> use running flag only.
@@ -396,7 +398,7 @@ public class PDEAnimation {
      * otherwise the current value is fetched dynamically from the parent. The cached parent time gets updated during
      * animation functions, and when activation/parent properties change.
      *
-     * @result Local time in milliseconds.
+     * @return Local time in milliseconds.
      */
     public long getTime() {
         // calculate used time from parent time, time factor and time offset
@@ -408,7 +410,7 @@ public class PDEAnimation {
      *
      * Use cached time if we're running, or if we have no parent animation. Otherwise get dynamic time.
      *
-     * @result Parent time (local to parent) in milliseconds.
+     * @return Parent time (local to parent) in milliseconds.
      */
     public long getParentTime() {
         if (isRunningWithSubAnimations() || getParentAnimation() == null) {

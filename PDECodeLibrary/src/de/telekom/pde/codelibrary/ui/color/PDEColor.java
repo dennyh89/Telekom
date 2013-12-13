@@ -11,10 +11,11 @@ import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.Color;
 import android.text.TextUtils;
-import java.util.Locale;
 import android.util.Log;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.R;
+
+import java.util.Locale;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -254,7 +255,7 @@ public class PDEColor {
             resourceID = getIdentifierForColorName(symbolicName);
         }
 
-        if( resourceID!=0){
+        if (resourceID != 0){
             init( context.getResources().getColor(resourceID ));
         }
     }
@@ -269,7 +270,7 @@ public class PDEColor {
         String hexValues;
 
         //security
-        if( TextUtils.isEmpty(hexString) ){
+        if (TextUtils.isEmpty(hexString)){
             return;
         }
 
@@ -497,7 +498,7 @@ public class PDEColor {
      *
      * Alpha stays unchanged in the calculation.
      */
-    public PDEColor darkerColor(@SuppressWarnings("SameParameterValue") float step) {
+    public PDEColor darkerColor(float step) {
         return lighterColor(-step);
     }
 
@@ -868,12 +869,12 @@ public class PDEColor {
      * Alpha channel is ignored -> int format is 0xxrrggbb.
      * Alpha channel is used -> int format is 0xaarrggbb.
      */
-    public static PDEColor valueOf(int color, @SuppressWarnings("SameParameterValue") boolean ignoreAlpha){
+    public static PDEColor valueOf(int color, boolean ignoreAlpha){
         return new PDEColor(color,ignoreAlpha);
     }
 
 
-    /**dt_codecomponents:color
+    /**
      * @brief Convert an int color to the form "#aarrggbb". This always uses alpha.
      */
     public static String stringFromIntColor(int color){
@@ -884,9 +885,8 @@ public class PDEColor {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof PDEColor)) return false;
-
-        return mRed == ((PDEColor) o).getRed() &&
+        return (o instanceof PDEColor) &&
+                mRed == ((PDEColor) o).getRed() &&
                 mGreen == ((PDEColor) o).getGreen() &&
                 mBlue == ((PDEColor) o).getBlue() &&
                 mAlpha == ((PDEColor) o).getAlpha() &&

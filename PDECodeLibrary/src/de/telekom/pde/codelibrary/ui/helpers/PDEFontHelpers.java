@@ -21,8 +21,7 @@ import android.widget.TextView;
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.R.string;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
-import de.telekom.pde.codelibrary.ui.elements.text.PDELayerText;
-import de.telekom.pde.codelibrary.ui.elements.wrapper.PDELayerTextView;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDELayerTextView;
 import de.telekom.pde.codelibrary.ui.utils.PDETypefaceSpan;
 
 import javax.annotation.Nonnull;
@@ -35,7 +34,7 @@ import java.util.regex.Pattern;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-
+@SuppressWarnings("unused")
 public class PDEFontHelpers {
 
     /**
@@ -44,7 +43,7 @@ public class PDEFontHelpers {
     private static String LOG_TAG = PDEFontHelpers.class.getName();
 
     // debug messages switch
-    private final static boolean DEBUGPARAMS = false;
+    private final static boolean DEBUG_PARAMS = false;
 
 
     /**
@@ -56,11 +55,11 @@ public class PDEFontHelpers {
     public static PDETypeface validFont(PDETypeface font)
     {
         // no valid input -> return default font
-        if (font==null){
+        if (font == null){
             return PDETypeface.sDefaultFont;
         }
 
-        if(font.getTypeface()==null){
+        if (font.getTypeface() == null){
             return PDETypeface.sDefaultFont;
         }
 
@@ -74,11 +73,7 @@ public class PDEFontHelpers {
      * Recognized units are:
      *  % - percentage of the default copy size (as defined in the Styleguide)
      *  BU - font size in Building Units
-     *  Caps - Capheight of the font
-     *
-     * @param fontSizeString
-     * @param font
-     * @return
+     *  Caps - CapHeight of the font
      */
     public static float parseFontSize(String fontSizeString, PDETypeface font, DisplayMetrics metrics )
     {
@@ -89,8 +84,8 @@ public class PDEFontHelpers {
         Matcher m = p.matcher(fontSizeString);
 
         if (m.find()) {
-            if(DEBUGPARAMS){
-                Log.d(LOG_TAG,"start "+m.start(0)+" "+m.end(0)+" "+fontSizeString.substring(m.start(0),m.end(0)));
+            if (DEBUG_PARAMS){
+                Log.d(LOG_TAG,"start "+m.start(0)+" "+m.end(0)+" "+fontSizeString.substring(m.start(0), m.end(0)));
             }
             if (m.start() == 0) {
                 // float only at the beginning
@@ -137,9 +132,6 @@ public class PDEFontHelpers {
      * @brief Returns a minimum font size based on the font name.
      * Caution: Font name is not available most of the time -> and thus not evaluated here.
      * Returns a minimum size of 12 currently, no matter whats in fontName
-     * @param font
-     * @param size
-     * @return
      */
     public static float assureReadableFontSize(PDETypeface font, float size)
     {
@@ -152,12 +144,9 @@ public class PDEFontHelpers {
     /**
      * @brief Returns the default font size for certain fonts.
      * Caution: we don't have always the font name!!!
-     * @param font
-     * @param percent
-     * @return
      */
     public static float calculateFontSizeByPercent(PDETypeface font, float percent) {
-        float fontSize = Float.NaN;
+        float fontSize;
 
         if (font == null) return Float.NaN;
 
@@ -180,15 +169,11 @@ public class PDEFontHelpers {
      *
      * Iterates as long as it takes through the font sizes until it finds a fitting size which matches the requested
      * CapHeight.
-     *
-     * @param font
-     * @param wantedCapHeight
-     * @return
      */
     public static float calculateFontSize(PDETypeface font, float wantedCapHeight) {
         float size =  wantedCapHeight * 1.5f;
-        float dif = 0.0f;
-        float capHeight = 0.0f;
+        float dif;
+        float capHeight;
 
         if (wantedCapHeight == 0.0f) {
             return 0.0f;
@@ -223,10 +208,7 @@ public class PDEFontHelpers {
 
 
     /**
-     * @brief: Convenience function to get the font metrics.
-     * @param font
-     * @param size
-     * @return
+     * @brief Convenience function to get the font metrics.
      */
     public static Paint.FontMetrics getFontMetrics (PDETypeface font, float size)
     {
@@ -259,16 +241,35 @@ public class PDEFontHelpers {
      * @return normalized bounding rect
      */
     public static Rect getTextViewBounds(String text, PDETypeface font, float textSize) {
+        return getTextViewBounds(text, font.getTypeface(), textSize);
+    }
+
+    /**
+     * @brief Get normalized bounding rect for the text with the chosen size.
+     *
+     * This function returns a bounding rect which starts at 0, 0. Thus it can be directly used for creating a text view.
+     * Take care, that the text view doesn't e.g. draw a border around the text (per default it has a 9-tile as
+     * background which add a border).
+     * AntiAliasing is on.
+     *
+     * It might be useful to add some additional pixels, since the font calculation is not always trustworthy.
+     *
+     * @param text title which is used for the bound
+     * @param typeface the font / typeface
+     * @param textSize in pixels
+     * @return normalized bounding rect
+     */
+    public static Rect getTextViewBounds(String text, Typeface typeface, float textSize) {
         Rect bounds = new Rect();
         Rect returnBounds = new Rect();
         Paint paint = new Paint();
 
         //security
-        if (font == null || textSize <= 0 || text == null) {
+        if (typeface == null || textSize <= 0 || text == null) {
             return returnBounds;
         }
 
-        paint.setTypeface(font.getTypeface());
+        paint.setTypeface(typeface);
         paint.setTextSize(textSize);
         paint.setAntiAlias(true);
 
@@ -283,12 +284,9 @@ public class PDEFontHelpers {
         return returnBounds;
     }
 
+
     /**
      * @brief Get (positive) distance from the top to the baseline.
-     * @param text
-     * @param font
-     * @param textSize
-     * @return
      */
     public static int getPixelsAboveBaseLine(String text, PDETypeface font, float textSize) {
         Rect bounds = new Rect();
@@ -311,10 +309,6 @@ public class PDEFontHelpers {
 
     /**
      * @brief Get (positive) distance from the baseline to the bottom.
-     * @param text
-     * @param font
-     * @param textSize
-     * @return
      */
     public static int getPixelsBelowBaseLine(String text, PDETypeface font, float textSize) {
         Rect bounds = new Rect();
@@ -338,20 +332,21 @@ public class PDEFontHelpers {
 
     /**
      * @brief Get the height of the bounding rect for a caption D - equals CapHeight.
-     * @param font
-     * @param textSize
-     * @return
      */
     public static int getCapHeight(PDETypeface font, float textSize) {
+        return getCapHeight(font.getTypeface(), textSize);
+    }
+
+    /**
+     * @brief Get the height of the bounding rect for a caption D - equals CapHeight.
+     */
+    public static int getCapHeight(Typeface font, float textSize) {
         Rect rect = getTextViewBounds("D", font, textSize);
         return rect.height();
     }
 
     /**
      * @brief Get the metrics height for the font.
-     * @param font
-     * @param size
-     * @return
      */
     public static float getHeight (PDETypeface font, float size) {
         Paint paint;
@@ -361,7 +356,7 @@ public class PDEFontHelpers {
         paint.setAntiAlias(true);
         // set font
         paint.setTypeface(font.getTypeface());
-        // set startsize
+        // set start size
         paint.setTextSize(size);
         // get start values
         metrics = paint.getFontMetrics();
@@ -370,10 +365,7 @@ public class PDEFontHelpers {
     }
 
     /**
-     * #brief Get the metics (positive) top for the font.
-     * @param font
-     * @param size
-     * @return
+     * #brief Get the metrics (positive) top for the font.
      */
     public static float getTopHeight (PDETypeface font, float size) {
         Paint paint;
@@ -384,7 +376,7 @@ public class PDEFontHelpers {
         // set font
         paint.setTypeface(font.getTypeface());
 
-        // set startsize
+        // set start size
         paint.setTextSize(size);
         // get start values
         metrics = paint.getFontMetrics();
@@ -394,65 +386,110 @@ public class PDEFontHelpers {
 
 
     /**
-     * Helper function to get PDETypeface of normal telekom font
-     * @param context
-     * @return typeface
+     * @brief Helper function to get PDETypeface of normal telekom font
      */
     public static PDETypeface getTeleGroteskNormal(final Context context) {
+        // security
+        if (context == null) return null;
+
         return PDETypeface.createFromAsset(context.getResources().getString(R.string.Tele_GroteskNor));
     }
 
+    /**
+     * @brief Get default typeface
+     */
+    public static PDETypeface getDefault() {
+        return PDETypeface.sDefaultFont;
+    }
 
     /**
-     * Helper function to get PDETypeface of fett telekom font
-     * @param context
-     * @return typeface
+     * @brief Get default typeface
+     */
+    public static PDETypeface getNormal() {
+        return PDETypeface.sDefaultNormal;
+    }
+
+    /**
+     * brief Helper function to get PDETypeface of fett(bold) telekom font
      */
     public static PDETypeface getTeleGroteskFett(final Context context) {
+        // security
+        if (context == null) return null;
+
         return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_GroteskFet));
     }
 
+    /**
+     * @brief Get default Bold typeface
+     */
+    public static PDETypeface getBold() {
+        return PDETypeface.sDefaultBold;
+    }
+
 
     /**
-     * Helper function to get PDETypeface of halbfett telekom font
-     * @param context
-     * @return typeface
+     * @brief Helper function to get PDETypeface of halbfett telekom font
      */
-    public static PDETypeface getTeleGroteskHalbFettl(final Context context) {
+    public static PDETypeface getTeleGroteskHalbFett(final Context context) {
+        // security
+        if (context == null) return null;
+
         return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_GroteskHal));
     }
 
-
     /**
-     * Helper function to get PDETypeface of ultra telekom font
-     * @param context
-     * @return typeface
+     * @brief Get default Semi Bold typeface
      */
-    public static PDETypeface getTeleGroteskUltra(final Context context) {
-        return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_GroteskUlt));
+    public static PDETypeface getSemiBold() {
+        return PDETypeface.sDefaultSemiBold;
     }
 
 
     /**
-     * Helper function to get PDETypeface of telekom iconfont
-     * @param context
-     * @return typeface
+     * @brief Helper function to get PDETypeface of ultra telekom font
+     */
+    public static PDETypeface getTeleGroteskUltra(final Context context) {
+        // security
+        if (context == null) return null;
+
+        return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_GroteskUlt));
+    }
+
+    /**
+     * @brief Get default Ultra typeface
+     */
+    public static PDETypeface getUltra() {
+        return PDETypeface.sDefaultUltra;
+    }
+
+    /**
+     * @brief Helper function to get PDETypeface of telekom iconfont
      */
     public static PDETypeface getTeleGroteskIconFont(final Context context) {
+        // security
+        if (context == null) return null;
+
         return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_Iconfont));
     }
 
 
+    /**
+     * @brief Get IconFont
+     */
+    public static PDETypeface getIconFont(final Context context) {
+        return PDETypeface.sIconFont;
+    }
+
     public static void setViewFontTo(@Nonnull final TextView view, @Nonnull final Typeface typeface) {
-        if(view==null) throw new NullPointerException("TextView is NULL!!!");
-        if(typeface==null)  throw new NullPointerException("typeface is NULL!!!");
+        if (view == null) throw new NullPointerException("TextView is NULL!!!");
+        if (typeface == null)  throw new NullPointerException("typeface is NULL!!!");
 
         view.setTypeface(typeface);
     }
 
     public static void setViewFontTo(@Nonnull final PDELayerTextView view, @Nonnull final Typeface typeface) {
-        if(view==null) throw new NullPointerException("PDELayerTextView is NULL!!!");
-        if(typeface==null)  throw new NullPointerException("typeface is NULL!!!");
+        if (view == null) throw new NullPointerException("PDELayerTextView is NULL!!!");
+        if (typeface == null)  throw new NullPointerException("typeface is NULL!!!");
 
         view.setTypeface(PDETypeface.createByNameAndTypeface(typeface.toString(),typeface));
     }

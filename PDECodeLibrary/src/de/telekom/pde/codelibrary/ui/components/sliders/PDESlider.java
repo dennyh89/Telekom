@@ -8,30 +8,33 @@
 
 package de.telekom.pde.codelibrary.ui.components.sliders;
 
-
-/// @cond CLASS_UNDER_DEVELOPMENT__NOT_RELEASED
-
-//----------------------------------------------------------------------------------------------------------------------
-//  PDESlider
-//----------------------------------------------------------------------------------------------------------------------
-
-
-
 import android.content.res.TypedArray;
-import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
+import de.telekom.pde.codelibrary.ui.PDEConstants.PDEContentStyle;
 import de.telekom.pde.codelibrary.ui.R;
+import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
+import de.telekom.pde.codelibrary.ui.components.sliders.PDESliderContentInterface.PDESliderContentOrientation;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
+
 import java.util.ArrayList;
+
+
+
+//----------------------------------------------------------------------------------------------------------------------
+//  PDESlider
+//----------------------------------------------------------------------------------------------------------------------
 
 
 /**
@@ -39,6 +42,26 @@ import java.util.ArrayList;
  *
  * The slider does nothing itself, it just manages contents which do the actual animation.
  * PDESlider offers a few predefined content variants as preset, but does not prevent you using your own graphics.
+ *
+ * The structure builds up own following different constructs:
+ *
+ * PDESliderContent:
+ * Only one sliderContent type can be assigned to a PDESlider.
+ * The Slider Content is responsible for the visible component of the PDESlider.
+ * It holds the drawables and will set, via a interface received, values to it.
+ *
+ * PDESliderController:
+ * A Slider is able to store different controllers associated to specific ids.
+ * Through Controllers it is possible to change the contents property assigned to their assigned id.
+ * Each Controller will send out events to inform about changes being made on him which will be passed on by the
+ * Slider.
+ *
+ * PDEEventSliderControllerState
+ * Are send by the controller and will be passed on by the PDESlider to registered listeners and to the content.
+ *
+ * PDESliderScroller:
+ * To make the PDESlider touch interactive customized scrollers classes can be derived from a scroller base class.
+ *
  */
 public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
@@ -49,10 +72,12 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
     // debug messages switch
     private final static boolean DEBUGPARAMS = false;
 
+    // boolean flag for disable the parent touch interception
+    private boolean mParentTouchInterceptionDisabled;
 
 
 //----------------------------------------------------------------------------------------------------------------------
-//  PDESlider helper classes
+//  PDESlider helper class
 //----------------------------------------------------------------------------------------------------------------------
 
 
@@ -69,6 +94,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
         SavedState(Parcelable superState) {
             super(superState);
         }
+
 
         /**
          * Constructor called from {@link #CREATOR}
@@ -100,14 +126,13 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
 
 
+
 //----------------------------------------------------------------------------------------------------------------------
 //  PDESlider constants
 //----------------------------------------------------------------------------------------------------------------------
 
 
-
-    //----- constants -----
-
+    // ----- constants -----
 
     /**
      * @brief Telekom well known slider contents.
@@ -116,32 +141,36 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
         /* ATTENTION: IF YOU ADD A NEW TYPE HERE, DON'T FORGET TO ADD IT IN ATTRS.XML AS WELL!!!!!
             AND IF YOU ADD IT IN BETWEEN, YOU HAVE TO ADJUST THE INDEXES OF ALL FOLLOWING TYPES IN ATTRS.XML AS WELL!!!
          */
-        ProgressBar,
-        ScrollbarHorizontal
+        ProgressBarFlat,
+        ProgressBarHaptic,
+        SliderBarFlat,
+        SliderBarHaptic,
+        ScrollBarHorizontal,
+        ScrollBarVertical,
+        ScrollBarHandleOnlyHorizontal,
+        ScrollBarHandleOnlyVertical
     }
 
-
-    //----- properties -----
+    // ----- properties -----
 
     // content
     private PDESliderContentInterface mSliderContent;
-    private PDESliderContentType mSliderContentType;
 
     // controller
     private ArrayList<PDESliderControllerAssociator> mSliderControllerBag;
 
-    // Eventsource
+    // EventSource
     protected PDEEventSource mEventSource;
+
+    // scrollhandling
+    private PDESliderScrollHandlerBase mScrollHandler;
 
     // helper
     private PDESliderContentInterface mSliderContentToInitialize;
-    private boolean mContentNeedsInitialization;
 
 
     /**
      * @brief Constructor for PDESlider
-     *
-     * @param context
      */
     public PDESlider(android.content.Context context) {
         super(context);
@@ -151,9 +180,6 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
     /**
      * @brief Constructor for PDESlider
-     *
-     * @param context
-     * @param attrs
      */
     public PDESlider(android.content.Context context, android.util.AttributeSet attrs) {
         super(context,attrs);
@@ -168,14 +194,10 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
     /**
      * @brief Constructor for PDESlider
-     *
-     * @param context
-     * @param attrs
-     * @param defStyle
      */
-    public PDESlider(android.content.Context context, android.util.AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(attrs);
+    public PDESlider(android.content.Context context, android.util.AttributeSet attributeSet, int defStyle) {
+        super(context, attributeSet, defStyle);
+        init(attributeSet);
     }
 
 
@@ -192,14 +214,16 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
         mEventSource = new PDEEventSource();
         mSliderContent = null;
         mSliderControllerBag = new ArrayList<PDESliderControllerAssociator>();
-        mContentNeedsInitialization = false;
 
         // create and set default slider controller
         defaultController = new PDESliderController();
         setSliderControllerForId(defaultController, 0);
 
-        setClipChildren(true);
-        setBackgroundColor(Color.BLUE);
+
+        setClipChildren(false);
+
+        // disable the interception of the touch event in the parent view
+        setParentTouchInterceptionDisabled(true);
 
         LayoutInflater.from(getContext()).inflate(R.layout.pdeslider, this, true);
 
@@ -210,7 +234,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
             // create content
             if (sa.hasValue(R.styleable.PDESlider_contentType)) {
 
-                setSliderWithContentType(sa.getInt(R.styleable.PDESlider_contentType, 0));
+                setSliderContentType(sa.getInt(R.styleable.PDESlider_contentType, 0));
             }
 
             sa.recycle();
@@ -218,16 +242,129 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
     }
 
 
-//----- content handling --------------------------------------------------------------------------------------------------
+
+//----- scroll handling ------------------------------------------------------------------------------------------------
+
+
+    /**
+     * @brief Set a scroller to add touch functionality
+     *
+     * @param scrollHandler A Scroller customized for the actual content.
+     */
+    public void setScrollHandler(PDESliderScrollHandlerBase scrollHandler) {
+
+        // make clean up
+        if (mScrollHandler != null) {
+            // remove listeners
+            mScrollHandler.getEventSource().removeListenersForTarget(this);
+        }
+
+        // store scroller
+        mScrollHandler = scrollHandler;
+
+        // check if scroller is set
+        if (mScrollHandler == null) return;
+
+        // add reference
+        mScrollHandler.setOwningSlider(this);
+
+        // add listener
+        mScrollHandler.addListener(this,"cbScrollHandlerBase",PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK);
+    }
+
+
+    /**
+     * @brief This is called for Agent Events send from the ScrollHandlerBase
+     */
+    @SuppressWarnings("unused")
+    public void cbScrollHandlerBase(PDEEvent event) {
+
+        // right type?
+        if (event.isType(PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK)) {
+
+            // send event to content
+            sendSliderEvent(event);
+        }
+    }
+
+
+   public void setParentTouchInterceptionDisabled(boolean disabled) {
+       mParentTouchInterceptionDisabled = disabled;
+   }
+
+
+    /**
+     * @brief Send touch Events to our Scroller.
+     *
+     *
+     */
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        int action = event.getAction();
+
+        // check if scrollHandler exists
+        if (mScrollHandler == null) return false;
+
+        // touches began
+        if (action == MotionEvent.ACTION_DOWN) {
+            // check parent and disable intercept of touches
+            if(getParent()!=null && mParentTouchInterceptionDisabled) {
+                getParent().requestDisallowInterceptTouchEvent(true);
+            }
+            mScrollHandler.actionTouchesBegan(event);
+            return true;
+        }
+
+        // touch moved
+        else if (action == MotionEvent.ACTION_MOVE) {
+            mScrollHandler.actionTouchesMoved(event);
+            return true;
+        }
+
+        // touch ended
+        else if (action == MotionEvent.ACTION_UP) {
+            // check parent and enable intercept of touches
+            if(getParent()!=null && mParentTouchInterceptionDisabled) {
+                getParent().requestDisallowInterceptTouchEvent(false);
+            }
+            mScrollHandler.actionTouchesEnded(event);
+            return true;
+        }
+
+        // touch canceled
+        else if (action == MotionEvent.ACTION_CANCEL) {
+            // check parent and enable intercept of touches
+            if(getParent()!=null && mParentTouchInterceptionDisabled) {
+                getParent().requestDisallowInterceptTouchEvent(false);
+            }
+            mScrollHandler.actionTouchesCancelled(event);
+            return true;
+        }
+
+        // something else
+        else {
+            // check parent and enable intercept of touches
+            if(getParent()!=null && mParentTouchInterceptionDisabled) {
+                getParent().requestDisallowInterceptTouchEvent(false);
+            }
+        }
+
+        // base implementation
+        return super.onTouchEvent(event);
+    }
+
+
+//----- content handling -----------------------------------------------------------------------------------------------
 
 
     /**
      * @brief Set Slider Content with Integer Content type
      *
-     * @param contentType
+     *
      */
-    private void setSliderWithContentType(int contentType) {
-        setSliderWithContentType(PDESliderContentType.values()[contentType]);
+    private void setSliderContentType(int contentType) {
+        setSliderContentType(PDESliderContentType.values()[contentType]);
     }
 
 
@@ -237,52 +374,120 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
      *
      * @param   contentType A slider content type constant
      */
-    public void setSliderWithContentType(PDESliderContentType contentType) {
-        PDESliderContentInterface content = null;
+    public void setSliderContentType(PDESliderContentType contentType) {
 
-        // any change?
-        if (contentType == mSliderContentType) {
-            return;
+        PDESliderContentInterface newContent;
+
+        // create and set the new content, remember type
+        switch (contentType) {
+            case ProgressBarFlat:
+                newContent = new PDESliderContentProgressBar(getContext(),
+                                                            PDEContentStyle.PDEContentStyleFlat);
+                break;
+            case ProgressBarHaptic:
+                newContent = new PDESliderContentProgressBar(getContext(),
+                                                 PDEContentStyle.PDEContentStyleHaptic);
+                break;
+            case ScrollBarHorizontal:
+                newContent = new PDESliderContentScrollBar(getContext(),
+                                                 PDESliderContentOrientation.PDESliderContentOrientationHorizontal);
+                break;
+            case SliderBarFlat:
+                newContent = new PDESliderContentSliderBar(getContext(),
+                                                 PDEContentStyle.PDEContentStyleFlat);
+                break;
+            case SliderBarHaptic:
+                newContent = new PDESliderContentSliderBar(getContext(),
+                                                 PDEContentStyle.PDEContentStyleHaptic);
+                break;
+            case ScrollBarVertical:
+                newContent = new PDESliderContentScrollBar(getContext());
+                break;
+            case ScrollBarHandleOnlyHorizontal:
+                newContent = new PDESliderContentScrollBar(getContext(),
+                        PDESliderContentOrientation.PDESliderContentOrientationHorizontal);
+                ((PDESliderContentScrollBar)newContent).setHandleOnly(true);
+                break;
+            case ScrollBarHandleOnlyVertical:
+                newContent = new PDESliderContentScrollBar(getContext());
+                ((PDESliderContentScrollBar)newContent).setHandleOnly(true);
+                break;
+            default:
+                //error
+                newContent = null;
+                break;
         }
 
+        setSliderContent(newContent);
+    }
+
+
+    /**
+     * @brief   Set the new slider content.
+     *          Removes the old content.
+     *
+     * @param   content A slider content object
+     */
+    public void setSliderContent(PDESliderContentInterface content) {
+        ViewGroup.LayoutParams lp;
         // remove old content from the layer if it exists
         if (mSliderContent != null) {
             ((ViewGroup)mSliderContent.getLayer().getParent()).removeView(mSliderContent.getLayer());
         }
 
-        // create and set the new content, remember type
-        switch (contentType) {
-            case ProgressBar:
-                content = new PDESliderContentProgressBar(getContext());
-                break;
-            case ScrollbarHorizontal:
-                content = new PDESliderContentScrollbarHorizontal(getContext());
-                break;
-            default:
-                //error
-                content = null;
-                break;
-        }
-
-        // success ?
-        if (content == null) {
-            return;
-        }
+        // release old drag access
+        releaseAllDragAccesses();
 
         // remember
         mSliderContent = content;
-        mSliderContentType = contentType;
 
-        // add the content to the layer
-        ((ViewGroup)findViewById(R.id.pdeslider_content_slot)).addView(mSliderContent.getLayer(),new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        if(mSliderContent!=null) {
+            lp = mSliderContent.getLayer().getLayoutParams();
+            if (lp == null){
+                lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            }
+            mSliderContent.getLayer().setLayoutParams(lp);
+
+            // add the content to the layer
+            ((ViewGroup)findViewById(R.id.pdeslider_content_slot)).addView(mSliderContent.getLayer());
+        }
 
         // new content needs to be initialized with parameters
-        mContentNeedsInitialization = true;
+        requestSliderContentInit();
     }
 
 
     /**
-     * @brief request initialization Events for a new slider content.
+     * @brief Get the currently used slider content.
+     */
+    public PDESliderContentInterface getSliderContent() {
+        return mSliderContent;
+    }
+
+
+    /**
+     * @brief Requests content initialization on next Draw.
+     */
+    private void requestSliderContentInit() {
+
+        // get the view tree observer
+        ViewTreeObserver vto = this.getViewTreeObserver();
+
+        // add listener
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                ViewTreeObserver vto = PDESlider.this.getViewTreeObserver();
+                vto.removeOnPreDrawListener(this);
+                PDESlider.this.initializeSliderContent();
+                return true;
+            }
+        });
+    }
+
+
+    /**
+     * @brief Requests initialization Events for a slider content from slider controllers.
      */
     private void initializeSliderContent() {
 
@@ -294,7 +499,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
         // request initialization for all controller
         for (PDESliderControllerAssociator associator: mSliderControllerBag) {
-            associator.sliderController.getEventSource().requestOneTimeInitialization(this,"cbSliderControllerSingle",
+            associator.sliderController.getEventSource().requestOneTimeInitialization(this, "cbSliderControllerSingle",
                     PDESliderController.PDE_SLIDER_CONTROLLER_EVENT_MASK);
         }
 
@@ -381,7 +586,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
      *          Creates and hands out a new Controller if there is no Controller on give id.
      *
      * @return                  A Slider controller associated to given Id.
-     * @param   controllerId    Id to get assoicated Controller.
+     * @param   controllerId    Id to get associated Controller.
      */
     public PDESliderController getSliderControllerForId(int controllerId) {
 
@@ -418,6 +623,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
      *
      * @param   event PDEEvent
      */
+    @SuppressWarnings("unused")
     public void cbSliderController(PDEEvent event) {
 
         // inform listeners tha a change will be made
@@ -425,8 +631,6 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
             // set id of sending controller
             replaceControllerIdForEvent(event);
-
-            ((PDEEventSliderControllerState) event).printEvent();
 
             // send event to listeners
             mEventSource.sendEvent(event);
@@ -437,8 +641,6 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
             // set id of sending controller
             replaceControllerIdForEvent(event);
-
-            ((PDEEventSliderControllerState) event).printEvent();
 
             // send event to content
             sendSliderEvent(event);
@@ -453,9 +655,10 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
      *
      * @param   event PDEEvent
      */
+    @SuppressWarnings("unused")
     public void cbSliderControllerSingle(PDEEvent event) {
 
-        // do nothing if no initialization layer is defined
+        // do nothing if no initialization content is defined
         if (mSliderContentToInitialize == null) return;
 
         // send to the content if it's an event we want to listen
@@ -463,7 +666,6 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
             // set id of sending controller
             replaceControllerIdForEvent(event);
-            ((PDEEventSliderControllerState) event).printEvent();
 
             // send to content
             sendSliderEvent(event);
@@ -472,8 +674,8 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
 
     /**
-     * @brief   Send a slider Event to the content
-     *          Checks the sender of the event and replaces it's id into the event
+     * @brief   Send a slider Event to the content.
+     *          Checks the sender of the event and replaces it's id into the event.
      *
      * @param   event PDEEvent
      */
@@ -496,14 +698,17 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
          PDEEventSliderControllerState slideEvent;
 
+        // cast event to set new Variables
+        slideEvent = (PDEEventSliderControllerState) event;
+
+        slideEvent.setSlider(this);
+
         // get the sender of the event
         for (PDESliderControllerAssociator associator: mSliderControllerBag) {
 
             // get sending Slider Controller
             if (associator.sliderController == event.getSender()) {
 
-                // cast event to set new Variables
-                slideEvent = (PDEEventSliderControllerState) event;
 
                 // set id
                 slideEvent.setSliderControllerId(associator.sliderControllerId);
@@ -527,7 +732,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
 
     /**
-     * @brief: Add event Listener.
+     * @brief Add event Listener.
      *
      * PDEIEventSource Interface implementation.
      *
@@ -545,7 +750,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
 
     /**
-     * @brief: Add event Listener.
+     * @brief Add event Listener.
      *
      * PDEIEventSource Interface implementation.
      *
@@ -565,8 +770,102 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
     }
 
 
+    /**
+     * @brief Remove the specified listener .
+     *
+     * @param listener The listener reference returned by addListener.
+     * @return  Returns whether we have found & removed the listener or not.
+     */
+    @SuppressWarnings("unused")
     public boolean removeListener(Object listener) {
         return mEventSource.removeListener(listener);
+    }
+
+
+    /**
+     * @brief Get the click frame of the content handle relative to the slider view.
+     */
+    public Rect getHandleFrame() {
+        Rect handleRect = new Rect(mSliderContent.getHandleFrame());
+        handleRect.offset(getPaddingLeft(),getPaddingBottom());
+        return handleRect;
+    }
+
+
+    /**
+     * @brief Get the click frame of the content relative to the slider view.
+     */
+    public Rect getContentFrame() {
+        Rect contentRect = new Rect(mSliderContent.getContentFrame());
+        contentRect.offset(getPaddingLeft(),getPaddingBottom());
+        return contentRect;
+    }
+
+
+// ------ drag access --------------------------------------------------------------------------------------------------
+
+
+    /**
+     * @brief   Get Drag Access to given controller.
+     *
+     * @return                  Boolen if access is given
+     * @param   controllerId    controller id to get drag access
+     */
+    public boolean getDragAccessForController(int controllerId) {
+
+        PDESliderController controller;
+
+        // get wanted controller
+        controller = getSliderControllerForId(controllerId);
+
+        // get access
+        return controller.getDragAccessForSlider(this);
+    }
+
+
+    /**
+     * @brief   Releases drag access for given Controller.
+     *          If Controller doesn't have access nothing will happen.
+     *
+     * @param   controllerId controller id to release drag access
+     */
+    public void releaseDragAccessForController(int controllerId) {
+
+        PDESliderController controller;
+
+        // get wanted controller
+        controller = getSliderControllerForId(controllerId);
+
+        // release access
+        controller.releaseDragAccessForSlider(this);
+    }
+
+
+    /**
+     * @brief   Release all drag accesses to stored Controllers.
+     *
+     */
+    public void releaseAllDragAccesses() {
+
+        // releas drag access for all contollers
+        for (PDESliderControllerAssociator associator: mSliderControllerBag) {
+
+            // release access
+            associator.sliderController.releaseDragAccessForSlider(this);
+        }
+    }
+
+
+    /**
+     * @brief Release Drag Access if this View is detachted from it's window
+     *
+     */
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        // release drag access
+        releaseAllDragAccesses();
     }
 
 
@@ -574,31 +873,42 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
 
     /**
-     * @brief   Layouting will cause a new initialization of the slider only, if it's size or content has changed.
+     * @brief Size changes will cause a new initialization of the slider content
      *
-     *
-     * @param changed
-     * @param left
-     * @param top
-     * @param right
-     * @param bottom
+     * @param width New width.
+     * @param height New height.
+     * @param oldWidth Old width.
+     * @param oldHeight Old height.
      */
     @Override
-    protected void onLayout (boolean changed, int left, int top, int right, int bottom) {
+    protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
 
-        super.onLayout(changed,left,top,right,bottom);
+        super.onSizeChanged(width, height, oldWidth, oldHeight);
 
-        // initialize after size change
-        if (changed) {
-            mContentNeedsInitialization = false;
-            initializeSliderContent();
-        }
+        // any change
+        if (oldWidth == width && oldHeight == height) return;
 
-        // initialize after content change
-        else if (mContentNeedsInitialization) {
-            mContentNeedsInitialization = false;
-            initializeSliderContent();
-        }
+        // initialize content
+        requestSliderContentInit();
+    }
+
+
+    /**
+     * @brief Returns the padding the component needs to be displayed correctly.
+     *
+     * Some things like an outer shadow have to be drawn outside of the layer bounds.
+     * So the View that holds the element has to be sized bigger than the element bounds.
+     * For proper layouting the view must be extended to each direction by the value delivered by
+     * this function.
+     *
+     * @return the needed padding
+     */
+    public Rect getNeededPadding() {
+        // check if content exists
+        if (mSliderContent == null) return new Rect(0,0,0,0);
+
+        // get needed padding of the content
+        return mSliderContent.getSliderContentPadding();
     }
 
 
@@ -607,22 +917,20 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
     /**
      * @brief Overwritten system function to restore slider specific values
-     * @param state
+     *
      */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-
-        ArrayList<PDESliderControllerAssociator> sliderContollerBag;
-
+        ArrayList<PDESliderControllerAssociator> sliderControllerBag;
         SavedState ss = (SavedState) state;
 
         super.onRestoreInstanceState(ss.getSuperState());
 
         // get saved controller bag
-        sliderContollerBag = ss.savedSliderControllerBag;
+        sliderControllerBag = ss.savedSliderControllerBag;
 
         //set sliders
-        for (PDESliderControllerAssociator associator: sliderContollerBag) {
+        for (PDESliderControllerAssociator associator: sliderControllerBag) {
             setSliderControllerForId(associator.sliderController, associator.sliderControllerId);
         }
     }
@@ -643,7 +951,4 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
         return ss;
     }
-
 }
-
-/// @endcond CLASS_UNDER_DEVELOPMENT__NOT_RELEASED

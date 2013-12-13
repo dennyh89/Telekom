@@ -8,9 +8,9 @@
 package de.telekom.pde.codelibrary.ui.components.buttons;
 
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameterDictionary;
+import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameterDictionary;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
+import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 
 //----------------------------------------------------------------------------------------------------------------------

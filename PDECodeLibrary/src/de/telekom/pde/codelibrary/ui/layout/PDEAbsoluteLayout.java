@@ -28,8 +28,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RemoteViews.RemoteView;
-
-
 import de.telekom.pde.codelibrary.ui.R;
 
 
@@ -78,7 +76,7 @@ public class PDEAbsoluteLayout extends ViewGroup {
      * onMeasure
      * 
      * @param widthMeasureSpec int
-     * @param heightMeasureSpec
+     * @param heightMeasureSpec int
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -129,6 +127,7 @@ public class PDEAbsoluteLayout extends ViewGroup {
     protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0, 0);
     }
+
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -224,6 +223,7 @@ public class PDEAbsoluteLayout extends ViewGroup {
     /**
      * Provides manual access to onLayout method
      */
+    @SuppressWarnings("unused")
     public void updateLayout(boolean changed, int l, int t, int r, int b){
         onLayout(changed,l,t,r,b);
     }

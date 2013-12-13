@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:pdecodelibrary="http://schemas.android.com/apk/res-auto">
-    <RelativeLayout
-            
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_gravity="center"
-            >
         <de.telekom.pde.codelibrary.ui.components.buttons.PDEButton
                 android:id="@+id/pdeBackgroundButton"
                 android:layout_width="match_parent"
@@ -39,8 +32,10 @@
                     android:linksClickable="false"
                     />
             <de.telekom.pde.codelibrary.ui.layout.PDESquareRelativeLayout
+                    android:id="@+id/clearButtonContainer"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
                 <!-- has clear button a min width???? android:minWidth="@dimen/Telekom.BU3" -->
                 <de.telekom.pde.codelibrary.ui.components.buttons.PDEButton
                         android:id="@+id/clearButtonView"
@@ -48,9 +43,7 @@
                         android:layout_height="match_parent"
                         pdecodelibrary:src="#X"
                         pdecodelibrary:roundedCornerConfiguration="cornerTopRightRounded|cornerBottomRightRounded"
-                        android:visibility="gone"
                         />
             </de.telekom.pde.codelibrary.ui.layout.PDESquareRelativeLayout>
         </LinearLayout>
-    </RelativeLayout>
 </merge>

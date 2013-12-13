@@ -10,10 +10,10 @@ package de.telekom.pde.codelibrary.ui.activity;
 
 import android.accounts.AccountAuthenticatorActivity;
 import android.os.Bundle;
-
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.inflater.PDEInflaterUtils;
 
+@SuppressWarnings("unused")
 public class PDEAccountAuthenticatorActivity extends AccountAuthenticatorActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

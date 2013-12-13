@@ -7,20 +7,20 @@
 
 package de.telekom.pde.codelibrary.ui.components.sliders;
 
-
-//----------------------------------------------------------------------------------------------------------------------
-//  PDESliderController
-//----------------------------------------------------------------------------------------------------------------------
-
-/// @cond CLASS_UNDER_DEVELOPMENT__NOT_RELEASED
-
-import android.util.Log;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSourceDelegate;
 
 import java.io.Serializable;
 import java.util.EnumSet;
+import java.util.concurrent.locks.ReentrantLock;
+
+
+
+
+//----------------------------------------------------------------------------------------------------------------------
+//  PDESliderController
+//----------------------------------------------------------------------------------------------------------------------
 
 
 /**
@@ -32,14 +32,15 @@ import java.util.EnumSet;
  *          Also a user has the possibility to define his own range of values, he wants to set to a controller.
  *          For default the range is 0...1.
  *          The controller will transform given values into 0..1 range according to the User's defined range.
+ *          If range start is bigger than end, increasing user values will decrease the actual values.
  *
  *          !!! If you are working with your own defined range,
  *          values that are matching your max value will be converted to 1!
- *          This causes, that you will have to set the position of your scrollbar handle to your max value,
+ *          This causes, that you will have to set the position of your scrollBar handle to your max value,
  *          if you want it to be at the end of the range.
  *
  **/
-public class PDESliderController implements PDEIEventSource, PDEIEventSourceDelegate, Serializable{
+public class PDESliderController implements PDEIEventSource, PDEIEventSourceDelegate, Serializable {
 
 
     /**
@@ -51,14 +52,13 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
     /**
      * @brief Global tag for log outputs.
      */
+    @SuppressWarnings("unused")
     private final static String LOG_TAG = PDESliderController.class.getName();
-    // debug messages switch
-    private final static boolean DEBUGPARAMS = false;
 
 
-    //----------------------------------------------------------------------------------------------------------------------
-    //  PDESliderController constants
-    //----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+//  PDESliderController constants
+//----------------------------------------------------------------------------------------------------------------------
 
 
     //----- constants -----
@@ -166,11 +166,15 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
     /**
      * @brief PDEEventSource instance that provides the event sending behaviour
      */
-    private PDEEventSource mEventSource;
+    private transient PDEEventSource mEventSource;
 
 
     // helper variables
-    boolean mUsesTwistedRange;
+    private boolean mUsesTwistedRange;
+
+    // drag access
+    private transient PDESlider mDragHolder;
+    private transient ReentrantLock mDragAccessLock;
 
 
     //----- functions -----
@@ -190,6 +194,8 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         mSliderValueRangeMinimum = 0;
         mSliderValueRangeMaximum = 1;
         mUsesTwistedRange = false;
+        mDragHolder = null;
+        mDragAccessLock = new ReentrantLock();
 
         // create DTEventSender instance
         mEventSource = new PDEEventSource();
@@ -197,9 +203,8 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         mEventSource.setEventDefaultSender(this, true);
         // set ourselves as delegate (optional)
         mEventSource.setEventSourceDelegate(this);
-
-
     }
+
 
 // -------------- Getter & Setter --------------------------------------------------------------------------------------
 
@@ -215,10 +220,24 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
     /**
      * @brief   Sets the internal position.
+     *          This is a Convenience function which will set fromUser to false!
      *
      * @param   sliderPosition   position out of range 0..1
      */
     public void setSliderPosition(float sliderPosition) {
+
+        // call with fromUser = false
+        setSliderPosition(sliderPosition,false);
+    }
+
+
+    /**
+     * @brief   Sets the internal position.
+     *
+     * @param   sliderPosition   position out of range 0..1
+     * @param   fromUser         is this change caused programmatically or by the user
+     */
+    public void setSliderPosition(float sliderPosition, boolean fromUser) {
 
         float userRangeValue;
 
@@ -229,7 +248,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         userRangeValue = convertInternalPositionValueIntoUserValue(sliderPosition);
 
         // set position
-        setPosition(sliderPosition,userRangeValue);
+        setPosition(sliderPosition,userRangeValue,fromUser);
     }
 
 
@@ -294,17 +313,32 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
      * @brief   Returns the slider position according to the user defined value range.
      *          Value range must be between Start and End value of the user defined range.
      */
+    @SuppressWarnings("unused")
     public float getSliderPositionUserRange() {
         return mSliderPositionUserRange;
     }
 
 
     /**
-     * @brief   Sets the slider postition in user coordinates.
+     * @brief   Sets the slider position in user coordinates.
+     *          This is a Convenience function which will set fromUser to false!
      *
      * @param   sliderPositionUserRange     position out of user range
      */
     public void setSliderPositionUserRange(float sliderPositionUserRange) {
+
+        // call with fromUser = false
+        setSliderPositionUserRange(sliderPositionUserRange,false);
+    }
+
+
+    /**
+     * @brief   Sets the slider position in user coordinates.
+     *
+     * @param   sliderPositionUserRange     position out of user range
+     * @param   fromUser                    Is this caused by the user or programmatically
+     */
+    public void setSliderPositionUserRange(float sliderPositionUserRange, boolean fromUser) {
 
         float internalValue;
 
@@ -315,7 +349,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         internalValue = convertUserPositionValueIntoInternal(sliderPositionUserRange);
 
         // set Position
-        setPosition(internalValue, sliderPositionUserRange);
+        setPosition(internalValue, sliderPositionUserRange,fromUser);
     }
 
 
@@ -323,16 +357,18 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
      * @brief   Returns the slider start position according to the user defined value range.
      *          Value range must be between Start and End value of the user defined range.
      */
+    @SuppressWarnings("unused")
     public float getSliderStartPositionUserRange() {
         return mSliderStartPositionUserRange;
     }
 
 
     /**
-     * @brief   Sets the slider start postition in user coordinates.
+     * @brief   Sets the slider start position in user coordinates.
      *
-     * @param   sliderStartPositionUserRange    start position out of user range
+     * @param   sliderStartPositionUserRange    Start position out of user range.
      */
+    @SuppressWarnings("unused")
     public void setSliderStartPositionUserRange(float sliderStartPositionUserRange) {
 
         float internalValue;
@@ -352,6 +388,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
      * @brief   Returns the slider page size according to the user defined value range.
      *          Value range must be between Start and End value of the user defined range.
      */
+    @SuppressWarnings("unused")
     public float getSliderPageSizeUserRange() {
         return mSliderPageSizeUserRange;
     }
@@ -378,8 +415,9 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
     /**
      * @brief   Returns the Start value of the definable value range.
-     *          Default value is 0. (Please read the Slider Controller description)
+     *          Default value is 0.
      */
+    @SuppressWarnings("unused")
     public float getSliderValueRangeMinimum() {
         return mSliderValueRangeMinimum;
     }
@@ -387,7 +425,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
     /**
      * @brief   Set Start value of the user defined range.
-     *          The old start postition and position value will be kept if they are in the new range.
+     *          The old start position and position value will be kept if they are in the new range.
      *          The page size will be converted into the new range.
      *
      * @param   sliderValueRangeMinimum     minimum to set to user defined value range
@@ -395,8 +433,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
     public void setSliderValueRangeMinimum(float sliderValueRangeMinimum) {
 
         // check if start is bigger than end coordinate
-        if (sliderValueRangeMinimum > mSliderValueRangeMaximum) mUsesTwistedRange = true;
-        else mUsesTwistedRange = false;
+        mUsesTwistedRange = sliderValueRangeMinimum > mSliderValueRangeMaximum;
 
         // set new value
         mSliderValueRangeMinimum = sliderValueRangeMinimum;
@@ -449,8 +486,9 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
     /**
      * @brief   Returns the End value of the definable value range. Default value is 0.
-     *          (Please read the Slider Controller description)
+     *
      */
+    @SuppressWarnings("unused")
     public float getSliderValueRangeMaximum() {
         return mSliderValueRangeMaximum;
     }
@@ -458,7 +496,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
     /**
      * @brief   Set end value of the user defined range.
-     *          The old start postition and position value will be kept if they are in the new range.
+     *          The old start position and position value will be kept if they are in the new range.
      *          The page size will be converted into the new range.
      *
      * @param   sliderValueRangeMaximum     maximum to set to user defined value range
@@ -466,27 +504,26 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
     public void setSliderValueRangeMaximum(float sliderValueRangeMaximum) {
 
         // check if end is smaller than start coordinate
-        if (sliderValueRangeMaximum < mSliderValueRangeMinimum) mUsesTwistedRange = true;
-        else mUsesTwistedRange = false;
+        mUsesTwistedRange = sliderValueRangeMaximum < mSliderValueRangeMinimum;
 
         // set new value
         mSliderValueRangeMaximum = sliderValueRangeMaximum;
 
-        // limiate the old values to the new range
+        // limit the old values to the new range
         if (mUsesTwistedRange) {
 
-            // check if slider position is inbetween the new range
+            // check if slider position is in between the new range
             if  (mSliderPositionUserRange > mSliderValueRangeMinimum) {
 
-                // limitate it to new range start
+                // limit it to new range start
                 mSliderPositionUserRange = mSliderValueRangeMinimum;
                 mSliderPosition = 1;
             }
 
-            // check if slider start position is inbetween the new range
+            // check if slider start position is in between the new range
             if  (mSliderStartPositionUserRange > mSliderValueRangeMinimum) {
 
-                // limitate it to new range start
+                // limit it to new range start
                 mSliderStartPositionUserRange = mSliderValueRangeMinimum;
                 mSliderStartPosition = 1;
             }
@@ -497,18 +534,18 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
         else {
 
-            // check if slider position is inbetween the new range
+            // check if slider position is in between the new range
             if  (mSliderPositionUserRange > mSliderValueRangeMaximum) {
 
-                // limitate it to new range start
+                // limit it to new range start
                 mSliderPositionUserRange = mSliderValueRangeMaximum;
                 mSliderPosition = 1;
             }
 
-            // check if slider start position is inbetween the new range
+            // check if slider start position is in between the new range
             if  (mSliderStartPositionUserRange > mSliderValueRangeMaximum) {
 
-                // limitate it to new range start
+                // limit it to new range start
                 mSliderStartPositionUserRange = mSliderValueRangeMaximum;
                 mSliderStartPosition = 1;
             }
@@ -516,7 +553,6 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
             // update page Size and send change event
             setSliderPageSize(mSliderPageSize);
         }
-
     }
 
 
@@ -529,7 +565,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
      * @param   internalValue   value out of 0...1 range
      * @param   userValue       value out of user defined range
      */
-    private void setPosition(float internalValue,float userValue) {
+    private void setPosition(float internalValue,float userValue,boolean fromUser) {
 
         PDEEventSliderControllerState willChangeEvent;
         PDEEventSliderControllerState hasChangedEvent;
@@ -544,6 +580,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         willChangeEvent = createStateEvent();
         willChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_WILL_CHANGE);
         willChangeEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
+        willChangeEvent.setSliderChangeFromUser(fromUser);
         mEventSource.sendEvent(willChangeEvent);
 
         // check if data has been changed. if yes change our data
@@ -581,12 +618,14 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         didChangeEvent = createStateEvent();
         didChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_DID_CHANGE);
         didChangeEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
+        didChangeEvent.setSliderChangeFromUser(fromUser);
         mEventSource.sendEvent(didChangeEvent);
 
         // send final event to inform listeners
         hasChangedEvent = createStateEvent();
         hasChangedEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_HAS_CHANGED);
         hasChangedEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
+        hasChangedEvent.setSliderChangeFromUser(fromUser);
         mEventSource.sendEvent(hasChangedEvent);
     }
 
@@ -918,7 +957,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
      * @brief   EventSourceDelegate implementation. Send data update for initialization and
      *          maintain a consistent activation status.
      *
-     * @param   listener
+     * @param   listener Listener to add.
      */
     @Override
     public void eventSourceDidAddListener(Object listener) {
@@ -929,30 +968,28 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         event = createStateEvent();
         event.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_INITIALIZE);
         mEventSource.sendEvent(event,listener);
-
-        Log.d(LOG_TAG,"Initialisation :\nPosition: "+mSliderPosition+"\n Position UR:"+mSliderPositionUserRange+
-                        "\nPageSize: "+ mSliderPageSize +
-                        "\nMinimum: "+ mSliderValueRangeMinimum+"\nMaximum: "+mSliderValueRangeMaximum);
     }
 
 
     /**
      * @brief   EventSourceDelegate implementation. Maintain a consistent state when a
-     *          listener is removed
+     *          listener is removed.
      *
-     * @param   listener
+     * @param   listener Listener which will be removed.
      */
     @Override
     public void eventSourceWillRemoveListener(Object listener) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // nothing to do?
     }
 
 
-// -------------------- EventSource implementation ---------------------------------------------------------------------
+//----- Event Handling -------------------------------------------------------------------------------------------------
 
 
     /**
-     * @brief EventSource implementation. Get Event Sender instance.
+     * @brief Get the eventSource which is responsible for sending PDEEvents events.
+     * Most of the events are coming form the PDEAgentController.
+     * @return PDEEventSource
      */
     @Override
     public PDEEventSource getEventSource() {
@@ -960,16 +997,112 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
     }
 
 
+    /**
+     * @brief Add event Listener.
+     *
+     * PDEIEventSource Interface implementation.
+     *
+     * @param target    Object which will be called in case of an event.
+     * @param methodName Function in the target object which will be called.
+     *                   The method must accept one parameter of the type PDEEvent
+     * @return Object which can be used to remove this listener
+     *
+     * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
+     */
     @Override
     public Object addListener(Object target, String methodName) {
         return mEventSource.addListener(target, methodName);
     }
 
 
+    /**
+     * @brief Add event Listener.
+     *
+     * PDEIEventSource Interface implementation.
+     *
+     * @param target    Object which will be called in case of an event.
+     * @param methodName Function in the target object which will be called.
+     *                   The method must accept one parameter of the type PDEEvent
+     * @param eventMask PDEAgentController event mask.
+     *                  Will be most of the time PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED or
+     *                  PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED
+     * @return Object which can be used to remove this listener
+     *
+     * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
+     */
     @Override
     public Object addListener(Object target, String methodName, String eventMask) {
         return mEventSource.addListener(target, methodName, eventMask);
     }
-}
 
-/// @endcond CLASS_UNDER_DEVELOPMENT__NOT_RELEASED
+
+    /**
+     * @brief Remove the specified listener .
+     *
+     * @param listener The listener reference returned by addListener:
+     * @result Returns whether we have found & removed the listener or not
+     */
+    @SuppressWarnings("unused")
+    public boolean removeListener(Object listener) {
+        return mEventSource.removeListener(listener);
+    }
+
+
+// ----- Drag Access ---------------------------------------------------------------------------------------------------
+
+
+    /**
+     * @brief Get Access to drag Mode, return true if access is given.
+     *
+     * @param   slider      Slider that wants to get access
+     * @return              Boolean if drag access can be given
+     */
+    public boolean getDragAccessForSlider(PDESlider slider) {
+
+        // lock for only single access
+        mDragAccessLock.lock();
+
+        // test if already Holder
+        if (mDragHolder == slider) {
+            // unlock
+            mDragAccessLock.unlock();
+            // is alread holder
+            return true;
+        }
+
+        // test if already in drag
+        if (mDragHolder != null) {
+            // unlock
+            mDragAccessLock.unlock();
+
+            // can't get drag access
+            return false;
+        }
+
+        // remember slider
+        mDragHolder = slider;
+
+        // unlock
+        mDragAccessLock.unlock();
+
+        // access is guaranteed
+        return true;
+    }
+
+
+    /**
+     * @brief           Release the access to drag Mode.
+     *                  This won't do anything if the given slider is not the
+     *                  drag holder.
+     *
+     * @param slider    Slider to release the access.
+     */
+    public void releaseDragAccessForSlider(PDESlider slider) {
+
+        // only holder can release
+        if (mDragHolder != slider) return;
+
+        // release drag access
+        mDragHolder = null;
+    }
+}

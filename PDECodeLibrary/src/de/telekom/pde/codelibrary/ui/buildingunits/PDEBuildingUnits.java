@@ -10,7 +10,6 @@ package de.telekom.pde.codelibrary.ui.buildingunits;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.text.TextUtils;
-import android.util.FloatMath;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.R;
 

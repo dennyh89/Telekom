@@ -263,6 +263,7 @@ public class PDELinearAnimation extends PDEAnimation {
      *
      * Just sets to the current value and stops running
      */
+    @SuppressWarnings("unused")
     public void stopAnimation() {
         // are we running?
         if (!isRunning()) {

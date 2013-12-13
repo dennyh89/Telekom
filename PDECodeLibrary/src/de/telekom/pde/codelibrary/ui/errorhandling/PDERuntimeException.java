@@ -7,9 +7,6 @@
 
 package de.telekom.pde.codelibrary.ui.errorhandling;
 
-import java.lang.RuntimeException;import java.lang.String;import java.lang.Throwable;
-
-
 //----------------------------------------------------------------------------------------------------------------------
 //  PDERuntimeException
 //----------------------------------------------------------------------------------------------------------------------
@@ -26,6 +23,11 @@ import java.lang.RuntimeException;import java.lang.String;import java.lang.Throw
 public class PDERuntimeException extends RuntimeException {
 
 	/**
+     * Serial Version UID
+     */
+    private static final long serialVersionUID = 4901389721055786463L;
+
+    /**
      * @see RuntimeException#RuntimeException()
 	 */
 	public PDERuntimeException() {
@@ -33,7 +35,6 @@ public class PDERuntimeException extends RuntimeException {
 	}
 
 	/**
-	 * @param detailMessage
      * @see RuntimeException#RuntimeException(String)
 	 */
 	public PDERuntimeException(String detailMessage) {
@@ -42,7 +43,6 @@ public class PDERuntimeException extends RuntimeException {
 	}
 
 	/**
-	 * @param throwable
      * @see RuntimeException#RuntimeException(Throwable)
 	 */
 	public PDERuntimeException(Throwable throwable) {
@@ -51,8 +51,6 @@ public class PDERuntimeException extends RuntimeException {
 	}
 
 	/**
-	 * @param detailMessage
-	 * @param throwable
      * @see RuntimeException#RuntimeException(String, Throwable)
 	 */
 	public PDERuntimeException(String detailMessage, Throwable throwable) {

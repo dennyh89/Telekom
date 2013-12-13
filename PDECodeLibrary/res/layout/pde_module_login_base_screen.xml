@@ -134,7 +134,7 @@
                       android:layout_marginBottom="@dimen/Telekom.BU_1_2"
                       android:layout_marginLeft="@dimen/Telekom.BU" android:layout_marginRight="@dimen/Telekom.BU2"
                       android:id="@+id/LoginScreenStaySignedInCheckbox"
-                      pdecodelibrary:overlay="checkbox"
+                      pdecodelibrary:overlay="checkboxFlat"
                       pdecodelibrary:backgroundType="none"
                       pdecodelibrary:textAlignment="left"
                       pdecodelibrary:text="@string/login_screen_checkbox_stay_signed_in"
@@ -222,7 +222,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/login_screen_brand_logo_content_description"
-                            android:src="@drawable/telekom_brand_logo_short_version"
+                            android:src="@drawable/logo_1t3_2bu"
                             android:layout_centerInParent="true"/>
                 </RelativeLayout>
 

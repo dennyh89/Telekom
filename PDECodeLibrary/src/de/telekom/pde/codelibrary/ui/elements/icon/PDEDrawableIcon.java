@@ -15,7 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEDrawableIconImage
@@ -39,7 +39,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     private float mShadowXOffset;
     private float mShadowYOffset;
     private float mPadding;
-    private PDEDrawableIconfont mIconfont;
+    private PDEDrawableIconFont mIconfont;
     private PDEDrawableIconImage mIconImage;
     private boolean mDoBoundsChange;
     private Drawable mIconDrawable;
@@ -110,7 +110,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
 
             if (mIconString.charAt(0) == '#') {
                 if (mIconfont == null) {
-                    mIconfont = new PDEDrawableIconfont(mIconString.substring(1));
+                    mIconfont = new PDEDrawableIconFont(mIconString.substring(1));
                 } else {
                     mIconfont.setElementIconText(mIconString.substring(1));
                 }
@@ -133,23 +133,19 @@ public class PDEDrawableIcon extends PDEDrawableBase {
             }
         }
 
-        if (mImage != null) {
-            if (mIconImage == null) {
-                mIconImage = new PDEDrawableIconImage(mImage);
-            } else {
-                mIconImage.setElementImage(mImage);
-            }
-            if (mIconColor != null) mIconImage.setElementIconColor(mIconColor);
-            mIconImage.setElementShadowEnabled(mShadowEnabled);
-            mIconImage.setElementShadowColor(mShadowColor);
-            mIconImage.setElementShadowXOffset(mShadowXOffset);
-            mIconImage.setElementShadowYOffset(mShadowYOffset);
-            mIconImage.setElementPadding(mPadding);
-            mIconDrawable = mIconImage;
-            return;
-        }
 
-        mIconDrawable = null;
+        if (mIconImage == null) {
+            mIconImage = new PDEDrawableIconImage(mImage);
+        } else {
+            mIconImage.setElementImage(mImage);
+        }
+        if (mIconColor != null) mIconImage.setElementIconColor(mIconColor);
+        mIconImage.setElementShadowEnabled(mShadowEnabled);
+        mIconImage.setElementShadowColor(mShadowColor);
+        mIconImage.setElementShadowXOffset(mShadowXOffset);
+        mIconImage.setElementShadowYOffset(mShadowYOffset);
+        mIconImage.setElementPadding(mPadding);
+        mIconDrawable = mIconImage;
     }
 
 
@@ -157,8 +153,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Returns whether this icon has a native size (e.g. from a resource image).
      */
     public boolean hasNativeSize() {
-        if (mImage != null) return true;
-        return false;
+        return (mImage != null);
     }
 
 
@@ -199,18 +194,15 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Returns whether element has an icon drawable or icon string set.
      */
     public boolean hasElementIcon() {
-        if (mIconImage == null && TextUtils.isEmpty(mIconString)) return false;
-        return true;
-
+        return !(mIconImage == null && TextUtils.isEmpty(mIconString));
     }
 
 
     /**
-     * @brief Checks if icon drawable is PDEIconfont.
+     * @brief Checks if icon drawable is PDEIconFont.
      */
     public boolean isIconfont() {
-        if (mIconDrawable instanceof PDEDrawableIconfont) return true;
-        return false;
+        return (mIconDrawable instanceof PDEDrawableIconFont);
     }
 
 
@@ -246,7 +238,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     public void setElementIconString(String iconstring)
     {
         //any change?
-        if (iconstring == mIconString) return;
+        if (TextUtils.equals(iconstring,mIconString)) return;
 
         //remember
         mIconString = iconstring;

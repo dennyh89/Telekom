@@ -18,7 +18,7 @@ import android.view.View;
  * @brief Interface for PDE (List) Holder classes.
  *
  * If you want to use a holder class that is able to use the maximum comfort given by the PDEListBaseAdapter class,
- * implement this Interface when creating a holder class. You can also use a completly custom holder class,
+ * implement this Interface when creating a holder class. You can also use a completely custom holder class,
  * but then you have to do the complete handling (creation, initialization and value updating) on your own.
  *
  */
@@ -37,7 +37,7 @@ public interface PDEHolderInterface {
     public void initHolder(View layoutView, int[] targetViewIDs);
 
     /**
-     * @brief Set s content for our target view.
+     * @brief Set a content for our target view.
      *
      * @param targetViewID the ID of the view that should receive the content.
      * @param value the string content for our target view.
@@ -45,7 +45,7 @@ public interface PDEHolderInterface {
     public void setTargetViewContent(int targetViewID, String value);
 
     /**
-     * @brief Set s content for our target view.
+     * @brief Set a content for our target view.
      *
      * @param targetViewID the ID of the view that should receive the content.
      * @param value the integer content for our target view. Most useful for resource IDs.

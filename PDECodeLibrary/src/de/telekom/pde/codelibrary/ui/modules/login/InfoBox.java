@@ -17,7 +17,6 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.widget.TextView;
-
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableRoundedBox;

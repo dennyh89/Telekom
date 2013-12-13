@@ -15,10 +15,12 @@ public class PDEButtonStateColorDefinition {
     protected int mBorderColor;
     protected int mTextColor;
 
+    @SuppressWarnings("unused")
     public PDEButtonStateColorDefinition(){
 
     }
 
+    @SuppressWarnings("unused")
     public PDEButtonStateColorDefinition(int mainColor, int gradientLighterColor, int gradientDarkerColor,
                                          int borderColor, int textColor){
         setMainColor(mainColor);
@@ -52,18 +54,22 @@ public class PDEButtonStateColorDefinition {
         return mMainColor;
     }
 
+    @SuppressWarnings("unused")
     public int getGradientLighterColor(){
         return mGradientLighterColor;
     }
 
+    @SuppressWarnings("unused")
     public int getGradientDarkerColor(){
         return mGradientDarkerColor;
     }
 
+    @SuppressWarnings("unused")
     public int getBorderColor(){
         return mBorderColor;
     }
 
+    @SuppressWarnings("unused")
     public int getmTextColorColor(){
         return mTextColor;
     }

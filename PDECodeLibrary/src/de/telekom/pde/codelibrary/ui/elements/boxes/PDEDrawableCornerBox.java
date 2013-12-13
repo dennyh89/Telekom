@@ -10,17 +10,11 @@ package de.telekom.pde.codelibrary.ui.elements.boxes;
 // PDEDrawableCornerBox
 //----------------------------------------------------------------------------------------------------------------------
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
-import android.graphics.PointF;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
 
 /**
@@ -38,6 +32,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
     public static final int PDEDrawableCornerBoxCornerBottomLeft = 1 << 2;
     public static final int PDEDrawableCornerBoxCornerBottomRight = 1 << 3;
     public static final int PDEDrawableCornerBoxAllCorners = ~0;
+    @SuppressWarnings("unused")
     public static final int PDEDrawableCornerBoxNoCorners = 0;
 
 //-----  properties ---------------------------------------------------------------------------------------------------
@@ -103,6 +98,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
      *
      * @return drawable of outer shadow
      */
+    @SuppressWarnings("unused")
     public Drawable getElementShadow() {
         // return
         return mElementShadowDrawable;
@@ -112,6 +108,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
     /**
      * @brief forget shadow drawable.
      */
+    @SuppressWarnings("unused")
     public void clearElementShadow() {
         mElementShadowDrawable = null;
         setNeededPadding(0);
@@ -130,8 +127,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
             Path shadowPath;
 
             // set shadow bounds
-            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x,
-                             bounds.top + elementSize.y);
+            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x+(2*(int)mElementShadowDrawable.getElementBlurRadius()), bounds.top + elementSize.y+(2*(int)mElementShadowDrawable.getElementBlurRadius()));
             mElementShadowDrawable.setBounds(frame);
             // make a copy of the original element path for the shadow
             shadowPath = new Path(mElementPath);
@@ -217,6 +213,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
      *
      * @return The width of the outline.
      */
+    @SuppressWarnings("unused")
     public float getElementBorderWidth() {
         return mElementBorderWidth;
     }
@@ -308,6 +305,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
     /**
      * @brief Gets the configuration of the rounded corners.
      */
+    @SuppressWarnings("unused")
     public int getElementRoundedCornerConfiguration() {
         return mElementRoundedCornerConfiguration;
     }

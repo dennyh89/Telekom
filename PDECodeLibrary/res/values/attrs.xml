@@ -16,11 +16,27 @@
     <attr name="paddingRight" format="dimension"/>
     <attr name="paddingBottom" format="dimension"/>
     <attr name="src" format="reference|string"/>
+    <attr name="pictureString" format="reference|string"/>
+    <attr name="timeString" format="string"/>
+    <attr name="format169" format="boolean"/>
     <attr name="iconToTextHeightRatio" format="float"/>
+    <attr name="backgroundType">
+        <enum name="none" value="5"/>
+        <enum name="flat" value="7"/>
+        <enum name="haptic" value="8"/>
+        <enum name="beveled" value="9"/>
+        <enum name="text" value="10"/>
+        <enum name="textFlat" value="11"/>
+        <enum name="textHaptic" value="12"/>
+    </attr>
     <attr name="horizontalAlignment">
         <enum name="left" value="0"/>
         <enum name="center" value="1"/>
         <enum name="right" value="2"/>
+    </attr>
+    <attr name="contentStyle">
+        <enum name="flat" value="0"/>
+        <enum name="haptic" value="1"/>
     </attr>
 
     <declare-styleable name="PDEAbsoluteLayout_Layout">
@@ -56,20 +72,15 @@
             <enum name="center" value="1"/>
             <enum name="right" value="2"/>
         </attr>
-        <attr name="backgroundType">
-            <enum name="none" value="5"/>
-            <enum name="beveled" value="8"/>
-            <enum name="embossed" value="9"/>
-            <enum name="flat" value="7"/>
-            <enum name="indicative" value="10"/>
-            <enum name="plate" value="11"/>
-            <enum name="rect" value="12"/>
-            <enum name="text" value="13"/>
-        </attr>
+        <attr name="backgroundType"/>
         <attr name="overlay">
-            <enum name="none" value="14"/>
-            <enum name="checkbox" value="16"/>
-            <enum name="radio" value="17"/>
+            <enum name="none" value="13"/>
+            <enum name="checkbox" value="15"/>
+            <enum name="radio" value="16"/>
+            <enum name="checkboxHaptic" value="17"/>
+            <enum name="checkboxFlat" value="18"/>
+            <enum name="radioHaptic" value="19"/>
+            <enum name="radioFlat" value="20"/>
         </attr>
         <attr name="iconColored" format="boolean"/>
         <attr name="cornerRadius" format="dimension"/>
@@ -181,6 +192,7 @@
             <flag name="date" value="0x00000014"/>
             <flag name="time" value="0x00000024"/>
         </attr>
+        <attr name="backgroundType"/>
     </declare-styleable>
     <declare-styleable name="PDEBoundedRelativeLayout">
         <attr name="max_width" format="dimension" />
@@ -188,8 +200,14 @@
     </declare-styleable>
     <declare-styleable name="PDESlider">
         <attr name="contentType">
-            <enum name="progressBar" value="0"/>
-            <enum name="scrollbarHorizontal" value="1" />
+            <enum name="progressBarFlat" value="0"/>
+            <enum name="progressBarHaptic" value="1"/>
+            <enum name="sliderBarFlat" value="2" />
+            <enum name="sliderBarHaptic" value="3" />
+            <enum name="scrollbarHorizontal" value="4" />
+            <enum name="scrollbarVertical" value="5" />
+            <enum name="scrollbarHandleOnlyHorizontal" value="6" />
+            <enum name="scrollbarHandleOnlyVertical" value="7" />
         </attr>
     </declare-styleable>
     <declare-styleable name="PDELayerTextView">
@@ -237,9 +255,37 @@
 
     <declare-styleable name="PDEPhotoFrameView">
         <attr name="src"/>
-        <attr name="pictureString" format="reference|string"/>
-        <attr name="paddingBottom"/>
+        <attr name="pictureString"/>
+        <attr name="shadowEnabled"/>
+        <attr name="contentStyle"/>
     </declare-styleable>
+
+
+    <declare-styleable name="PDEMusicMetaphorView">
+        <attr name="src"/>
+        <attr name="pictureString"/>
+        <attr name="shadowEnabled"/>
+        <attr name="contentStyle"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="PDEFilmMetaphorView">
+        <attr name="src"/>
+        <attr name="pictureString"/>
+        <attr name="shadowEnabled"/>
+        <attr name="contentStyle"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="PDEVideoMetaphorView">
+        <attr name="src"/>
+        <attr name="pictureString"/>
+        <attr name="timeString"/>
+        <attr name="format169"/>
+        <attr name="shadowEnabled"/>
+        <attr name="contentStyle"/>
+    </declare-styleable>
+
 
      <declare-styleable name="PDEListHeaderView">
          <attr name="text"/>

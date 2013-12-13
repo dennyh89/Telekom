@@ -12,11 +12,11 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockExpandableListActivity;
-
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
 import de.telekom.pde.codelibrary.ui.inflater.PDEInflaterUtils;
 
+@SuppressWarnings("unused")
 public class PDESherlockExpandableListActivity extends SherlockExpandableListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -44,23 +44,25 @@
     <color name="DTGrey189">#BDBDBD</color>
     <color name="DTGrey140">#8C8C8C</color>
     <color name="DTGrey129">#818181</color>
+    <color name="DTGrey117">#757575</color>
     <color name="DTGrey100">#646464</color>
     <color name="DTGrey75">#4B4B4B</color>
+    <color name="DTGrey56">#383838</color>
     <color name="DTGrey38">#262626</color>
     <color name="DTTOnlineBlue">#1F5BA4</color>
     <color name="DTBlue">#1F5BA4</color>
     <color name="DTDarkMagenta">#b2005C</color>
 
     <!-- helper readable definitions for dark and light UI -->
-    <color name="DTLightUIText">@color/DTGrey75</color>
+    <color name="DTLightUIText">@color/DTGrey56</color>
     <color name="DTLightUITextHighlight">@color/DTLightBlue</color>
     <color name="DTLightUITextCursor">@color/DTLightUIText</color>
     <color name="DTLightUIInteractive">@color/DTGrey237</color>
     <color name="DTLightUIBackground">@color/DTWhite</color>
-    <color name="DTLightUIIndicativeText">@color/DTGrey140</color>
+    <color name="DTLightUIIndicativeText">@color/DTGrey117</color>
     <color name="DTDarkUIText">@color/DTWhite</color>
     <color name="DTDarkUIInteractive">@color/DTGrey100</color>
-    <color name="DTDarkUIBackground">@color/DTGrey75</color>
+    <color name="DTDarkUIBackground">@color/DTGrey38</color>
     <color name="DTDarkUIIndicativeText">@color/DTGrey189</color>
 
     <!-- will be overwritten for all PDEViews/PDE Elements in code depending on current dark or light style setting
@@ -78,17 +80,26 @@
     <color name="DTGrey237_Idle_GradientCenter">#F2F2F2</color>
     <color name="DTGrey237_Idle_GradientLighter">#FFFFFF</color>
     <color name="DTGrey237_Idle_GradientDarker">#E6E6E6</color>
-    <color name="DTGrey237_Idle_Border">#D0D0D0</color>
+    <!--<color name="DTGrey237_Idle_Border">#D0D0D0</color>-->
+    <!--<color name="DTGrey237_Idle_Border">@color/Black30Alpha</color>-->
+    <!-- ToDo: For now we just use the solid value that results from Black with 30% Alpha against a white background. Later we have to solve it with real alpha borders -->
+    <color name="DTGrey237_Idle_Border">#B2B2B2</color>
     <color name="DTGrey237_Focus">#DBDBDB</color>
     <color name="DTGrey237_Focus_GradientCenter">#E0E0E0</color>
     <color name="DTGrey237_Focus_GradientLighter">#EDEDED</color>
     <color name="DTGrey237_Focus_GradientDarker">#D4D4D4</color>
-    <color name="DTGrey237_Focus_Border">#BFBFBF</color>
+    <!--<color name="DTGrey237_Focus_Border">#BFBFBF</color>-->
+    <!--<color name="DTGrey237_Focus_Border">@color/Black37Alpha</color>-->
+    <!-- ToDo: For now we just use the solid value that results from Black with 37% Alpha against a white background. Later we have to solve it with real alpha borders -->
+    <color name="DTGrey237_Focus_Border">#A1A1A1</color>
     <color name="DTGrey237_TakingInput">#C7C7C7</color>
     <color name="DTGrey237_TakingInput_GradientCenter">#CCCCCC</color>
     <color name="DTGrey237_TakingInput_GradientLighter">#D9D9D9</color>
     <color name="DTGrey237_TakingInput_GradientDarker">#BFBFBF</color>
-    <color name="DTGrey237_TakingInput_Border">#ABABAB</color>
+    <!--<color name="DTGrey237_TakingInput_Border">#ABABAB</color>-->
+    <!--<color name="DTGrey237_TakingInput_Border">@color/Black45Alpha</color>-->
+    <!-- ToDo: For now we just use the solid value that results from Black with 45% Alpha against a white background. Later we have to solve it with real alpha borders -->
+    <color name="DTGrey237_TakingInput_Border">#8C8C8C</color>
 
     <color name="DTGrey100_Idle_GradientCenter">#636363</color>
     <color name="DTGrey100_Idle_GradientLighter">#7C7C7C</color>
@@ -110,10 +121,26 @@
     <color name="DTTransparentWhite">#00FFFFFF</color>
 
 
+    <color name="Black7Alpha">#11000000</color>
+    <color name="Black10Alpha">#19000000</color>
+    <color name="Black14Alpha">#24000000</color>
+    <color name="Black20Alpha">#33000000</color>
+    <color name="Black22Alpha">#38000000</color>
+    <color name="Black24Alpha">#3D000000</color>
+    <color name="Black30Alpha">#4D000000</color>
+    <color name="Black34Alpha">#57000000</color>
+    <color name="Black37Alpha">#5E000000</color>
+    <color name="Black40Alpha">#66000000</color>
+    <color name="Black45Alpha">#73000000</color>
+    <color name="Black70Alpha">#B2000000</color>
+    <color name="Black75Alpha">#BF000000</color>
+    <color name="Black80Alpha">#CC000000</color>
+    <color name="White10Alpha">#19FFFFFF</color>
+
+
     <color name="KDTestHalf">#88ff0000</color>
     <color name="KDTestHalf2">#880000ff</color>
     <color name="KDTestHalf3">#8800ff00</color>
     <color name="KDGrey237Half">#88EDEDED</color>
-
 
 </resources>

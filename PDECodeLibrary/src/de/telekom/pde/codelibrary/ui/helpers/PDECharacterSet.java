@@ -18,6 +18,7 @@ public class PDECharacterSet {
      *
      * Contains "0123456789".
      */
+    @SuppressWarnings("unused")
     public static final PDECharacterSet PDECharacterSetGlobalDigitCharacterSet = new PDECharacterSet("01234567890");
 
 
@@ -37,6 +38,7 @@ public class PDECharacterSet {
      *
      * Contains "+-0123456789".
      */
+    @SuppressWarnings("unused")
     public static final PDECharacterSet PDECharacterSetGlobalIntCharacterSet = new PDECharacterSet("+-01234567890");
 
 
@@ -48,6 +50,7 @@ public class PDECharacterSet {
      *
      * Contains "+-0123456789.eE".
      */
+    @SuppressWarnings("unused")
     public static final PDECharacterSet PDECharacterSetGlobalFloatCharacterSet = new PDECharacterSet("+-01234567890eE.");
 
 
@@ -59,6 +62,7 @@ public class PDECharacterSet {
      *
      * Contains "+-0123456789.".
      */
+    @SuppressWarnings("unused")
     public static final PDECharacterSet PDECharacterSetGlobalSimpleFloatCharacterSet = new PDECharacterSet("+-01234567890.");
 
 
@@ -67,6 +71,7 @@ public class PDECharacterSet {
      *
      * Contains " \t".
      */
+    @SuppressWarnings("unused")
     public static final PDECharacterSet PDECharacterSetGlobalWhitespaceCharacterSet = new PDECharacterSet(" \t");
 
 
@@ -91,16 +96,17 @@ public class PDECharacterSet {
      *
      * No special language specific letters (umlauts etc.).
      */
+    @SuppressWarnings("unused")
     public static final PDECharacterSet PDECharacterSetGlobalLetterCharacterSet = new PDECharacterSet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
 
     PDECharacterSet(String charSet){
-        if( charSet==null ) throw new NullPointerException();
+        if (charSet == null) throw new NullPointerException();
         m_CharSet = charSet;
     }
 
     public boolean characterIsMember(char character){
-        if(TextUtils.isEmpty(m_CharSet)) return false;
+        if (TextUtils.isEmpty(m_CharSet)) return false;
 
         return m_CharSet.indexOf(character) != -1;
     }

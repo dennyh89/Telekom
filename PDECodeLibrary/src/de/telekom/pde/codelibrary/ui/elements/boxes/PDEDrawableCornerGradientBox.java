@@ -18,20 +18,11 @@ package de.telekom.pde.codelibrary.ui.elements.boxes;
 // PDEDrawableCornerGradientBox
 //----------------------------------------------------------------------------------------------------------------------
 
-import android.graphics.Canvas;
-import android.graphics.LinearGradient;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
-import android.graphics.PointF;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Shader;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
-import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
 
 /**
@@ -113,6 +104,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
      *
      * @return drawable of outer shadow
      */
+    @SuppressWarnings("unused")
     public Drawable getElementShadow() {
         // return
         return mElementShadowDrawable;
@@ -122,6 +114,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
     /**
      * @brief forget shadow drawable.
      */
+    @SuppressWarnings("unused")
     public void clearElementShadow() {
         mElementShadowDrawable = null;
         setNeededPadding(0);
@@ -140,8 +133,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
             Path shadowPath;
 
             // set shadow bounds
-            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x,
-                             bounds.top + elementSize.y);
+            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x+(2*(int)mElementShadowDrawable.getElementBlurRadius()), bounds.top + elementSize.y+(2*(int)mElementShadowDrawable.getElementBlurRadius()));
             mElementShadowDrawable.setBounds(frame);
             // make a copy of the original element path for the shadow
             shadowPath = new Path(mElementPath);
@@ -165,6 +157,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
      *
      * @param color The new upper color of the vertical gradient background.
      */
+    @SuppressWarnings("unused")
     public void setElementBackgroundTopColor(PDEColor color) {
         // any change?
         if (color.getIntegerColor() == mElementBackgroundTopColor.getIntegerColor()) return;
@@ -183,6 +176,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
      *
      * @param color The new upper color of the vertical gradient background.
      */
+    @SuppressWarnings("unused")
     public void setElementBackgroundMainColor(PDEColor color) {
         // any change?
         if (color.getIntegerColor() == mElementBackgroundMainColor.getIntegerColor()) return;
@@ -201,6 +195,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
      *
      * @param color The new upper color of the vertical gradient background.
      */
+    @SuppressWarnings("unused")
     public void setElementBackgroundBottomColor(PDEColor color) {
         // any change?
         if (color.getIntegerColor() == mElementBackgroundBottomColor.getIntegerColor()) return;
@@ -219,6 +214,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
      *
      * @return The color of the top background.
      */
+    @SuppressWarnings("unused")
     public PDEColor getElementBackgroundTopColor() {
         return mElementBackgroundTopColor;
     }
@@ -229,6 +225,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
      *
      * @return The color of the main background.
      */
+    @SuppressWarnings("unused")
     public PDEColor getElementBackgroundMainColor() {
         return mElementBackgroundMainColor;
     }
@@ -239,6 +236,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
      *
      * @return The color of the bottom background.
      */
+    @SuppressWarnings("unused")
     public PDEColor getElementBackgroundBottomColor() {
         return mElementBackgroundBottomColor;
     }
@@ -281,6 +279,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
      * @param main The middle color of the gradient background.
      * @param bottom The bottom color of the gradient background.
      */
+    @SuppressWarnings("unused")
     public void setElementBackgroundGradientColors(PDEColor top, PDEColor main, PDEColor bottom) {
         // any change?
         if (top.getIntegerColor() == mElementBackgroundTopColor.getIntegerColor() &&
@@ -317,6 +316,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
      * @param main The middle color position.
      * @param bottom The bottom color position.
      */
+    @SuppressWarnings("unused")
     public void setElementGradientDistributionPositions(float top, float main, float bottom) {
         // any change?
         if (mDistributionPositions != null && top == mDistributionPositions[0] &&
@@ -340,6 +340,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
      *
      * @return The width of the outline.
      */
+    @SuppressWarnings("unused")
     public float getElementBorderWidth() {
         return mElementBorderWidth;
     }
@@ -431,6 +432,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
     /**
      * @brief Gets the configuration of the rounded corners.
      */
+    @SuppressWarnings("unused")
     public int getElementRoundedCornerConfiguration() {
         return mElementRoundedCornerConfiguration;
     }

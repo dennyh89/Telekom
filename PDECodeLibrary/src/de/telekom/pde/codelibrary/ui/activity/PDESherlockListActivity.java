@@ -13,7 +13,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockListActivity;
-
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
 import de.telekom.pde.codelibrary.ui.inflater.PDEInflaterUtils;
@@ -29,9 +28,11 @@ public class PDESherlockListActivity extends SherlockListActivity {
             if (getSupportActionBar() != null) {
                 try {
                     ActivityInfo ai = getPackageManager().getActivityInfo(this.getComponentName(),0);
-                    getSupportActionBar().setTitle(PDEFontHelpers.createSpannableDefaultFontString(ai.loadLabel(getPackageManager())));
+                    getSupportActionBar().setTitle(
+                            PDEFontHelpers.createSpannableDefaultFontString(ai.loadLabel(getPackageManager())));
                 } catch (PackageManager.NameNotFoundException e) {
-                    getSupportActionBar().setTitle(PDEFontHelpers.createSpannableDefaultFontString(getSupportActionBar().getTitle()));
+                    getSupportActionBar().setTitle(
+                            PDEFontHelpers.createSpannableDefaultFontString(getSupportActionBar().getTitle()));
                 }
             }
         }

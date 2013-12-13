@@ -39,11 +39,21 @@ public class PDEConstants {
         PDEAlignmentBottom
     }
 
+    /**
+     * @brief Content styles.
+     */
+    public enum PDEContentStyle{
+        PDEContentStyleFlat,
+        PDEContentStyleHaptic
+    }
+
     public static final String PDEAlignmentStringLeft = "left";
     public static final String PDEAlignmentStringCenter = "center";
     public static final String PDEAlignmentStringRight = "right";
     public static final String PDEAlignmentStringLeftAttached = "left_attached";
     public static final String PDEAlignmentStringRightAttached = "right_attached";
+
+    public final static String PDE_CODELIB_EXTRA_CONTENTSTYLE = "de.telekom.pde.codelibrary.extra.content_style";
 
 
 

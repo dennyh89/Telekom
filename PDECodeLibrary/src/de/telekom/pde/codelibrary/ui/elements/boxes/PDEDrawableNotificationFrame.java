@@ -12,18 +12,12 @@ package de.telekom.pde.codelibrary.ui.elements.boxes;
 // PDEDrawableNotificationFrame
 //----------------------------------------------------------------------------------------------------------------------
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
-import android.graphics.PointF;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
 
 
@@ -179,8 +173,8 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
             Path shadowPath;
 
             // set shadow bounds
-            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x,
-                             bounds.top + elementSize.y);
+            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x+(2*(int)mElementShadowDrawable.getElementBlurRadius()),
+                             bounds.top + elementSize.y+(2*(int)mElementShadowDrawable.getElementBlurRadius()));
             mElementShadowDrawable.setBounds(frame);
             // make a copy of the original element path for the shadow
             shadowPath = new Path(mElementPath);

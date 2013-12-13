@@ -23,9 +23,9 @@ import java.util.LinkedList;
  * @brief An animation group for grouping other animations.
  *
  * Animations can be grouped by using PDEAnimationGroup. Groups are useful to structure your animations. All
- * subanimations run on the group's timebase, which can be easily changed by modifying the group's time factor.
+ * sub-animations run on the group's timebase, which can be easily changed by modifying the group's time factor.
  * Animation groups also offer consolidated change management. The didChange: callback of an animation group gets
- * called if at least one of the subanimations did change during the animation phase, so it's easy to check for changes
+ * called if at least one of the sub-animations did change during the animation phase, so it's easy to check for changes
  * after everything has actually been changed by listening on the group.
  *
  * Animation groups inherit functionality from PDEAnimation so they can be linked into other groups, building a
@@ -34,7 +34,7 @@ import java.util.LinkedList;
  * start getting animation updates. Unlinked animations will never be updated or changing.
  *
  * Animation groups are optimized to save battery and processing power. They have a consolidated internal running
- * state and only set themselves to running if any of the subanimations is running. If an animation group is not
+ * state and only set themselves to running if any of the sub-animations is running. If an animation group is not
  * running, it goes completely idle and does not participate in the regular animation cycle.
  *
  * Animation groups are usually not derived from. There's not much to be changed inside an animation group. The
@@ -58,6 +58,7 @@ public class PDEAnimationGroup extends PDEAnimation {
      * ensures, that the child-animation-object is not garbage collected. So this helper class provides the
      * possibility to set additionally a strong reference on the linked animation.
      */
+	@SuppressWarnings("unused")
     private class AnimationHolder {
         PDEAnimation mAnimationStrong;
         WeakReference<PDEAnimation> mAnimationWeak;
@@ -73,7 +74,7 @@ public class PDEAnimationGroup extends PDEAnimation {
         /**
          * @brief Set the animation that should be stored and decide if we also hold an additional strong reference.
          *
-         * @param animation Subanimation to be stored.
+         * @param animation Sub-animation to be stored.
          * @param strong True if we want an additional strong reference on the SubAnimation.
          */
         void setAnimation(PDEAnimation animation, boolean strong) {
@@ -247,9 +248,9 @@ public class PDEAnimationGroup extends PDEAnimation {
     /**
      * @brief Add a sub-animation to the group.
      *
-     * The subanimation is optionally retained and lives until explicitly removed or the group is released.
+     * The sub-animation is optionally retained and lives until explicitly removed or the group is released.
      *
-     * @param animation Subanimation to add to the group.
+     * @param animation Sub-animation to add to the group.
      * @param strong true if the animation should be additionally stored in a strong reference.
      */
     public void addSubAnimation(PDEAnimation animation, boolean strong) {
@@ -316,7 +317,7 @@ public class PDEAnimationGroup extends PDEAnimation {
     /**
      * @brief Register a sub-animation at the parent as running.
      *
-     * Internal use only. Note that we must not change the running subanimations while animating; so for this
+     * Internal use only. Note that we must not change the running sub-animations while animating; so for this
      * case we keep a list of animations to be added or removed.
      *
      * @param animation Animation to add to the parent's running list.
@@ -365,20 +366,16 @@ public class PDEAnimationGroup extends PDEAnimation {
     /**
      * @brief Overload for base function.
      *
-     * Take subanimations into account. A group is running if it's marked as running, or if any subanimation
+     * Take sub-animations into account. A group is running if it's marked as running, or if any sub-animation
      * is registered for running. The running flag is not set by the current implementation of PDEAnimationGroup,
      * but it might used by a derived class.
      *
-     * @result true if this instance should actually be running.
+     * @return true if this instance should actually be running.
      */
     @Override
     boolean isRunningWithSubAnimations() {
-        // check our own state and the state of subanimations
-        if (isRunning() || mRunningSubAnimations.size() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        // check our own state and the state of sub-animations
+        return (isRunning() || mRunningSubAnimations.size() > 0);
     }
 
 //----- timing and animation -------------------------------------------------------------------------------------------
@@ -409,7 +406,7 @@ public class PDEAnimationGroup extends PDEAnimation {
         //adjust our time offset so that the composite time is the desired time.
         mTimeOffset += time - oldtime;
 
-        // and propagate the changes to subanimations.
+        // and propagate the changes to sub-animations.
         propagateTime();
     }
 
@@ -505,7 +502,7 @@ public class PDEAnimationGroup extends PDEAnimation {
     /**
      * @brief Set changed flag.
      *
-     * Modified from base behaviour to accomodate the fact that we can have children interested in change management.
+     * Modified from base behaviour to accommodate the fact that we can have children interested in change management.
      *
      * Set the changed flag if either we are sending out notifications, or if we have clients needing a change.
      */
@@ -542,20 +539,17 @@ public class PDEAnimationGroup extends PDEAnimation {
 
 
     /**
-     * @brief Register one of our subanimations for change handling.
+     * @brief Register one of our sub-animations for change handling.
      *
-     * Register a subanimation for change handling. The subanimation is added to the list. After the animation
+     * Register a sub-animation for change handling. The sub-animation is added to the list. After the animation
      * phase is done, the list is processed.
      *
-     * @param animation Subanimation to add to the list.
+     * @param animation Sub-animation to add to the list.
      */
     void registerSubAnimationForChanged(PDEAnimation animation) {
-        // ToDo: CHECK: iOS implementation logic is slightly different here, but I guess we don't need it here
-        // because it only depends on Thomas's special array handling that we don't use in android
 
         // now add to tail and count
         addAnimationToCustomList(animation, mChangedSubAnimations);
-
 
         // if we now have change listeners, we must set ourself to changed (in case this was not already done)
         setChanged();
@@ -568,7 +562,7 @@ public class PDEAnimationGroup extends PDEAnimation {
      * This is an expensive operation. Only use it when absolutely necessary (e.g. for cleaning up / removing animations
      * from the tree). Normally, the list is processed in one piece and then cleared afterwards.
      *
-     * @param animation Subanimation to remove from the list.
+     * @param animation Sub-animation to remove from the list.
      */
     void unregisterSubAnimationForChanged(PDEAnimation animation) {
         int i;
@@ -595,7 +589,7 @@ public class PDEAnimationGroup extends PDEAnimation {
 
 
     /**
-     * @brief Clear (forget) all pending subanimations.
+     * @brief Clear (forget) all pending sub-animations.
      */
     void clearChangedSubAnimations() {
         mChangedSubAnimations.clear();
@@ -605,7 +599,7 @@ public class PDEAnimationGroup extends PDEAnimation {
     /**
      * @brief Send out all pending change notifications.
      *
-     * First processes the subanimations, then sends out our own animations to get the correct order.
+     * First processes the sub-animations, then sends out our own animations to get the correct order.
      */
     @Override
     protected void sendChanges() {

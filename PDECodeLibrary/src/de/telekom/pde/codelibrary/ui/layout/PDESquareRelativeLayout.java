@@ -30,6 +30,7 @@ public class PDESquareRelativeLayout extends RelativeLayout {
     /**
      * @brief Constructor.
      */
+    @SuppressWarnings("unused")
     public PDESquareRelativeLayout(Context context) {
         super(context);
     }
@@ -38,6 +39,7 @@ public class PDESquareRelativeLayout extends RelativeLayout {
     /**
      * @brief Constructor.
      */
+    @SuppressWarnings("unused")
     public PDESquareRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -46,6 +48,7 @@ public class PDESquareRelativeLayout extends RelativeLayout {
     /**
      * @brief Constructor.
      */
+    @SuppressWarnings("unused")
     public PDESquareRelativeLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }

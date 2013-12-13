@@ -121,7 +121,7 @@ public class PDEEvent {
      * is actually the case for all events sent.
      *
      * @param type The type to check against.
-     * @result true if the event is of the specified type.
+     * @return true if the event is of the specified type.
      */
     public boolean isType(String type) {
         // wildcard?
@@ -150,7 +150,7 @@ public class PDEEvent {
     /**
      * @brief Get the type of the event.
      *
-     * @result The event type.
+     * @return The event type.
      */
     public String getType() {
         return mType;
@@ -173,7 +173,7 @@ public class PDEEvent {
     /**
      * @brief Receive the object the event was originally sent from.
      *
-     * @result Source-Object of the event.
+     * @return Source-Object of the event.
      */
     public Object getSender() {
         return mSender;
@@ -199,15 +199,12 @@ public class PDEEvent {
      * IsProcessed can be checked by the sender to see if the event was marked as processed by any
      * of the handling functions.
      *
-     * @result true if the event was processed. FALSE if there were no handlers listening to this event,
+     * @return true if the event was processed. FALSE if there were no handlers listening to this event,
      *         or if the event was not marked as processed during sending.
      */
     public boolean isProcessed() {
         //check flags
-        if ((mFlags & FLAG_PROCESSED) == FLAG_PROCESSED) {
-            return true;
-        }
-        return false;
+        return ((mFlags & FLAG_PROCESSED) == FLAG_PROCESSED);
     }
 
     /**
@@ -219,6 +216,7 @@ public class PDEEvent {
      *
      * If necessary, this flag can be cleared by handlers during processing.
      */
+    @SuppressWarnings("unused")
     public void setDistributeToAll() {
         // add to flags
         mFlags |= FLAG_DISTRIBUTE_TO_ALL;
@@ -232,6 +230,7 @@ public class PDEEvent {
      * when modifying event behaviour. Other event handlers might need to receive the event to
      * function correctly.
      */
+    @SuppressWarnings("unused")
     public void clearDistributeToAll() {
         // add to flags
         mFlags &= ~FLAG_DISTRIBUTE_TO_ALL;
@@ -240,26 +239,21 @@ public class PDEEvent {
     /**
      * @brief Check if event is marked for distribution to all handlers.
      *
-     * @result true if distribution to all is turned on.
+     * @return true if distribution to all is turned on.
      */
     public boolean isDistributeToAll() {
         // check flags
-        if ((mFlags & FLAG_DISTRIBUTE_TO_ALL) == FLAG_DISTRIBUTE_TO_ALL) {
-            return true;
-        }
-        return false;
+        return ((mFlags & FLAG_DISTRIBUTE_TO_ALL) == FLAG_DISTRIBUTE_TO_ALL) ;
     }
 
     /**
      * @brief Check if there is a result.
      *
-     * @result true if a result (other than null) was set.
+     * @return true if a result (other than null) was set.
      */
+    @SuppressWarnings("unused")
     public boolean hasResult() {
-        if (mResult != null) {
-            return true;
-        }
-        return false;
+        return (mResult != null) ;
     }
 
 
@@ -306,7 +300,7 @@ public class PDEEvent {
     /**
      * @brief Retrieve the result as an Object.
      *
-     * @result The stored result object. The intended results are int or double values. We store them boxed in
+     * @return The stored result object. The intended results are int or double values. We store them boxed in
      * Integer- or Double-Objects. So the returned Object has to be casted correctly before use. Alternatively use
      * the more specialized methods getIntResult or getDoubleResult.
      */
@@ -318,9 +312,10 @@ public class PDEEvent {
     /**
      * @brief Retrieve the result as an int.
      *
-     * @result The stored int result value. If no result is set, or if the result is whether of type Integer nor
+     * @return The stored int result value. If no result is set, or if the result is whether of type Integer nor
      * Double, return -1 as default/error value. If original type is Double it will be converted to int.
      */
+    @SuppressWarnings("unused")
     public int getIntResult() {
         // do we have a result?
         if (mResult == null) {
@@ -341,9 +336,10 @@ public class PDEEvent {
     /**
      * @brief Retrieve the result as a double.
      *
-     * @result The stored double result value. If no result is set, or if the result is whether of type Double nor
+     * @return The stored double result value. If no result is set, or if the result is whether of type Double nor
      * Integer, return 0.0 as default value. If original type is Integer it will be converted to double.
      */
+    @SuppressWarnings("unused")
     public double getDoubleResult() {
         // do we have a result?
         if (mResult == null) {

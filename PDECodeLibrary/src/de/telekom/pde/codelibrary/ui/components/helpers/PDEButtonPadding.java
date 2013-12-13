@@ -22,6 +22,7 @@ public class PDEButtonPadding {
         mPaddingRect = new Rect(0,0,0,0);
     }
 
+    @SuppressWarnings("unused")
     public void putPaddingRequest (int left, int top, int right, int bottom){
         // only remember request values if they're larger than the ones we already collected
         if(left>mPaddingRect.left){

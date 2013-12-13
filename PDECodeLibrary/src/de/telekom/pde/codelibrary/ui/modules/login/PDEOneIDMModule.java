@@ -13,13 +13,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.text.TextUtils;
-import android.util.Log;
-
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
+import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.helpers.PDEString;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -35,6 +33,16 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+
+//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+// CAUTION
+// This module is not approved by GIS! So you may only use this code in an app, if _you_ are getting it approved.
+// So use it at you own risk only. We cannot guarantee anything about this code.
+//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEOneIDMModule
@@ -99,7 +107,6 @@ public class PDEOneIDMModule implements PDEIEventSource {
          * downloadUsernamePasswordToken and downloadByRefreshToken do the real work here, depending on the request.
          *
          * @param urls all parameters
-         * @return
          */
         @Override
         protected String doInBackground(String... urls) {
@@ -119,8 +126,6 @@ public class PDEOneIDMModule implements PDEIEventSource {
          * @brief onPostExecute function of AsyncTask.
          *
          * Is called when the doInBackground is finished. Resets the task
-         *
-         * @param result
          */
 
         @Override
@@ -159,7 +164,6 @@ public class PDEOneIDMModule implements PDEIEventSource {
          *
          * @param oauthUrl URL to query
          * @param queryString parameters to send
-         * @return
          */
         protected String downloadToken(String oauthUrl, String queryString) {
             HttpsURLConnection urlConnection = null;
@@ -300,7 +304,6 @@ public class PDEOneIDMModule implements PDEIEventSource {
          * @param password credentails of the user
          * @param scope scope of the requested access token
          * @param clientId clientId
-         * @return
          */
         private String downloadUsernamePasswordToken (String oauthUrl, String grantType, String username, String password,
                                                       String scope, String clientId){
@@ -329,7 +332,6 @@ public class PDEOneIDMModule implements PDEIEventSource {
          * @param refreshToken supplied by client
          * @param scope scope of the requested access token
          * @param clientId clientId
-         * @return
          */
         private String downloadByRefreshToken (String oauthUrl, String grantType, String refreshToken, String scope,
                                                String clientId){

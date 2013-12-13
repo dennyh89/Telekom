@@ -12,14 +12,11 @@ package de.telekom.pde.codelibrary.ui.components.lists;
 //  PDEListBaseAdapter
 //----------------------------------------------------------------------------------------------------------------------
 
-import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
-
-
 import android.content.Context;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 
 
 /**
@@ -44,15 +41,16 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
     protected int[] mTargetViewIDs;
     // This base adapter can handle the automatic creation of holder objects. These holder objects have to implement
     // PDEHolderInterface then. The user can overload createHolder() if he wants to use his own version of a
-    // Holder that implements PDEHolderInterface. But the user can also use his completly own custom holder (or he can
+    // Holder that implements PDEHolderInterface. But the user can also use his completely own custom holder (or he can
     // even relinquish to use a holder at all). Then he has to do all the holder handling on its own and he should
     // turn of the automatic holder generation and the handling of these holders.
     protected boolean mCreateHolderAutomatically;
 
+
     /**
      * @brief constructor
      *
-     * @param context
+     * @param context activity context
      * @param itemTemplateResourceID Resource ID for the layout of the list item.
      * @param targetViewIDs Resource IDs of the subviews of the item view. Deliver all IDs of the subviews of which
      *                      you want to change the content later on.
@@ -124,7 +122,7 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
 
         // Is there a convertedView we can reuse to save performance?
         if (convertView == null){
-            // create listitem
+            // create list item
             listItem = new PDEListItem(PDECodeLibrary.getInstance().getApplicationContext());
             // remember list position
             listItem.setListPosition(position);
@@ -138,6 +136,8 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
                 // set current holder
                 listItem.setHolder(holder);
             }
+            // add event listener
+            listItem.addListener(parent, "onPDEListItemClicked");
             // init the layout elements of the list item
             initListItem(listItem);
         } else {
@@ -146,6 +146,8 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
             // update list position
             listItem.setListPosition(position);
         }
+
+
 
        // fill list item with actual data
        fillListItem(listItem);
@@ -178,8 +180,10 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      *
      * If you wan to use an other holder class than the default one, overload this method and deliver your own holder.
      *
-     * @param type
-     * @return
+     * @param type if you want to have other holders than the default one you can deliver information about which one
+     *             you want to have by using this type parameter.
+     *
+     * @return deliver a holder that was derived from PDEHolderInterface
      */
     protected PDEHolderInterface createHolder(int type){
         // default holder
@@ -195,7 +199,7 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      * dynamically. So we have to deliver how many of them we want to have. If you want to use a data source,
      * add it in a derived class (and keep mItemCount up to date if you don't also overload getCount()).
      *
-     * @param num
+     * @param num set the number of list items you want to have.
      */
     public void setItemCount(int num){
         mItemCount = num;
@@ -221,6 +225,7 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      *
      * @return true -> automatic holder generation is on, false -> automatic holder generation is off
      */
+    @SuppressWarnings("unused")
     public boolean isHolderCreatedAutomatically () {
         return  mCreateHolderAutomatically;
     }

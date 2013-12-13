@@ -30,13 +30,14 @@ public class PDEButtonLayoutHelper
     public Rect mLayoutRect; //outlineRect
     public Rect mClipRect;
 
-
+    @SuppressWarnings("unused")
     public PDEButtonLayoutHelper() {
         mButtonRect = new Rect(0, 0, 0, 0);
         mLayoutRect = new Rect(0, 0, 0, 0);
         mClipRect = new Rect(0, 0, 0, 0);
     }
 
+    @SuppressWarnings("unused")
     public PDEButtonLayoutHelper(PDEButtonLayoutHelper helper) {
         mButtonRect = new Rect(helper.mButtonRect);
         mLayoutRect = new Rect(helper.mLayoutRect);
@@ -44,7 +45,7 @@ public class PDEButtonLayoutHelper
     }
 
     public boolean equals(PDEButtonLayoutHelper helper){
-        if (mButtonRect.left == helper.mButtonRect.left &&
+        return (mButtonRect.left == helper.mButtonRect.left &&
            mButtonRect.top == helper.mButtonRect.top &&
            mButtonRect.right == helper.mButtonRect.right &&
            mButtonRect.bottom == helper.mButtonRect.bottom &&
@@ -55,10 +56,6 @@ public class PDEButtonLayoutHelper
            mClipRect.left == helper.mClipRect.left &&
            mClipRect.top == helper.mClipRect.top &&
            mClipRect.right == helper.mClipRect.right &&
-           mClipRect.bottom == helper.mClipRect.bottom){
-            return true;
-        } else {
-            return false;
-        }
+           mClipRect.bottom == helper.mClipRect.bottom);
     }
 }

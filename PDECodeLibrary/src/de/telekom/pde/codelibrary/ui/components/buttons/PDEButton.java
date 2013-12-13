@@ -7,9 +7,6 @@
 
 package de.telekom.pde.codelibrary.ui.components.buttons;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
 import android.app.Activity;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
@@ -20,14 +17,12 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.SoundEffectConstants;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
+import android.view.*;
+import android.view.ViewGroup.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.PDEConstants.PDEAlignment;
@@ -36,16 +31,25 @@ import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentControllerAdapterView;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
+import de.telekom.pde.codelibrary.ui.components.helpers.PDEAgentHelper;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameter;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameterDictionary;
+import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameter;
+import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameterDictionary;
 import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableCornerBox;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
+import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
+import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEButton
@@ -109,7 +113,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
          */
         private SavedState(Parcel in) {
             super(in);
-            checked = (in.readInt() == 1) ? true : false;
+            checked = (in.readInt() == 1);
             mainState = in.readString();
         }
 
@@ -233,16 +237,19 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
         BackgroundNone,
         BackgroundUser,
         BackgroundFlat,
-        BackgroundBeveled,
-        BackgroundEmbossed,
-        BackgroundIndicative,
-        BackgroundPlate,
-        BackgroundRect,
+        BackgroundHaptic,
+        BackgroundBeveled,      // deprecated; Use BackgroundHaptic instead;
         BackgroundText,
+        BackgroundTextFlat,
+        BackgroundTextHaptic,
         OverlayNone,
         OverlayUser,
-        OverlayCheckbox,
-        OverlayRadio
+        OverlayCheckbox,    // deprecated; Use OverlayCheckboxFlat instead;
+        OverlayRadio,       // deprecated; Use OverlayRadioFlat instead;
+        OverlayCheckboxHaptic,
+        OverlayCheckboxFlat,
+        OverlayRadioHaptic,
+        OverlayRadioFlat
     }
 
 
@@ -289,6 +296,8 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
 
     protected PDEButtonPadding mButtonPadding;
 
+    PDEAgentHelper mAgentHelper;
+
 
     public PDEButton(android.content.Context context){
         super(context);
@@ -321,6 +330,40 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
     protected void init(AttributeSet attrs){
         String titleText;
 
+        // don't do the init when shown in developer tool (IDE)
+        if (isInEditMode()) {
+            this.setBackgroundColor(0xedededed);
+            // create a TextView as a child, to show at least the title.
+            TextView tv = new TextView(getContext());
+            tv.setGravity(Gravity.CENTER);
+            this.addView(tv, new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+
+            if (attrs != null) {
+                TypedArray sa = getContext().obtainStyledAttributes(attrs, R.styleable.PDEButton);
+                titleText = sa.getString(R.styleable.PDEButton_text);
+                if (TextUtils.isEmpty(titleText)) {
+                    // try to get "android:text" attribute instead
+
+                    // first check if it is a resource id ...
+                    int resourceId = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android", "text", -1);
+                    if (resourceId > 0) {
+                        titleText = getResources().getString(resourceId);
+                    } else {
+                        // otherwise handle it as string
+                        titleText = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "text");
+                    }
+                }
+
+                if (titleText != null) {
+                    tv.setText(titleText);
+                }
+
+            }
+
+            return;
+        }
+
         //init
         mEventSource = new PDEEventSource();
 
@@ -341,9 +384,11 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
         mLayerHints = new PDEDictionary();
         mMergedHints = new PDEDictionary();
 
+        mAgentHelper = new PDEAgentHelper();
+
         // switch hardware acceleration off -> shadows are not updated correctly
-        if(PDECodeLibrary.getInstance().isSoftwareRenderingButton() && Build.VERSION.SDK_INT>=11){
-            if(DEBUGPARAMS) Log.d(LOG_TAG,"Switching Hardware acceleration OFF!!!!!!!!");
+        if (PDECodeLibrary.getInstance().isSoftwareRenderingButton() && Build.VERSION.SDK_INT >= 11){
+            if (DEBUGPARAMS) Log.d(LOG_TAG,"Switching Hardware acceleration OFF!!!!!!!!");
             setLayerType(LAYER_TYPE_SOFTWARE,null);
         }
 
@@ -369,39 +414,79 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
         // Define type properties for parameters
         if (mAcceptedTypes != null) {
             // Define possible classes
-            Class stringClass = String.class;
-            Class numberClass = Number.class;
-            Class colorClass = PDEColor.class;
-            Class imageClass = Drawable.class;
+            Class<String> stringClass = String.class;
+            Class<Number> numberClass = Number.class;
+            Class<PDEColor> colorClass = PDEColor.class;
+            Class<Drawable> imageClass = Drawable.class;
+            
+            // Create lists for dictionary
+            ArrayList<Class<?>> parameterListTitle = new ArrayList<Class<?>>();
+            ArrayList<Class<?>> parameterListTitleColor = new ArrayList<Class<?>>();
+            ArrayList<Class<?>> parameterListColor = new ArrayList<Class<?>>();
+            ArrayList<Class<?>> parameterListIcon = new ArrayList<Class<?>>();
+            ArrayList<Class<?>> parameterListBorderColor = new ArrayList<Class<?>>();
+            ArrayList<Class<?>> parameterListCornerRadius = new ArrayList<Class<?>>();
+            ArrayList<Class<?>> parameterListFont = new ArrayList<Class<?>>();
+            ArrayList<Class<?>> parameterListBackground = new ArrayList<Class<?>>();
 
+            // add accepted types for parameter title
+            parameterListTitle.add(stringClass);
+            
+            // add accepted types for parameter title color
+            parameterListTitleColor.add(colorClass);
+            parameterListTitleColor.add(stringClass);
+            
+            // add accepted types for parameter color
+            parameterListColor.add(colorClass);
+            parameterListColor.add(stringClass);
+            
+            // add accepted types for parameter icon
+            parameterListIcon.add(imageClass);
+            parameterListIcon.add(stringClass);
+            
+            // add accepted types for parameter border color
+            parameterListBorderColor.add(colorClass);
+            parameterListBorderColor.add(stringClass);
+            
+            // add accepted types for parameter corner radius
+            parameterListCornerRadius.add(numberClass);
+            parameterListCornerRadius.add(stringClass);
 
+            // add accepted types for parameter font
+            parameterListFont.add(stringClass);
+            
+            // add accepted types for parameter background
+            parameterListBackground.add(numberClass);
+            parameterListBackground.add(stringClass);
+            
             // Set accepted types for every parameter - target class is first element!
             mAcceptedTypes = new PDEDictionary(
-                    Arrays.asList(stringClass), PDEButtonParameterTitle,
-                    Arrays.asList(colorClass, stringClass), PDEButtonParameterTitleColor,
-                    Arrays.asList(colorClass, stringClass), PDEButtonParameterColor,
-                    Arrays.asList(imageClass, stringClass), PDEButtonParameterIcon,
-                    Arrays.asList(colorClass, stringClass), PDEButtonParameterBorderColor,
-                    Arrays.asList(numberClass, stringClass), PDEButtonParameterCornerRadius,
-                    Arrays.asList(stringClass), PDEButtonParameterFont,
-                    Arrays.asList(stringClass, numberClass), PDEButtonParameterBackground);
+                    parameterListTitle, PDEButtonParameterTitle,
+                    parameterListTitleColor, PDEButtonParameterTitleColor,
+                    parameterListColor, PDEButtonParameterColor,
+                    parameterListIcon, PDEButtonParameterIcon,
+                    parameterListBorderColor, PDEButtonParameterBorderColor,
+                    parameterListCornerRadius, PDEButtonParameterCornerRadius,
+                    parameterListFont, PDEButtonParameterFont,
+                    parameterListBackground, PDEButtonParameterBackground);
         }
 
-        // no attributes -> start out with default configration: text and beveled background
-        if (attrs==null) {
-            setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundBeveled);
+        // no attributes -> start out with default configuration: text and flat background
+        if (attrs == null) {
+            setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundFlat);
         }
-
 
         //first set default foreground layer
         setButtonForegroundLayerWithLayerType(PDEButtonLayerType.ForegroundIconText);
         if (attrs != null) {
             TypedArray sa = getContext().obtainStyledAttributes(attrs, R.styleable.PDEButton);
 
-            // first create layer if wanted by xml, use default beveled
+            // first create layer if wanted by xml, use default flat
             if (sa.hasValue(R.styleable.PDEButton_backgroundType)) {
-                setButtonBackgroundLayerWithLayerType(sa.getInt(R.styleable.PDEButton_backgroundType,0));
-            } else setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundBeveled);
+                setButtonBackgroundLayerWithLayerType(sa.getInt(R.styleable.PDEButton_backgroundType, 0));
+            } else {
+                setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundFlat);
+            }
 
             // set text
             titleText = sa.getString(R.styleable.PDEButton_text);
@@ -437,7 +522,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
             if (sa.hasValue(R.styleable.PDEButton_textColor)) {
                 //to have dark/light style use PDEColor with color id
                 int resourceID = sa.getResourceId(R.styleable.PDEButton_textColor,0);
-                if (resourceID!=0) {
+                if (resourceID !=0 ) {
                     setTextColor(PDEColor.valueOfColorID(resourceID));
                 } else {
                     setTextColorWithInt(sa.getColor(R.styleable.PDEButton_textColor, R.color.DTBlack));
@@ -445,7 +530,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
             } else if (sa.hasValue(R.styleable.PDEButton_titleColor)) {
                 //to have dark/light style use PDEColor with color id
                 int resourceID = sa.getResourceId(R.styleable.PDEButton_titleColor,0);
-                if (resourceID!=0) {
+                if (resourceID != 0) {
                     setTitleColor(PDEColor.valueOfColorID(resourceID));
                 } else {
                     setTitleColorWithInt(sa.getColor(R.styleable.PDEButton_titleColor, R.color.DTBlack));
@@ -576,7 +661,15 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      * @brief Called on changes from agentController.
      */
     public void cbAgentController(PDEEvent event) {
+        boolean needsUpdate;
+
         if (event.isType(PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION)) {
+            // do your own (for visual disabled)
+            needsUpdate = mAgentHelper.processAgentEvent(event);
+            if(needsUpdate) {
+                // update animateable parameters on change
+                updateAlpha();
+            }
             // tell all layers
             for (PDEButtonLayerHolder mButtonLayer : mButtonLayers) {
                 sendAgentEvent(event, mButtonLayer.mLayer);
@@ -809,23 +902,17 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
             case BackgroundFlat:
                 layer = new PDEButtonLayerBackgroundFlat(getContext());
                 break;
+            case BackgroundHaptic:
+            // Beveled was renamed in Haptic, this is just for downward compatibility reasons
             case BackgroundBeveled:
-                layer = new PDEButtonLayerBackgroundBeveled(getContext());
+                layer = new PDEButtonLayerBackgroundHaptic(getContext());
                 break;
-            case BackgroundEmbossed:
-                layer = new PDEButtonLayerBackgroundEmbossed(getContext());
+            case BackgroundTextHaptic:
+                layer = new PDEButtonLayerBackgroundTextHaptic(getContext());
                 break;
-            case BackgroundIndicative:
-                layer = new PDEButtonLayerBackgroundIndicative(getContext());
-                break;
-            case BackgroundPlate:
-                layer = new PDEButtonLayerBackgroundPlate(getContext());
-                break;
-            case BackgroundRect:
-                layer = new PDEButtonLayerBackgroundRect(getContext());
-                break;
+            case BackgroundTextFlat:
             case BackgroundText:
-                layer = new PDEButtonLayerBackgroundText(getContext());
+                layer = new PDEButtonLayerBackgroundTextFlat(getContext());
                 break;
             default:
                 //error
@@ -855,17 +942,13 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
 
         if (layerType.equalsIgnoreCase("PDEButtonBackgroundFlat") || layerType.equalsIgnoreCase("Flat")) {
             setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundFlat);
-        } else if (layerType.equalsIgnoreCase("PDEButtonBackgroundEmbossed") || layerType.equalsIgnoreCase("Embossed")) {
-            setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundEmbossed);
-        } else if (layerType.equalsIgnoreCase("PDEButtonBackgroundBeveled") || layerType.equalsIgnoreCase("Beveled")) {
-            setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundBeveled);
-        } else if (layerType.equalsIgnoreCase("PDEButtonBackgroundIndicative") ||
-                   layerType.equalsIgnoreCase("Indicative")) {
-            setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundIndicative);
-        } else if (layerType.equalsIgnoreCase("PDEButtonBackgroundRect") || layerType.equalsIgnoreCase("Rect")) {
-            setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundRect);
-        } else if (layerType.equalsIgnoreCase("PDEButtonBackgroundPlate") || layerType.equalsIgnoreCase("Plate")) {
-            setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundPlate);
+        } else if (layerType.equalsIgnoreCase("PDEButtonBackgroundHaptic") || layerType.equalsIgnoreCase("Haptic")) {
+            setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundHaptic);
+        } else if (layerType.equalsIgnoreCase("PDEButtonBackgroundText") || layerType.equalsIgnoreCase("Text")
+                    || layerType.equalsIgnoreCase("PDEButtonBackgroundTextFlat") || layerType.equalsIgnoreCase("TextFlat")) {
+            setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundTextFlat);
+        } else if (layerType.equalsIgnoreCase("PDEButtonBackgroundTextHaptic") || layerType.equalsIgnoreCase("TextHaptic")) {
+            setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundTextHaptic);
         }
     }
 
@@ -936,11 +1019,23 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
 
         // create and set the new layer, remember type
         switch (layerType) {
-            case OverlayCheckbox:
-            layer = new PDEButtonLayerOverlayCheckbox(PDECodeLibrary.getInstance().getApplicationContext());
+            case OverlayCheckboxHaptic:
+            layer = new PDEButtonLayerOverlayCheckboxHaptic(PDECodeLibrary.getInstance().getApplicationContext());
                 break;
+            case OverlayCheckboxFlat:
+            // In version 2.x we had only one style for checkbox-buttons; The default style is now Flat;  this is just
+            // for downward compatibility reasons
+            case OverlayCheckbox:
+                layer = new PDEButtonLayerOverlayCheckboxFlat(PDECodeLibrary.getInstance().getApplicationContext());
+                break;
+            case OverlayRadioHaptic:
+                layer = new PDEButtonLayerOverlayRadioHaptic(PDECodeLibrary.getInstance().getApplicationContext());
+                break;
+            case OverlayRadioFlat:
+            // In version 2.x we had only one style for radio-buttons; The default style is now Flat;  this is just
+            // for downward compatibility reasons
             case OverlayRadio:
-                layer = new PDEButtonLayerOverlayRadio(PDECodeLibrary.getInstance().getApplicationContext());
+                layer = new PDEButtonLayerOverlayRadioFlat(PDECodeLibrary.getInstance().getApplicationContext());
                 break;
             default:
                 layer = null;
@@ -1617,8 +1712,8 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
     /**
      * @brief Set configuration which corners should be rounded.
      *
-     * Works only for plate background for now.
      */
+    @Deprecated
     public void setRoundedCornerConfiguration(int config) {
         // set the parameters
         mParameters.setParameter(PDEButtonParameterRoundedCornerConfiguration, config);
@@ -1826,13 +1921,10 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      *
      * All non-selected states are returned as NO.
      */
+    @Override
     public boolean isSelected() {
         // check for selected state
-        if (getMainState().equalsIgnoreCase(PDEButtonStateSelected)) {
-            return true;
-        } else {
-            return false;
-        }
+        return getMainState().equalsIgnoreCase(PDEButtonStateSelected);
     }
 
 
@@ -1845,6 +1937,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
      * This function is mainly there for convenience, if you mix mainState and selected, you might get unexpected
      * state changes.
      */
+    @Override
     public void setSelected(boolean selected) {
         boolean sel;
 
@@ -1864,6 +1957,86 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
         }
     }
 
+
+//----- enabling / disabling -------------------------------------------------------------------------------------------
+
+
+    /**
+     * @brief Enabled state (overridden from Android).
+     *
+     * Sets interaction and visual state to enabled/disabled. You can also set both
+     * states individually by calling the respective functions.
+     */
+    @Override
+    public void setEnabled(boolean enabled){
+        // set both
+        setVisualEnabled(enabled);
+        setUserInteractionEnabled(enabled);
+    }
+
+    /**
+     * @brief Check enabled state (overridden from Android).
+     *
+     * We're truly enabled only if visual and user interaction are enabled. If you set these individually, you max
+     * get inconsistent results.
+     */
+    @Override
+    public boolean isEnabled(){
+        return (isVisualEnabled() && isUserInteractionEnabled());
+    }
+
+    /**
+     * @brief Visual enabled state.
+     *
+     * Only affects visuals - interaction state is not changed.
+     */
+    private void setVisualEnabled(boolean enabled){
+        // pass on to agent controller
+        mAgentController.setVisualEnabled(enabled);
+    }
+
+    /**
+     * @brief Read visual enabled state.
+     */
+    private boolean isVisualEnabled() {
+        // get from agent controller
+        return mAgentController.isVisualEnabled();
+    }
+
+    /**
+     * @brief User interaction enabled state.
+     *
+     * Only affects interaction - visual state is not changed.
+     */
+    private void setUserInteractionEnabled(boolean enabled){
+        // pass on to agent controller
+        mAgentController.setInputEnabled(enabled);
+    }
+
+    /**
+     * @brief Read user interaction enabled state.
+     */
+    private boolean isUserInteractionEnabled(){
+        return mAgentController.isInputEnabled();
+    }
+
+    /**
+     * @brief Simple alpha update for disabled
+     */
+    private void updateAlpha() {
+        float alpha;
+
+        // get alpha from agent helper
+        alpha = (float) mAgentHelper.getVisibilityState();
+
+        // hardcoded values
+        alpha = 0.5f + 0.5f*alpha;
+        if (alpha < 0.0f) alpha = 0.0f;
+        if (alpha > 1.0f) alpha = 1.0f;
+
+        // set the gradient and border colors
+        PDEUtils.setViewAlpha(this,alpha);
+    }
 
 //----- hinting --------------------------------------------------------------------------------------------------------
 
@@ -1976,31 +2149,50 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
 
 //----- layout ---------------------------------------------------------------------------------------------------------
 
+    /**
+     * Change inner layout params according to the root layout
+     * @param params new params
+     */
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
+        super.setLayoutParams(params);
+        ViewGroup.LayoutParams lp = params;
+        if (lp.width == LayoutParams.WRAP_CONTENT) {
+            lp = findViewById(R.id.pdebutton_overlay_foreground_holder).getLayoutParams();
+            lp.width = LayoutParams.WRAP_CONTENT;
+            findViewById(R.id.pdebutton_overlay_foreground_holder).setLayoutParams(lp);
+
+            lp = findViewById(R.id.pdebutton_inner_layout).getLayoutParams();
+            lp.width = LayoutParams.WRAP_CONTENT;
+            findViewById(R.id.pdebutton_inner_layout).setLayoutParams(lp);
+        } else {
+            lp = findViewById(R.id.pdebutton_overlay_foreground_holder).getLayoutParams();
+            lp.width = LayoutParams.MATCH_PARENT;
+            findViewById(R.id.pdebutton_overlay_foreground_holder).setLayoutParams(lp);
+
+            lp = findViewById(R.id.pdebutton_inner_layout).getLayoutParams();
+            lp.width = LayoutParams.MATCH_PARENT;
+            findViewById(R.id.pdebutton_inner_layout).setLayoutParams(lp);
+        }
+    }
+
+
+    /**
+     * @brief Determine layout size of element.
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        ViewGroup.LayoutParams layoutParams;
-        if(DEBUGPARAMS){
+        if (DEBUGPARAMS){
             Log.d(LOG_TAG, "onMeasure "+MeasureSpec.toString(widthMeasureSpec)+" x "+MeasureSpec.toString(heightMeasureSpec));
         }
 
-        layoutParams = getLayoutParams();
+        if (isInEditMode()) {
+            // Find out how big everyone wants to be
+            measureChildren(widthMeasureSpec, heightMeasureSpec);
 
-        if (layoutParams.width == LayoutParams.WRAP_CONTENT) {
-            layoutParams = findViewById(R.id.pdebutton_overlay_foreground_holder).getLayoutParams();
-            layoutParams.width = LayoutParams.WRAP_CONTENT;
-            findViewById(R.id.pdebutton_overlay_foreground_holder).setLayoutParams(layoutParams);
-
-            layoutParams = findViewById(R.id.pdebutton_inner_layout).getLayoutParams();
-            layoutParams.width = LayoutParams.WRAP_CONTENT;
-            findViewById(R.id.pdebutton_inner_layout).setLayoutParams(layoutParams);
-        } else {
-            layoutParams = findViewById(R.id.pdebutton_overlay_foreground_holder).getLayoutParams();
-            layoutParams.width = LayoutParams.MATCH_PARENT;
-            findViewById(R.id.pdebutton_overlay_foreground_holder).setLayoutParams(layoutParams);
-
-            layoutParams = findViewById(R.id.pdebutton_inner_layout).getLayoutParams();
-            layoutParams.width = LayoutParams.MATCH_PARENT;
-            findViewById(R.id.pdebutton_inner_layout).setLayoutParams(layoutParams);
+            setMeasuredDimension(resolveSize(100, widthMeasureSpec),
+                    resolveSize(100, heightMeasureSpec));
+            return;
         }
 
         // now do the special case, that the background doesn't influence the size!
@@ -2035,7 +2227,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
         maxWidth += getPaddingLeft() + getPaddingRight();
         maxHeight += getPaddingTop() + getPaddingBottom();
 
-        // we want it bigger for Embossed buttons!
+        // we want it bigger for Outer Shadow buttons!
         maxWidth += mButtonPadding.getLeft() + mButtonPadding.getRight();
         maxHeight += mButtonPadding.getTop() + mButtonPadding.getBottom();
 
@@ -2087,15 +2279,21 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
     }
 
 
-
+    /**
+     *  @brief Size changed.
+     *
+     * @param width New width.
+     * @param height New height.
+     * @param oldWidth Old width.
+     * @param oldHeight Old height.
+     */
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         if(DEBUGPARAMS){
-            Log.d(LOG_TAG, "onSizeChanged " + w + "," + h + " old:" + oldw + "," + oldh);
+            Log.d(LOG_TAG, "onSizeChanged " + width + "," + height + " old:" + oldWidth + "," + oldHeight);
         }
 
-        // ToDo Do we also have to use mWorkLayer here? and how?
-        super.onSizeChanged(w, h, oldw, oldh);
+        super.onSizeChanged(width, height, oldWidth, oldHeight);
 
     }
 
@@ -2160,12 +2358,10 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
     }
 
     public void setMinButtonPadding(int left,int top, int right, int bottom){
-        if(left>=0 && top>=0 && right>=0 && bottom>=0 &&
-                (left!=mMinButtonPadding.left || top!=mMinButtonPadding.top || right!=mMinButtonPadding.right ||
-                        bottom!=mMinButtonPadding.right)){
+        if (left >= 0 && top >= 0 && right >= 0 && bottom >= 0 &&
+                (left != mMinButtonPadding.left || top != mMinButtonPadding.top || right != mMinButtonPadding.right ||
+                        bottom != mMinButtonPadding.right)){
             mMinButtonPadding = new Rect(left,top,right,bottom);
-            // ToDo: invalidate??? start layout???
-
         }
     }
 
@@ -2188,7 +2384,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
 
 
     /**
-     * @brief: Add event Listener.
+     * @brief Add event Listener.
      *
      * PDEIEventSource Interface implementation.
      *
@@ -2205,7 +2401,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
     }
 
     /**
-     * @brief: Add event Listener.
+     * @brief Add event Listener.
      *
      * PDEIEventSource Interface implementation.
      *
@@ -2233,7 +2429,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {//P
 
 
     /**
-     * @brief: Register a android style callback to be invoked when this view is clicked - NOTE better use the more
+     * @brief Register a android style callback to be invoked when this view is clicked - NOTE better use the more
      * flexible addListener approach.
      * The PDEButton also supports the OnClickListener approach of Android. But in order to write Telekom StyleGuide
      * compartible code you are encouraged to use the PDEEvent (PDEEventSource).

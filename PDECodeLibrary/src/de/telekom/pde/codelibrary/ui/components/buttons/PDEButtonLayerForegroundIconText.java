@@ -13,7 +13,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -26,12 +25,12 @@ import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEAgentHelper;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameter;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameterDictionary;
+import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameter;
+import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameterDictionary;
 import de.telekom.pde.codelibrary.ui.elements.icon.PDEDrawableIcon;
-import de.telekom.pde.codelibrary.ui.elements.wrapper.PDEViewWrapper;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEViewWrapper;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
+import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
@@ -55,12 +54,14 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         Fixed
     }
 
+    @SuppressWarnings("unused")
     private class MetaFontSize {
         public float size = 0.0f;
         public boolean isCapHeight = false;
         public float pointsize = 0.0f;
     }
 
+    @SuppressWarnings("unused")
     private class TextInfo {
         public String base_text = "";
         public float base_fontPixelSize = 0.0f;
@@ -165,6 +166,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         mTextHasShadow = false;
         mIconColored = false;
         mIconToTextHeightRatio = 2.0f;
+
         mDefaultColor = PDEColor.DTUIInteractiveColor();
         mTextOnTransparentColor = PDEColor.DTUITextColor();
         mBackgroundColor = PDEColor.DTUIBackgroundColor();
@@ -183,11 +185,11 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
 
         mContext = context;
 
-        // set layer attribtes
+        // set layer attributes
         setClipChildren(true);
         setClipToPadding(true);
 
-        if(Build.VERSION.SDK_INT >= 11){
+        if (Build.VERSION.SDK_INT >= 11){
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
@@ -205,7 +207,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
 
         // create icon view (we hold view all the time, only the icon in the view(drawable) is replaced
         mDrawableIconWrapperView = new PDEDrawableIcon().getWrapperView();
-        addView(mDrawableIconWrapperView,0,0);
+        addView(mDrawableIconWrapperView, 0, 0);
 
         // shadow is initially disabled on both text and Icon
         // set empty complex parameters
@@ -334,8 +336,8 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
     /**
      * @brief Set the (animatable) title color.
      *
-     * If no title color is given, the title color is calculated from a) the main color, and b) the hints (indicative
-     * buttons have a special color), and c) the system preset (dark or light system).
+     * If no title color is given, the title color is calculated from a) the main color, and b) the hints, and c) the
+     * system preset (dark or light system).
      *
      * The shadow color is also calculated; the shadow color depends solely on the main color (and does only change
      * inbetween states)
@@ -551,7 +553,6 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
      */
     private void prepareIcon()
     {
-        Drawable icon;
         Object iconObject;
 
         // get the object
@@ -747,7 +748,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
     {
         PDEColor titleColor,shadowColor;
         PointF shadowOffset;
-        PDEDrawableIcon iconDrawable = null;
+        PDEDrawableIcon iconDrawable;
 
         // interpolate colors by calling complex logic color interpolation helper
         titleColor = PDEComponentHelpers.interpolateColor(mParamTitleColor,
@@ -1321,6 +1322,9 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         return wantedWidth;
     }
 
+    /**
+     * @brief Determine layout size of element.
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int height;
@@ -1351,18 +1355,26 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         }
     }
 
+    /**
+     *  @brief Size changed.
+     *
+     * @param width New width.
+     * @param height New height.
+     * @param oldWidth Old width.
+     * @param oldHeight Old height.
+     */
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         // we have to call performLayout here, since the new sizes are needed in onLayout. And the new sizes of the text
         // field or set here (the call of measure is also important otherwise the ViewGroup doesn't know about the size)
 
-        super.onSizeChanged(w, h, oldw, oldh);    //To change body of overridden methods use File | Settings | File Templates.
+        super.onSizeChanged(width, height, oldWidth, oldHeight);
 
         // remember
-        mDisplayWidth = w;
-        mDisplayHeight = h;
+        mDisplayWidth = width;
+        mDisplayHeight = height;
 
-        if (w != oldw || h != oldh) {
+        if (width != oldWidth || height != oldHeight) {
             // update the font size
             updateFontSize(mDisplayHeight, true, mOnMeasureTextInfo, mOnMeasureFontMetaSize);
 

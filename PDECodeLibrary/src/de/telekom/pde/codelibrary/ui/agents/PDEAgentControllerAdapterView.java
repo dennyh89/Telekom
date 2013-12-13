@@ -13,10 +13,6 @@ package de.telekom.pde.codelibrary.ui.agents;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-import de.telekom.pde.codelibrary.ui.components.lists.PDEListItem;
-import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
-import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
-
 import android.graphics.Rect;
 import android.os.Handler;
 import android.util.Log;
@@ -24,6 +20,9 @@ import android.view.InputEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import de.telekom.pde.codelibrary.ui.components.lists.PDEListItem;
+import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
+import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 
 import java.lang.ref.WeakReference;
 
@@ -154,11 +153,9 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
         //getView().getHitRect(mHitRectView);
 
         // check if the delivered View is a item of our PDEListView
-        if (view instanceof PDEListItem){
-            mIsListItem = true;
-        } else {
-            mIsListItem = false;
-        }
+        mIsListItem = (view instanceof PDEListItem);
+
+        //mIsListItem = false;
         // set touch listener
         getView().setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -202,18 +199,16 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
                         }
                         break;
                     case MotionEvent.ACTION_CANCEL:
-                        // Todo: find test case to proof cancel-message
-                        doCancel(view,motionEvent);
-//                        if (DEBUG) Log.d(LOG_TAG,"Agent: ActionCancel");
-//                        // if we're part of a list and the touch down already occured we have to cancel the pending
-//                        // check for a valid tap and reset the touch mode
-//                        if (mIsListItem && mTouchDownMode){
-//                            // reset touch mode to false
-//                            mTouchDownMode = false;
-//                            // remove pending tap checks
-//                            mHandler.removeCallbacks(mPendingCheckForTap);
-//                        }
-//                        actionTouchCancel(view, motionEvent);
+                        if (DEBUG) Log.d(LOG_TAG,"Agent: ActionCancel");
+                        // if we're part of a list and the touch down already occured we have to cancel the pending
+                        // check for a valid tap and reset the touch mode
+                        if (mIsListItem && mTouchDownMode){
+                            // reset touch mode to false
+                            mTouchDownMode = false;
+                            // remove pending tap checks
+                            mHandler.removeCallbacks(mPendingCheckForTap);
+                        }
+                        actionTouchCancel(view, motionEvent);
                         break;
                     case MotionEvent.ACTION_UP:
                         if (DEBUG) Log.d(LOG_TAG,"Agent: ActionUp");
@@ -271,6 +266,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
      * A touch implies that the finger is inside the object, so we're highlighted first and then
      * pressed
      */
+    @SuppressWarnings("unused")
     private void actionTouchDown(Object sender, InputEvent event)  // ToDo: MotionEvent???
     {
         // we‘re highlighted when we're first touched
@@ -300,6 +296,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
      *
      * We enter the active area from outside while still pressed.
      */
+    @SuppressWarnings("unused")
     private void actionTouchDragEnter(Object sender, InputEvent event) {
         // are we really down? Otherwise we don't react
         if (!mDown) {
@@ -323,6 +320,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
      *
      * We leave the active area while still pressed.
      */
+    @SuppressWarnings("unused")
     private void actionTouchDragExit(Object sender, InputEvent event) {
         // are we really down? Otherwise we don't react
         if (!mDown) {
@@ -347,6 +345,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
      * We are released while the finger is still inside. This results
      * in a successful tap.
      */
+    @SuppressWarnings("unused")
     private void actionTouchUpInside(Object sender, InputEvent event) {
         // are we really down? Otherwise we don't react
         if (!mDown) {
@@ -378,6 +377,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
      *
      * We are released while the finger is outside. The press is cancelled.
      */
+    @SuppressWarnings("unused")
     private void actionTouchUpOutside(Object sender, InputEvent event) {
         // are we really down? Otherwise we don't react
         if (!mDown) {
@@ -409,6 +409,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
      *
      * The touch is cancelled (e.g. by an overlying gesture). Cancel the press.
      */
+    @SuppressWarnings("unused")
     private void actionTouchCancel(Object sender, InputEvent event) {
         // are we really down? Otherwise we don't react
         if (!mDown) {
@@ -484,29 +485,5 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
                 actionTouchDown(mTouchDownView, mDownEvent);
             }
         }
-    }
-
-
-    /**
-     * @brief Public callable handling of a cancel event (hack).
-     *
-     * On Devices below Android 4.0 the event handling doesn't work as intended, so for proper handling of Cancel we
-     * have to be able to call the cancel-eventhandling manually (not by eventsystem). I don't like this workaround,
-     * but as long as we have to deal with lower devices it seems to be the only way.
-     *
-     * @param view the view that received the touch event.
-     * @param motionEvent the received touch event.
-     */
-    public void doCancel(View view, MotionEvent motionEvent) {
-        if (DEBUG) Log.d(LOG_TAG,"Agent: ActionCancel");
-        // if we're part of a list and the touch down already occured we have to cancel the pending
-        // check for a valid tap and reset the touch mode
-        if (mIsListItem && mTouchDownMode){
-            // reset touch mode to false
-            mTouchDownMode = false;
-            // remove pending tap checks
-            mHandler.removeCallbacks(mPendingCheckForTap);
-        }
-        actionTouchCancel(view, motionEvent);
     }
 }

@@ -7,17 +7,14 @@
 
 package de.telekom.pde.codelibrary.ui.components.sliders;
 
-import android.util.Log;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
+
 import java.util.Set;
 
-
-/// @cond CLASS_UNDER_DEVELOPMENT__NOT_RELEASED
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDESliderController State
 //----------------------------------------------------------------------------------------------------------------------
-
 
 
 /**
@@ -33,105 +30,178 @@ import java.util.Set;
  */
 public class PDEEventSliderControllerState extends PDEEvent {
 
+    protected int mSliderControllerId;
+    protected Set<PDESliderController.PDESliderControllerChanges> mSliderControllerChanges;
+    protected boolean mSliderChangeFromUser;
+    protected float mSliderPosition;
+    protected float mSliderStartPosition;
+    protected float mSliderPageSize;
+    protected float mSliderPositionUserRange;
+    protected float mSliderStartPositionUserRange;
+    protected float mSliderPageSizeUserRange;
+    protected PDESlider mSlider;
 
     // ----- properties -----
 
     /**
     * @brief   An id to inform content about what changes it has to made.
     */
-    protected int mSliderControllerId;
     public int getSliderControllerId() {
         return mSliderControllerId;
     }
+
+
+    /**
+     * @brief   Set an id to inform content about what changes it has to made.
+     */
     public void setSliderControllerId(int sliderControllerId) {
-        this.mSliderControllerId = sliderControllerId;
+        mSliderControllerId = sliderControllerId;
     }
+
 
     /**
      * @brief Inform about what changes where made on controller.
      */
-    protected Set<PDESliderController.PDESliderControllerChanges> mSliderControllerChanges;
+    @SuppressWarnings("unused")
     public Set<PDESliderController.PDESliderControllerChanges> getSliderControllerChanges() {
         return mSliderControllerChanges;
     }
+
+
+    /**
+     * @brief Set slider controller changes.
+     */
     public void setSliderControllerChanges(Set<PDESliderController.PDESliderControllerChanges> sliderControllerChanges) {
-        this.mSliderControllerChanges = sliderControllerChanges;
+        mSliderControllerChanges = sliderControllerChanges;
     }
+
+
+    /**
+     * @brief Inform whether the changes where made by the end user or programmatically.
+     */
+    @SuppressWarnings("unused")
+    public boolean getSliderChangeFromUser() {
+        return mSliderChangeFromUser;
+    }
+
+
+    /**
+     * @brief Set information whether the changes where made by the end user or programmatically.
+     */
+    public void setSliderChangeFromUser(boolean fromUser) {
+        mSliderChangeFromUser = fromUser;
+    }
+
 
     /**
      * @brief   The position to set by the Slider. Range is 0..1.
      */
-    protected float mSliderPosition;
     public float getSliderPosition() {
         return mSliderPosition;
     }
+
+
+    /**
+     * @brief   Set the position of the Slider. Range is 0..1.
+     */
     public void setSliderPosition(float sliderPosition) {
-        this.mSliderPosition = sliderPosition;
+        mSliderPosition = sliderPosition;
     }
+
 
     /**
      * @brief   The start position to set by the Slider. Range is 0..1.
      */
-    protected float mSliderStartPosition;
     public float getSliderStartPosition() {
         return mSliderStartPosition;
     }
+
+
+    /**
+     * @brief   Set the start position of the Slider. Range is 0..1.
+     */
     public void setSliderStartPosition(float sliderStartPosition) {
         this.mSliderStartPosition = sliderStartPosition;
     }
 
+
     /**
      * @brief   The page size to set by the Slider. Range is 0..1.
      */
-    protected float mSliderPageSize;
     public float getSliderPageSize() {
         return mSliderPageSize;
     }
+
+
+    /**
+     * @brief   Set the page size. Range is 0..1.
+     */
     public void setSliderPageSize(float sliderPageSize) {
         this.mSliderPageSize = sliderPageSize;
     }
 
+
     /**
      * @brief   The slider position according to the user defined value range.
      */
-    protected float mSliderPositionUserRange;
     public float getSliderPositionUserRange() {
         return mSliderPositionUserRange;
     }
+
+
+    /**
+     * @brief   Set the slider position according to the user defined value range.
+     */
     public void setSliderPositionUserRange(float sliderPositionUserRange) {
-        this.mSliderPositionUserRange = sliderPositionUserRange;
+        mSliderPositionUserRange = sliderPositionUserRange;
     }
+
 
     /**
      * @brief   The slider start position according to the user defined value range.
      */
-    protected float mSliderStartPositionUserRange;
     public float getSliderStartPositionUserRange() {
         return mSliderStartPositionUserRange;
     }
+
+
+    /**
+     * @brief   Set the slider start position according to the user defined value range.
+     */
     public void setSliderStartPositionUserRange(float sliderStartPositionUserRange) {
-        this.mSliderStartPositionUserRange = sliderStartPositionUserRange;
+        mSliderStartPositionUserRange = sliderStartPositionUserRange;
     }
+
 
     /**
      * @brief   The slider page size according to the user defined value range.
      */
-    protected float mSliderPageSizeUserRange;
     public float getSliderPageSizeUserRange() {
         return mSliderPageSizeUserRange;
     }
-    public void setSliderPageSizeUserRange(float sliderPageSizeUserRange) {
-        this.mSliderPageSizeUserRange = sliderPageSizeUserRange;
-    }
+
 
     /**
-     * @brief Global tag for log outputs.
+     * @brief   Set the slider page size according to the user defined value range.
      */
-    private final static String LOG_TAG = PDEEventSliderControllerState.class.getName();
+    public void setSliderPageSizeUserRange(float sliderPageSizeUserRange) {
+        mSliderPageSizeUserRange = sliderPageSizeUserRange;
+    }
 
-    public void printEvent() {
-        Log.d(LOG_TAG,"Slider Event: \n"+getType()+"\nController: "+mSliderControllerId);
+
+    /**
+     * @brief   Get the used slider.
+     */
+    public PDESlider getSlider() {
+        return mSlider;
+    }
+
+
+    /**
+     * @brief   Set the slider.
+     */
+    public void setSlider(PDESlider slider) {
+        mSlider = slider;
     }
 }
 
-/// @endcond CLASS_UNDER_DEVELOPMENT__NOT_RELEASED

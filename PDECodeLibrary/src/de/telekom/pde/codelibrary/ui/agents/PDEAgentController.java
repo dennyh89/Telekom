@@ -14,14 +14,14 @@ package de.telekom.pde.codelibrary.ui.agents;
 //----------------------------------------------------------------------------------------------------------------------
 
 
+import android.text.TextUtils;
+import android.util.Log;
 import de.telekom.pde.codelibrary.ui.animation.PDEAnimationGroup;
 import de.telekom.pde.codelibrary.ui.animation.PDEAnimationRoot;
 import de.telekom.pde.codelibrary.ui.animation.PDELinearAnimation;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSourceDelegate;
-
-import android.util.Log;
 import de.telekom.pde.codelibrary.ui.timing.PDEFrameTiming;
 
 import java.util.LinkedList;
@@ -200,6 +200,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
     PDELinearAnimation mDownAnimation;
     PDELinearAnimation mInteractionAnimation;
     PDELinearAnimation mStateAnimation;
+    PDELinearAnimation mVisualEnabledAnimation;
 
     /**
      * @brief The agent's state.
@@ -244,6 +245,11 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      */
     private boolean mInputEnabled;
 
+    /**
+     * @brief Visual enabled state
+     */
+    private boolean mVisualEnabled;
+
     //----- properties -----
 
     // configuration
@@ -256,6 +262,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      */
     protected long mInteractiveAttackTime;
 
+    @SuppressWarnings("unused")
     public void setInteractiveAttackTime(long time){
         mInteractiveAttackTime = time;
     }
@@ -271,6 +278,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      */
     protected long mInteractiveDecayTime;
 
+    @SuppressWarnings("unused")
     public void setInteractiveDecayTime(long time){
         mInteractiveDecayTime = time;
     }
@@ -287,6 +295,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      */
     protected long mActionShowTime;
 
+    @SuppressWarnings("unused")
     public void setActionShowTime(long time){
         mActionShowTime = time;
     }
@@ -302,9 +311,12 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      * @brief Animation between state and nextState. Range is 0..1
      */
     protected double mStateAnimationProgress;
+    @SuppressWarnings("unused")
     public double getStateAnimationProgress(){
         return mStateAnimationProgress;
     }
+
+    @SuppressWarnings("unused")
     public void setStateAnimationProgress(double stateAnimationProgress){
         mStateAnimationProgress = stateAnimationProgress;
     }
@@ -314,9 +326,11 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      * @brief Focus animation. Range is 0..1
      */
     protected double mAgentAnimationFocus;
+
     public double getAgentAnimationFocus(){
         return mAgentAnimationFocus;
     }
+
     public void setAgentAnimationFocus(double focus){
         mAgentAnimationFocus = focus;
     }
@@ -325,9 +339,11 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      * @brief Highlight animation. Range is 0..1
      */
     protected double mAgentAnimationHighlight;
+
     public double getAgentAnimationHighlight(){
         return mAgentAnimationHighlight;
     }
+
     public void setAgentAnimationHighlight(double highlight){
         mAgentAnimationHighlight = highlight;
     }
@@ -352,6 +368,8 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
     public double getAgentAnimationDown(){
         return mAgentAnimationDown;
     }
+
+    @SuppressWarnings("unused")
     public void setAgentAnimationDown(double down){
         mAgentAnimationDown = down;
     }
@@ -360,11 +378,27 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      * @brief Combined focus and highlight animation. Range is 0..1
      */
     protected double mAgentAnimationCombinedFocusAndHighlight;
+
     public double getAgentAnimationCombinedFocusAndHighlight(){
         return mAgentAnimationCombinedFocusAndHighlight;
     }
+
     public void setAgentAnimationCombinedFocusAndHighlight(double value){
         mAgentAnimationCombinedFocusAndHighlight = value;
+    }
+
+
+    /**
+     * @brief Visual Enabled animation. Range is 0..1
+     */
+    protected double mAgentAnimationVisualEnabled;
+
+    public double getAgentAnimationVisualEnabled(){
+        return mAgentAnimationVisualEnabled;
+    }
+
+    public void setAgentAnimationVisualEnabled(double enabled){
+        mAgentAnimationVisualEnabled = enabled;
     }
 
     /**
@@ -374,9 +408,11 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      * through the states. 0 is "available", 1 is "focus", 2 is "taking input".
      */
     protected double mAgentAnimationCombinedInteraction;
+
     public double getAgentAnimationCombinedInteraction(){
         return mAgentAnimationCombinedInteraction;
     }
+
     public void setmAgentAnimationCombinedInteraction(double value){
         mAgentAnimationCombinedInteraction = value;
     }
@@ -405,6 +441,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         mAgentState = PDE_AGENT_CONTROLLER_STATE_IDLE;
         mInputCheckScheduled = false;
         mStateAnimationProgress = 0.0;
+        mAgentAnimationVisualEnabled = 1.0;
         mAgentAnimationFocus = 0.0;
         mAgentAnimationHighlight = 0.0;
         mAgentAnimationPress = 0.0;
@@ -413,6 +450,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         mAgentAnimationCombinedInteraction = 0.0;
         mTiming = false;
         mInputEnabled = true;
+        mVisualEnabled = true;
 
         // set default values
         mInteractiveAttackTime = INTERACTIVE_ATTACK_TIME;
@@ -439,6 +477,9 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         mAnimations.addSubAnimation(mInteractionAnimation);
         mStateAnimation = new PDELinearAnimation();
         mAnimations.addSubAnimation(mStateAnimation);
+        mVisualEnabledAnimation = new PDELinearAnimation();
+        mVisualEnabledAnimation.setValueImmediate(1.0);
+        mAnimations.addSubAnimation(mVisualEnabledAnimation);
 
         // create DTEventSender instance
         mEventSource = new PDEEventSource();
@@ -455,10 +496,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
     public void setState(String state)
     {
         // any change?
-        if (mState == state) return;
-        // todo check
-        //if (mState.equals(state)) return; // didn't work - but should be right?!
-
+        if (TextUtils.equals(mState, state)) return;
 
         // remember
         mState = state;
@@ -517,6 +555,31 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      */
     public boolean isInputEnabled() {
         return mInputEnabled;
+    }
+
+
+    /**
+     * @brief Enable/disable visual.
+     *
+     * Trigger animation - the rest is done via internal actions and system.
+     */
+    public void setVisualEnabled(boolean enabled){
+        // any change?
+        if (mVisualEnabled == enabled) return;
+
+        // remember
+        mVisualEnabled = enabled;
+
+        // schedule an update
+        addAction(PDE_AGENT_CONTROLLER_ACTION_GENERIC);
+    }
+
+
+    /**
+     * @brief Check if visual is enabled.
+     */
+    public boolean isVisualEnabled() {
+        return mVisualEnabled;
     }
 
 
@@ -754,6 +817,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      *
      * Do input checks asynchronously. Perform all pending actions.
      */
+    @SuppressWarnings("unused")
     public void checkInput(){
         // go through all actions and act accordingly
         performActions();
@@ -826,15 +890,21 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
                 mInternalPress = false;
                 // if we're in a state where will be able to process it,
                 if ( stateCanHandleAction(action) ) {
-                // remember to process it
-                mInternalSelections++;
-                // also remember to send it out immediately
-                mPendingSelections1++;
-            }
-            break;
+                    // remember to process it
+                    mInternalSelections++;
+                    // also remember to send it out immediately
+                    mPendingSelections1++;
+                }
+                break;
             case PDE_AGENT_CONTROLLER_ACTION_CANCEL_PRESS:
                 // remember the press is done
                 mInternalPress = false;
+                break;
+            case PDE_AGENT_CONTROLLER_ACTION_GENERIC:
+                // generic actions only serve as a wakeup call to update the state. Do nothing here.
+                break;
+            default:
+                Log.d(LOG_TAG, "Unhandled case performAction action:"+action);
                 break;
         }
 
@@ -856,6 +926,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
     /**
      * @brief Information if the current state accepts user interaction.
      */
+    @SuppressWarnings("unused")
     public boolean stateCanHandleAction(int action)
     {
         // basic states do
@@ -1104,9 +1175,9 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         double value;
 
         // determine value for focus
-        if (mAgentState== PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
+        if (mAgentState == PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
             // in interactive state, we show the focus if necessary
-            if (mInternalFocus) show=true; else show=false;
+            show = mInternalFocus;
         } else {
             // in all other states we don't show the focus
             show = false;
@@ -1122,7 +1193,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         }
 
         // determine value for highlight
-        if (mAgentState== PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
+        if (mAgentState == PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
             // in interactive state, we show the highlight if necessary
             show = mInternalHighlight;
         } else {
@@ -1140,9 +1211,9 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         }
 
         // combined animation for focus and highlight
-        if (mAgentState== PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
+        if (mAgentState == PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
             // in interactive state, we show the highlight if necessary
-            if (mInternalFocus || mInternalHighlight) show=true; else show=false;
+            show = (mInternalFocus || mInternalHighlight);
         } else {
             show = false;
         }
@@ -1157,10 +1228,10 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         }
 
         // determine value for pressed
-        if (mAgentState== PDE_AGENT_CONTROLLER_STATE_SHOWING) {
+        if (mAgentState == PDE_AGENT_CONTROLLER_STATE_SHOWING) {
             // when showing, we are always visible
-            show=true;
-        } else if (mAgentState== PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
+            show = true;
+        } else if (mAgentState == PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
             // in interactive state, we show pressed if necessary
             show = mInternalPress;
         } else {
@@ -1181,12 +1252,12 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         // down animation - the button is only down when it's pressed and highlighted. Roughly the same animation as
         // the interactive state animation, without the need to go through the intermediate state -> this smoothes
         // out some animations
-        if (mAgentState== PDE_AGENT_CONTROLLER_STATE_SHOWING) {
+        if (mAgentState == PDE_AGENT_CONTROLLER_STATE_SHOWING) {
             // when showing, we are always visible
             show = true;
-        } else if (mAgentState== PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
+        } else if (mAgentState == PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
             // in interactive state, we show the highlight if necessary
-            if (mInternalPress && (mInternalFocus || mInternalHighlight)) show=true; else show=false;
+            show = (mInternalPress && (mInternalFocus || mInternalHighlight));
         } else {
             show = false;
         }
@@ -1268,6 +1339,15 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
             // start the animation
             mStateAnimation.goToValueWithDurationForDistance(1.0,mStateChangeTime,1.0);
         }
+
+        // should we change visual enabled state?
+        if (mVisualEnabled) {
+           // on: fast
+            mVisualEnabledAnimation.goToValueWithDurationForDistance(1.0,mStateChangeTime,1.0);
+        } else {
+            // off: slow
+            mVisualEnabledAnimation.goToValueWithDurationForDistance(0.0,mStateChangeTime,1.0);
+        }
     }
 
     /**
@@ -1346,6 +1426,16 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
             changed = true;
         }
 
+
+        // check visual enabled animation
+        value = mVisualEnabledAnimation.getValue();
+        if (value != getAgentAnimationVisualEnabled()) {
+            // take over
+            setAgentAnimationVisualEnabled(value);
+            // remember as changed
+            changed = true;
+        }
+
         // check state
         if (mNextState != null) {
             value = mStateAnimation.getValue();
@@ -1365,7 +1455,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
                               +mAgentAnimationFocus+", "+mAgentAnimationHighlight+", "
                               +mAgentAnimationPress+", "+mAgentAnimationDown+", "
                               +mAgentAnimationCombinedFocusAndHighlight+","
-                              +mAgentAnimationCombinedInteraction);
+                              +mAgentAnimationCombinedInteraction+", "+mAgentAnimationVisualEnabled);
             }
             // send animation change event
             event = createStateEvent();
@@ -1472,6 +1562,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      *  with java reflection. So now the originally time() method is called changed(),
      *  the other one stays as time(Long). For now it simply calls the other one ( changed() ).
      */
+    @SuppressWarnings("unused")
     public void time(Long time){
         changed();
     }
@@ -1497,6 +1588,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         event.setAgentAnimationDown(getAgentAnimationDown());
         event.setAgentAnimationCombinedFocusAndHighlight(getAgentAnimationCombinedFocusAndHighlight());
         event.setAgentAnimationCombinedInteraction(getAgentAnimationCombinedInteraction());
+        event.setAgentAnimationVisualEnabled(getAgentAnimationVisualEnabled());
 
         // done
         return event;

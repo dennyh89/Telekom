@@ -190,7 +190,7 @@ public class PDEEventSource implements PDEIEventSource {
      * @param target The target class events get sent to. Only a weak reference is held.
      * @param methodName The name of the method to be called. It's a method of the target-Object. Method must
      *                   conform to void <methodName> (PDEEvent event)
-     * @result Returns an internal class identifying the listener added. This reference can be used
+     * @return Returns an internal class identifying the listener added. This reference can be used
      *         to remove the listener later.
      */
     public Object addListener(Object target, String methodName) {
@@ -211,7 +211,7 @@ public class PDEEventSource implements PDEIEventSource {
      * @param target The target class events get sent to. Only a weak reference is held.
      * @param methodName The name of the method to be called. It's a method of the target-Object. Method must
      *                   conform to void <methodName> (PDEEvent event)
-     * @result Returns an internal class identifying the listener added. This reference can be used
+     * @return Returns an internal class identifying the listener added. This reference can be used
      *         to remove the listener later.
      */
     public Object addListener(Object target, String methodName, String eventMask) {
@@ -272,7 +272,7 @@ public class PDEEventSource implements PDEIEventSource {
      * @brief Remove the specified listener from the list.
      *
      * @param listener The listener reference returned by addListener:
-     * @result Returns whether we have found & removed the listener or not
+     * @return Returns whether we have found & removed the listener or not
      */
     public boolean removeListener(Object listener) {
         boolean removed = false;
@@ -310,7 +310,7 @@ public class PDEEventSource implements PDEIEventSource {
      * use removeListener:.
      *
      * @param target Target for which the listeners should be removed.
-     * @result Returns false if no listener was removed. (Otherwise true)
+     * @return Returns false if no listener was removed. (Otherwise true)
      */
     public boolean removeListenersForTarget(Object target) {
         boolean removed = false;
@@ -452,6 +452,7 @@ public class PDEEventSource implements PDEIEventSource {
      *
      * Creates a temporary listener and initializes it, but does not keep it around.
      */
+    @SuppressWarnings("unused")
     protected void requestOneTimeInitialization(Object target, String methodName){
         // call extended function
         requestOneTimeInitialization(target,methodName,"*");
@@ -492,10 +493,12 @@ public class PDEEventSource implements PDEIEventSource {
     }
 
     // @new
+    @SuppressWarnings("unused")
     protected void requestOneTimeDeinitialization(Object target, String methodName){
         // call extended function
         requestOneTimeDeinitialization(target,methodName,"*");
     }
+
     // @new
     protected void requestOneTimeDeinitialization(Object target, String methodName, String eventMask){
         Listener listener;
@@ -542,7 +545,7 @@ public class PDEEventSource implements PDEIEventSource {
      * we find these orphans when an event is taken out early.
      *
      * @param event PDEEvent or derived class to be sent to the listeners.
-     * @result Processing status. True if the event was marked as processed, false if the event passed all
+     * @return Processing status. True if the event was marked as processed, false if the event passed all
      *         listeners without any listener setting the processed flag.
      */
     public boolean sendEvent(final PDEEvent event) {
@@ -583,7 +586,7 @@ public class PDEEventSource implements PDEIEventSource {
      *
      * @param event PDEEvent or derived class to be sent to the listeners.
      * @param listenerObject The listener reference returned by addListener:
-     * @result Processing status. True if the event was marked as processed, false if the event passed all
+     * @return Processing status. True if the event was marked as processed, false if the event passed all
      *         listeners without any listener setting the processed flag.
      */
     public boolean sendEvent(final PDEEvent event, Object listenerObject) {
@@ -672,7 +675,7 @@ public class PDEEventSource implements PDEIEventSource {
      * The event class is PDEEvent.
      *
      * @param type The event type.
-     * @result Processing status. True if the event was marked as processed.
+     * @return Processing status. True if the event was marked as processed.
      */
     public boolean sendEvent(String type) {
         PDEEvent event;
@@ -763,6 +766,7 @@ public class PDEEventSource implements PDEIEventSource {
      *
      * @param event The event that was sent.
      */
+    @SuppressWarnings("unused")
     public void forwardEventHelper(PDEEvent event) {
         // just send it to ourself and ignore the result code
         sendEvent(event);
@@ -787,8 +791,9 @@ public class PDEEventSource implements PDEIEventSource {
      *
      * The default sender is the object that is filled in as sender if no sender was manually specified before.
      *
-     * @result The default sender object.
+     * @return The default sender object.
      */
+    @SuppressWarnings("unused")
     public Object getEventDefaultSender() {
         if (mEventDefaultSender == null) {
             return null;
@@ -798,11 +803,13 @@ public class PDEEventSource implements PDEIEventSource {
 
 
     // @new
+    @SuppressWarnings("unused")
     public void setEventOverrideSender(boolean override){
         mEventOverrideSender = override;
     }
 
     // @new
+    @SuppressWarnings("unused")
     public boolean getEventOverrideSender(){
         return mEventOverrideSender;
     }

@@ -7,7 +7,6 @@ import android.view.ActionProvider;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.SubMenu;
 import android.view.View;
-
 import com.actionbarsherlock.view.MenuItem;
 
 //----------------------------------------------------------------------------------------------------------------------

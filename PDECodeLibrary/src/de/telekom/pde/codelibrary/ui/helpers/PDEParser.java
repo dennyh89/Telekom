@@ -14,8 +14,8 @@ package de.telekom.pde.codelibrary.ui.helpers;
 
 public class PDEParser {
 
-    private String mString_priv;
-    private int mPosition_priv;
+    private String mString;
+    private int mPosition;
 
 
 
@@ -26,6 +26,7 @@ public class PDEParser {
 
 //----- initialization and configuration -------------------------------------------------------------------------------
 
+    @SuppressWarnings("unused")
     public PDEParser(String string) {
         // init
         this(string,true);
@@ -33,8 +34,8 @@ public class PDEParser {
 
     public PDEParser(String string, boolean ignoreWhitespace) {
         // init
-        mString_priv = string;
-        mPosition_priv = 0;
+        mString = string;
+        mPosition = 0;
         setWhitespaceIgnored(ignoreWhitespace);
     }
 
@@ -52,10 +53,11 @@ public class PDEParser {
     /**
      * @brief Class creation convenience.
      */
+    @SuppressWarnings("unused")
     public static PDEParser parserWithString(String string, boolean ignoreWhitespace)
     {
         // create and init
-        return new PDEParser(string,ignoreWhitespace);
+        return new PDEParser(string, ignoreWhitespace);
     }
 
 
@@ -84,9 +86,7 @@ public class PDEParser {
      */
     public boolean isEnd()
     {
-        if (mPosition_priv>=mString_priv.length())
-            return true;
-        else return false;
+        return (mPosition >= mString.length());
     }
 
 
@@ -99,7 +99,7 @@ public class PDEParser {
         if (isEnd()) return 0;
 
         // calculate
-        return mString_priv.length() - mPosition_priv;
+        return mString.length() - mPosition;
     }
 
 
@@ -115,7 +115,7 @@ public class PDEParser {
         if (isEnd()) return 0;
 
         // get it
-        return mString_priv.charAt(mPosition_priv);
+        return mString.charAt(mPosition);
     }
 
 
@@ -130,7 +130,7 @@ public class PDEParser {
         if (isEnd()) return;
 
         // skip one
-        mPosition_priv++;
+        mPosition++;
 
         // eventually skip whitespace
         if (mWhitespaceIgnored) {
@@ -144,6 +144,7 @@ public class PDEParser {
      *
      * Eventually skip whitespace after this.
      */
+    @SuppressWarnings("unused")
     public char readCharacter()
     {
         char c;
@@ -170,6 +171,7 @@ public class PDEParser {
      *
      * Don't modify any positions. Ignore whitespace at end of string if required.
      */
+    @SuppressWarnings("unused")
     public String getHead(int count)
     {
         // limit characters to get
@@ -178,7 +180,7 @@ public class PDEParser {
         }
 
         // retrieve the substring
-        return getPartial(mPosition_priv,mPosition_priv+count);
+        return getPartial(mPosition, mPosition + count);
     }
 
 
@@ -190,18 +192,19 @@ public class PDEParser {
      *
      * Eventually ignore whitespace directly before the separator. Don't overread the separator.
      */
+    @SuppressWarnings("unused")
     public String readToSeparator(char separator)
     {
         int start;
 
         // remember start position
-        start = mPosition_priv;
+        start = mPosition;
 
         // use skipping
         skipToSeparator(separator);
 
         // cutout the string (this takes care of eventual whitespace at the end)
-        return getPartial(start,mPosition_priv);
+        return getPartial(start, mPosition);
     }
 
 
@@ -215,13 +218,13 @@ public class PDEParser {
         int start;
 
         // remember start position
-        start = mPosition_priv;
+        start = mPosition;
 
         // use skipping
         skipToSeparatorSet(charset);
 
         // cutout the string (this takes care of eventual whitespace at the end)
-        return getPartial(start,mPosition_priv);
+        return getPartial(start, mPosition);
     }
 
 
@@ -236,13 +239,13 @@ public class PDEParser {
         String result;
 
         // remember start position
-        start = mPosition_priv;
+        start = mPosition;
 
         // use skipping
         skipToSeparator(separator);
 
         // cutout the string (this takes care of eventual whitespace at the end)
-        result = getPartial(start,mPosition_priv);
+        result = getPartial(start, mPosition);
 
         // skip the separator (this also skips whitespace if necessary)
         skip();
@@ -257,19 +260,20 @@ public class PDEParser {
      *
      * Eventually ignore whitespace directly before and after the separator.
      */
+    @SuppressWarnings("unused")
     public String readToSeparatorSetAndSkip(PDECharacterSet charset)
     {
         int start;
         String result;
 
         // remember start position
-        start = mPosition_priv;
+        start = mPosition;
 
         // use skipping
         skipToSeparatorSet(charset);
 
         // cutout the string (this takes care of eventual whitespace at the end)
-        result = getPartial(start,mPosition_priv);
+        result = getPartial(start, mPosition);
 
         // skip the separator (this also skips whitespace if necessary)
         skip();
@@ -284,18 +288,19 @@ public class PDEParser {
      *
      * Eventually ignore whitespace directly before the separator. Don't overread the separator.
      */
+    @SuppressWarnings("unused")
     public String readToLastSeparator(char separator)
     {
         int start;
 
         // remember start position
-        start = mPosition_priv;
+        start = mPosition;
 
         // use skipping
         skipToLastSeparator(separator);
 
         // cutout the string (this takes care of eventual whitespace at the end)
-        return getPartial(start,mPosition_priv);
+        return getPartial(start, mPosition);
     }
 
 
@@ -304,18 +309,19 @@ public class PDEParser {
      *
      * Eventually ignore whitespace directly before the separator. Don't overread the separator.
      */
+    @SuppressWarnings("unused")
     public String readToLastSeparatorSet(PDECharacterSet charset)
     {
         int start;
 
         // remember start position
-        start = mPosition_priv;
+        start = mPosition;
 
         // use skipping
         skipToSeparatorSet(charset);
 
         // cutout the string (this takes care of eventual whitespace at the end)
-        return getPartial(start,mPosition_priv);
+        return getPartial(start, mPosition);
     }
 
 
@@ -324,19 +330,20 @@ public class PDEParser {
      *
      * Eventually ignore whitespace directly before and after the separator.
      */
+    @SuppressWarnings("unused")
     public String readToLastSeparatorAndSkip(char separator)
     {
         int start;
         String result;
 
         // remember start position
-        start = mPosition_priv;
+        start = mPosition;
 
         // use skipping
         skipToLastSeparator(separator);
 
         // cutout the string (this takes care of eventual whitespace at the end)
-        result = getPartial(start,mPosition_priv);
+        result = getPartial(start, mPosition);
 
         // skip the separator (this also skips whitespace if necessary)
         skip();
@@ -351,19 +358,20 @@ public class PDEParser {
      *
      * Eventually ignore whitespace directly before and after the separator.
      */
+    @SuppressWarnings("unused")
     public String readToLastSeparatorSetAndSkip(PDECharacterSet charset)
     {
         int start;
         String result;
 
         // remember start position
-        start = mPosition_priv;
+        start = mPosition;
 
         // use skipping
         skipToLastSeparatorSet(charset);
 
         // cutout the string (this takes care of eventual whitespace at the end)
-        result = getPartial(start,mPosition_priv);
+        result = getPartial(start, mPosition);
 
         // skip the separator (this also skips whitespace if necessary)
         skip();
@@ -379,18 +387,19 @@ public class PDEParser {
      * If the characters end with whitespace, eventually return less of them if whitespace should be ignored.
      * Skip this whitespace then anyway.
      */
+    @SuppressWarnings("unused")
     public String readCharacters(int count)
     {
         int start;
 
         // remember start position
-        start = mPosition_priv;
+        start = mPosition;
 
         // use skipping
         skipCharacters(count);
 
         // cutout the string (this takes care of eventual whitespace at the end)
-        return getPartial(start,mPosition_priv);
+        return getPartial(start, mPosition);
     }
 
 
@@ -400,18 +409,19 @@ public class PDEParser {
      * Skip any whitespace afterwards if required. If the set contains whitespace, whitespace is read and
      * returned regardless if the ignoreWhitespace mode is turned on.
      */
+    @SuppressWarnings("unused")
     public String readCharactersInSet(PDECharacterSet charset)
     {
         int start;
 
         // remember start position
-        start = mPosition_priv;
+        start = mPosition;
 
         // use skipping
         skipCharactersInSet(charset);
 
         // cutout the string (this takes care of eventual whitespace at the end)
-        return getPartial(start,mPosition_priv);
+        return getPartial(start, mPosition);
     }
 
 
@@ -421,6 +431,7 @@ public class PDEParser {
      * If whitespace is ignored, empty lines are automatically skipped by this function (it's emerging behaviour
      * of the whitespace autoskipping logic which skips newlines automatically)
      */
+    @SuppressWarnings("unused")
     public String readLine()
     {
         String result;
@@ -451,18 +462,19 @@ public class PDEParser {
      *
      * Trim whitespace if configured to do so.
      */
+    @SuppressWarnings("unused")
     public String readToEnd()
     {
         int start;
 
         // remember start position
-        start = mPosition_priv;
+        start = mPosition;
 
         // position to the end
-        mPosition_priv = mString_priv.length();
+        mPosition = mString.length();
 
         // cutout the string (this takes care of eventual whitespace at the end)
-        return getPartial(start,mPosition_priv);
+        return getPartial(start, mPosition);
     }
 
 
@@ -481,7 +493,7 @@ public class PDEParser {
             // separator?
             if (getCharacter() == separator) break;
             // next one
-            mPosition_priv++;
+            mPosition++;
         }
     }
 
@@ -498,7 +510,7 @@ public class PDEParser {
             // separator?
             if (charset.characterIsMember(getCharacter())) break;
             // next one
-            mPosition_priv++;
+            mPosition++;
         }
     }
 
@@ -508,6 +520,7 @@ public class PDEParser {
      *
      * Eventually ignore whitespace after the separator.
      */
+    @SuppressWarnings("unused")
     public void skipToSeparatorAndSkip(char separator)
     {
         // use basic skip
@@ -523,6 +536,7 @@ public class PDEParser {
      *
      * Eventually ignore whitespace after the separator.
      */
+    @SuppressWarnings("unused")
     public void skipToSeparatorSetAndSkip(PDECharacterSet charset)
     {
         // use basic skip
@@ -543,11 +557,11 @@ public class PDEParser {
         int pos;
 
         // find last one; if there is no one, we skip to the end.
-        pos = mString_priv.length()-1;
-        while (pos >= mPosition_priv) {
+        pos = mString.length()-1;
+        while (pos >= mPosition) {
             // have we found it?
-            if (mString_priv.charAt(pos) == separator) {
-                mPosition_priv = pos;
+            if (mString.charAt(pos) == separator) {
+                mPosition = pos;
                 break;
             }
             // try next one
@@ -555,9 +569,9 @@ public class PDEParser {
         }
 
         // not found if we have run through all characters
-        if (pos < mPosition_priv) {
+        if (pos < mPosition) {
             // set to end
-            mPosition_priv = mString_priv.length();
+            mPosition = mString.length();
         }
     }
 
@@ -572,11 +586,11 @@ public class PDEParser {
         int pos;
 
         // find last one; if there is no one, we skip to the end.
-        pos = mString_priv.length()-1;
-        while (pos >= mPosition_priv) {
+        pos = mString.length()-1;
+        while (pos >= mPosition) {
             // have we found it?
-            if (charset.characterIsMember(mString_priv.charAt(pos))) {
-                mPosition_priv = pos;
+            if (charset.characterIsMember(mString.charAt(pos))) {
+                mPosition = pos;
                 break;
             }
             // try next one
@@ -584,9 +598,9 @@ public class PDEParser {
         }
 
         // not found if we have run through all characters
-        if (pos < mPosition_priv) {
+        if (pos < mPosition) {
             // set to end
-            mPosition_priv = mString_priv.length();
+            mPosition = mString.length();
         }
     }
 
@@ -596,6 +610,7 @@ public class PDEParser {
      *
      * Eventually ignore whitespace after the separator.
      */
+    @SuppressWarnings("unused")
     public void skipToLastSeparatorAndSkip(char separator)
     {
         // use basic skip
@@ -611,6 +626,7 @@ public class PDEParser {
      *
      * Eventually ignore whitespace after the separator.
      */
+    @SuppressWarnings("unused")
     public void skipToLastSeparatorSetAndSkip(PDECharacterSet charset)
     {
         // use basic skip
@@ -632,7 +648,7 @@ public class PDEParser {
         if (count > length()) {
             count = length();
         }
-        mPosition_priv += count;
+        mPosition += count;
 
         // eventually skip whitespace
         if (mWhitespaceIgnored) {
@@ -653,7 +669,7 @@ public class PDEParser {
             // stop if character is no longer in set.
             if (!charset.characterIsMember(getCharacter())) break;
             // next one
-            mPosition_priv++;
+            mPosition++;
         }
 
         // eventually skip whitespace
@@ -669,6 +685,7 @@ public class PDEParser {
      * If whitespace is ignored, empty lines are automatically skipped by this function (it's emerging behaviour
      * of the whitespace autoskipping logic which skips newlines automatically)
      */
+    @SuppressWarnings("unused")
     public void skipLine()
     {
         // skip to newline set
@@ -701,7 +718,7 @@ public class PDEParser {
             // stop if character is not whitespace
             if (!PDECharacterSet.PDECharacterSetGlobalWhitespaceNewlineCharacterSet.characterIsMember(getCharacter())) break;
             // next one
-            mPosition_priv++;
+            mPosition++;
         }
     }
 
@@ -712,14 +729,15 @@ public class PDEParser {
     /**
      * @brief Check if the character is contained in the rest of the string.
      */
+    @SuppressWarnings("unused")
     public boolean containsCharacter(char character)
     {
         int i;
 
         // seek to the end
-        for (i=mPosition_priv; i<mString_priv.length(); i++) {
+        for (i= mPosition; i< mString.length(); i++) {
             // did we find it?
-            if (character == mString_priv.charAt(i)) return true;
+            if (character == mString.charAt(i)) return true;
         }
 
         // not found
@@ -730,14 +748,15 @@ public class PDEParser {
     /**
      * @brief Check if one of the caracters in the set is contained in the rest of the string.
      */
+    @SuppressWarnings("unused")
     public boolean containsCharacterSet(PDECharacterSet charset)
     {
         int i;
 
         // seek to the end
-        for (i=mPosition_priv; i<mString_priv.length(); i++) {
+        for (i = mPosition; i < mString.length(); i++) {
             // did we find it?
-            if (charset.characterIsMember(mString_priv.charAt(i))) return true;
+            if (charset.characterIsMember(mString.charAt(i))) return true;
         }
 
         // not found
@@ -748,15 +767,16 @@ public class PDEParser {
     /**
      * @brief Check if the character is contained in the rest of the string.
      */
+    @SuppressWarnings("unused")
     public boolean containsCharacter(char character, char toSeparator)
     {
         int i;
         char c;
 
         // seek to the end or separator
-        for (i=mPosition_priv; i<mString_priv.length(); i++) {
+        for (i = mPosition; i < mString.length(); i++) {
             // get character once
-            c=mString_priv.charAt(i);
+            c = mString.charAt(i);
             // stop at separator
             if (toSeparator == c) return true;
             // did we find it?
@@ -771,15 +791,16 @@ public class PDEParser {
     /**
      * @brief Check if one of the caracters in the set is contained in the rest of the string.
      */
+    @SuppressWarnings("unused")
     public boolean containsCharacterSet(PDECharacterSet charset, char toSeparator)
     {
         int i;
         char c;
 
         // seek to the end or separator
-        for (i=mPosition_priv; i<mString_priv.length(); i++) {
+        for (i = mPosition; i < mString.length(); i++) {
             // get character once
-            c=mString_priv.charAt(i);
+            c = mString.charAt(i);
             // stop at separator
             if (toSeparator == c) return false;
             // did we find it?
@@ -794,15 +815,16 @@ public class PDEParser {
     /**
      * @brief Check if the character is contained in the rest of the string.
      */
+    @SuppressWarnings("unused")
     public boolean containsCharacter(char character, PDECharacterSet toSeparatorSet)
     {
         int i;
         char c;
 
         // seek to the end or separator
-        for (i=mPosition_priv; i<mString_priv.length(); i++) {
+        for (i = mPosition; i < mString.length(); i++) {
             // get character once
-            c=mString_priv.charAt(i);
+            c = mString.charAt(i);
             // stop at separator
             if (toSeparatorSet.characterIsMember(c)) return false;
             // did we find it?
@@ -817,15 +839,16 @@ public class PDEParser {
     /**
      * @brief Check if one of the caracters in the set is contained in the rest of the string.
      */
+    @SuppressWarnings("unused")
     public boolean containsCharacterSet(PDECharacterSet charset,PDECharacterSet toSeparatorSet)
     {
         int i;
         char c;
 
         // seek to the end or separator
-        for (i=mPosition_priv; i<mString_priv.length(); i++) {
+        for (i = mPosition; i < mString.length(); i++) {
             // get character once
-            c=mString_priv.charAt(i);
+            c = mString.charAt(i);
             // stop at separator
             if (toSeparatorSet.characterIsMember(c)) return false;
             // did we find it?
@@ -849,21 +872,25 @@ public class PDEParser {
     private String getPartial(int start,int end)
     {
         // valid start position?
-        if (start<0 || start>=mString_priv.length()) return "";
+        if (start < 0 || start >= mString.length()) return "";
 
         // valid end position?
         if (end <= start) return "";
 
         // limit end position
-        if (end > mString_priv.length()) {
-            end = mString_priv.length();
+        if (end > mString.length()) {
+            end = mString.length();
         }
 
         // eventually cut down on whitespace at the end
         if (mWhitespaceIgnored) {
             while (end > start) {
                 // non-whitespace? -> stop
-                if (!PDECharacterSet.PDECharacterSetGlobalWhitespaceNewlineCharacterSet.characterIsMember(mString_priv.charAt(end-1))) break;
+                if (!PDECharacterSet
+                        .PDECharacterSetGlobalWhitespaceNewlineCharacterSet
+                        .characterIsMember(mString.charAt(end - 1))) {
+                    break;
+                }
                 // take it out
                 end--;
             }
@@ -873,8 +900,7 @@ public class PDEParser {
         if (end == start) return "";
 
         // return substring
-        return mString_priv.substring(start,end);
+        return mString.substring(start, end);
     }
-
-
 }
+

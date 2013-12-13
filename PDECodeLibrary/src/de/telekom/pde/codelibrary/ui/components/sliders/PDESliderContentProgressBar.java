@@ -11,93 +11,169 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
+import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
+import de.telekom.pde.codelibrary.ui.PDEConstants.PDEContentStyle;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
+import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.complex.PDEDrawableProgressBar;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
-import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
+import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 
-/// @cond CLASS_UNDER_DEVELOPMENT__NOT_RELEASED
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDESliderContentProgressBar
 //----------------------------------------------------------------------------------------------------------------------
 
 
-
 /**
  * @brief Progressbar Content for a Slider
  *
- * A simple progress bar with optional Preloader. It is controled by Slider Events.
+ * A simple progress bar with optional Preloader. It is controlled by Slider Events.
  * Use sliderControllerId 0 to change the Progressbar Value, use sliderControllerId 1 to change the Preloader Value.
  *
  */
-
-class PDESliderContentProgressBar extends PDEAbsoluteLayout implements PDESliderContentInterface {
+public  class PDESliderContentProgressBar extends View implements PDESliderContentInterface {
 
 
     /**
      * @brief Global tag for log outputs.
      */
     private final static String LOG_TAG = PDESliderContentProgressBar.class.getName();
-    // debug messages switch
-    private final static boolean DEBUGPARAMS = false;
 
     // drawable
     private PDEDrawableProgressBar mProgressBarLayer;
 
-    // layout
-    private static int mProgressBarHeight = PDEBuildingUnits.pixelFromBU(1.0f);
 
 
     /**
-     * @brief Constructor for PDESliderContentProgressbar
+     * @brief Constructor for PDESliderContentProgressbar.
      *
-     * @param context
-     * @param attrs
+     * @param context Used context.
+     * @param attributeSet Used attribute set.
      */
-    public PDESliderContentProgressBar (Context context, AttributeSet attrs) {
-        super(context,attrs);
-        init(context);
+    @SuppressWarnings("unused")
+    public PDESliderContentProgressBar (Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
+        init(PDEContentStyle.PDEContentStyleFlat);
     }
 
 
     /**
-     * @brief Constructor for PDESliderContentProgressbar
+     * @brief Constructor for PDESliderContentProgressbar.
      *
-     * @param context
-     * @param attrs
-     * @param defStyle
+     * @param context Used context.
+     * @param attributeSet Used attribute set.
+     * @param defStyle defStyle.
      */
-    public PDESliderContentProgressBar(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(context);
+    @SuppressWarnings("unused")
+    public PDESliderContentProgressBar(Context context, AttributeSet attributeSet, int defStyle) {
+        super(context, attributeSet, defStyle);
+        init(PDEContentStyle.PDEContentStyleFlat);
     }
 
 
     /**
-     * @brief Constructor for PDESliderContentProgressbar
+     * @brief Constructor for PDESliderContentProgressbar.
      *
-     * @param context
+     * @param context Used Context.
      */
+    @SuppressWarnings("unused")
     public PDESliderContentProgressBar(Context context) {
         super(context);
-        init(context);
+        init(PDEContentStyle.PDEContentStyleFlat);
     }
 
 
     /**
-     * @brief Initialisation of the Progressbar Content
+     * @brief Constructor for PDESliderContentProgressbar.
      *
-     * @param context
+     * @param context Used Context.
      */
-    private void init(Context context) {
+    public PDESliderContentProgressBar(Context context, PDEContentStyle style) {
+        super(context);
+        init(style);
+    }
 
-        // create the layer structure
-        //setClipChildren(false);
+
+    /**
+     * @brief Initialisation of the Progressbar Content.
+     */
+    private void init(PDEContentStyle style) {
+
+        // set the default progressBar height
+        setProgressBarHeight(PDEBuildingUnits.pixelFromBU(1.0f));
 
         // create the  progress Bar layer
         mProgressBarLayer = new PDEDrawableProgressBar();
-        addView(mProgressBarLayer.getWrapperView());
+
+
+        if (style == PDEContentStyle.PDEContentStyleFlat) {
+            if (!PDECodeLibrary.getInstance().isDarkStyle()) {
+                // light style
+                mProgressBarLayer.setElementBackgroundColor(PDEColor.valueOf("Black7Alpha")); // 7% black
+                mProgressBarLayer.setElementOuterShadowColor(PDEColor.valueOf(0x00000000));
+                mProgressBarLayer.setElementInnerShadowColor(PDEColor.valueOf(0x00000000));
+//                mProgressBarLayer.setElementBorderColor(PDEColor.valueOf("Black24Alpha")); // 24% black
+                mProgressBarLayer.setElementBorderColor(PDEColor.valueOf("DTGrey237_Idle_Border"));
+            } else {
+                // dark style
+                mProgressBarLayer.setElementBackgroundColor(PDEColor.valueOf("Black10Alpha")); // 7% black
+                mProgressBarLayer.setElementOuterShadowColor(PDEColor.valueOf(0x00000000));
+                mProgressBarLayer.setElementInnerShadowColor(PDEColor.valueOf(0x00000000));
+                mProgressBarLayer.setElementBorderColor(PDEColor.valueOf("Black70Alpha")); // 24% black
+            }
+        } else if (style == PDEContentStyle.PDEContentStyleHaptic) {
+            if (!PDECodeLibrary.getInstance().isDarkStyle()) {
+                // light style
+                mProgressBarLayer.setElementBackgroundColor(PDEColor.valueOf("Black7Alpha")); // 7% black
+                mProgressBarLayer.setElementOuterShadowColor(PDEColor.valueOf(0x00000000));
+                mProgressBarLayer.setElementInnerShadowColor(PDEColor.valueOf("Black40Alpha"));
+//                mProgressBarLayer.setElementBorderColor(PDEColor.valueOf("Black24Alpha")); // 24% black
+                mProgressBarLayer.setElementBorderColor(PDEColor.valueOf("DTGrey237_Idle_Border"));
+            } else {
+                // dark style
+                mProgressBarLayer.setElementBackgroundColor(PDEColor.valueOf("Black10Alpha")); // 7% black
+                mProgressBarLayer.setElementOuterShadowColor(PDEColor.valueOf("White10Alpha"));
+                //mProgressBarLayer.setElementOuterShadowColor(PDEColor.valueOf(0xffffffff));
+                mProgressBarLayer.setElementInnerShadowColor(PDEColor.valueOf("Black75Alpha"));
+                mProgressBarLayer.setElementBorderColor(PDEColor.valueOf("Black70Alpha")); // 24% black
+            }
+        } else {
+            Log.d(LOG_TAG, "PDESliderContentProgressBar: unknown PDESliderContentStyle");
+        }
+
+        // set drawable as background
+        PDEUtils.setViewBackgroundDrawable(this, mProgressBarLayer);
+    }
+
+
+    /**
+     * Set the custom height of the progressBar.
+     * @param height The new height of the progressBar
+     */
+    public void setProgressBarHeight(int height) {
+
+        // update the Layout Params
+        setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, height));
+
+        // mark as invalidated
+        invalidate();
+    }
+
+
+    /**
+     * Get the height of the progressBar.
+     */
+    @SuppressWarnings("unused")
+    public int getProgressBarHeight() {
+        LayoutParams lp = getLayoutParams();
+
+        if (lp==null) return 0;
+
+        return lp.height;
     }
 
 
@@ -108,7 +184,7 @@ class PDESliderContentProgressBar extends PDEAbsoluteLayout implements PDESlider
      * @brief Layer access.
      */
     @Override
-    public PDEAbsoluteLayout getLayer() {
+    public View getLayer() {
         return this;
     }
 
@@ -116,7 +192,7 @@ class PDESliderContentProgressBar extends PDEAbsoluteLayout implements PDESlider
     /**
      * @brief Process sliding events
      *
-     * @param event
+     * @param event Slider controller state event
      */
     @Override
     public void sliderEvent(PDEEvent event) {
@@ -144,7 +220,7 @@ class PDESliderContentProgressBar extends PDEAbsoluteLayout implements PDESlider
                 mProgressBarLayer.setElementProgressValue(progressValue);
                 break;
 
-            // set preloadbar postion value
+            // set preloadbar position value
             case 1:
                 // get Value from Event
                 preloadValue = slideEvent.getSliderPosition();
@@ -153,75 +229,34 @@ class PDESliderContentProgressBar extends PDEAbsoluteLayout implements PDESlider
                 mProgressBarLayer.setElementPreloadValue(preloadValue);
                 break;
             default:
-                Log.d(LOG_TAG,"Unhandled Case in PDESliderControllerProgressbar :: sliderEvent changeID:"+ sliderChangeID);
+                Log.d(LOG_TAG, "Unhandled Case in PDESliderControllerProgressbar :: sliderEvent changeID:"+ sliderChangeID);
                 break;
         }
     }
 
 
-//----- view layout ----------------------------------------------------------------------------------------------------
-
-
+    /**
+     * @brief Get needed Padding of this content.
+     */
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int height;
-        int width;
-
-        if (DEBUGPARAMS) {
-            Log.d(LOG_TAG, "onMeasure "+MeasureSpec.toString(widthMeasureSpec)+" x "+MeasureSpec.toString(heightMeasureSpec));
-        }
-
-        // measure the children (otherwise e.g. the sunkenlayer will not be visible!)
-        measureChildren(widthMeasureSpec,heightMeasureSpec);
-
-        // use stored height
-        height = mProgressBarHeight;
-
-        // use parameter to set width
-        width = MeasureSpec.getSize(widthMeasureSpec);
-
-        // return the values
-        setMeasuredDimension(resolveSize(width, widthMeasureSpec),
-                resolveSize(height, heightMeasureSpec));
-
-        if (DEBUGPARAMS) {
-            Log.d(LOG_TAG, "onMeasure result: "+getMeasuredWidth()+" x "+getMeasuredHeight());
-        }
+    public Rect getSliderContentPadding() {
+        // return zero rect
+        return new Rect(0, 0, 0, 0);
     }
 
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    /**
+     * @brief Get information about the handle frame.
+     */
+    public Rect getHandleFrame() {
+        return new Rect();
+    }
 
-        int centerVertical;
 
-        super.onSizeChanged(w, h, oldw, oldh);
-
-        // any change
-        if (oldw == w && oldh == h) return;
-
-        // message
-        if (DEBUGPARAMS) {
-            Log.d(LOG_TAG, "onSizeChanged " + w + ", " + h);
-        }
-
-        // calculate vertical position
-        centerVertical = (h-mProgressBarHeight)/2;
-
-        // is height big enough? -> center vertical
-        if (centerVertical < 0) {
-            mProgressBarLayer.getWrapperView().setViewLayoutRect(new Rect(0, 0, w, h));
-            mProgressBarLayer.getWrapperView().measure( MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
-                                                        MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
-        }
-
-        else {
-            mProgressBarLayer.getWrapperView().setViewLayoutRect(new Rect(0, centerVertical, w,centerVertical+ mProgressBarHeight));
-            mProgressBarLayer.getWrapperView().measure( MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
-                                                        MeasureSpec.makeMeasureSpec(mProgressBarHeight, MeasureSpec.EXACTLY));
-        }
+    /**
+     * @brief Get information about the handle frame.
+     */
+    public Rect getContentFrame() {
+        return new Rect();
     }
 }
-
-
-/// @endcond CLASS_UNDER_DEVELOPMENT__NOT_RELEASED

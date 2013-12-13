@@ -10,8 +10,8 @@ package de.telekom.pde.codelibrary.ui.components.inputfields;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.InputType;
@@ -20,25 +20,27 @@ import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.TextView.SavedState;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.R;
+import de.telekom.pde.codelibrary.ui.R.color;
 import de.telekom.pde.codelibrary.ui.R.styleable;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
+import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.buttons.PDEButton;
 import de.telekom.pde.codelibrary.ui.components.buttons.PDEButton.PDEButtonLayerType;
 import de.telekom.pde.codelibrary.ui.components.buttons.PDEButtonLayerInterface;
-import de.telekom.pde.codelibrary.ui.components.inputfields.PDEEditText.OnFontSizeChangedListener;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameterDictionary;
+import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameterDictionary;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
+import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
 import de.telekom.pde.codelibrary.ui.helpers.PDEResourceAttributesHelper;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 import de.telekom.pde.codelibrary.ui.layout.PDESquareRelativeLayout;
@@ -50,7 +52,7 @@ import de.telekom.pde.codelibrary.ui.layout.PDESquareRelativeLayout;
 
 @SuppressWarnings("unused")
 public class PDEInputField extends RelativeLayout implements PDEIEventSource, TextWatcher, View.OnFocusChangeListener,
-        TextView.OnEditorActionListener, OnFontSizeChangedListener{
+        TextView.OnEditorActionListener {
 
     /**
      * @brief Global tag for log outputs.
@@ -76,33 +78,50 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     // Events
-
-
+    //
     /**
      * @brief Event mask for all PDEAgentController events.
      */
-    public static final String PDEInputFieldEventMask ="PDEInputField.*";
-    public static final String PDEInputFieldEventActionGotFocus = "PDEInputField.gotFocus";
-    public static final String PDEInputFieldEventActionLostFocus = "PDEInputField.lostFocus";
-    public static final String PDEInputFieldEventActionBeforeTextChanged = "PDEInputField.beforeTextChanged";
-    public static final String PDEInputFieldEventActionOnTextChanged = "PDEInputField.onTextChanged";
-    public static final String PDEInputFieldEventActionAfterTextChanged = "PDEInputField.afterTextChanged";
-    public static final String PDEInputFieldEventActionShouldDoEditorAction = "PDEInputField.shouldDoEditorAction";
-    public static final String PDEInputFieldEventActionShouldClearText = "PDEInputField.shouldClearText";
-    public static final String PDEInputFieldEventActionDidClearText = "PDEInputField.didClearText";
+    public static final String PDE_INPUTFIELD_EVENT_MASK_ACTION ="PDEInputField.action.*";
+    public static final String PDE_INPUTFIELD_EVENT_ACTION_GOT_FOCUS = "PDEInputField.action.gotFocus";
+    public static final String PDE_INPUTFIELD_EVENT_ACTION_LOST_FOCUS = "PDEInputField.action.lostFocus";
+    public static final String PDE_INPUTFIELD_EVENT_ACTION_BEFORE_TEXT_CHANGED = "PDEInputField.action.beforeTextChanged";
+    public static final String PDE_INPUTFIELD_EVENT_ACTION_ON_TEXT_CHANGED = "PDEInputField.action.onTextChanged";
+    public static final String PDE_INPUTFIELD_EVENT_ACTION_AFTER_TEXT_CHANGED = "PDEInputField.action.afterTextChanged";
+    public static final String PDE_INPUTFIELD_EVENT_ACTION_SHOULD_DO_EDITOR_ACTION = "PDEInputField.action.shouldDoEditorAction";
+    public static final String PDE_INPUTFIELD_EVENT_ACTION_SHOULD_CLEAR_TEXT = "PDEInputField.action.shouldClearText";
+    public static final String PDE_INPUTFIELD_EVENT_ACTION_DID_CLEAR_TEXT = "PDEInputField.action.didClearText";
 
     //----- properties -----
 
+    // font modes
+    enum PDEInputFieldFontMode {
+        Undefined,
+        Automatic,
+        Styleguide,
+        Fixed
+    }
+
     // private variables
+    float mWidth;
+    float mHeight;
     private PDEButton mBackgroundButton;
     private PDEEditText mEditTextView;
+    private PDESquareRelativeLayout mClearButtonContainer;
     private PDEButton mClearButton;
     private boolean mClearButtonEnabled;
     private float mClearButtonFontHeightToTextHeightRatio;
+    private PDETypeface mFont;
+    private PDEInputFieldFontMode mFontMode;
+    private float mFontSize;
+    float mFontUsedSize;
+    boolean mFontUsesCaps;
 
     // protected variables
     protected PDEEventSource mEventSource;
 
+    // parameters needed
+    private PDEParameterDictionary mParameters;
 
     //static variables
 
@@ -123,7 +142,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      */
     public PDEInputField(Context context) {
         super(context);
-        init(null);
+        init(context, null);
     }
 
 
@@ -132,7 +151,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      */
     public PDEInputField(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(attrs);
+        init(context, attrs);
     }
 
 
@@ -141,44 +160,59 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      */
     public PDEInputField(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(attrs);
+        init(context, attrs);
     }
 
 
     /**
      * @brief Init function to initialise start properties of the edittext.
      */
-    private void init(android.util.AttributeSet attrs) {
+    private void init(Context context, android.util.AttributeSet attrs) {
 
         // inflate the input field with the correct layout
-        PDESquareRelativeLayout.inflate(getContext(), R.layout.pdeinputfieldlayout, this);
+        RelativeLayout.inflate(getContext(), R.layout.pdeinputfieldlayout, this);
 
         //init
         mEventSource = new PDEEventSource();
         mEventSource.setEventDefaultSender(this, true);
-        mClearButtonFontHeightToTextHeightRatio = 0.75f;
+        mClearButtonFontHeightToTextHeightRatio = 0.66f;
+
+        mWidth = 0.0f;
+        mHeight = 0.0f;
+        mFont = null;
+        mFontMode = PDEInputFieldFontMode.Undefined;
+        mFontSize = 0.0f;
+        mFontUsedSize = 0.0f;
+        mFontUsesCaps = false;
 
         // remember some variables
         mEditTextView = (PDEEditText)findViewById(R.id.editTextView);
         //!!!!!!!!!!!IMPORTANT: disable saving of state !!!!!!!!!!!!!!!!! more infos at the bottom of this file at the
         // onSaveInstanceState and onRestoreInstanceState(Parcelable state) functions
         mEditTextView.setSaveEnabled(false);
+        mEditTextView.addTextChangedListener(this);
+
         mBackgroundButton = (PDEButton)findViewById(R.id.pdeBackgroundButton);
         mClearButton = (PDEButton)findViewById(R.id.clearButtonView);
+        mClearButtonContainer = (PDESquareRelativeLayout)findViewById(R.id.clearButtonContainer);
 
-        //set button layer type
-        mBackgroundButton.setButtonBackgroundLayerWithLayerType(PDEButton.PDEButtonLayerType.BackgroundText);
+
+        // if this is called from developer tool (IDE) stop here
+        if (isInEditMode()) return;
+
+        //set button foreground layer to none and background to flat
+        setInputFieldBackgroundLayerWithLayerType(PDEButton.PDEButtonLayerType.BackgroundTextFlat);
         mBackgroundButton.setButtonForegroundLayerWithLayerType(PDEButtonLayerType.ForegroundNone);
 
        // !!!!!!!!!!!!!!! TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // WE ONLY HAVE TO USE 1 AGENTCONTROLLER, (AT THE MOMENT backgroundbutton and textfield both have one used)
-        // IN THE FUTURE REPLACE ONE BY THE OTHER, AT THE MOMENT USE TEXFIELD CONTROLLER
+        // WE ONLY HAVE TO USE 1 AGENT-CONTROLLER, (AT THE MOMENT backgroundButton and TextField both have one used)
+        // IN THE FUTURE REPLACE ONE BY THE OTHER, AT THE MOMENT USE TEXTFIELD CONTROLLER
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         mBackgroundButton.getAgentController().setInputEnabled(false);
         mBackgroundButton.addListener(this, "onBackgroundButtonClicked", PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED);
 
         // set clear button and add listener to clear the text
-        mClearButton.setButtonBackgroundLayerWithLayerType(PDEButton.PDEButtonLayerType.BackgroundPlate);
+        mClearButton.setButtonBackgroundLayer(new PDEInputFieldClearButtonBackground(context));
         mClearButton.setIconColored(true);
         mClearButton.addListener(this, "onClearButtonClicked", PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED);
 
@@ -198,11 +232,15 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         // listen to on editor actions of edittext
         mEditTextView.setOnEditorActionListener(this);
-        //because font size handling is done in edit text, we want to get size changes to inform clear button
-        mEditTextView.setOnFontSizeChangedListener(this);
 
         //enable clear button by default(also sets current color to text color)
         setClearButtonEnabled(true);
+
+        // set of parameter -> and start prepare font and colors -> this sets defaults (text color, hint color...)
+        mParameters = new PDEParameterDictionary();
+        prepareFont();
+        updateTextColor();
+        updateHintTextColor();
 
         //set the xml attributes
         setAttributes(attrs);
@@ -233,6 +271,10 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         if( sa.hasValue(R.styleable.PDEInputField_textSize)) {
             String text_size = sa.getString(R.styleable.PDEInputField_textSize);
             setFontSize(text_size);
+        }
+
+        if (sa.hasValue(R.styleable.PDEInputField_backgroundType)) {
+            setInputFieldBackgroundLayerWithLayerType(sa.getInt(R.styleable.PDEInputField_backgroundType,0));
         }
 
         // set color of text
@@ -331,6 +373,38 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
+     * @brief Set the background layer.
+    */
+    public void setInputFieldBackgroundLayer(PDEButtonLayerInterface layer) {
+        mBackgroundButton.setButtonBackgroundLayer(layer);
+    }
+
+
+    /**
+     * @brief Set the background layer.
+    */
+    private void setInputFieldBackgroundLayerWithLayerType(int layerType) {
+        mBackgroundButton.setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.values()[layerType]);
+    }
+
+
+    /**
+     * @brief Select one of the default backgrounds
+    */
+    public void setInputFieldBackgroundLayerWithLayerType(PDEButtonLayerType layerType) {
+        mBackgroundButton.setButtonBackgroundLayerWithLayerType(layerType);
+    }
+
+
+    /**
+     * @brief Set one of default backgrounds by string
+    */
+    public void setInputFieldBackgroundLayerWithLayerTypeString(String layerType) {
+        mBackgroundButton.setButtonBackgroundLayerWithLayerTypeString(layerType);
+    }
+
+
+    /**
      * @brief Called on PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED event changes from agentController of the clear button.
      */
     public void onClearButtonClicked(PDEEvent event) {
@@ -339,14 +413,14 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         // send event
         shouldClearTextEvent =new PDEInputFieldEvent();
-        shouldClearTextEvent.setType(PDEInputFieldEventActionShouldClearText);
+        shouldClearTextEvent.setType(PDE_INPUTFIELD_EVENT_ACTION_SHOULD_CLEAR_TEXT);
         shouldClearTextEvent.setSender(this);
         getEventSource().sendEvent(shouldClearTextEvent);
 
         if (shouldClearTextEvent.getShouldDoAction()){
             clearEditTextField();
             didClearTextEvent =new PDEInputFieldEvent();
-            didClearTextEvent.setType(PDEInputFieldEventActionDidClearText);
+            didClearTextEvent.setType(PDE_INPUTFIELD_EVENT_ACTION_DID_CLEAR_TEXT);
             didClearTextEvent.setSender(this);
             getEventSource().sendEvent(didClearTextEvent);
         }
@@ -378,7 +452,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         // send event
         event =new PDEInputFieldEvent();
-        event.setType(PDEInputFieldEventActionBeforeTextChanged);
+        event.setType(PDE_INPUTFIELD_EVENT_ACTION_BEFORE_TEXT_CHANGED);
         event.setSender(this);
         event.setCurrentText(charSequence);
         event.setStartPos(startPos);
@@ -399,7 +473,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         // send event
         event =new PDEInputFieldEvent();
-        event.setType(PDEInputFieldEventActionOnTextChanged);
+        event.setType(PDE_INPUTFIELD_EVENT_ACTION_ON_TEXT_CHANGED);
         event.setSender(this);
         event.setCurrentText(charSequence);
         event.setStartPos(startPos);
@@ -416,9 +490,27 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
     public void afterTextChanged(Editable editable) {
         PDEInputFieldEvent event;
 
+        //just check text and update colors if there is no more text, needed for hint color bug
+        // !!!!! WORKAROUND to be able to set hint text color after setText and setHint !!!!!
+        // we have to set the hint text color here after the text is changed manually else we got some android bugs with the hint/text color
+        // when we to something like this
+        // mInputField = (PDEInputField)findViewById(R.id.pdeInputField);
+        // mInputField.addListener(this,"onInputFieldEventFromAgentController",PDEInputField.PDE_INPUTFIELD_EVENT_MASK_ACTION);
+        // mInputField.setText("zuzu");
+        // mInputField.setHint("käse");
+        // mInputField.setHintTextColor(PDEColor.valueOf("#FF0000"));
+        // mInputField.setTextColor(PDEColor.valueOf("#00FF00"));
+        //
+        // if we dont reset the hint color, android lost the hinttext color after we have a setText("") or else somewhere after the code above
+        // it seems that the editText lost the hint when the color is set for the first time, but after an setText -> change the order -> correct hint and text colors
+        if(TextUtils.isEmpty(editable)) {
+            updateTextColor();
+            updateHintTextColor();
+        }
+
         // send event
         event =new PDEInputFieldEvent();
-        event.setType(PDEInputFieldEventActionAfterTextChanged);
+        event.setType(PDE_INPUTFIELD_EVENT_ACTION_AFTER_TEXT_CHANGED);
         event.setSender(this);
         event.setCurrentText(editable);
         getEventSource().sendEvent(event);
@@ -444,7 +536,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
                 // send event
                 event = new PDEInputFieldEvent();
-                event.setType(PDEInputFieldEventActionGotFocus);
+                event.setType(PDE_INPUTFIELD_EVENT_ACTION_GOT_FOCUS);
                 event.setSender(this);
                 getEventSource().sendEvent(event);
             } else {
@@ -460,7 +552,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
                 // send event
                 event = new PDEInputFieldEvent();
-                event.setType(PDEInputFieldEventActionLostFocus);
+                event.setType(PDE_INPUTFIELD_EVENT_ACTION_LOST_FOCUS);
                 event.setSender(this);
                 getEventSource().sendEvent(event);
             }
@@ -477,7 +569,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         PDEInputFieldEvent event;
         // send event
         event = new PDEInputFieldEvent();
-        event.setType(PDEInputFieldEventActionShouldDoEditorAction);
+        event.setType(PDE_INPUTFIELD_EVENT_ACTION_SHOULD_DO_EDITOR_ACTION);
         event.setSender(this);
         event.setActionId(actionId);
         event.setKeyEvent(keyEvent);
@@ -556,7 +648,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
     /**
      * Get information about clear button status.
-     * @return
+     * @return true if the clear button is enabled, false if not
      */
     public boolean isClearButtonEnabled() {
         return mClearButtonEnabled;
@@ -567,11 +659,12 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      * @brief Show or hide the clear button on the right side of the inputfield.
      */
     private void updateClearButton() {
+        // because the parent of the clear button is a square layout we have to set the clear button container visibility
         if (mEditTextView.hasFocus() && mClearButtonEnabled
-                && mEditTextView.getText() != null &&  mEditTextView.getText().length() > 0){
-            mClearButton.setVisibility(RelativeLayout.VISIBLE);
+                && !TextUtils.isEmpty(mEditTextView.getText())){
+            mClearButtonContainer.setVisibility(VISIBLE);
         } else {
-            mClearButton.setVisibility(RelativeLayout.GONE);
+            mClearButtonContainer.setVisibility(GONE);
         }
     }
 
@@ -603,14 +696,207 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
+     * @brief Private function - set the text color.
+     *
+     * function for the text color which evaluates the parameters.
+     */
+    private void updateTextColor() {
+        Object colorObject;
+        PDEColor newTextColor;
+
+        // get font parameters
+        colorObject = mParameters.parameterObjectForName(PDEInputField.PDEInputFieldParameterTextColor);
+
+        // determine font
+        if (colorObject instanceof String) {
+            newTextColor = PDEColor.valueOf((String)colorObject);
+        } else if  (colorObject instanceof PDEColor) {
+            newTextColor = (PDEColor)colorObject;
+        } else {
+            // use default
+            newTextColor = PDEColor.valueOf(getContext().getResources().getColor(color.DTLightUIText));
+        }
+
+        // check color change
+        if( newTextColor.equals(PDEColor.valueOf(mEditTextView.getCurrentTextColor())) ) return;
+
+        // simply set the color
+        mEditTextView.setTextColor(newTextColor.getIntegerColor());
+        updateClearButtonTextColor();
+    }
+
+
+    /**
+     * @brief Private function - set the hint text color.
+     *
+     * function for the hint text color which evaluates the parameters.
+     */
+    private void updateHintTextColor() {
+        Object colorObject;
+        PDEColor newHintTextColor;
+
+        // get font parameters
+        colorObject = mParameters.parameterObjectForName(PDEInputField.PDEInputFieldParameterHintTextColor);
+
+        // determine font
+        if (colorObject instanceof String) {
+            newHintTextColor = PDEColor.valueOf((String)colorObject);
+        } else if  (colorObject instanceof PDEColor) {
+            newHintTextColor = (PDEColor)colorObject;
+        } else {
+            // use default
+            newHintTextColor = PDEColor.valueOf(getContext().getResources().getColor(color.DTLightUIIndicativeText));
+        }
+
+        // check color change
+        if( newHintTextColor.equals(PDEColor.valueOf(mEditTextView.getCurrentHintTextColor())) ) return;
+
+        // simply set the color
+        mEditTextView.setHintTextColor(newHintTextColor.getIntegerColor());
+    }
+
+
+    /**
+     * @brief Private function - prepare the font.
+     *
+     * Preparation function for the font which evaluates the parameters. Note that we need to
+     */
+    private void prepareFont() {
+        Object fontObject,fontSizeObject;
+        PDEInputFieldFontMode fontMode;
+        float fontSize;
+        String str;
+        PDETypeface lfont=null;
+
+        // get font parameters
+        fontObject = mParameters.parameterObjectForName(PDEInputField.PDEInputFieldParameterFont);
+        fontSizeObject = mParameters.parameterObjectForName(PDEInputField.PDEInputFieldParameterFontSize);
+
+        // determine font
+        if (fontObject instanceof PDETypeface) {
+            lfont = (PDETypeface)(fontObject);
+        }
+
+        // determine font size
+        if (fontSizeObject instanceof Number) {
+            fontSize = ((Number)fontSizeObject).floatValue();
+            fontMode = PDEInputFieldFontMode.Fixed;
+        } else if (fontSizeObject instanceof String) {
+            // extract string
+            str = (String) fontSizeObject;
+            // button specific mode / fixed size?
+            if (str.compareToIgnoreCase(PDEInputField.PDEInputFieldParameterValueSizeAuto)==0
+                    || str.compareToIgnoreCase(PDEInputField.PDEInputFieldParameterValueSizeAutomatic) == 0) {
+                // automatic sizing
+                fontMode = PDEInputFieldFontMode.Automatic;
+                fontSize = 0.0f;
+            } else if (str.compareToIgnoreCase(PDEInputField.PDEInputFieldParameterValueSizeStyleguide) == 0) {
+                // styleguide defined sizes sizing
+                fontMode = PDEInputFieldFontMode.Styleguide;
+                fontSize = 0.0f;
+            } else {
+                //not a button specific value -> parse string
+                fontSize = PDEFontHelpers.parseFontSize(str, lfont, getContext().getResources().getDisplayMetrics());
+                if (Float.isNaN(fontSize)) {
+                    Log.e(LOG_TAG,"could not parse font string correctly: "+str);
+                    fontSize = 24.0f;
+                }
+                fontMode = PDEInputFieldFontMode.Fixed;
+            }
+        } else {
+            fontSize = 0.0f;
+            fontMode = PDEInputFieldFontMode.Styleguide;
+        }
+        // changed?
+        if (fontMode==mFontMode && fontSize==mFontSize && lfont==mFont) return;
+        // remember
+        mFontMode = fontMode;
+        mFontSize = fontSize;
+        //create font independent from size, so do it once here, or take parameter font
+        if (lfont == null ) {
+            //use default font if we dont have a correct one !!!!!!!!!!
+            mFont = PDEFontHelpers.validFont(lfont);
+        } else {
+            // remember external font
+            mFont = lfont;
+        }
+
+        // update font size, and relayout
+        updateFontSize(false);
+    }
+
+
+    /**
+     * @brief Calculate the new font size and apply it.
+     *
+     * Also calculate helper values necessary later in layouting. Important note: This function
+     * does not issue a relayout on font changes - ensure a relayout is done properly outside of this function.
+     * This avoids recursive calls of updateFontSize and updateLayout.
+     */
+    private void updateFontSize(boolean force) {
+        float fontSize;
+        boolean fontInCaps;
+
+        // automatic modes calculate font size from height
+        if (mFontMode == PDEInputFieldFontMode.Automatic) {
+            // height in caps
+            fontSize = mHeight / 3.0f;
+            fontInCaps = true;
+        } else if (mFontMode == PDEInputFieldFontMode.Styleguide) {
+            // standardize the font to 4*BU, 3*BU, 2.5*BU button size height
+            if (mHeight > PDEBuildingUnits.exactPixelFromBU(3.5f)) {
+                // display height > 3,5*BU -> font for display height of 4*BU
+                fontSize = PDEBuildingUnits.pixelFromBU(4.0f) / 3.0f;
+            } else if (mHeight > PDEBuildingUnits.exactPixelFromBU(2.75f)) {
+                // 2,75*BU < display height <= 3,5*BU -> font for display height of 3*BU
+                fontSize = PDEBuildingUnits.exactBU();
+            } else {
+                // display height < 2,75*BU -> font for display height of 2,5*BU
+                fontSize = PDEBuildingUnits.pixelFromBU(2.5f) / 3.0f;
+            }
+            fontInCaps = true;
+        } else if (mFontMode == PDEInputFieldFontMode.Fixed) {
+            // height in native font size
+            fontSize = mFontSize;
+            fontInCaps = false;
+        } else {
+            // unknown mode -> do nothing
+            return;
+        }
+
+        // compare with last value, stop if not changed
+        if (!force && fontSize==mFontUsedSize && fontInCaps==mFontUsesCaps) return;
+
+        // remember
+        mFontUsedSize = fontSize;
+        mFontUsesCaps = fontInCaps;
+
+        // eventually convert caps height to real height
+        if (mFontUsesCaps) {
+            fontSize = PDEFontHelpers.calculateFontSize(mFont, fontSize);
+        }
+
+        // assure readable font size
+        fontSize = PDEFontHelpers.assureReadableFontSize(mFont, fontSize);
+
+        // set the font and font size to the text layer
+        mEditTextView.setTypeface(mFont.getTypeface());
+        mEditTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,fontSize);
+
+        //the x on clear button should be 75% of the button text height so calculate this new size
+       mClearButton.setFontSize(fontSize*mClearButtonFontHeightToTextHeightRatio);
+    }
+
+
+    /**
      * @brief Set title color.
      *
      * No change handling here, this has to be done in the child implementations.
      */
     public void setTextColor(PDEColor color) {
         // set the parameters
-        mEditTextView.setTextColor(color);
-        updateClearButtonTextColor();
+        mParameters.setParameter(PDEInputField.PDEInputFieldParameterTextColor, color);
+        updateTextColor();
     }
 
 
@@ -640,7 +926,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      *
      */
     public PDEColor getTextColor() {
-        return mEditTextView.getTextColor();
+        return mParameters.parameterColorForName(PDEInputField.PDEInputFieldParameterTextColor);
     }
 
 
@@ -651,7 +937,8 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      */
     public void setHintTextColor(PDEColor color) {
         // set the parameters
-        mEditTextView.setHintTextColor(color);
+        mParameters.setParameter(PDEInputField.PDEInputFieldParameterHintTextColor, color);
+        updateHintTextColor();
     }
 
 
@@ -682,7 +969,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      * Get the hint color value of the edittextview, input field doesn't holds value itself.
      */
     public PDEColor getHintTextColor() {
-        return mEditTextView.getHintTextColor();
+        return mParameters.parameterColorForName(PDEInputField.PDEInputFieldParameterHintTextColor);
     }
 
 
@@ -754,7 +1041,8 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      */
     public void setFont(PDETypeface font) {
         // set the parameters
-        mEditTextView.setFont(font);
+        mParameters.setParameter(PDEInputField.PDEInputFieldParameterFont, font);
+        prepareFont();
     }
 
 
@@ -764,7 +1052,16 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      * Only retrieves basic parameters, and only if a font was explicitly set before.
      */
     public PDETypeface getFont() {
-        return mEditTextView.getFont();
+        Object object;
+
+        // get the object
+        object = mParameters.parameterObjectForName(PDEInputField.PDEInputFieldParameterFont);
+
+        // typecheck
+        if (object == null || !(object instanceof PDETypeface)) return null;
+
+        // done
+        return (PDETypeface) object;
     }
 
 
@@ -775,7 +1072,8 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      */
     public void setFontSize(float fontSize) {
         // set directly as number
-        mEditTextView.setFontSize(fontSize);
+        mParameters.setParameter(PDEInputField.PDEInputFieldParameterFontSize, fontSize);
+        prepareFont();
     }
 
 
@@ -789,7 +1087,8 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      */
     public void  setFontSize(String sizeString) {
         // set the string
-        mEditTextView.setFontSize(sizeString);
+        mParameters.setParameter(PDEInputField.PDEInputFieldParameterFontSize, sizeString);
+        prepareFont();
     }
 
 
@@ -801,7 +1100,11 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      * @return the set font size in float or 0.0f if the parameter was not set or was set as a string.
      */
     public float getFontSize() {
-        return mEditTextView.getFontSize();
+        if(mParameters.parameterObjectForName(PDEInputField.PDEInputFieldParameterFontSize) instanceof Float) {
+            return mParameters.parameterFloatForName(PDEInputField.PDEInputFieldParameterFontSize);
+        }
+
+        return 0.0f;
     }
 
 
@@ -812,18 +1115,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      */
     public String getFontSizeString() {
         // retrieve parameter main value
-        return mEditTextView.getFontSizeString();
-    }
-
-
-    /**
-     * React on Font size changes.
-     * @param newSize
-     */
-    public void onFontSizeChanged(float newSize) {
-        //because the edittext handles font size changes, we have to get the current value of it so set same size to clear button
-        //the x on clear button should be 75% of the button text height so calculate new size
-        mClearButton.setFontSize(newSize*mClearButtonFontHeightToTextHeightRatio);
+        return mParameters.parameterValueForName(PDEInputField.PDEInputFieldParameterFontSize);
     }
 
 
@@ -975,10 +1267,15 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
     /**
      * @brief Whether or not the cursor is visible.
      *
+     * Interface only defined when SDK version >= 16 - before it will always return false;
      * Get the  value of the edittextview, input field doesn't holds value itself.
      */
     public boolean isCursorVisible() {
-        return mEditTextView.isCursorVisible();
+        if (Build.VERSION.SDK_INT >= 16) {
+            return mEditTextView.isCursorVisible();
+        } else {
+            return false;
+        }
     }
 
 
@@ -1117,7 +1414,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
-     * @brief: Add event Listener.
+     * @brief Add event Listener.
      *
      * PDEIEventSource Interface implementation.
      *
@@ -1135,7 +1432,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
-     * @brief: Add event Listener.
+     * @brief Add event Listener.
      *
      * PDEIEventSource Interface implementation.
      *
@@ -1230,6 +1527,36 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
     }
 
 
+//----- layout/sizing information --------------------------------------------------------------------------------------
+
+
+    /**
+     *  @brief Size changed.
+     *
+     * @param width New width.
+     * @param height New height.
+     * @param oldWidth Old width.
+     * @param oldHeight Old height.
+     */
+    @Override
+    protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
+        doLayout(width,height);
+        super.onSizeChanged(width, height, oldWidth, oldHeight);
+    }
+
+
+    /**
+     * @brief Update all subviews of the TextField.
+     *
+     * Get the TextField bounds and update all subviews
+     */
+    private void doLayout(int width, int height) {
+        mWidth = width;
+        mHeight = height;
+        updateFontSize(false);
+    }
+
+
 
 //----- remember/restore state functions ---------------------------------------------------------------------------------------
 //
@@ -1244,12 +1571,12 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
     /**
      * Save the current state.
-     * @return
+     * @return Parcelable
      */
     @Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(this.getClass().getSimpleName(), super.onSaveInstanceState());
+        bundle.putParcelable(PDEInputField.class.getSimpleName(), super.onSaveInstanceState());
         bundle.putParcelable(mEditTextView.getClass().getSimpleName(), mEditTextView.onSaveInstanceState());
         return bundle;
     }
@@ -1257,13 +1584,13 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
     /**
      * Restore the saved state.
-     * @param state
+     * @param state Parcelable state.
      */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
-            super.onRestoreInstanceState(bundle.getParcelable(this.getClass().getSimpleName()));
+            super.onRestoreInstanceState(bundle.getParcelable(PDEInputField.class.getSimpleName()));
             mEditTextView.onRestoreInstanceState(bundle.getParcelable(mEditTextView.getClass().getSimpleName()));
             return;
         } else {

@@ -21,7 +21,7 @@
         android:contentDescription="@string/splash_screen_app_icon_content_description"
         android:src="@drawable/code_samples_splash_icon" />
  
-    <de.telekom.pde.codelibrary.ui.elements.wrapper.PDELayerTextView
+    <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDELayerTextView
         android:id="@+id/splash_activity_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -45,6 +45,6 @@
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="@dimen/pde_splash_activity_footer_margin_bottom"
         android:contentDescription="@string/splash_screen_footer_content_description"
-        android:src="@drawable/pde_splash_activity_footer" />
+        android:src="@drawable/logo_1t3_3bu" />
 
 </RelativeLayout>

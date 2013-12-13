@@ -12,16 +12,6 @@ package de.telekom.pde.codelibrary.ui.components.lists;
 // PDEListItem
 //----------------------------------------------------------------------------------------------------------------------
 
-import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
-import de.telekom.pde.codelibrary.ui.agents.PDEAgentControllerAdapterView;
-import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.buttons.PDEButtonLayerInterface;
-import de.telekom.pde.codelibrary.ui.components.helpers.PDEAgentHelper;
-import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameter;
-import de.telekom.pde.codelibrary.ui.events.PDEEvent;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -29,14 +19,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
+import de.telekom.pde.codelibrary.ui.agents.PDEAgentControllerAdapterView;
+import de.telekom.pde.codelibrary.ui.color.PDEColor;
+import de.telekom.pde.codelibrary.ui.components.helpers.PDEAgentHelper;
+import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
+import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameter;
+import de.telekom.pde.codelibrary.ui.events.PDEEvent;
+import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
+import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
+import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 
 /**
  * @brief List item wrapper that holds the styleguide agentstate highlight logic.
  *
- * This wrapper is needed in order to give the list items the highlight/selection behaviour which is definded by
+ * This wrapper is needed in order to give the list items the highlight/selection behaviour which is defined by
  * styleguide.
  */
-public class PDEListItem extends LinearLayout {
+public class PDEListItem extends LinearLayout implements PDEIEventSource{
 
     /**
      * @brief Global tag for log outputs.
@@ -49,7 +49,6 @@ public class PDEListItem extends LinearLayout {
     // agent controller and helpers
     protected PDEAgentController mAgentController;
     protected PDEAgentControllerAdapterView mAgentAdapter;
-    protected PDEButtonLayerInterface mButtonLayerToInitialize;
     protected PDEAgentHelper mAgentHelper;
 
     // the already layouted View of the list row
@@ -65,13 +64,33 @@ public class PDEListItem extends LinearLayout {
     protected int mListPosition = -1;
     // data holder object for this list item. For more performant item recycling.
     protected PDEHolderInterface mHolder;
+    // Source for sending events
+    protected PDEEventSource mEventSource = null;
+
+    // Events
+    /**
+     * @brief Event is sent when a list item was successfully selected.
+     *
+     * The event is after the animation has successfully displayed the active state to the user. Normally,
+     * you would use this event for all interaction, since it ensures that there's a proper visual
+     * response to the user's action.
+     */
+    public static final String PDE_LIST_ITEM_EVENT_ACTION_SELECTED ="PDEListItem.action.selected";
+
+    /**
+     * @brief Event is sent immediately when user successfully selects the list item.
+     *
+     * The list still needs some time to display the selection to the user. Use this event only if the
+     * selection triggers another action inside the same screen, and the list has the opportunity of finishing
+     * it's animations afterwards.
+     */
+    public static final String PDE_LIST_ITEM_EVENT_ACTION_WILL_BE_SELECTED = "PDEListItem.action.willBeSelected";
+
 
 //----- init -----------------------------------------------------------------------------------------------------------
 
     /**
      * @brief Constructor
-     *
-     * @param context
      */
     PDEListItem (Context context){
         super(context);
@@ -82,26 +101,23 @@ public class PDEListItem extends LinearLayout {
 
     /**
      * @brief Constructor
-     *
-     * @param context
-     * @param attrs
      */
+    @SuppressWarnings("unused")
     PDEListItem (Context context, AttributeSet attrs){
         super(context,attrs);
+        mLayoutInflater = LayoutInflater.from(context);
         init();
     }
 
 
     /**
      * @brief Constructor
-     *
-     * @param context
-     * @param attrs
-     * @param defStyle
      */
     @SuppressLint("NewApi")
+    @SuppressWarnings("unused")
     PDEListItem (Context context, AttributeSet attrs, int defStyle){
         super(context,attrs,defStyle);
+        mLayoutInflater = LayoutInflater.from(context);
         init();
     }
 
@@ -119,6 +135,7 @@ public class PDEListItem extends LinearLayout {
         if (DEBUG) PDEListItemGlobalParamColor.debugOut(LOG_TAG);
 
         // init
+        mEventSource = new PDEEventSource();
         mLayoutedView = null;
         // this list items must be clickable to handle touch events.
         setClickable(true);
@@ -143,16 +160,11 @@ public class PDEListItem extends LinearLayout {
         mAgentAdapter.getEventSource().addListener(this, "cbAgentController",
                                                    PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION);
 
-        // ToDo: Define with Thomas which events we want to send outside.
-        // For now, we don't send any PDEEvents outside, only the standard Android events work as usual.
-        // After the next planned reconstruction of the list, we'll also send PDEEvents outside.
-
-        /*
         // pass on agent adapter events to ourself, override the sender
         mEventSource.forwardEvents(mAgentAdapter,
                                    PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ACTION);
         mEventSource.setEventDefaultSender(this, true);
-        */
+
     }
 
 
@@ -160,6 +172,7 @@ public class PDEListItem extends LinearLayout {
     /**
      * @brief Called on changes from agentController.
      */
+    @SuppressWarnings("unused")
     public void cbAgentController(PDEEvent event) {
         boolean needsUpdate;
 
@@ -176,8 +189,8 @@ public class PDEListItem extends LinearLayout {
     /**
      * @brief Update the background color of this list item.
      *
-     * Depending on the received touch events we enter several agentstates. Each agentstate does it own animation of
-     * the elements background color. This function updates the background color depending on the current agentstate.
+     * Depending on the received touch events we enter several AgentStates. Each AgentState does it own animation of
+     * the elements background color. This function updates the background color depending on the current AgentState.
      */
     private void updateColors() {
         PDEColor mainColor;
@@ -219,18 +232,6 @@ public class PDEListItem extends LinearLayout {
      */
     public View getLayoutedView(){
         return mLayoutedView;
-    }
-
-
-    /**
-     * @brief Get the Agent Adapter.
-     *
-     * Needed for the cancel-workaround.
-     *
-     * @return the agent adapter
-     */
-    protected PDEAgentControllerAdapterView getAgentAdapter(){
-        return mAgentAdapter;
     }
 
 
@@ -313,4 +314,68 @@ public class PDEListItem extends LinearLayout {
     public PDEHolderInterface getHolder() {
         return mHolder;
     }
+
+
+//----- Event Handling -------------------------------------------------------------------------------------------------
+
+    /**
+     * @brief Get the eventSource which is responsible for sending PDEEvents events.
+     * Most of the events are coming form the PDEAgentController.
+     * @return PDEEventSource
+     */
+    @Override
+    public PDEEventSource getEventSource() {
+        return mEventSource;
+    }
+
+    /**
+     * @brief Add event Listener.
+     *
+     * PDEIEventSource Interface implementation.
+     *
+     * @param target    Object which will be called in case of an event.
+     * @param methodName Function in the target object which will be called.
+     *                   The method must accept one parameter of the type PDEEvent
+     * @return Object which can be used to remove this listener
+     *
+     * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
+     */
+    @Override
+    public Object addListener(Object target, String methodName) {
+        return mEventSource.addListener(target, methodName);
+    }
+
+
+    /**
+     * @brief Add event Listener.
+     *
+     * PDEIEventSource Interface implementation.
+     *
+     * @param target    Object which will be called in case of an event.
+     * @param methodName Function in the target object which will be called.
+     *                   The method must accept one parameter of the type PDEEvent
+     * @param eventMask PDEAgentController event mask.
+     *                  Will be most of the time PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED or
+     *                  PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED
+     * @return Object which can be used to remove this listener
+     *
+     * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
+     */
+    @Override
+    public Object addListener(Object target, String methodName, String eventMask) {
+        return mEventSource.addListener(target, methodName, eventMask);
+    }
+
+
+    /**
+     * @brief Remove event listener that was added before.
+     *
+     * @param listener the event listener that should be removed
+     * @return Returns whether we have found & removed the listener or not
+     */
+    @SuppressWarnings("unused")
+    public boolean removeListener(Object listener) {
+        return mEventSource.removeListener(listener);
+    }
+
 }

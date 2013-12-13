@@ -11,10 +11,10 @@ package de.telekom.pde.codelibrary.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.inflater.PDEInflaterUtils;
 
+@SuppressWarnings("unused")
 public class PDEFragmentActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -12,6 +12,7 @@
 package de.telekom.pde.codelibrary.ui.components.helpers;
 
 
+import android.text.TextUtils;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
 import de.telekom.pde.codelibrary.ui.agents.PDEEventAgentControllerState;
 import de.telekom.pde.codelibrary.ui.components.buttons.PDEButton;
@@ -30,6 +31,7 @@ public class PDEAgentHelper {
     private double mStateProgress;
     private double mInteractiveState;
     private double mDownState;
+    private double mVisibilityState;
 
 
     public static int PDEAgentHelperAnimationStateOnly = 0;
@@ -63,10 +65,11 @@ public class PDEAgentHelper {
      */
     public PDEAgentHelper() {
         mCurrentState = PDEButton.PDEButtonStateDefault;
-        mNextState= null;
-        mStateProgress=0.0f;
+        mNextState = null;
+        mStateProgress = 0.0f;
         mInteractiveState = 0.0f;
         mDownState = 0.0f;
+        mVisibilityState = 1.0f;
     }
 
 
@@ -91,11 +94,12 @@ public class PDEAgentHelper {
         if (event.isType(PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION)) {
             PDEEventAgentControllerState e = (PDEEventAgentControllerState)event;
             // animation phase did change -> extract from data packet
-            changed = updateCurrentState_priv(e.getCurrentState());
-            changed |= updateNextState_priv(e.getNextState());
-            changed |= updateStateProgress_priv(e.getStateAnimationProgress());
-            changed |= updateInteractiveState_priv(e.getAgentAnimationCombinedInteraction());
-            changed |= updateDownState_priv(e.getAgentAnimationDown());
+            changed = updateCurrentState(e.getCurrentState());
+            changed |= updateNextState(e.getNextState());
+            changed |= updateStateProgress(e.getStateAnimationProgress());
+            changed |= updateInteractiveState(e.getAgentAnimationCombinedInteraction());
+            changed |= updateDownState(e.getAgentAnimationDown());
+            changed |= updateVisibilityState(e.getAgentAnimationVisualEnabled());
         }
 
         // done
@@ -105,12 +109,12 @@ public class PDEAgentHelper {
     /**
      * @brief Current state changed
      */
-    public boolean updateCurrentState_priv(String currentState)
+    private boolean updateCurrentState(String currentState)
     {
         // any change?
-        if (mCurrentState == currentState) return false;
-        // todo check
-        //if (mCurrentState.equals(currentState)) return false; //this should be the right check - but then it doesn't work
+        if (TextUtils.equals(mCurrentState, currentState)) {
+            return false;
+        }
 
         // remember
         mCurrentState = currentState;
@@ -123,12 +127,12 @@ public class PDEAgentHelper {
     /**
      * @brief Current state changed
      */
-    public boolean updateNextState_priv(String nextState)
+    private boolean updateNextState(String nextState)
     {
         // any change?
-        if (mNextState == nextState) return false;
-        // todo check
-        //if (mNextState.equals(nextState)) return false;  //this should be the right check - but then it doesn't work
+        if (TextUtils.equals(mNextState, nextState)) {
+            return false;  //this should be the right check - but then it doesn't work
+        }
 
         // remember
         mNextState = nextState;
@@ -141,7 +145,7 @@ public class PDEAgentHelper {
     /**
      * @brief State animation phase changed.
      */
-    public boolean updateStateProgress_priv(double stateProgress)
+    private boolean updateStateProgress(double stateProgress)
     {
         // any change?
         if (mStateProgress == stateProgress) return false;
@@ -156,7 +160,7 @@ public class PDEAgentHelper {
     /**
      * @brief Animation phase changed.
      */
-    boolean updateInteractiveState_priv(double state)
+    private boolean updateInteractiveState(double state)
     {
         // any change?
         if (mInteractiveState == state) return false;
@@ -172,13 +176,28 @@ public class PDEAgentHelper {
     /**
      * @brief Animation phase changed.
      */
-    public boolean updateDownState_priv(double state)
+    private boolean updateDownState(double state)
     {
         // any change?
         if (mDownState == state) return false;
 
         // remember
         mDownState = state;
+
+        // there was some change
+        return true;
+    }
+
+    /**
+     * @brief visibility changed
+     */
+    private boolean updateVisibilityState(double state)
+    {
+        // any change?
+        if (state == mVisibilityState) return false;
+
+        // remember
+        mVisibilityState = state;
 
         // there was some change
         return true;
@@ -255,6 +274,10 @@ public class PDEAgentHelper {
         }
 
         return iStateHelper;
+    }
+
+    public double getVisibilityState(){
+        return mVisibilityState;
     }
 
 }

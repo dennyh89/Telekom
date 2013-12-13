@@ -55,6 +55,7 @@ public final class PDECodeLibrary {
         PDECodeLibraryParentSoftwareRendering = false;
     }
 
+
     /**
      * @brief SingletonHolder is loaded on the first execution of PDECodeLibrary.getInstance()
      * or the first access to SingletonHolder.INSTANCE, not before.
@@ -62,6 +63,7 @@ public final class PDECodeLibrary {
     private static class SingletonHolder {
         public static final PDECodeLibrary INSTANCE = new PDECodeLibrary();
     }
+
 
     /**
      * @brief Delivers the singleton instance of PDECodeLibrary.
@@ -74,6 +76,7 @@ public final class PDECodeLibrary {
     public static PDECodeLibrary getInstance() {
         return SingletonHolder.INSTANCE;
     }
+
 
     /**
      * @brief Library initialization.
@@ -104,6 +107,7 @@ public final class PDECodeLibrary {
         return true;
     }
 
+
     /**
      * @brief Library clean up.
      *
@@ -120,28 +124,44 @@ public final class PDECodeLibrary {
         PDECodeLibraryInitialized = false;
     }
 
+
     /**
      * @brief Check if the library is initialized.
      *
      * @return true if the library was successfully initialized.
      */
+    @SuppressWarnings("unused")
     public boolean isLibraryInitialized() {
         // return initialization status
         return PDECodeLibraryInitialized;
     }
 
+
+    /**
+     * Get the current application context.
+     *
+     * @return Current application context.
+     */
     public Context getApplicationContext() {
         if (!PDECodeLibraryInitialized) {
-            // library is uninitalized
+            // library is uninitialized
             // we don't have resources at the moment, since there is no context!
             throw new PDERuntimeException("getApplicationContext was call on an uninitialized library");
         }
         return mApplicationContext;
     }
 
+
     /**
      * @brief Set (or clear) dark style.
+     *
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CAUTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! THIS FUNCTIONALITY IS NOT SUPPORTED AT THE MOMENT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * !! IF THE DARK STYLE IS ENABLED,THE BEHAVIOUR/APPEARANCE OF THE COMPONENTS IS NOT VALID/APPROVED AT THE MOMENT !!
+     * !!!!!!!!!!!!!!!!!!!!!!! THE DARK STYLE IS NOT APPROVED AT THE MOMENT, ONLY USE LIGHT STYLE !!!!!!!!!!!!!!!!!!!!!!
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! CAUTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      */
+    @Deprecated
     public void setDarkStyle(boolean dark) {
         // remember
         PDECodeLibraryDarkStyle = dark;
@@ -160,6 +180,7 @@ public final class PDECodeLibrary {
     /**
      * @brief Set (or clear) software rendering.
      */
+    @SuppressWarnings("unused")
     public void setSoftwareRenderingButton(boolean enable) {
         // remember
         PDECodeLibraryButtonSoftwareRendering = enable;
@@ -178,6 +199,7 @@ public final class PDECodeLibrary {
     /**
      * @brief Set (or clear) software rendering.
      */
+    @SuppressWarnings("unused")
     public void setSoftwareRenderingParent(boolean enable) {
         // remember
         PDECodeLibraryParentSoftwareRendering = enable;
@@ -187,22 +209,26 @@ public final class PDECodeLibrary {
     /**
      * @brief Check if we do only software rendering.
      */
+    @SuppressWarnings("unused")
     public boolean isSoftwareRenderingParent() {
         // retrieve setting
         return PDECodeLibraryParentSoftwareRendering;
     }
 
+
     /**
      * @brief Enable or disable the PDEFontLayoutFactory which sets the default font to all newly
      * created views within an activity.
      * The PDEFontLayoutFactory is set in all PDEActivities (if enabled) when the activity is
-     * instanciated, thus changing this setting affects only newly created activities.
+     * instantiated, thus changing this setting affects only newly created activities.
      *
      * @param enabled control the activation of the factory
      */
+    @SuppressWarnings("unused")
     public void setAssignmentOfDefaultFontToTextViews(boolean enabled) {
         mAssignmentOfDefaultFontToTextViewsEnabled = enabled;
     }
+
 
     /**
      * @brief check if PDEFontLayoutFactory is enabled.

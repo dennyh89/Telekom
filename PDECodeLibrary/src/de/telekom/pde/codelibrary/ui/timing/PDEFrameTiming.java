@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
-
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -61,6 +60,7 @@ public abstract class PDEFrameTiming {
         public WeakReference<Runnable> runnable;
         public Object target;
 
+        @SuppressWarnings("unused")
         private PostExecuteFunctionHolder(Runnable runnable, Object target) {
             this.runnable = new WeakReference<Runnable>(runnable);
             this.target = target;
@@ -148,13 +148,13 @@ public abstract class PDEFrameTiming {
     private static PDEFrameTiming createInstance() {
         boolean choreographerClassAvailable = false;
         try {
-            Class Choreographer = null;
+            Class<?> Choreographer = null;
             Choreographer = Class.forName("android.view.Choreographer");
             if (Choreographer != null) {
                choreographerClassAvailable = true;
             }
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
         if (choreographerClassAvailable) {
@@ -217,7 +217,6 @@ public abstract class PDEFrameTiming {
 
     /**
      * @brief Query if timing is currently active.
-     * @return
      */
     public boolean isActive() {
         return mActive;
@@ -247,7 +246,7 @@ public abstract class PDEFrameTiming {
      * @param target The target class events get sent to. Only a weak reference is held.
      * @param methodName The name of the method to be called. It's a method of the target-Object. Method must
      *                   conform to void <methodName> (PDEEvent event)
-     * @result Returns an internal class identifying the listener added. This reference can be used
+     * @return Returns an internal class identifying the listener added. This reference can be used
      *         to remove the listener later.
      */
     public Object addListener(Object target, String methodName, boolean weakReferenceOnly) {
@@ -391,7 +390,7 @@ public abstract class PDEFrameTiming {
      * @brief Remove the specified listener from the list.
      *
      * @param listener The listener reference returned by addListener:
-     * @returns Returns whether we have found & removed the listener or not
+     * @return Returns whether we have found & removed the listener or not
      */
     public boolean removeListener(Object listener) {
         boolean removed = false;
@@ -466,7 +465,7 @@ public abstract class PDEFrameTiming {
      * @param params  signature as class array
      * @return true if call was posted, false otherwise
      */
-    public boolean postExecuteFunction(final Object target, String methodName, Class[] params) {
+    public boolean postExecuteFunction(final Object target, String methodName, Class<?>[] params) {
         try {
             //security
             if (target == null || TextUtils.isEmpty(methodName)) {
@@ -481,7 +480,7 @@ public abstract class PDEFrameTiming {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    //To change body of implemented methods use File | Settings | File Templates.
+
                     try {
                         method.invoke(target);
                     } catch (IllegalAccessException e) {
@@ -519,6 +518,7 @@ public abstract class PDEFrameTiming {
      * @brief Remove all posted execute functions for the specified target.
      * @param target Object for which all functions shall be removed.
      */
+    @SuppressWarnings("unused")
     public void removeExecuteFunctionForTarget(final Object target) {
         for (Iterator<PostExecuteFunctionHolder> iterator = mRunnableList.iterator(); iterator.hasNext(); ) {
             PostExecuteFunctionHolder element = iterator.next();

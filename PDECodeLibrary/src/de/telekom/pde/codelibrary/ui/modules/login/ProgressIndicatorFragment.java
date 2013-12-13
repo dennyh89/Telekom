@@ -15,7 +15,6 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import de.telekom.pde.codelibrary.ui.R;
 
 /// @cond INTERNAL_CLASS
@@ -30,7 +29,6 @@ public class ProgressIndicatorFragment extends DialogFragment {
 
     /**
      * @brief Instance function.
-     * @return
      */
     public static ProgressIndicatorFragment newInstance() {
         return new ProgressIndicatorFragment();
@@ -39,7 +37,6 @@ public class ProgressIndicatorFragment extends DialogFragment {
 
     /**
      * @brief Overwriten onCreate function - sets translucent theme.
-     * @param savedInstanceState
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,10 +47,6 @@ public class ProgressIndicatorFragment extends DialogFragment {
 
     /**
      * @brief Inflates layout progressindicatorfragment.
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,7 +56,6 @@ public class ProgressIndicatorFragment extends DialogFragment {
 
     /**
      * @brief Notify OnCancelListener when onCancel occurs.
-     * @param dialog
      */
     @Override
     public void onCancel(DialogInterface dialog) {
@@ -74,7 +66,6 @@ public class ProgressIndicatorFragment extends DialogFragment {
 
     /**
      * @brief Register OnCancelListener to be notified when the dialog is canceled (by the user).
-     * @param listener
      */
     public void setOnCancelListener(DialogInterface.OnCancelListener listener) {
         mCancelListener = listener;

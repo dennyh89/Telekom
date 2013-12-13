@@ -11,18 +11,19 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
+import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEAgentHelper;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEDictionary;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameter;
-import de.telekom.pde.codelibrary.ui.components.parameters.PDEParameterDictionary;
+import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameter;
+import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameterDictionary;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBorderLine;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShape;
-import de.telekom.pde.codelibrary.ui.elements.wrapper.PDEViewWrapper;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEViewWrapper;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
+import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 
 
@@ -73,15 +74,16 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
 
     // global variables
     //
-    public static PDEDictionary PDEButtonLayerBackgroundFlatGlobalColorDefault = null;
-    public static PDEDictionary PDEButtonLayerBackgroundFlatGlobalBorderDefault = null;
+    public static PDEDictionary PDEButtonLayerBackgroundFlatGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_flat_color_defaults");
+    public static PDEDictionary PDEButtonLayerBackgroundFlatGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
 
-
+    @SuppressWarnings("unused")
     public PDEButtonLayerBackgroundFlat(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
+    @SuppressWarnings("unused")
     public PDEButtonLayerBackgroundFlat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
@@ -96,15 +98,8 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
 
     }
 
-
+    @SuppressWarnings("unused")
     private void init(Context context){
-        // read default dictionaries
-        PDEButtonLayerBackgroundFlatGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary(
-                "dt_button_flat_color_defaults");
-        PDEButtonLayerBackgroundFlatGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary(
-                "dt_button_border_color_defaults");
-
-
         // init
         mParameters = null;
         mDefaultColor = PDEColor.DTUIInteractiveColor();
@@ -208,6 +203,18 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
         mParamColor.setWithParameter(mParameters.parameterForName(PDEButton.PDEButtonParameterColor));
         mParamBorderColor.setWithParameter(mParameters.parameterForName(PDEButton.PDEButtonParameterBorderColor));
 
+        //!!!ANDY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!! CODE BELOW ONLY FOR 3.0 RELEASE - NEED BETTER SOLUTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        PDEColor color = mParameters.parameterColorForName(PDEButton.PDEButtonParameterColor);
+        if(color==null)color = mDefaultColor;
+        if(color!=null && !PDEButtonLayerBackgroundFlatGlobalBorderDefault.containsKey(color.getHexColorString())) {
+            PDEDictionary dict = (PDEDictionary)PDEButtonLayerBackgroundFlatGlobalBorderDefault.get(PDEColor.valueOfColorID(R.color.DTGrey237).getHexColorString());
+            PDEButtonLayerBackgroundFlatGlobalBorderDefault.put(color.getHexColorString(),dict);
+        }
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!! CODE ABOVE ONLY FOR 3.0 RELEASE - NEED BETTER SOLUTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         // debug output
         if (DEBUGPARAMS) {
@@ -361,9 +368,17 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
 
 //----- view layout ----------------------------------------------------------------------------------------------------
 
+    /**
+     *  @brief Size changed.
+     *
+     * @param w New width.
+     * @param h New height.
+     * @param oldW Old width.
+     * @param oldH Old height.
+     */
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    protected void onSizeChanged(int w, int h, int oldW, int oldH) {
+        super.onSizeChanged(w, h, oldW, oldH);
 
         Log.d(LOG_TAG, "onSizeChanged "+w+", "+h);
 
@@ -373,6 +388,8 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
         mBorderLineDrawable.setElementShapeRoundedRect(mCornerRadius);
         mBorderLineDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
                                                      MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
+        mMainDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
+                                               MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
     }
 
 
@@ -384,6 +401,7 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
     /**
      * @brief Get view of main background
      */
+    @SuppressWarnings("unused")
     public PDEViewWrapper getMainView() {
         return mMainDrawable.getWrapperView();
     }
@@ -392,6 +410,7 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
     /**
      * @brief Set new drawable of main background
      */
+    @SuppressWarnings("unused")
     public void setMainDrawable(PDEDrawableShape drawable) {
         if(drawable == mMainDrawable || drawable == null) return;
         // remove old view

@@ -7,16 +7,8 @@
 
 package de.telekom.pde.codelibrary.ui.elements.common;
 
+import android.graphics.*;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
-
-import android.graphics.Canvas;
-import android.graphics.LinearGradient;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Shader;
 
 
 //----------------------------------------------------------------------------------------------------------------------

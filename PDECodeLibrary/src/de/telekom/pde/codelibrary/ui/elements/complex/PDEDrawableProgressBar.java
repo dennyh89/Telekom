@@ -18,13 +18,9 @@ import android.graphics.RectF;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableMultilayer;
 import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableRoundedBox;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableDelimiter;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShape;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedInnerShadow;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
-import de.telekom.pde.codelibrary.ui.elements.wrapper.PDEViewWrapper;
+import de.telekom.pde.codelibrary.ui.elements.common.*;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEViewWrapper;
 
 
 /**
@@ -33,7 +29,8 @@ import de.telekom.pde.codelibrary.ui.elements.wrapper.PDEViewWrapper;
 public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
 
 
-//-----  properties ---------------------------------------------------------------------------------------------------
+//-----  properties ----------------------------------------------------------------------------------------------------
+
     // colors
     protected PDEColor mElementOuterShadowColor;
     protected PDEColor mElementBorderShadowColor;
@@ -46,7 +43,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     protected float mElementPreloadStartValue;
     protected int mElementNumMarkers;
     // layers
-    private PDEDrawableShapedShadow mElementShadowDrawable;
+    private PDEDrawableShapedOuterShadow mElementShadowDrawable;
     private PDEDrawableRoundedBox mElementFrameDrawable;
     // todo possibly we have to add mElementFrameDrawableBorderShadow (white line)
     private PDEDrawableMultilayer mElementMarkerMultilayer;
@@ -72,12 +69,13 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
         mElementPreloadStartValue = 0.0f;
         mElementNumMarkers = 0;
 
-        // init sublayers
+        // init sub-layers
         initLayers();
 
-        // forward init values to sublayers
-        setElementBackgroundColor(PDEColor.valueOf(0x0e000000));
-        setElementBorderColor(PDEColor.valueOf("DTGrey6"));
+        // forward init values to sub-layers
+        setElementBackgroundColor(PDEColor.valueOf("Black7Alpha"));
+//        setElementBorderColor(PDEColor.valueOf("DTGrey6"));
+        setElementBorderColor(PDEColor.valueOf("DTGrey237_Idle_Border"));
         setElementProgressValueColor(PDEColor.valueOf("DTMagenta"));
         setElementPreloadValueColor(PDEColor.valueOf(0x3f000000));
         setElementInnerShadowColor(PDEColor.valueOf(0xaf000000));
@@ -101,6 +99,8 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
         mElementInnerShadowDrawable = new PDEDrawableShapedInnerShadow();
         mElementInnerShadowDrawable.setBounds(0, 1, 0, 0);
         mElementInnerShadowDrawable.setElementBlurRadius(PDEBuildingUnits.oneSixthBU());
+//        mElementInnerShadowDrawable.setElementShapeOpacity(0.28f);
+        mElementInnerShadowDrawable.setElementShapeColor(PDEColor.valueOf("Black40Alpha"));
         addLayer(mElementInnerShadowDrawable);
 
         // todo ElementFrameDrawableBorderShadow
@@ -129,13 +129,13 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief init shadow drawable.
      */
-    public PDEDrawableShapedShadow createElementShadow() {
+    public PDEDrawableShapedOuterShadow createElementShadow() {
         // already created?
         if (mElementShadowDrawable != null) {
             return mElementShadowDrawable;
         }
         // init shadow
-        mElementShadowDrawable = new PDEDrawableShapedShadow();
+        mElementShadowDrawable = new PDEDrawableShapedOuterShadow();
         updateShadowDrawable(getBounds());
         return mElementShadowDrawable;
     }
@@ -144,7 +144,8 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief shadow getter
      */
-    public PDEDrawableShapedShadow getElementShadow() {
+    @SuppressWarnings("unused")
+    public PDEDrawableShapedOuterShadow getElementShadow() {
         return mElementShadowDrawable;
     }
 
@@ -152,6 +153,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief forget shadow layer.
      */
+    @SuppressWarnings("unused")
     public void clearElementShadow() {
         mElementShadowDrawable = null;
     }
@@ -168,22 +170,26 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
      * @param color new shadow color
      */
     public void setElementOuterShadowColor(PDEColor color) {
-        // security
-        if (mElementShadowDrawable == null) {
-            return;
-        }
         // anything to do?
-        if (color == mElementShadowDrawable.getElementShapeColor()) {
+        if (mElementOuterShadowColor.getIntegerColor() == color.getIntegerColor()) {
             return;
         }
-        mElementShadowDrawable.setElementShapeColor(color);
-        doLayout();
+
+        // remember
+        mElementOuterShadowColor = color;
+
+        // set
+        if (mElementShadowDrawable != null) {
+            mElementShadowDrawable.setElementShapeColor(mElementOuterShadowColor);
+            doLayout();
+        }
     }
 
 
     /**
      * @brief getter for outer shadow color.
      */
+    @SuppressWarnings("unused")
     public PDEColor getElementOuterShadowColor() {
         // security
         if (mElementShadowDrawable == null) {
@@ -211,6 +217,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief getter for inner shadow color.
      */
+    @SuppressWarnings("unused")
     public PDEColor getElementInnerShadowColor() {
         return mElementInnerShadowDrawable.getElementShapeColor();
     }
@@ -234,6 +241,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief getter for progress filling color.
      */
+    @SuppressWarnings("unused")
     public PDEColor getElementProgressValueColor() {
         return PDEColor.valueOf(mElementProgressDrawable.getElementBackgroundColor());
     }
@@ -257,6 +265,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief getter for preload filling color.
      */
+    @SuppressWarnings("unused")
     public PDEColor getElementPreloadValueColor() {
         return PDEColor.valueOf(mElementPreloadDrawable.getElementBackgroundColor());
     }
@@ -314,6 +323,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
      *
      * @param color new color of the markers.
      */
+    @SuppressWarnings("unused")
     public void setElementMarkerColor(PDEColor color) {
         // any change?
         if (color.getIntegerColor() == mElementMarkerColor.getIntegerColor()) {
@@ -328,6 +338,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief getter for color of the markers.
      */
+    @SuppressWarnings("unused")
     public PDEColor getElementMarkerColor() {
         return mElementMarkerColor;
     }
@@ -414,6 +425,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief getter for current preload value [0..1].
      */
+    @SuppressWarnings("unused")
     public float getElementPreloadValue() {
         return mElementPreloadValue;
     }
@@ -424,6 +436,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
      *
      * @param value the new progress start value in percent [0..1].
      */
+    @SuppressWarnings("unused")
     public void setElementProgressStartValue(float value) {
         // any change?
         if (value == mElementProgressStartValue) {
@@ -445,6 +458,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief getter for current progress start value [0..1].
      */
+    @SuppressWarnings("unused")
     public float getElementProgressStartValue() {
         return mElementProgressStartValue;
     }
@@ -455,6 +469,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
      *
      * @param  value the new preload start value in percent [0..1].
      */
+    @SuppressWarnings("unused")
     public void setElementPreloadStartValue(float value) {
         // any change?
         if (value == mElementPreloadValue) {
@@ -476,6 +491,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief getter for current preload start value [0..1].
      */
+    @SuppressWarnings("unused")
     public float getElementPreloadStartValue() {
         return mElementPreloadStartValue;
     }
@@ -484,6 +500,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief function to set the numbers of markers
      */
+    @SuppressWarnings("unused")
     public void setElementNumMarkers(int num) {
         int i;
         PDEDrawableDelimiter marker;
@@ -519,6 +536,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
     /**
      * @brief getter for number of markers.
      */
+    @SuppressWarnings("unused")
     public int getElementNumMarkers() {
         return mElementNumMarkers;
     }
@@ -548,7 +566,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
 
 
     /**
-     * @brief update function for framelayer. set size, position and color.
+     * @brief update function for frame-layer. set size, position and color.
      *
      * @param bounds current element bounding rect.
      */
@@ -634,7 +652,6 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
                                mElementShadowDrawable.getBounds().left + bounds.width(),
                                mElementShadowDrawable.getBounds().top + bounds.height());
         mElementShadowDrawable.setLayoutRect(layoutRect);
-        mElementShadowDrawable.setElementShapeRoundedRect(mElementCornerRadius);
     }
 
 
@@ -657,8 +674,10 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
             // get layer
             marker = (PDEDrawableDelimiter) mElementMarkerMultilayer.getLayerAtIndex(i);
             // set size and position
-            marker.setLayoutRect(new Rect(pos, Math.round(mElementFrameDrawable.getElementBorderWidth()), pos + 1,
-                                          Math.round(mElementFrameDrawable.getBounds().height()- mElementFrameDrawable.getElementBorderWidth()
+            marker.setLayoutRect(new Rect(pos,
+                    Math.round(mElementFrameDrawable.getElementBorderWidth()),
+                    pos + 1,
+                    Math.round(mElementFrameDrawable.getBounds().height() - mElementFrameDrawable.getElementBorderWidth()
             )));
 
             // set color
@@ -669,14 +688,14 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
         }
     }
 
-//---------------------------------------------------------------------------------------------------------------------
-// ----- Wrapper View  ----------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+// ----- Wrapper View  -------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 
     public PDEViewWrapper getWrapperView() {
         if (mWrapperView == null) {
-            mWrapperView = new PDEViewWrapper(PDECodeLibrary.getInstance().getApplicationContext(),this);
+            mWrapperView = new PDEViewWrapper(PDECodeLibrary.getInstance().getApplicationContext(), this);
         }
         return mWrapperView;
     }

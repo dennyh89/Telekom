@@ -9,23 +9,6 @@
 
 package de.telekom.pde.codelibrary.ui.modules.login;
 
-import de.telekom.pde.codelibrary.ui.R;
-import de.telekom.pde.codelibrary.ui.activity.PDEActivity;
-import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
-import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
-import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.buttons.PDEButton;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableMultilayer;
-import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableRoundedBox;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableDelimiter;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
-import de.telekom.pde.codelibrary.ui.elements.wrapper.PDELayerTextView;
-import de.telekom.pde.codelibrary.ui.events.PDEEvent;
-import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
-import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
-import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
-import de.telekom.pde.codelibrary.ui.layout.PDEBoundedRelativeLayout;
-
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -35,6 +18,24 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
+import de.telekom.pde.codelibrary.ui.PDEConstants;
+import de.telekom.pde.codelibrary.ui.PDEConstants.PDEContentStyle;
+import de.telekom.pde.codelibrary.ui.R;
+import de.telekom.pde.codelibrary.ui.activity.PDEActivity;
+import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
+import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
+import de.telekom.pde.codelibrary.ui.color.PDEColor;
+import de.telekom.pde.codelibrary.ui.components.buttons.PDEButton;
+import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableRoundedBox;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableDelimiter;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableMultilayer;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDELayerTextView;
+import de.telekom.pde.codelibrary.ui.events.PDEEvent;
+import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
+import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
+import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
+import de.telekom.pde.codelibrary.ui.layout.PDEBoundedRelativeLayout;
 
 /// @cond INTERNAL_CLASS
 
@@ -54,6 +55,7 @@ public class OKDialog extends PDEActivity {
     public final static String PDE_OK_DIALOG_INTENT_EXTRA_TITLE = "PDE.OKDialog.Extra.Title";
     public final static String PDE_OK_DIALOG_INTENT_EXTRA_MESSAGE = "PDE.OKDialog.Extra.Message";
     public final static String PDE_OK_DIALOG_INTENT_EXTRA_OKBUTTON_TEXT = "PDE.OKDialog.Extra.OKButtonText";
+    public final static String PDE_OK_DIALOG_INTENT_EXTRA_STYLE = "PDE.OKDialog.Extra.Style";
 
     // the default typeface
     //protected final static Typeface DEFAULT_TYPEFACE = PDETypeface.sDefaultFont.getTypeface();
@@ -66,10 +68,10 @@ public class OKDialog extends PDEActivity {
 
     private final static String LOG_TAG = OKDialog.class.getName();
 
+    private PDEContentStyle mStyle = PDEContentStyle.PDEContentStyleFlat;
 
     /**
      * Sets the content layout.
-     * @param savedInstanceState
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,8 +93,11 @@ public class OKDialog extends PDEActivity {
             if (intent.hasExtra(PDE_OK_DIALOG_INTENT_EXTRA_MESSAGE)) {
                 message = intent.getStringExtra(PDE_OK_DIALOG_INTENT_EXTRA_MESSAGE);
             }
-            if (intent.hasExtra(PDE_OK_DIALOG_INTENT_EXTRA_TITLE)) {
+            if (intent.hasExtra(PDE_OK_DIALOG_INTENT_EXTRA_OKBUTTON_TEXT)) {
                 buttonText = intent.getStringExtra(PDE_OK_DIALOG_INTENT_EXTRA_OKBUTTON_TEXT);
+            }
+            if (intent.hasExtra(PDE_OK_DIALOG_INTENT_EXTRA_STYLE)) {
+                mStyle = PDEContentStyle.valueOf(intent.getStringExtra(PDE_OK_DIALOG_INTENT_EXTRA_STYLE));
             }
         }
 
@@ -119,8 +124,9 @@ public class OKDialog extends PDEActivity {
 //                shadow.setLayoutOffset(new Point(roundedBox.getBounds().left,
 //                        roundedBox.getBounds().top + PDEBuildingUnits.oneTwelfthsBU()));
 
-                  shadow.setLayoutOffset(new Point(roundedBox.getBounds().left,
-                        roundedBox.getBounds().top + PDEBuildingUnits.oneSixthBU()));
+                  shadow.setLayoutOffset(new Point(Math.round(roundedBox.getBounds().left-shadow.getElementBlurRadius()),
+                                                   Math.round(roundedBox.getBounds().top-shadow
+                                                           .getElementBlurRadius()) + PDEBuildingUnits.oneSixthBU()));
             }
         });
 
@@ -154,6 +160,9 @@ public class OKDialog extends PDEActivity {
 
         // register listener for the button
         PDEButton exitButton = (PDEButton)findViewById(R.id.okdialog_exit);
+        if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleHaptic) {
+            exitButton.setButtonBackgroundLayerWithLayerType(PDEButton.PDEButtonLayerType.BackgroundHaptic);
+        }
         exitButton.addListener(this, "onExitButton", PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED);
 
         if (TextUtils.isEmpty(title)) {
@@ -178,8 +187,8 @@ public class OKDialog extends PDEActivity {
     /**
      * @brief Listener callback function for the exit button.
      * Finishes the dialog.
-     * @param event
      */
+    @SuppressWarnings("unused")
     public void onExitButton(PDEEvent event) {
         finish();
     }

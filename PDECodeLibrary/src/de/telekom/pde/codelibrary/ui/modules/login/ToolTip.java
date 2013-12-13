@@ -17,7 +17,6 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.widget.TextView;
-
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableNotificationFrame;
@@ -62,6 +61,12 @@ class ToolTip extends TextView {
 
 
     private void init(Context context) {
+
+        setGravity(Gravity.LEFT);
+
+        // if in developer tool (IDE) stop here
+        if (isInEditMode()) return;
+
         mFrameDrawable = new PDEDrawableNotificationFrame();
         mFrameDrawable.setElementTriangleEnabled(true);
         mFrameDrawable.setElementTriangleTipPositionPredefined(PDEDrawableNotificationFrame.TrianglePosition.Center,
@@ -77,16 +82,12 @@ class ToolTip extends TextView {
                 + mFrameDrawable.getElementWantedTriangleWidth()
                 + mFrameDrawable.getElementTriangleMargin() * 2.0f));
 
-
-        setGravity(Gravity.LEFT);
-
         setTextColor(PDEColor.valueOf("#ffffff").getIntegerColor());
 
     }
 
     /**
      * Show the speech bubble for some time (with the specified text).
-     * @param text
      * @param duration of visibility in milli seconds (the time where it is fully visible, without the blending time)
      */
     public void showNotification(String text, int duration) {
@@ -217,8 +218,6 @@ class ToolTip extends TextView {
 
     /**
      * Set the tooltip triangle position.
-     * @param position
-     * @param side
      */
     public void setElementTriangleTipPositionAbsolute(float position, PDEDrawableNotificationFrame.TriangleSide side) {
         mFrameDrawable.setElementTriangleTipPositionAbsolute(position, side);

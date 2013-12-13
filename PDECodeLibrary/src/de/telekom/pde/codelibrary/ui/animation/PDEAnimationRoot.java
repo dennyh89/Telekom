@@ -35,26 +35,6 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
 
     protected boolean mRegisteredWithRunloop;
 
-    // private helper class for putting a function call at end of runloop
-    // ToDo Maybe this is only called when rest of message loop is idle; What shall we do if loop is quite busy?
-   /* private class RunloopTimingHandler implements MessageQueue.IdleHandler {
-        //private Object mDummy;
-
-        //public RunloopTimingHandler(Object dummy) {
-        public RunloopTimingHandler() {
-            //mDummy = dummy;
-        }
-
-        public boolean queueIdle() {
-            //runloopTiming(mDummy);
-            runloopTiming();
-            // ToDo this takes it out of the runloop is that correct? or should we react dynamically based on a
-            // retValue?
-            return false;
-        }
-    }
-    */
-
 
     /**
      * @brief SingletonHolder is loaded on the first execution of PDECodeLibrary.getRoot()
@@ -112,6 +92,7 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
     /**
      * @brief Add animation to root singleton and decide to store in strong or weak reference.
      */
+    @SuppressWarnings("unused")
     public static void addSubAnimationStatic(PDEAnimation animation, boolean strong) {
         getRoot().addSubAnimation(animation, strong);
     }
@@ -120,6 +101,7 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
     /**
      * @brief Remove animation from root singleton.
      */
+    @SuppressWarnings("unused")
     public static void removeSubAnimationStatic(PDEAnimation animation) {
         getRoot().removeSubAnimation(animation);
     }
@@ -128,6 +110,7 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
     /**
      * @brief Retrieve root singleton's time.
      */
+    @SuppressWarnings("unused")
     public static long getTimeStatic() {
         return getRoot().getTime();
     }
@@ -135,6 +118,7 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
     /**
      * @brief Retrieve root singleton's time factor.
      */
+    @SuppressWarnings("unused")
     public static double getTimeFactorStatic() {
         return getRoot().getTimeFactor();
     }
@@ -142,6 +126,7 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
     /**
      * @brief Set root singleton's time factor.
      */
+    @SuppressWarnings("unused")
     public static void setTimeFactorStatic(double timeFactor) {
         getRoot().setTimeFactor(timeFactor);
     }
@@ -214,6 +199,7 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
      * If we're timed, propagate the new time throughout the animation system. Treat as parentTimeDidChange, we
      * also want to call our animate function (probably no overloaded) and want to notify any listeners of the change
      */
+    @SuppressWarnings("unused")
     public void frameTiming(Long time) {
         // simply use the parentTimeDidChange function, this will do the rest
         parentTimeDidChange();
@@ -226,6 +212,7 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
      * management here. Or it stays, then the next frameloop will do the work. If we get stopped inbetween, the unregister
      * from the frameloop will take care that runloop timing is set again.
      */
+    @SuppressWarnings("unused")
     public void runloopTiming() {
         // no longer registered in the runloop
         mRegisteredWithRunloop = false;

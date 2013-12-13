@@ -34,8 +34,6 @@ public class PDEBoundedRelativeLayout extends RelativeLayout {
 
     /**
      * @brief Constructor.
-     *
-     * @param context
      */
     public PDEBoundedRelativeLayout(Context context) {
         super(context);
@@ -44,9 +42,6 @@ public class PDEBoundedRelativeLayout extends RelativeLayout {
 
     /**
      * @brief Constructor.
-     *
-     * @param context
-     * @param attrs
      */
     public PDEBoundedRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -56,10 +51,6 @@ public class PDEBoundedRelativeLayout extends RelativeLayout {
 
     /**
      * @brief Constructor.
-     *
-     * @param context
-     * @param attrs
-     * @param defStyle
      */
     public PDEBoundedRelativeLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -68,8 +59,6 @@ public class PDEBoundedRelativeLayout extends RelativeLayout {
 
     /**
      * @brief Common init function for all constructors.
-     *
-     * @param attrs
      */
     private void init(AttributeSet attrs) {
         // set default values
@@ -110,7 +99,6 @@ public class PDEBoundedRelativeLayout extends RelativeLayout {
      *
      * A value of zero or less means that there is no maximum width set.
      *
-     * @return
      */
     public int getMaxWidth() {
         return mMaxWidth;
@@ -141,7 +129,6 @@ public class PDEBoundedRelativeLayout extends RelativeLayout {
      *
      * A value of zero or less means that there is no maximum height set.
      *
-     * @return
      */
     public int getMaxHeight() {
         return mMaxHeight;
@@ -150,8 +137,6 @@ public class PDEBoundedRelativeLayout extends RelativeLayout {
 
     /**
      * @brief Overwritten layouting function - ensures that there are maximum dimensions.
-     * @param widthMeasureSpec
-     * @param heightMeasureSpec
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

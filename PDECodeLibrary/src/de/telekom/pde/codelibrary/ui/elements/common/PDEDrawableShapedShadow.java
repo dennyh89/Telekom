@@ -7,17 +7,9 @@
 
 package de.telekom.pde.codelibrary.ui.elements.common;
 
-import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.*;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
 
 //----------------------------------------------------------------------------------------------------------------------
 // PDEDrawableShapedShadow
@@ -82,6 +74,7 @@ public class PDEDrawableShapedShadow extends PDEDrawableBase {
      *
      * @return opacity of the shape
      */
+    @SuppressWarnings("unused")
     public float getElementShapeOpacity() {
         return mAlpha / 255;
     }
@@ -90,6 +83,7 @@ public class PDEDrawableShapedShadow extends PDEDrawableBase {
     /**
      * @brief Set shape color.
      */
+    @SuppressWarnings("unused")
     public void setElementShapeColor(PDEColor color) {
         // any change?
         if (color.getIntegerColor() == mElementShapeColor.getIntegerColor()) return;
@@ -105,6 +99,7 @@ public class PDEDrawableShapedShadow extends PDEDrawableBase {
      *
      * @return shape color
      */
+    @SuppressWarnings("unused")
     public PDEColor getElementShapeColor() {
         return mElementShapeColor;
     }
@@ -154,6 +149,7 @@ public class PDEDrawableShapedShadow extends PDEDrawableBase {
      *
      * @return custom path
      */
+    @SuppressWarnings("unused")
     public Path getElementShapePath() {
         return mElementShapePath;
     }
@@ -181,6 +177,7 @@ public class PDEDrawableShapedShadow extends PDEDrawableBase {
     /**
      * @brief Set a oval inscribing the rect. Use a square to get a circle
      */
+    @SuppressWarnings("unused")
     public void setElementShapeOval() {
         mElementShapeType = PDEAvailableShapes.SHAPE_OVAL;
         update();
@@ -195,17 +192,17 @@ public class PDEDrawableShapedShadow extends PDEDrawableBase {
 //---------------------------------------------------------------------------------------------------------------------
 
 
-    /**
-     * @brief draws the shadow
-     */
-    @Override
-    public void draw(android.graphics.Canvas canvas) {
-        Rect bounds = getBounds();
-
-        // security
-        if (bounds.width() <=0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
-        canvas.drawBitmap(mDrawingBitmap, bounds.left - mElementBlurRadius, bounds.top - mElementBlurRadius, new Paint());
-    }
+//    /**
+//     * @brief draws the shadow
+//     */
+//    @Override
+//    public void draw(android.graphics.Canvas canvas) {
+//        Rect bounds = getBounds();
+//
+//        // security
+//        if (bounds.width() <=0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
+//        canvas.drawBitmap(mDrawingBitmap, bounds.left - mElementBlurRadius, bounds.top - mElementBlurRadius, new Paint());
+//    }
 
 
 
@@ -258,8 +255,8 @@ public class PDEDrawableShapedShadow extends PDEDrawableBase {
         // use bitmap to avoid gfx-acceleration bug
         if (mDrawingBitmap != null) mDrawingBitmap.recycle();
         // create bitmap
-        mDrawingBitmap = Bitmap.createBitmap(bounds.width() + 2 * (int) mElementBlurRadius,
-                                             bounds.height() + 2 * (int) mElementBlurRadius,
+        mDrawingBitmap = Bitmap.createBitmap(bounds.width(),
+                                             bounds.height(),
                                              Bitmap.Config.ARGB_8888);
     }
 
@@ -294,8 +291,8 @@ public class PDEDrawableShapedShadow extends PDEDrawableBase {
 
         drawRect = new RectF(normalizedBoundsRect.left + mElementBlurRadius,
                              normalizedBoundsRect.top + mElementBlurRadius,
-                             normalizedBoundsRect.right + mElementBlurRadius,
-                             normalizedBoundsRect.bottom + mElementBlurRadius);
+                             normalizedBoundsRect.right - mElementBlurRadius,
+                             normalizedBoundsRect.bottom - mElementBlurRadius);
         switch (mElementShapeType) {
             case PDEAvailableShapes.SHAPE_RECT:
                 c.drawRect(drawRect, mBackgroundPaint);

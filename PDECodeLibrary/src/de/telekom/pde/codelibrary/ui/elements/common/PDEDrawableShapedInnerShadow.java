@@ -7,20 +7,9 @@
 
 package de.telekom.pde.codelibrary.ui.elements.common;
 
-import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PointF;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.*;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
 
 //----------------------------------------------------------------------------------------------------------------------
 // PDEDrawableShapedInnerShadow
@@ -33,6 +22,7 @@ import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
  * This class is used for inner shadows of elements. The possible shapes are:
  * rectangle, rounded rectangle, oval or a custom shape by path.
  */
+@SuppressWarnings("unused")
 public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
 
 //-----  properties ---------------------------------------------------------------------------------------------------
@@ -58,8 +48,10 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
         // init drawable basics
         super();
         // init PDE defaults
-        mElementShapeColor =  PDEColor.valueOf(Color.BLACK);
-        mElementBlurRadius = (float) PDEBuildingUnits.oneFourthBU();
+//        mElementShapeColor =  PDEColor.valueOf(Color.BLACK);
+        mElementShapeColor =  PDEColor.valueOf("Black34Alpha");
+//        mElementBlurRadius = (float) PDEBuildingUnits.oneFourthBU();
+        mElementBlurRadius = (float) PDEBuildingUnits.oneSixthBU();
         mShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
         //mElementCornerRadius = 0.0f;
         mElementCornerRadius = PDEBuildingUnits.exactOneThirdBU();
@@ -75,7 +67,8 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
 
         //init paints for drawing
         update(true);
-        setElementShapeOpacity(0.28f);
+//        setElementShapeOpacity(0.28f);
+        setElementShapeOpacity(1.0f);
         setElementLightIncidenceOffset(new PointF(0.0f, PDEBuildingUnits.oneTwelfthsBU()));
     }
 
@@ -274,7 +267,7 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
      * different element sides. If we think of a light that comes from top-left, the top and the left side cast a
      * larger shadow than the bottom and the right side. So we have to shift this offset in the bottom-right direction.
      *
-     * @param offset
+     * @param offset offset of the inner rectangle
      */
     public void setElementLightIncidenceOffset(PointF offset){
         // anything to do?

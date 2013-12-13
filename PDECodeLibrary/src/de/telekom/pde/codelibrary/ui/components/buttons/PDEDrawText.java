@@ -8,11 +8,7 @@
 package de.telekom.pde.codelibrary.ui.components.buttons;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.Typeface;
+import android.graphics.*;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -71,7 +67,7 @@ public class PDEDrawText extends View {
 
     @Override
     public void draw(Canvas canvas) {
-        super.draw(canvas);    //To change body of overridden methods use File | Settings | File Templates.
+        super.draw(canvas);
 
         if (DEBUG_OUTPUT) Log.d(LOG_TAG,"draw");
 
@@ -95,13 +91,12 @@ public class PDEDrawText extends View {
     }
 
     public void setBackgroundColor(int color) {
-        mBackgroundColor = color;
-        // todo
+        mBackgroundColor = color;       
     }
 
     /**
      * @brief Set the text color.
-     * @param color
+     * @param color new text color
      */
     public void setTextColor(int color) {
         mTextColor = color;
@@ -110,7 +105,7 @@ public class PDEDrawText extends View {
 
     /**
      * @brief Set the typeface.
-     * @param typeface
+     * @param typeface new typeface
      */
     public void setTypeface(Typeface typeface){
         // security
@@ -148,8 +143,9 @@ public class PDEDrawText extends View {
 
 
     /**
-     *
-     * @param text
+     * @brief Set text content
+     * 
+     * @param text new text
      */
     public void setText(String text){
         if (TextUtils.isEmpty(text)) text = "";
@@ -164,18 +160,26 @@ public class PDEDrawText extends View {
     }
 
 
+    /**
+     *  @brief Size changed.
+     *
+     * @param width New width.
+     * @param height New height.
+     * @param oldWidth Old width.
+     * @param oldHeight Old height.
+     */
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
+        super.onSizeChanged(width, height, oldWidth, oldHeight);
 
-        if (DEBUG_OUTPUT) Log.d(LOG_TAG,"onSizeChanged "+w+","+h);
+        if (DEBUG_OUTPUT) Log.d(LOG_TAG,"onSizeChanged "+width+","+height);
 
         // check for changes
-        if (w == mWidth && h == mHeight) return;
+        if (width == mWidth && height == mHeight) return;
 
         // remember
-        mWidth = w;
-        mHeight = h;
+        mWidth = width;
+        mHeight = height;
 
         if (mEllipsize) {
             recalculate();
@@ -183,8 +187,9 @@ public class PDEDrawText extends View {
     }
 
     /**
-     * @brief
-     * @param ellipsize
+     * @brief turn ellipsize on / off
+     * 
+     * @param ellipsize on or off
      */
     public void setEllipsize (boolean ellipsize) {
         mEllipsize = ellipsize;

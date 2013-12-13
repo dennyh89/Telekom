@@ -7,13 +7,8 @@
 
 package de.telekom.pde.codelibrary.ui.elements.common;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.*;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEDrawableShape
@@ -26,6 +21,7 @@ import de.telekom.pde.codelibrary.ui.components.drawables.PDEDrawableBase;
  * Does only fill and no stroke (borderline) so far. Maybe we should extend this to save another class (like
  * PDEDrawableShape).
  */
+@SuppressWarnings("unused")
 public class PDEDrawableShape extends PDEDrawableBase {
 
 //-----  properties ---------------------------------------------------------------------------------------------------
@@ -58,7 +54,7 @@ public class PDEDrawableShape extends PDEDrawableBase {
     /**
      * @brief Set corner radius.
      *
-     * @param radius
+     * @param radius new corner radius
      */
     public void setElementCornerRadius(float radius){
         // any change?
@@ -108,7 +104,7 @@ public class PDEDrawableShape extends PDEDrawableBase {
     /**
      * @brief Set a path as custom shape.
      *
-     * @param path
+     * @param path path of a custom shape
      */
     public void setElementShapePath(Path path) {
         // ToDo: Don't know if equals() is meaningful overriden here.
@@ -128,7 +124,7 @@ public class PDEDrawableShape extends PDEDrawableBase {
     /**
      * @brief Get custom shaped path.
      *
-     * @return
+     * @return custom path
      */
     public Path getElementShapePath() {
         return mShapePath;
@@ -169,7 +165,7 @@ public class PDEDrawableShape extends PDEDrawableBase {
     /**
      * @brief Convenience function.
      *
-     * @param opacity
+     * @param opacity new opacity
      */
     public void setElementShapeOpacity(float opacity){
         int alpha = Math.round(opacity*255);
