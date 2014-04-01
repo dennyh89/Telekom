@@ -552,9 +552,9 @@ The Code Library version 4.0 adds dialogs to the Code Library. A set of
 error messages approved by language department has been added unifying
 standard error dialogs.
 
-The Code Library version 4.0 replaces the ActionBarShelock submodule with
-the use of ActionBar Compat. The submodule has been removed. The developer who
-updates from version 3.x must install Google support v7 library.
+The Code Library version 4.0 replaces the ActionBarSherlock submodule with
+the use of ActionBar Compat. The submodule has been removed. You must install
+Android support v7 library, e.g. by the SDK Manager.
 
 Feature 4.0 (closed beta)
 ---------------------------
