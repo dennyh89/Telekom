@@ -7,6 +7,8 @@
 
 package de.telekom.pde.codelibrary.ui.events;
 
+import de.telekom.pde.codelibrary.ui.components.dialog.PDEDialog;
+
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
@@ -81,7 +83,7 @@ public class PDEEventSource implements PDEIEventSource {
          *
          * Only events matching the mask get sent to the target/method.
          *
-         * The event mask does not store the trailing wildcard '*', which is stored in a seperate property
+         * The event mask does not store the trailing wildcard '*', which is stored in a separate property
          * wildcard. This helps with easier/speedier implementation.
          */
         String mEventMask;
@@ -89,8 +91,8 @@ public class PDEEventSource implements PDEIEventSource {
         /**
          * @brief Marker if the mask should be compared with wildcards.
          *
-         * True of the eventmask is a wildcard and as such is compared to the first characters of an actual event.
-         * False if the eventmask must match exactly.
+         * True of the eventMask is a wildcard and as such is compared to the first characters of an actual event.
+         * False if the eventMask must match exactly.
          */
         boolean mWildcard;
 
@@ -317,7 +319,7 @@ public class PDEEventSource implements PDEIEventSource {
 
         // security
         if (target == null || mListeners == null) {
-            return removed;
+            return false;
         }
 
         try {
@@ -409,8 +411,7 @@ public class PDEEventSource implements PDEIEventSource {
         PDEEventSource source;
 
         // tell our delegate
-        if ( getEventSourceDelegate() != null
-             && getEventSourceDelegate() instanceof PDEIEventSourceDelegate){
+        if (getEventSourceDelegate() != null){
             getEventSourceDelegate().eventSourceWillRemoveListener(listener);
         }
 
@@ -434,7 +435,7 @@ public class PDEEventSource implements PDEIEventSource {
         // do cleanup if necessary
         if(needsCleanup){
             // go through all array elements backwards
-            for (i=mForwardEventSources.size()-1; i>=0; i--){
+            for (i = mForwardEventSources.size()-1; i >= 0; i--){
                 // get the listener
                 l = mForwardEventSources.get(i);
                 // we can forget it if the event source we're listening on no longer exists.
@@ -455,7 +456,7 @@ public class PDEEventSource implements PDEIEventSource {
     @SuppressWarnings("unused")
     protected void requestOneTimeInitialization(Object target, String methodName){
         // call extended function
-        requestOneTimeInitialization(target,methodName,"*");
+        requestOneTimeInitialization(target, methodName,"*");
     }
 
     // @new
@@ -478,12 +479,12 @@ public class PDEEventSource implements PDEIEventSource {
             // check if the given method really is declared for target object
             Method method = target.getClass().getMethod(methodName, new Class[] {PDEEvent.class});
             // create a listener helper structure
-            listener = new Listener(target,method,eventMask,this);
+            listener = new Listener(target, method, eventMask, this);
 
             // request initialization -> this tells our delegate, and all listeners we're forwarding from
             requestInitializationForListener(listener);
 
-            // cleanup the listener object (for safety, noone should keep it around)
+            // cleanup the listener object (for safety, none should keep it around)
             listener.mSource = null;
         } catch (NoSuchMethodException e) {
             // error handling, if method was not part of target-object
@@ -519,7 +520,7 @@ public class PDEEventSource implements PDEIEventSource {
             // request initialization -> this tells our delegate, and all listeners we're forwarding from
             requestDeinitializationForListener(listener);
 
-            // cleanup the listener object (for safety, noone should keep it around)
+            // cleanup the listener object (for safety, none should keep it around)
             listener.mSource = null;
         } catch (NoSuchMethodException e) {
             // error handling, if method was not part of target-object
@@ -550,6 +551,10 @@ public class PDEEventSource implements PDEIEventSource {
      */
     public boolean sendEvent(final PDEEvent event) {
         try {
+            // just for debugging
+//            if (event.getType().compareTo(PDEDialog.PDE_DIALOG_EVENT_RESULT) == 0){
+//                Log.d("MyResult","sendEvent PDE_DIALOG_EVENT_RESULT");
+//            }
             // go through all listeners and send it
             for (Iterator<Listener> iterator = mListeners.iterator(); iterator.hasNext(); ) {
                 Listener listener = iterator.next();
@@ -592,26 +597,21 @@ public class PDEEventSource implements PDEIEventSource {
     public boolean sendEvent(final PDEEvent event, Object listenerObject) {
         Object target, originalSender;
         Listener listener;
-        boolean returnValue = false;
+        boolean returnValue;
 
         //security
-        if (listenerObject == null) {
-            return returnValue;
-        }
-        // check listener class
-        if (!(listenerObject instanceof Listener)) {
-            return returnValue;
-        } else {
-            listener = (Listener) listenerObject;
+        if (listenerObject == null || !(listenerObject instanceof Listener)) {
+            return false;
         }
 
+        listener = (Listener) listenerObject;
 
         // check if the wildcard matches
         if (!((listener.mWildcard
                && (listener.mEventMask.length() == 0 || event.getType().startsWith(listener.mEventMask)))
               || (!listener.mWildcard) && event.getType().equalsIgnoreCase(listener.mEventMask))) {
             // stop here
-            return returnValue;
+            return false;
         }
 
         // remember the original sender
@@ -631,13 +631,13 @@ public class PDEEventSource implements PDEIEventSource {
         // get target (it may get cleaned up in the meantime)
         if (listener.mTarget == null) {
             // stop here
-            return returnValue;
+            return false;
         }
         target = listener.mTarget.get();
 
         // do we have a target?
         if (target == null) {
-            return returnValue;
+            return false;
         }
 
         try {

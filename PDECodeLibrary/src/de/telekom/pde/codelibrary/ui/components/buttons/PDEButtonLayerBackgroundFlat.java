@@ -47,6 +47,7 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
     private final static String LOG_TAG = PDEButtonLayerBackgroundFlat.class.getName();
     // debug messages switch
     private final static boolean DEBUGPARAMS = false;
+    private final static boolean SHOW_DEBUG_LOGS = false;
 
     // local parameters needed
     PDEParameterDictionary mParameters;
@@ -380,11 +381,13 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
 
-        Log.d(LOG_TAG, "onSizeChanged "+w+", "+h);
+        if (SHOW_DEBUG_LOGS) {
+            Log.d(LOG_TAG, "onSizeChanged " + w + ", " + h);
+        }
 
 
-        mMainDrawable.getWrapperView().setViewLayoutRect(new Rect(0, 0, w, h));
-        mBorderLineDrawable.getWrapperView().setViewLayoutRect(new Rect(0, 0, w, h));
+        PDEAbsoluteLayoutHelper.setViewRect(mMainDrawable.getWrapperView(),new Rect(0, 0, w, h));
+        PDEAbsoluteLayoutHelper.setViewRect(mBorderLineDrawable.getWrapperView(),new Rect(0, 0, w, h));
         mBorderLineDrawable.setElementShapeRoundedRect(mCornerRadius);
         mBorderLineDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
                                                      MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));

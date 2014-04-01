@@ -8,7 +8,6 @@
    
     <color name="pde_pressed_state_color">@color/DTGrey237_TakingInput</color>
 	
-    <!-- TODO: gabriel, we'll need to change those to PDE colors -->
     <color name="list_item_normal">@color/DTLightUIBackground</color>
     <color name="list_item_selected">@color/DTGrey237_TakingInput</color>
     <color name="list_item_pressed">@color/DTGrey237_TakingInput</color>

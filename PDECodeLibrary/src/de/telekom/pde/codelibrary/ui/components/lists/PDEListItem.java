@@ -30,6 +30,8 @@ import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 
+import java.util.ArrayList;
+
 /**
  * @brief List item wrapper that holds the styleguide agentstate highlight logic.
  *
@@ -62,10 +64,13 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
     private LayoutInflater mLayoutInflater;
     // position of the item within the list
     protected int mListPosition = -1;
-    // data holder object for this list item. For more performant item recycling.
+    // data holder object for this list item. For better performance item recycling.
     protected PDEHolderInterface mHolder;
     // Source for sending events
     protected PDEEventSource mEventSource = null;
+    protected ArrayList<Object> mStrongPDEEventListenerHolder;
+
+
 
     // Events
     /**
@@ -131,11 +136,13 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
                 ("dt_button_flat_color_defaults");
         PDEListItemGlobalParamColor = new PDEParameter();
         PDEComponentHelpers.buildColors(PDEListItemGlobalParamColor,PDEListItemGlobalColorDefault,
-                                        "DTTransparentBlack",PDEAgentHelper.PDEAgentHelperAnimationInteractive);
+                                        "DTTransparentBlack", PDEAgentHelper.PDEAgentHelperAnimationInteractive);
         if (DEBUG) PDEListItemGlobalParamColor.debugOut(LOG_TAG);
 
         // init
         mEventSource = new PDEEventSource();
+        mStrongPDEEventListenerHolder = new ArrayList<Object>();
+
         mLayoutedView = null;
         // this list items must be clickable to handle touch events.
         setClickable(true);
@@ -168,7 +175,6 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
     }
 
 
-
     /**
      * @brief Called on changes from agentController.
      */
@@ -178,7 +184,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
 
         if (event.isType(PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION)) {
             needsUpdate = mAgentHelper.processAgentEvent(event);
-            if (needsUpdate){
+            if (needsUpdate) {
                 if (DEBUG) Log.d(LOG_TAG,"event "+event.getType());
                 updateColors();
             }
@@ -329,9 +335,9 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
     }
 
     /**
-     * @brief Add event Listener.
+     * @brief Add event Listener - hold strong pointer to it.
      *
-     * PDEIEventSource Interface implementation.
+     * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
      *
      * @param target    Object which will be called in case of an event.
      * @param methodName Function in the target object which will be called.
@@ -342,14 +348,15 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
      */
     @Override
     public Object addListener(Object target, String methodName) {
+        mStrongPDEEventListenerHolder.add(target);
         return mEventSource.addListener(target, methodName);
     }
 
 
     /**
-     * @brief Add event Listener.
+     * @brief Add event Listener - hold strong pointer to it.
      *
-     * PDEIEventSource Interface implementation.
+     * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
      *
      * @param target    Object which will be called in case of an event.
      * @param methodName Function in the target object which will be called.
@@ -363,6 +370,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
      */
     @Override
     public Object addListener(Object target, String methodName, String eventMask) {
+        mStrongPDEEventListenerHolder.add(target);
         return mEventSource.addListener(target, methodName, eventMask);
     }
 
@@ -370,11 +378,15 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
     /**
      * @brief Remove event listener that was added before.
      *
+     * Also deletes local strong pointer.
+     *
+     *
      * @param listener the event listener that should be removed
      * @return Returns whether we have found & removed the listener or not
      */
     @SuppressWarnings("unused")
     public boolean removeListener(Object listener) {
+        mStrongPDEEventListenerHolder.remove(listener);
         return mEventSource.removeListener(listener);
     }
 

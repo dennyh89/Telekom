@@ -80,7 +80,7 @@ public class PDEEvent {
      * When composing and sending an event, set to the actual creator and sender of the event, not to a
      * helper class like PDEEventSource. It should be easy for the handler of the event to determine
      * where the event originated by checking against instances it already knows (instead of comparing
-     * against subimplementations etc.)
+     * against sub-implementations etc.)
      */
     private Object mSender;
 
@@ -96,7 +96,7 @@ public class PDEEvent {
     private int mFlags;
 
     /**
-     * @brief PDEEvent flag bitfield constants.
+     * @brief PDEEvent flag bit field constants.
      */
     public static final int FLAG_NONE = 0;
     public static final int FLAG_PROCESSED = 1;

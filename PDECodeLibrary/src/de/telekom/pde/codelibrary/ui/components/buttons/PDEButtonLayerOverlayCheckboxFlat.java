@@ -33,7 +33,6 @@ class PDEButtonLayerOverlayCheckboxFlat extends PDEButtonLayerOverlayCheckboxBas
     private final static String LOG_TAG = PDEButtonLayerOverlayCheckboxFlat.class.getName();
 
 
-
     /**
      * @brief Class initialization.
      */

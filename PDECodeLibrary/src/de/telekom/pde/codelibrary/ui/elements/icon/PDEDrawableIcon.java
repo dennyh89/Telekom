@@ -25,7 +25,7 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
  * @brief Icon Class.
  *
  * Icon can be set by a drawable of by a string. The string can be the path to the resource, resource id or
- * a symbol from the Iconfont, by using a string consisting of '#' and the corresponding letter.
+ * a symbol from the IconFont, by using a string consisting of '#' and the corresponding letter.
  */
 public class PDEDrawableIcon extends PDEDrawableBase {
     private final static String LOG_TAG = PDEDrawableIcon.class.getName();
@@ -39,7 +39,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     private float mShadowXOffset;
     private float mShadowYOffset;
     private float mPadding;
-    private PDEDrawableIconFont mIconfont;
+    private PDEDrawableIconFont mIconFont;
     private PDEDrawableIconImage mIconImage;
     private boolean mDoBoundsChange;
     private Drawable mIconDrawable;
@@ -83,7 +83,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     private void initialize() {
         mIconString = null;
         mImage = null;
-        mIconfont = null;
+        mIconFont = null;
         mIconImage = null;
 
         mIconColor = null;
@@ -109,18 +109,18 @@ public class PDEDrawableIcon extends PDEDrawableBase {
             }
 
             if (mIconString.charAt(0) == '#') {
-                if (mIconfont == null) {
-                    mIconfont = new PDEDrawableIconFont(mIconString.substring(1));
+                if (mIconFont == null) {
+                    mIconFont = new PDEDrawableIconFont(mIconString.substring(1));
                 } else {
-                    mIconfont.setElementIconText(mIconString.substring(1));
+                    mIconFont.setElementIconText(mIconString.substring(1));
                 }
-                if (mIconColor != null) mIconfont.setElementIconColor(mIconColor);
-                mIconfont.setElementShadowEnabled(mShadowEnabled);
-                mIconfont.setElementShadowColor(mShadowColor);
-                mIconfont.setElementShadowXOffset(mShadowXOffset);
-                mIconfont.setElementShadowYOffset(mShadowYOffset);
-                mIconfont.setElementPadding(mPadding);
-                mIconDrawable = mIconfont;
+                if (mIconColor != null) mIconFont.setElementIconColor(mIconColor);
+                mIconFont.setElementShadowEnabled(mShadowEnabled);
+                mIconFont.setElementShadowColor(mShadowColor);
+                mIconFont.setElementShadowXOffset(mShadowXOffset);
+                mIconFont.setElementShadowYOffset(mShadowYOffset);
+                mIconFont.setElementPadding(mPadding);
+                mIconDrawable = mIconFont;
                 return;
             } else {
                 mImage = Drawable.createFromPath(mIconString);
@@ -171,7 +171,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      */
     public int getElementHeight() {
         if (isIconfont()) {
-            return mIconfont.getElementHeight();
+            return mIconFont.getElementHeight();
         } else {
             return getNativeSize().y + 1;
         }
@@ -183,7 +183,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      */
     public int getElementWidth() {
         if (isIconfont()) {
-            return mIconfont.getElementWidth();
+            return mIconFont.getElementWidth();
         } else {
             return getNativeSize().x + 1;
         }

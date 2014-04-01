@@ -18,6 +18,9 @@ import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 //----------------------------------------------------------------------------------------------------------------------
 
 
+/**
+ * @brief Special Event for PDEInputField.
+ */
 public class PDEInputFieldEvent extends PDEEvent{
 
     /**
@@ -74,7 +77,7 @@ public class PDEInputFieldEvent extends PDEEvent{
 
 
     /**
-     * @brief Set the startpos value.
+     * @brief Set the start position value.
      */
     public void setStartPos(int startPos) {
         mStartPos = startPos;
@@ -82,7 +85,7 @@ public class PDEInputFieldEvent extends PDEEvent{
 
 
     /**
-     * @brief Get the startPos value.
+     * @brief Get the start position value.
      */
     public int getStartPos() {
         return mStartPos;

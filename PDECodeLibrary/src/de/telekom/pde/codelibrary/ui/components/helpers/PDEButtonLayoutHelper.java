@@ -20,7 +20,7 @@ import android.graphics.Rect;
 /**
  * @brief PDEButton layout structure helper.
  *
- * Contains some useful layouting rects. Layouts are sent to the button layers in order and may be modified
+ * Contains some useful layouting rectangles. Layouts are sent to the button layers in order and may be modified
  * by them to constrain other layers.
  */
 public class PDEButtonLayoutHelper

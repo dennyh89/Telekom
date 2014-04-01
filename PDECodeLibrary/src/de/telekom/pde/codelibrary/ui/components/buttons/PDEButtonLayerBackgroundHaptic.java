@@ -52,7 +52,7 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
      */
     private final static String LOG_TAG = PDEButtonLayerBackgroundHaptic.class.getName();
     // debug messages switch
-    private final static boolean DEBUGPARAMS = false;
+    private final static boolean DEBUG_PARAMS = false;
     private final static boolean SHOW_DEBUG_LOGS = false;
 
 
@@ -252,7 +252,7 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         // debug output
-        if (DEBUGPARAMS) {
+        if (DEBUG_PARAMS) {
             mParamColor.debugOut("Color before building");
             mParamBorderColor.debugOut("Border before building");
         }
@@ -272,7 +272,7 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
         PDEComponentHelpers.fillBorderColors(mParamBorderColor, mParamColor);
 
         // debug output
-        if (DEBUGPARAMS) {
+        if (DEBUG_PARAMS) {
             mParamColor.debugOut("Color after building");
             mParamBorderColor.debugOut("Border after building");
         }
@@ -295,7 +295,7 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
                                                                      "default.down", "1.0"));
 
         // debug output
-        if (DEBUGPARAMS) {
+        if (DEBUG_PARAMS) {
             mParamInnerShadowStrength.debugOut("Inner shadow before building");
         }
 
@@ -306,7 +306,7 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
         mParamInnerShadowStrength.convertToNumber();
 
         // debug output
-        if (DEBUGPARAMS) {
+        if (DEBUG_PARAMS) {
             mParamInnerShadowStrength.debugOut("Inner shadow after building");
         }
 
@@ -443,10 +443,10 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
         rect = new Rect(0, 0, width, height);
 
         rect.set(rect.left, rect.top, rect.right - 2, rect.bottom - 2);
-        mInnerShadowDrawable.getWrapperView().setViewLayoutRect(rect);
+        PDEAbsoluteLayoutHelper.setViewRect(mInnerShadowDrawable.getWrapperView(),rect);
         mInnerShadowDrawable.setElementShapeRoundedRect(mCornerRadius - 1.0f);
         // set the offset to 1,1 so the border completely surrounds the inner shadow
-        mInnerShadowDrawable.getWrapperView().setViewOffset(1.0f, 1.0f);
+        PDEAbsoluteLayoutHelper.setViewOffset(mInnerShadowDrawable.getWrapperView(),1.0f, 1.0f);
         mInnerShadowDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(rect.width(), MeasureSpec.EXACTLY),
                                                       MeasureSpec.makeMeasureSpec(rect.height(), MeasureSpec.EXACTLY));
     }
@@ -565,10 +565,10 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
         }
 
         //getMainDrawable().setBoundingRect(new Rect(0, 0, w, h));
-        getMainView().setViewLayoutRect(new Rect(0, 0, w, h));
+        PDEAbsoluteLayoutHelper.setViewRect(getMainView(),new Rect(0, 0, w, h));
         getMainView().measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
 
-        mBorderLineDrawable.getWrapperView().setViewLayoutRect(new Rect(0, 0, w, h));
+        PDEAbsoluteLayoutHelper.setViewRect(mBorderLineDrawable.getWrapperView(),new Rect(0, 0, w, h));
         //mBorderLineView.setElementBoundingRect(new Rect(0, 0, w, h));
         mBorderLineDrawable.setElementShapeRoundedRect(mCornerRadius);
         mBorderLineDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),

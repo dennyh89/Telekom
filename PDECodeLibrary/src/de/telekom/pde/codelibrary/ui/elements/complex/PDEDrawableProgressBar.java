@@ -634,7 +634,7 @@ public class PDEDrawableProgressBar extends PDEDrawableMultilayer {
 
 
     /**
-     * @brief update function for shadowlayer
+     * @brief update function for shadow layer
      *
      * @param bounds the current element bounding rect
      */

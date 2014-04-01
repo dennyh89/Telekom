@@ -37,7 +37,7 @@ class PDEButtonLayerBackgroundTextFlat extends PDEAbsoluteLayout implements PDEB
      */
 	@SuppressWarnings("unused")
     private final static String LOG_TAG = PDEButtonLayerBackgroundTextFlat.class.getName();
-    private final static boolean DEBUGPARAMS = false;
+    private final static boolean DEBUG_PARAMS = false;
 
 
     // parameters needed
@@ -52,8 +52,10 @@ class PDEButtonLayerBackgroundTextFlat extends PDEAbsoluteLayout implements PDEB
 
     // global variables
     //
-    public static PDEDictionary PDEButtonLayerBackgroundTextFlatGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_flat_color_defaults");
-    public static PDEDictionary PDEButtonLayerBackgroundTextFlatGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
+    public static PDEDictionary PDEButtonLayerBackgroundTextFlatGlobalColorDefault
+            = PDEComponentHelpers.readDefaultColorDictionary("dt_button_flat_color_defaults");
+    public static PDEDictionary PDEButtonLayerBackgroundTextFlatGlobalBorderDefault
+            = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
 
 
     /**
@@ -101,7 +103,7 @@ class PDEButtonLayerBackgroundTextFlat extends PDEAbsoluteLayout implements PDEB
         setParameters(new PDEParameterDictionary(), true);
     }
 
-//----- PDEButtonLayerInterface implementation -----------------------------------------------------------------------------------
+//----- PDEButtonLayerInterface implementation -------------------------------------------------------------------------
 
 
     /**
@@ -148,8 +150,10 @@ class PDEButtonLayerBackgroundTextFlat extends PDEAbsoluteLayout implements PDEB
 
         // check for color or border changes (all in one go)
         if (force
-                || !PDEParameterDictionary.areParametersEqual(mParameters, oldParams, PDEButton.PDEButtonParameterColor)
-                || !PDEParameterDictionary.areParametersEqual(mParameters, oldParams, PDEButton.PDEButtonParameterBorderColor)) {
+                || !PDEParameterDictionary.areParametersEqual(mParameters, oldParams,
+                            PDEButton.PDEButtonParameterColor)
+                || !PDEParameterDictionary.areParametersEqual(mParameters, oldParams,
+                            PDEButton.PDEButtonParameterBorderColor)) {
             prepareColors();
         }
     }
@@ -185,8 +189,10 @@ class PDEButtonLayerBackgroundTextFlat extends PDEAbsoluteLayout implements PDEB
      */
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
+        // call super
         super.onSizeChanged(width, height, oldWidth, oldHeight);
-        mAreaDrawable.getWrapperView().setViewLayoutRect(new Rect(0, 0, width, height));
+
+        PDEAbsoluteLayoutHelper.setViewRect(mAreaDrawable.getWrapperView(), new Rect(0, 0, width, height));
         mAreaDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
         mAreaDrawable.setElementShapeRoundedRect(PDEBuildingUnits.oneThirdBU());
@@ -216,8 +222,10 @@ class PDEButtonLayerBackgroundTextFlat extends PDEAbsoluteLayout implements PDEB
         //!!!!!!!!!!!!!!!!!!! CODE BELOW ONLY FOR 3.0 RELEASE - NEED BETTER SOLUTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         PDEColor color = mParameters.parameterColorForName(PDEButton.PDEButtonParameterColor);
-        if(color!=null && !PDEButtonLayerBackgroundTextFlatGlobalBorderDefault.containsKey(color.getHexColorString())) {
-            PDEDictionary dict = (PDEDictionary) PDEButtonLayerBackgroundTextFlatGlobalBorderDefault.get(PDEColor.valueOfColorID(R.color.DTGrey237).getHexColorString());
+        if (color != null
+                && !PDEButtonLayerBackgroundTextFlatGlobalBorderDefault.containsKey(color.getHexColorString())) {
+            PDEDictionary dict = (PDEDictionary) PDEButtonLayerBackgroundTextFlatGlobalBorderDefault.get(
+                    PDEColor.valueOfColorID(R.color.DTGrey237).getHexColorString());
             PDEButtonLayerBackgroundTextFlatGlobalBorderDefault.put(color.getHexColorString(),dict);
         }
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -225,7 +233,7 @@ class PDEButtonLayerBackgroundTextFlat extends PDEAbsoluteLayout implements PDEB
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         // debug output
-        if(DEBUGPARAMS) {
+        if (DEBUG_PARAMS) {
             mParamColor.debugOut("Color before building");
             mParamBorderColor.debugOut("Border before building");
             mParamFillColor.debugOut("Fill before building");
@@ -239,7 +247,8 @@ class PDEButtonLayerBackgroundTextFlat extends PDEAbsoluteLayout implements PDEB
         PDEComponentHelpers.buildColors(mParamBorderColor, PDEButtonLayerBackgroundTextFlatGlobalBorderDefault,
                 mParamColor, null, PDEAgentHelper.PDEAgentHelperAnimationInteractive);
 
-        // if border color for a state is still not defined, calculate it from main agent colors (use gradient darker step)
+        // if border color for a state is still not defined, calculate it from main agent colors
+        // (use gradient darker step)
         PDEComponentHelpers.fillBorderColors(mParamBorderColor, mParamColor);
 
         // convert fill colors to colors (explicit for now, integrate it into helpers later)
@@ -249,10 +258,11 @@ class PDEButtonLayerBackgroundTextFlat extends PDEAbsoluteLayout implements PDEB
         PDEComponentHelpers.brightenColors(mParamFillColor);
 
         // calculate fill color agent states (after brighten step). Default color when nothing set is white here
-        PDEComponentHelpers.buildColors(mParamFillColor, null, "DTWhite", PDEAgentHelper.PDEAgentHelperAnimationInteractive);
+        PDEComponentHelpers.buildColors(mParamFillColor, null, "DTWhite",
+                PDEAgentHelper.PDEAgentHelperAnimationInteractive);
 
         // debug output
-        if(DEBUGPARAMS) {
+        if (DEBUG_PARAMS) {
             mParamColor.debugOut("Color after building");
             mParamBorderColor.debugOut("Border after building");
             mParamFillColor.debugOut("Fill after building");

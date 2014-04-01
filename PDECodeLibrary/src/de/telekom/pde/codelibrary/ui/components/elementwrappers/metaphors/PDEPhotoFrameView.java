@@ -20,7 +20,6 @@ import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.elements.metaphor.PDEDrawablePhotoFrame;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
-import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -31,7 +30,12 @@ import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
  * @brief Wrapper class hosting a PDEDrawablePhotoFrame for usage in Layouts
  */
 public class PDEPhotoFrameView extends View {
+
+    // metaphor drawable
     private PDEDrawablePhotoFrame mPhoto;
+
+    // rect helper variable to avoid allocation during layout/measure
+    private Rect mInternalCalculateAspectRatioBounds;
 
 
     /**
@@ -67,6 +71,8 @@ public class PDEPhotoFrameView extends View {
     protected void init(AttributeSet attrs){
         mPhoto = new PDEDrawablePhotoFrame(null);
         mPhoto.setElementMiddleAligned(true);
+
+        mInternalCalculateAspectRatioBounds = new Rect(0,0,0,0);
 
         PDEUtils.setViewBackgroundDrawable(this, mPhoto);
 
@@ -163,6 +169,7 @@ public class PDEPhotoFrameView extends View {
         invalidate();
     }
 
+
     /**
      * @brief Set photo drawable.
      */
@@ -216,12 +223,14 @@ public class PDEPhotoFrameView extends View {
         return 0;
     }
 
+
     /**
      * @brief Activate shadow.
      */
     public void setShadowEnabled(boolean enabled) {
         mPhoto.setElementShadowEnabled(enabled);
     }
+
 
     /**
      * @brief Get if shadow is activated.
@@ -232,49 +241,13 @@ public class PDEPhotoFrameView extends View {
     }
 
 
-
-    /**
-     * @brief Set View Size.
-     */
-    public void setViewSize(float width, float height){
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.width = Math.round(width);
-        layerParams.height = Math.round(height);
-        setLayoutParams(layerParams);
-    }
-
-
-    /**
-     * @brief Set View Offset.
-     */
-    public void setViewOffset(float x, float y){
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.x = Math.round(x);
-        layerParams.y = Math.round(y);
-        setLayoutParams(layerParams);
-    }
-
-
-    /**
-     * @brief Set View Rect.
-     */
-    public void setViewLayoutRect(Rect rect) {
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.x = rect.left;
-        layerParams.y = rect.top;
-        layerParams.width = rect.width();
-        layerParams.height = rect.height();
-
-        setLayoutParams(layerParams);
-    }
-
     /**
      * @brief Determine layout size of element.
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int height;
-        int width;
+        int height, newHeight;
+        int width, newWidth;
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
 
@@ -282,27 +255,32 @@ public class PDEPhotoFrameView extends View {
         height = MeasureSpec.getSize(heightMeasureSpec);
         width = MeasureSpec.getSize(widthMeasureSpec);
 
-        int newwidth = PDEBuildingUnits.roundUpToScreenCoordinates(getElementWidth());
+        newWidth = PDEBuildingUnits.roundUpToScreenCoordinates(getElementWidth());
 
-        if (newwidth < width) {
-            width = newwidth;
+        if (newWidth < width) {
+            width = newWidth;
         }
 
         if (widthSpecMode == MeasureSpec.UNSPECIFIED && width == 0) {
-            width = newwidth;
+            width = newWidth;
         }
 
-        int newheight = PDEBuildingUnits.roundUpToScreenCoordinates(getElementHeight());
+        newHeight = PDEBuildingUnits.roundUpToScreenCoordinates(getElementHeight());
 
-        if (newheight < height) {
-            height = newheight;
+        if (newHeight < height) {
+            height = newHeight;
         }
 
         if (heightSpecMode == MeasureSpec.UNSPECIFIED && height == 0) {
-            height = newheight;
+            height = newHeight;
         }
 
-        mPhoto.setInternalBounds(width, height);
+        if (mPhoto != null) {
+            mInternalCalculateAspectRatioBounds.set(0,0,width,height);
+            mInternalCalculateAspectRatioBounds = mPhoto.elementCalculateAspectRatioBounds(mInternalCalculateAspectRatioBounds);
+            width = mInternalCalculateAspectRatioBounds.width();
+            height = mInternalCalculateAspectRatioBounds.height();
+        }
 
         // return the values
         setMeasuredDimension(resolveSize(width, widthMeasureSpec),

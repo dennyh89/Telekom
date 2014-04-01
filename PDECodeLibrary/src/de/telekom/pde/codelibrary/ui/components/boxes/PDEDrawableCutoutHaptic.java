@@ -23,6 +23,7 @@ public class PDEDrawableCutoutHaptic extends PDEDrawableSunkenArea {
         init();
     }
 
+
     public void init(){
         // configure
         if(PDECodeLibrary.getInstance().isDarkStyle()){

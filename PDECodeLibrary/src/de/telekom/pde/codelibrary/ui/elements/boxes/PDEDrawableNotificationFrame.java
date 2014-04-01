@@ -34,7 +34,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
      */
     private final static String LOG_TAG = PDEDrawableNotificationFrame.class.getName();
 
-//----- constants ----------------------------------------------------------------------------------------------------
+//----- constants ------------------------------------------------------------------------------------------------------
     public enum TriangleSide {
         SideTop,
         SideRight,
@@ -50,7 +50,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         Bottom
     }
 
-//-----  properties ---------------------------------------------------------------------------------------------------
+//-----  properties ----------------------------------------------------------------------------------------------------
 
     // basic properties
     // colors
@@ -111,14 +111,18 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         // shadow is created on demand
         mElementShadowDrawable = null;
 
+        // to be sure, that wanted sizes are calculated into the real sizes
+        doLayout();
+
         //init paints for drawing
         update(true);
     }
 
 
-//---------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 // ----- optional shadow ----------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
 
     /**
      * @brief init shadow drawable.
@@ -136,7 +140,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         mElementShadowDrawable = new PDEDrawableShapedShadow();
         mElementShadowDrawable.setElementShapeOpacity(0.25f);
         setNeededPadding(PDEBuildingUnits.oneHalfBU());
-        updateElementShadowDrawable(new Point(getBounds().width(),getBounds().height()));
+        updateElementShadowDrawable(new Point(getBounds().width(), getBounds().height()));
         // return
         return mElementShadowDrawable;
     }
@@ -173,13 +177,18 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
             Path shadowPath;
 
             // set shadow bounds
-            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x+(2*(int)mElementShadowDrawable.getElementBlurRadius()),
-                             bounds.top + elementSize.y+(2*(int)mElementShadowDrawable.getElementBlurRadius()));
+            frame = new Rect(bounds.left,
+                    bounds.top,
+                    bounds.left + elementSize.x + (2 * (int)mElementShadowDrawable.getElementBlurRadius()),
+                    bounds.top + elementSize.y + ( 2 * (int)mElementShadowDrawable.getElementBlurRadius()));
             mElementShadowDrawable.setBounds(frame);
+
             // make a copy of the original element path for the shadow
             shadowPath = new Path(mElementPath);
+
             // offset by blur radius of shadow
-            shadowPath.offset(mElementShadowDrawable.getElementBlurRadius(),mElementShadowDrawable.getElementBlurRadius());
+            shadowPath.offset(mElementShadowDrawable.getElementBlurRadius(),
+                              mElementShadowDrawable.getElementBlurRadius());
             mElementShadowDrawable.setElementShapePath(shadowPath);
         }
     }
@@ -187,15 +196,15 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
 
 
 
-//---------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 // ----- general setters and getters ----------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 
     /**
      * @brief Set fill (background) color.
      *
-     * @param color The new backgroundcolor of the speech bubble.
+     * @param color The new background color of the speech bubble.
      */
     public void setElementBackgroundColor(PDEColor color) {
         // any change?
@@ -343,9 +352,9 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
 
 
 
-//---------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 // ----- triangle setters and getters ----------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 
     /**
@@ -417,6 +426,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         return mElementTriangleTipDistance;
     }
 
+
     /**
      * @brief Get the wanted distance between triangle base line and triangle tip.
      *
@@ -425,6 +435,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
     public int getElementWantedTriangleTipDistance() {
         return mElementWantedTriangleTipDistance;
     }
+
 
     /**
      * @brief Set margin which is kept between the triangle and the rounded corners.
@@ -487,6 +498,16 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
 
 
     /**
+     * @brief Checks current triangle position is a relative or an absolute value.
+     *
+     * @return true-> relative position, false -> absolute position
+     */
+    public boolean isElementTriangleTipPositionRelative(){
+        return mElementTriangleWantedTipPositionIsRelative;
+    }
+
+
+    /**
      * @brief Get the absolute pixel position of the triangle tip.
      *
      * @return the absolute pixel position of the triangle tip.
@@ -494,6 +515,17 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
     public float getElementTriangleTipPosition() {
         return mElementTriangleTipPosition;
     }
+
+
+    /**
+     * @brief Get the wanted absolute pixel position of the triangle tip.
+     *
+     * @return the wanted absolute pixel position of the triangle tip.
+     */
+    public float getElementWantedTriangleTipPosition() {
+        return mElementWantedTriangleTipPosition;
+    }
+
 
     /**
      * @brief Get the side of the rounded rect the triangle is attached to.
@@ -575,21 +607,12 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
     public void setElementTriangleTipPositionPredefined(TrianglePosition position,
                                                         TriangleSide side) {
         // "left" and "top" are handled the same way
-        if (position ==
-            TrianglePosition.Left ||
-            position ==
-            TrianglePosition.Top) {
+        if (position == TrianglePosition.Left || position == TrianglePosition.Top) {
             setElementTriangleTipPositionRelative(0.0f, side);
-        }
-
-        // "right" and "bottom" are handled the same way
-        else if (position ==
-                 TrianglePosition.Right ||
-                 position ==
-                 TrianglePosition.Bottom) {
+        } else if (position == TrianglePosition.Right || position == TrianglePosition.Bottom) {
+            // "right" and "bottom" are handled the same way
             setElementTriangleTipPositionRelative(1.0f, side);
-        } else if (position ==
-                   TrianglePosition.Center) {
+        } else if (position == TrianglePosition.Center) {
             setElementTriangleTipPositionRelative(0.5f, side);
         }
     }
@@ -679,35 +702,33 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
 
 
 
-//---------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 // ----- path drawing ----------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 
     /**
      * @brief Get drawing start point
      *
      * Calculate & deliver the start point of the drawing path.
-     * We start drawing at the left startpoint of the top edge.
-     * The used pixelShift is needed to avoid an antialiasing bug which appears if we're not correctly pixelaligned.
+     * We start drawing at the left start point of the top edge.
+     * The used pixelShift is needed to avoid an antialiasing bug which appears if we're not correctly pixel-aligned.
      *
      * @return start point of drawing
      */
     private PointF getElementDrawingStartPoint() {
         if (!mElementTriangleEnabled) {
             // no triangle, so side setting doesn't matter
-            return new PointF(mElementCornerRadius + mPixelShift, 0.0f+ mPixelShift);
-        } else if (mElementTriangleSide ==
-                   TriangleSide.SideLeft) {
+            return new PointF(mElementCornerRadius + mPixelShift, 0.0f + mPixelShift);
+        } else if (mElementTriangleSide == TriangleSide.SideLeft) {
             // take place into account that is needed for the triangle on the left side (additional x-Offset)
-            return new PointF(mElementTriangleTipDistance + mElementCornerRadius+ mPixelShift, 0.0f+ mPixelShift);
-        } else if (mElementTriangleSide ==
-                   TriangleSide.SideTop) {
+            return new PointF(mElementTriangleTipDistance + mElementCornerRadius + mPixelShift, 0.0f + mPixelShift);
+        } else if (mElementTriangleSide == TriangleSide.SideTop) {
             // take place into account that is needed for the triangle on the top side (additional y-Offset)
-            return new PointF(mElementCornerRadius+ mPixelShift, mElementTriangleTipDistance+ mPixelShift);
+            return new PointF(mElementCornerRadius + mPixelShift, mElementTriangleTipDistance + mPixelShift);
         } else {
             // default
-            return new PointF(mElementCornerRadius+ mPixelShift, 0.0f+ mPixelShift);
+            return new PointF(mElementCornerRadius + mPixelShift, 0.0f+ mPixelShift);
         }
     }
 
@@ -730,15 +751,15 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
             return;
         }
 
-        if (elementSize.x < (2 * mElementWantedCornerRadius + 2 * mElementTriangleMargin) ||
-            elementSize.y < (2 * mElementWantedCornerRadius + 2 * mElementTriangleMargin)) {
+        if (elementSize.x < (2 * mElementWantedCornerRadius + 2 * mElementTriangleMargin)
+                || elementSize.y < (2 * mElementWantedCornerRadius + 2 * mElementTriangleMargin)) {
             return;
         }
 
 
         switch (mElementTriangleSide) {
             case SideTop:
-                // at the beginning we're always placed at the startpoint of the current edge
+                // at the beginning we're always placed at the start point of the current edge
                 lineSegmentStartPoint = currentPoint;
                 // add the effective width of the edge to get its endpoint
                 lineSegmentEndPoint = new PointF(lineSegmentStartPoint.x + getElementEdgeWidth(elementSize),
@@ -755,9 +776,9 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
                                                currentPoint.y);
 
                 // check bounds
-                if (tipTrianglePoint.y < 0 ||
-                    firstTrianglePoint.x < lineSegmentStartPoint.x ||
-                    lastTrianglePoint.x > lineSegmentEndPoint.x) {
+                if (tipTrianglePoint.y < 0
+                        || firstTrianglePoint.x < lineSegmentStartPoint.x
+                        || lastTrianglePoint.x > lineSegmentEndPoint.x) {
                     Log.e(LOG_TAG, "Triangle values out of bounds!");
                     // abort
                     return;
@@ -888,8 +909,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         // now we're at the upper end of right-line, so calculate lower end of right-line
         destination = new PointF(currentPoint.x, currentPoint.y + getElementEdgeHeight(elementSize));
         // if triangle on right side, add it in
-        if (mElementTriangleSide ==
-            TriangleSide.SideRight) {
+        if (mElementTriangleSide == TriangleSide.SideRight) {
             drawTriangle(path, elementSize, currentPoint);
         }
         // draw line to lower end of right-line
@@ -904,8 +924,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         // now we're at the right end of the bottom-line, so calculate left end of bottom-line
         destination = new PointF(currentPoint.x - getElementEdgeWidth(elementSize), currentPoint.y);
         // if triangle is on bottom side, add it in
-        if (mElementTriangleSide ==
-            TriangleSide.SideBottom) {
+        if (mElementTriangleSide == TriangleSide.SideBottom) {
             drawTriangle(path, elementSize, currentPoint);
         }
         // draw line to left end of bottom line
@@ -920,8 +939,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         // now we're at the lower end of the left-line, so calculate upper end of left-line
         destination = new PointF(currentPoint.x, currentPoint.y - getElementEdgeHeight(elementSize));
         // if triangle on left side, add it in
-        if (mElementTriangleSide ==
-            TriangleSide.SideLeft) {
+        if (mElementTriangleSide == TriangleSide.SideLeft) {
             drawTriangle(path, elementSize, currentPoint);
         }
         // draw line to upper end of left-line
@@ -942,7 +960,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
 
 
 //---------------------------------------------------------------------------------------------------------------------
-// ----- Addaption of space requirements ----------------------------------------------------------------------------
+// ----- Adaption of space requirements ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
 
 
@@ -991,10 +1009,8 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
             }
 
             // make relative to absolute value
-            if (mElementTriangleSide ==
-                TriangleSide.SideTop ||
-                mElementTriangleSide ==
-                TriangleSide.SideBottom) {
+            if (mElementTriangleSide == TriangleSide.SideTop
+                    || mElementTriangleSide == TriangleSide.SideBottom) {
                 position *= elementSize.x;
             } else {
                 position *= elementSize.y;
@@ -1012,11 +1028,10 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         // so on top/bottom side 'position' is an x-value and 'edgeFirstPos' is the left end of the horizontal edge
         // on left/right side 'position' is an y-value and 'edgeFirstPos' is the upper end of the vertical edge
         edgeFirstPos = mElementCornerRadius;
+
         // depending on the drawing side we have to add width or height to get the right/lower end of the edge
-        if (mElementTriangleSide ==
-            TriangleSide.SideTop ||
-            mElementTriangleSide ==
-            TriangleSide.SideBottom) {
+        if (mElementTriangleSide == TriangleSide.SideTop
+                ||  mElementTriangleSide == TriangleSide.SideBottom) {
             edgeLastPos = edgeFirstPos + getElementEdgeWidth(elementSize);
         } else {
             edgeLastPos = edgeFirstPos + getElementEdgeHeight(elementSize);
@@ -1053,10 +1068,8 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
     private void calculateTriangleTipDistance(Point elementSize) {
         int spaceForTriangle;
 
-        if (mElementTriangleSide ==
-            TriangleSide.SideTop ||
-            mElementTriangleSide ==
-            TriangleSide.SideBottom) {
+        if (mElementTriangleSide == TriangleSide.SideTop
+                || mElementTriangleSide == TriangleSide.SideBottom) {
             // calculate space that is left for the triangle
             spaceForTriangle = Math.round(elementSize.y - (2 * mElementCornerRadius + 2 * mElementTriangleMargin));
 
@@ -1099,10 +1112,8 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         int allowedTriangleDrawingArea;
 
         // limit triangle width to meaningful value if necessary
-        if (mElementTriangleSide ==
-            TriangleSide.SideTop ||
-            mElementTriangleSide ==
-            TriangleSide.SideBottom) {
+        if (mElementTriangleSide == TriangleSide.SideTop
+                ||  mElementTriangleSide == TriangleSide.SideBottom) {
             // is wanted width bigger than the allowed drawing area?
             if (mElementWantedTriangleWidth >
                 (allowedTriangleDrawingArea = Math.round(getElementEdgeWidth(elementSize) -
@@ -1170,7 +1181,6 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
     }
 
 
-
     /**
      * @brief Update all of my sublayers.
      */
@@ -1180,7 +1190,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         Path path;
 
         // get the rect we're using for layouting  (we draw from 0 to bounds - 1)
-        elementSize = new Point(getBounds().width()-1, getBounds().height()-1);
+        elementSize = new Point(getBounds().width() - 1, getBounds().height()-1);
 
         // adapt space requirements (wanted values ) to given space
         measureTriangleValues(elementSize);
@@ -1269,4 +1279,9 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         c.drawPath(mElementPath, mBorderPaint);
     }
 
+
+    protected void onBoundsChange(Rect bounds) {
+        Log.d(LOG_TAG,"PDEDrawableNotificationFrame new bounds: width: "+bounds.width()+" height: "+bounds.height());
+        super.onBoundsChange(bounds);
+    }
 }

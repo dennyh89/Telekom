@@ -6,6 +6,7 @@
     <attr name="titleColor" format="color"/>
     <attr name="textColor" format="color"/>
     <attr name="backgroundColor" format="color"/>
+    <attr name="borderColor" format="color"/>
     <attr name="shadowColor" format="color"/>
     <attr name="shadowOffsetX" format="float"/>
     <attr name="shadowOffsetY" format="float"/>
@@ -20,6 +21,7 @@
     <attr name="timeString" format="string"/>
     <attr name="format169" format="boolean"/>
     <attr name="iconToTextHeightRatio" format="float"/>
+    <attr name="cornerRadius" format="dimension"/>
     <attr name="backgroundType">
         <enum name="none" value="5"/>
         <enum name="flat" value="7"/>
@@ -83,8 +85,8 @@
             <enum name="radioFlat" value="20"/>
         </attr>
         <attr name="iconColored" format="boolean"/>
-        <attr name="cornerRadius" format="dimension"/>
-        <attr name="borderColor" format="color"/>
+        <attr name="cornerRadius"/>
+        <attr name="borderColor"/>
         <attr name="minButtonPadding" format="dimension"/>
         <attr name="minButtonPaddingLeft" format="dimension"/>
         <attr name="minButtonPaddingTop" format="dimension"/>
@@ -100,6 +102,7 @@
             <flag name="allCornersRounded" value="0x0000000f" />
         </attr>
         <attr name="iconToTextHeightRatio" />
+        <attr name="horizontalPadding" format="dimension"/>
     </declare-styleable>
     <declare-styleable name="PDEInputField">
         <attr name="text"/>
@@ -210,7 +213,7 @@
             <enum name="scrollbarHandleOnlyVertical" value="7" />
         </attr>
     </declare-styleable>
-    <declare-styleable name="PDELayerTextView">
+    <declare-styleable name="PDETextView">
         <attr name="text"/>
         <attr name="textColor"/>
         <attr name="backgroundColor"/>
@@ -287,7 +290,7 @@
     </declare-styleable>
 
 
-     <declare-styleable name="PDEListHeaderView">
+    <declare-styleable name="PDEListHeaderView">
          <attr name="text"/>
          <attr name="subText" format="string"/>
          <attr name="backgroundColor"/>
@@ -295,7 +298,42 @@
          <attr name="delimiterBackgroundColor" format="color"/>
          <attr name="textColor"/>
          <attr name="subTextColor" format="color"/>
+    </declare-styleable>
 
-     </declare-styleable>
+    <declare-styleable name="PDENotificationBaseView">
+        <attr name="title"/>
+        <attr name="message" format="string"/>
+        <attr name="backgroundColor"/>
+        <attr name="borderColor"/>
+        <attr name="borderWidth" format="dimension"/>
+        <attr name="titleTextColor" format="color"/>
+        <attr name="messageTextColor" format="color"/>
+        <attr name="triangleSide">
+            <enum name="top" value="0"/>
+            <enum name="right" value="1"/>
+            <enum name="bottom" value="2"/>
+            <enum name="left" value="3"/>
+        </attr>
+        <attr name="trianglePredefinedPosition">
+            <enum name="left" value="0"/>
+            <enum name="center" value="1"/>
+            <enum name="right" value="2"/>
+            <enum name="top" value="3"/>
+            <enum name="bottom" value="4"/>
+        </attr>
+        <attr name="triangleTipPositionAbsolute" format="float"/>
+        <attr name="triangleTipPositionRelative" format="float"/>
+        <attr name="cornerRadius"/>
+        <attr name="triangleWidth" format="dimension"/>
+        <attr name="triangleTipDistance" format="dimension"/>
+        <attr name="triangleMargin" format="dimension"/>
+        <attr name="triangleEnabled" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="PDEInfoFlagView">
+        <attr name="titleEnabled" format="boolean"/>
+    </declare-styleable>
+
+
 
 </resources>

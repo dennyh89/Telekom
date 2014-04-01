@@ -148,13 +148,14 @@ public abstract class PDEFrameTiming {
     private static PDEFrameTiming createInstance() {
         boolean choreographerClassAvailable = false;
         try {
-            Class<?> Choreographer = null;
+            Class<?> Choreographer;
             Choreographer = Class.forName("android.view.Choreographer");
             if (Choreographer != null) {
                choreographerClassAvailable = true;
             }
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            // we have a fallback solution, so don't irritate the user with this stack trace
+            //e.printStackTrace();
         }
 
         if (choreographerClassAvailable) {
@@ -251,7 +252,7 @@ public abstract class PDEFrameTiming {
      */
     public Object addListener(Object target, String methodName, boolean weakReferenceOnly) {
 
-        PDEFrameTimingListener newListener = null;
+        PDEFrameTimingListener newListener;
 
         //security
         if (target == null || mListener == null || TextUtils.isEmpty(methodName)) {

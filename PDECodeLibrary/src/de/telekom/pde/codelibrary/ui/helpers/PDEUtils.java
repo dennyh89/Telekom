@@ -10,6 +10,7 @@
 package de.telekom.pde.codelibrary.ui.helpers;
 
 
+import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -23,8 +24,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.RelativeLayout;
-
-import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -162,7 +161,7 @@ public class PDEUtils {
      *         Configuration.ORIENTATION_SQUARE, Configuration.ORIENTATION_PORTRAIT or Configuration.ORIENTATION_LANDSCAPE
      */
     @SuppressWarnings("deprecation")
-    private static int getScreenOrientation(@Nonnull final Display display)  {
+    private static int getScreenOrientation(final Display display)  {
         final Point dimension = extractDisplayDimension(display);
         int orientation;
 
@@ -189,8 +188,7 @@ public class PDEUtils {
      *            needed to get screen dimensions
      * @return the modified view which was given as parameter
      */
-    public static @Nonnull
-    View setGoldenRatioTo(@Nonnull final View view, @Nonnull final Display display) {
+    public static View setGoldenRatioTo( final View view, final Display display) {
         if(view == null)  throw new NullPointerException("view is NULL!!!");
         if(display == null)  throw new NullPointerException("display is NULL!!!");
 
@@ -229,6 +227,36 @@ public class PDEUtils {
         if (resourceId > 0) {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
+        return result;
+    }
+
+
+    /**
+     * @brief Fetches dynamically a predefined String from the android resources.
+     *
+     * Fetches a distinct String out of the various string*.xml files of the Android resources. You have to deliver the
+     * name of the String. This function is especially useful if you don't know the name of the wanted String at
+     * compile-time and have to fetch it dynamically at runtime.
+     *
+     * @param name name of the desired String
+     * @return the desired String.
+     */
+    public static String loadStringFromResources(String name){
+        Context c;
+        int id;
+        String result;
+
+        if (PDEString.isEmpty(name)) return "";
+
+        // get application context
+        c = PDECodeLibrary.getInstance().getApplicationContext();
+
+        // resolve id
+        id = c.getResources().getIdentifier(name, "string", c.getPackageName() );
+        // get string for id
+        if (id == 0) result = "";
+        else result = c.getResources().getString(id);
+
         return result;
     }
 }

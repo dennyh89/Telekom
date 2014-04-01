@@ -15,8 +15,8 @@
             android:theme="@style/Theme.PDE.NoActionBar" >
         </activity>
 
-        <activity android:name="de.telekom.pde.codelibrary.ui.modules.login.OKDialog" android:theme="@style/Theme.OKDialog" android:excludeFromRecents="true"/>
         <activity android:name="de.telekom.pde.codelibrary.ui.modules.login.PDEOneIDMLoginScreenActivity"/>
+        <activity android:name="de.telekom.pde.codelibrary.ui.components.dialog.PDEDialogActivity" android:theme="@style/Theme.PDEDialog" android:excludeFromRecents="true"/>
 
     </application>
 

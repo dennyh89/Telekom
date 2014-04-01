@@ -61,9 +61,9 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
     protected Bitmap mDrawingBitmap;
     protected PDEViewWrapper mWrapperView;
 
-    // needed for correct pixelalignement with antialias
+    // needed for correct pixel-alignment with antialias
     protected float mPixelShift;
-    // (antialised) clipping
+    // (antialinged) clipping
     protected Path mClipPath;
     // layout helper
     protected int mNeededPadding;
@@ -84,8 +84,6 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
         mClipPath = null;
         mNeededPadding = 0;
     }
-
-
 
 
 
@@ -135,6 +133,7 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
         setLayoutSize(size.x,size.y);
     }
 
+
     /**
      * @brief Set the size of the layer.
      *
@@ -156,13 +155,14 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
 
 
     /**
-     * @brief Set the offest of the layer.
+     * @brief Set the offset of the layer.
      *
      * @param offset The new offset of the element.
      */
     public void setLayoutOffset(Point offset) {
         setLayoutOffset(offset.x,offset.y);
     }
+
 
     /**
      * @brief Set the offset of the layer.
@@ -213,7 +213,7 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
     public Point getLayoutSize() {
         // get current bounds
         Rect bounds = getBounds();
-        return new Point(bounds.width(),bounds.height());
+        return new Point(bounds.width(), bounds.height());
     }
 
 
@@ -223,7 +223,7 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
     public Point getLayoutOffset() {
         // get current bounds
         Rect bounds = getBounds();
-        return new Point(bounds.left,bounds.top);
+        return new Point(bounds.left, bounds.top);
     }
 
 
@@ -277,6 +277,7 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
         // todo: implement in derived class
     }
 
+
     /**
      * @brief Set a clip path for the drawable if needed.
      *
@@ -289,8 +290,6 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
         update();
 
     }
-
-
 
 
     /**
@@ -335,8 +334,6 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
     @Override
     public void draw(Canvas canvas) {
         Rect bounds = getBounds();
-
-
 
         // security
         if (bounds.width() <= 0 || bounds.height() <= 0  || mDrawingBitmap == null) return;
@@ -389,6 +386,7 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
         return PixelFormat.TRANSLUCENT;
     }
 
+
     /**
      * @brief Specify an alpha value for the drawable.
      *
@@ -411,7 +409,7 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
      *
      * Pass null to remove any filters.
      *
-     * @param cf the new colorfilter.
+     * @param cf the new colorFilter.
      */
     @Override
     public void setColorFilter(ColorFilter cf) {
@@ -435,8 +433,10 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
     public void setDither(boolean dither) {
         // change?
         if (mDither == dither) return;
+
         // remember
         mDither = dither;
+
         // update
         update(true);
     }
@@ -527,7 +527,7 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
      * are used within this drawable have to be updated. Place the code to recreate the Paints (with the new values)
      * within this method. You can also use it for updates of a distinct paint (e.g. when a distinct color has
      * changed), although this means some overhead.
-     * This method HAS to be overriden by derived classes.
+     * This method HAS to be overridden by derived classes.
      */
     protected abstract void updateAllPaints();
 
@@ -538,7 +538,7 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
      * This updateHook is introduced to enhance the flexibility of the update queue. If there are some special
      * members in the derived Drawable that have to be updated before the drawing starts,
      * the update can be done within this method.
-     * This method should be overriden if needed.
+     * This method should be overridden if needed.
      *
      * @param paintPropertiesChanged shows if an update of the used Paint-Instances is needed. Decide on your own if
      *                               you need this information.
@@ -609,7 +609,7 @@ public abstract class PDEDrawableBase extends Drawable implements PDEDrawableInt
      * hardware-acceleration-drawing-bugs we encountered so far. On the other hand we don't have to run through our
      * drawing code every time when draw is triggered from somewhere else. Then we just have to draw our already
      * prepared bitmap. The bitmap is only updated if the update is triggered from within this class.
-     * This method HAS to be overriden by derived classes.
+     * This method HAS to be overridden by derived classes.
      *
      * @param c the Canvas of the DrawingBitmap we want to draw into.
      * @param bounds the current bounding rect of our Drawable.

@@ -50,13 +50,13 @@ public interface PDEDrawableInterface {
     public void setLayoutSize (int width, int height);
 
 
-
     /**
      * @brief Set Multilayer Offset
      *
      * @param offset new offset of the multilayer
      */
     public void setLayoutOffset(Point offset);
+
 
     /**
      * @brief Set Multilayer Offset
@@ -83,6 +83,7 @@ public interface PDEDrawableInterface {
      * @param padding additional padding
      */
     public void setNeededPadding(int padding);
+
 
     /**
      * @brief Returns the padding the element needs to be displayed correctly.

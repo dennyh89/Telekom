@@ -63,8 +63,8 @@ public class PDESquareRelativeLayout extends RelativeLayout {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        int choosenHeightSize = heightSize;
-        int choosenWidthSize = widthSize;
+        int choosenHeightSize;
+        int choosenWidthSize;
 
         if ( !(heightMode == MeasureSpec.EXACTLY && widthMode == MeasureSpec.EXACTLY) ) {
             //don't be bigger then the AT_MOST size

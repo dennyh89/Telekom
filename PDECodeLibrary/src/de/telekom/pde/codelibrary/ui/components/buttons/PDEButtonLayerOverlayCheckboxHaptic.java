@@ -36,8 +36,6 @@ class PDEButtonLayerOverlayCheckboxHaptic extends PDEButtonLayerOverlayCheckboxB
     private final static String LOG_TAG = PDEButtonLayerOverlayCheckboxHaptic.class.getName();
 
 
-
-
     /**
      * @brief Class initialization.
      */
@@ -68,7 +66,7 @@ class PDEButtonLayerOverlayCheckboxHaptic extends PDEButtonLayerOverlayCheckboxB
      * @brief Factory function that decides which background we use.
      *
      */
-    protected PDEDrawableArea createDrawableArea(){
+    protected PDEDrawableArea createDrawableArea() {
         PDEDrawableSunkenArea area;
 
         area = new PDEDrawableSunkenArea();

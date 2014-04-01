@@ -17,14 +17,15 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
+
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.R;
+import de.telekom.pde.codelibrary.ui.components.dialog.PDEDialog;
 import de.telekom.pde.codelibrary.ui.components.inputfields.PDEInputField;
 import de.telekom.pde.codelibrary.ui.components.inputfields.PDEInputFieldEvent;
+import de.telekom.pde.codelibrary.ui.components.notification.PDEInfoFlagView;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
-import de.telekom.pde.codelibrary.ui.helpers.PDEString;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 
 
@@ -47,14 +48,13 @@ public class PDEOneIDMLoginScreenActivity
         implements DialogInterface.OnCancelListener {
 
     // private members
-    private PDEOneIDMModule mOneIDM;
-    
+
     // because scope is unused in the current library version -> suppress warnings 
     @SuppressWarnings("unused")
     private String mScope;
     
     private boolean mPersistentRequest;
-    private ToolTip mUsernameInfoToolTip;
+    private PDEInfoFlagView mUsernameInfoToolTip;
     private Runnable mUsernameShowInfoRunnable;
     private Handler mHandler;
     private ProgressIndicatorFragment mProgressIndicatorFragment;
@@ -150,9 +150,6 @@ public class PDEOneIDMLoginScreenActivity
         setStaySignedInVisible(startIntent
                 .getBooleanExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SHOW_STAY_SIGNED_IN_CHECKBOX, true));
 
-        // get instance of OneIDMModule which connects to the OneIDM Server
-        mOneIDM = new PDEOneIDMModule(clientID, url);
-        mOneIDM.addListener(this, "oneIDMEvent");
 
         // set the right content
         setDescriptionHTML(getResources().getString(R.string.login_screen_screen_description_idm));
@@ -161,7 +158,7 @@ public class PDEOneIDMLoginScreenActivity
         setRegisterAreaVisible(true);
 
         // get username info tooltip
-        mUsernameInfoToolTip = ((ToolTip)findViewById(R.id.LoginScreenUsernameInfoToolTip));
+        mUsernameInfoToolTip = ((PDEInfoFlagView)findViewById(R.id.LoginScreenUsernameInfoToolTip));
 
         // register listener to username input field in order to show info tooltip
         mUsernameInputField.addListener(this, "onUsernameInputFieldAction");
@@ -187,12 +184,21 @@ public class PDEOneIDMLoginScreenActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(PDEOneIDMLoginScreenActivity.this, "Start validating the credentials with OneIDM!"
-                        + "\nemail: " + email
-                        + "\npassword: " + password
-                        + "\nstaySignedIn: " + (staySignedIn ? "true" : "false"),
-                        Toast.LENGTH_SHORT)
-                        .show();
+                showLoginFailNotification("Start validating the credentials with OneIDM!",
+                                          "email: %1$s\npassword: %2$s\nstaySignedIn: %3$s",
+                                           email,password,(staySignedIn ? "true" : "false"));
+
+//                showLoginFailNotification("Start validating the credentials with OneIDM!","email: " + email
+//                        + "\npassword: " + password
+//                        + "\nstaySignedIn: " + (staySignedIn ? "true" : "false"));
+
+
+//                Toast.makeText(PDEOneIDMLoginScreenActivity.this, "Start validating the credentials with OneIDM!"
+//                        + "\nemail: " + email
+//                        + "\npassword: " + password
+//                        + "\nstaySignedIn: " + (staySignedIn ? "true" : "false"),
+//                        Toast.LENGTH_SHORT)
+//                        .show();
             }
         });
 
@@ -251,24 +257,8 @@ public class PDEOneIDMLoginScreenActivity
             Log.d(LOG_TAG, "oneIDMEvent received values "+resultString);
         }
 
-        if (event.getType().equals(PDEOneIDMModule.PDEOneIDMModuleEventCanceledByUser)) {
-            enableUserInteractionFields(true);
-        } else if (event.getType().equals(PDEOneIDMModule.PDEOneIDMModuleEventToken)) {
-            // send result intent
-            Intent returnIntent = new Intent();
-            PDEDictionary result = (PDEDictionary)event.getResult();
-            if (mPersistentRequest) {
-                result.put("persistent_refresh_token_requested", "true");
-            }
-            returnIntent.putExtra(ONE_IDM_LOGIN_SCREEN_RETURNED_INTENT_EXTRA_RESULT, result);
-            setResult(RESULT_OK,returnIntent);
+        enableUserInteractionFields(true);
 
-            // exit activity (back to startActivityForResult caller :: onActivityResult)
-            finish();
-        } else {
-            evaluateError(event);
-            enableUserInteractionFields(true);
-        }
     }
 
 
@@ -302,104 +292,7 @@ public class PDEOneIDMLoginScreenActivity
     }
 
 
-    private void evaluateError(PDEEvent event) {
-        String errorMessage = "";
-        String errorTitle = "";
-        int statusCode = -1;
-        String errorDescription = "";
 
-        PDEDictionary resultDict = new PDEDictionary();
-        if (event.getResult() instanceof PDEDictionary)
-        {
-            resultDict = (PDEDictionary)event.getResult();
-            if (resultDict.containsKey(PDEOneIDMModule.ResultDictionaryStatusCode)) {
-                statusCode = (Integer)resultDict.get(PDEOneIDMModule.ResultDictionaryStatusCode);
-            }
-            if (resultDict.containsKey("error_description")) {
-                errorDescription += resultDict.get("error_description");
-            }
-        }
-
-        if (event.getType().equals(PDEOneIDMModule.PDEOneIDMModuleEventTimeout)) {
-            // timeout
-            errorMessage += getResources().getString(R.string.login_screen_oneidm_activity_timeout_error_msg);
-            errorTitle = getResources().getString(R.string.login_screen_oneidm_activity_timeout_error_title);
-        } else if (event.getType().equals(PDEOneIDMModule.PDEOneIDMModuleEventError)) {
-            if (resultDict.containsKey(PDEOneIDMModule.ResultDictionaryError)
-                    && PDEString.isEqual((String)resultDict.get(PDEOneIDMModule.ResultDictionaryError),"IOException")) {
-                // IOException -> show network error
-                errorMessage = getResources().getString(R.string.login_screen_oneidm_activity_error_no_network_msg);
-                errorTitle = getResources().getString(R.string.login_screen_oneidm_activity_error_no_network_title);
-            } else {
-                // OK it is not the IOException but an other one...
-                errorMessage += getResources().getString(R.string.login_screen_oneidm_activity_error_developer_msg);
-                errorTitle = getResources().getString(R.string.login_screen_oneidm_activity_error_developer_title);
-            }
-        } else if (event.getType().equals(PDEOneIDMModule.PDEOneIDMModuleEventErrorOAuth)) {
-            if (statusCode == 400) {
-                // invalid-request or invalid-scope or invalid_grand
-                if (PDEString.contains(errorDescription,"Invalid username or password"))
-                {
-                    if (PDEString.contains(errorDescription,"temporarily")) {
-                        // user name and password false - tarpit time
-                        int seconds = 0;
-                        String[] parts = TextUtils.split(errorDescription, ";");
-                        try {
-                            seconds = Integer.valueOf(PDEString.trim(parts[parts.length - 1]));
-                        } catch (NumberFormatException e) {
-                            // don't do anything
-                        }
-
-                        errorMessage += String.format(getResources().getString(
-                                R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_temp_msg), seconds);
-                        errorTitle = getResources().getString(
-                                R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_temp_title);
-                    } else {
-                        // to tarpit time -> looks like it is really locked
-                        errorMessage += getResources().getString(
-                                R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_msg);
-                        errorTitle = getResources().getString(
-                                R.string.login_screen_oneidm_activity_error_oauth_credentials_wrong_title);
-                    }
-                } else if (PDEString.contains(errorDescription,"Account locked temporarily")) {
-                    int seconds = 0;
-                    String[] parts = TextUtils.split(errorDescription,";");
-                    try {
-                        seconds = Integer.valueOf(PDEString.trim(parts[parts.length-1]));
-                    } catch (NumberFormatException e) {
-                        // don't do anything
-                    }
-                    errorMessage += String.format(getResources().getString(
-                            R.string.login_screen_oneidm_activity_error_oauth_account_locked_temp_msg), seconds);
-                    errorTitle = getResources().getString(
-                            R.string.login_screen_oneidm_activity_error_oauth_account_locked_temp_title);
-                } else if (PDEString.contains(errorDescription, "Account locked")) {
-                    errorMessage += getResources().getString(
-                            R.string.login_screen_oneidm_activity_error_oauth_account_locked_msg);
-                    errorTitle = getResources().getString(
-                            R.string.login_screen_oneidm_activity_error_oauth_account_locked_title);
-                } else {
-                    // unknown error
-                    errorMessage += getResources().getString(R.string.login_screen_oneidm_activity_error_developer_msg);
-                    errorTitle = getResources().getString(R.string.login_screen_oneidm_activity_error_developer_title);
-                }
-            } else if (statusCode == 401) {
-                // invalid-client
-                errorMessage += getResources().getString(R.string.login_screen_oneidm_activity_error_developer_msg);
-                errorTitle = getResources().getString(R.string.login_screen_oneidm_activity_error_developer_title);
-            } else if (statusCode == 500) {
-                // server-error
-                errorMessage += getResources().getString(R.string.login_screen_oneidm_activity_error_500_msg);
-                errorTitle = getResources().getString(R.string.login_screen_oneidm_activity_error_500_title);
-            } else {
-                // default
-                errorMessage += getResources().getString(R.string.login_screen_oneidm_activity_error_developer_msg);
-                errorTitle = getResources().getString(R.string.login_screen_oneidm_activity_error_developer_title);
-            }
-        }
-        showLoginFailNotification(errorTitle, errorMessage);
-        logLoginFail(event);
-    }
 
 
     /**
@@ -443,8 +336,8 @@ public class PDEOneIDMLoginScreenActivity
         if (mUsernameInfoToolTip.getVisibility() == View.VISIBLE) {
             mUsernameInfoToolTip.hide();
         }
-        if (mLoginScreenPositionableToolTip.getVisibility() == View.VISIBLE) {
-            mLoginScreenPositionableToolTip.hide();
+        if (mLoginScreenPositionableInfoFlag.getVisibility() == View.VISIBLE) {
+            mLoginScreenPositionableInfoFlag.hide();
         }
         return super.dispatchTouchEvent(ev);
     }
@@ -474,8 +367,8 @@ public class PDEOneIDMLoginScreenActivity
             public void run() {
                 mUsernameInfoToolTip.show();
                 // if the "Telkom-Dienste" ToolTip is also visible -> hide it
-                if (mLoginScreenPositionableToolTip.getVisibility() == View.VISIBLE) {
-                    mLoginScreenPositionableToolTip.hide();
+                if (mLoginScreenPositionableInfoFlag.getVisibility() == View.VISIBLE) {
+                    mLoginScreenPositionableInfoFlag.hide();
                 }
                 mUsernameShowInfoRunnable = null;
             }
@@ -487,15 +380,12 @@ public class PDEOneIDMLoginScreenActivity
     /**
      * @brief Shows an OKButton - to report login errors.
      */
-    protected void showLoginFailNotification(String title, final String message) {
+    protected void showLoginFailNotification(String title, final String message, Object... msgVarargs) {
         if (TextUtils.isEmpty(title)) {
             title = getResources().getString(R.string.login_screen_oneidm_activity_error_login_failed_title);
         }
-        Intent intent = new Intent(this.getBaseContext(), OKDialog.class);
-        intent.putExtra(OKDialog.PDE_OK_DIALOG_INTENT_EXTRA_MESSAGE, message);
-        intent.putExtra(OKDialog.PDE_OK_DIALOG_INTENT_EXTRA_TITLE, title);
-        intent.putExtra(OKDialog.PDE_OK_DIALOG_INTENT_EXTRA_STYLE, mStyle.name());
-        startActivity(intent);
+        PDEDialog.constructDialog(title, message, getResources().getString(R.string.dialog_btn_close)).setStyleCustom(mStyle).
+                setMessageFormatParameters(msgVarargs).show(this);
     }
 
 

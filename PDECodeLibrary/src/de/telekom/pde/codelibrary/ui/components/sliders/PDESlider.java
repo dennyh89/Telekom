@@ -70,10 +70,12 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
      */
     private final static String LOG_TAG = PDESlider.class.getName();
     // debug messages switch
-    private final static boolean DEBUGPARAMS = false;
+    private final static boolean DEBUG_PARAMS = false;
 
     // boolean flag for disable the parent touch interception
     private boolean mParentTouchInterceptionDisabled;
+
+    protected ArrayList<Object> mStrongPDEEventListenerHolder;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -162,7 +164,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
     // EventSource
     protected PDEEventSource mEventSource;
 
-    // scrollhandling
+    // scroll handling
     private PDESliderScrollHandlerBase mScrollHandler;
 
     // helper
@@ -183,7 +185,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
      */
     public PDESlider(android.content.Context context, android.util.AttributeSet attrs) {
         super(context,attrs);
-        if(DEBUGPARAMS){
+        if(DEBUG_PARAMS){
             for (int i = 0; i < attrs.getAttributeCount(); i++) {
                 Log.d(LOG_TAG, "PDEButton-Attr(" + i + "): " + attrs.getAttributeName(i) + " => " + attrs.getAttributeValue(i));
             }
@@ -208,17 +210,21 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
      */
     protected void init(AttributeSet attrs) {
 
+        if (isInEditMode()) return;
+
+
         PDESliderController defaultController;
 
         // init
         mEventSource = new PDEEventSource();
+        mStrongPDEEventListenerHolder = new ArrayList<Object>();
+
         mSliderContent = null;
         mSliderControllerBag = new ArrayList<PDESliderControllerAssociator>();
 
         // create and set default slider controller
         defaultController = new PDESliderController();
         setSliderControllerForId(defaultController, 0);
-
 
         setClipChildren(false);
 
@@ -247,7 +253,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
 
     /**
-     * @brief Set a scroller to add touch functionality
+     * @brief Set a scroller to add touch functionality.
      *
      * @param scrollHandler A Scroller customized for the actual content.
      */
@@ -274,7 +280,15 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
 
     /**
-     * @brief This is called for Agent Events send from the ScrollHandlerBase
+     * @brief Get the scroll handler.
+     */
+    public PDESliderScrollHandlerBase getScrollHandler() {
+        return mScrollHandler;
+    }
+
+
+    /**
+     * @brief This is called for Agent Events send from the ScrollHandlerBase.
      */
     @SuppressWarnings("unused")
     public void cbScrollHandlerBase(PDEEvent event) {
@@ -294,9 +308,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
 
     /**
-     * @brief Send touch Events to our Scroller.
-     *
-     *
+     * @brief Send touch events to our Scroller.
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -314,38 +326,32 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
             }
             mScrollHandler.actionTouchesBegan(event);
             return true;
-        }
-
-        // touch moved
-        else if (action == MotionEvent.ACTION_MOVE) {
+        } else if (action == MotionEvent.ACTION_MOVE) {
+            // touch moved
             mScrollHandler.actionTouchesMoved(event);
             return true;
-        }
-
-        // touch ended
-        else if (action == MotionEvent.ACTION_UP) {
+        } else if (action == MotionEvent.ACTION_UP) {
+            // touch ended
             // check parent and enable intercept of touches
-            if(getParent()!=null && mParentTouchInterceptionDisabled) {
+            if (getParent() != null && mParentTouchInterceptionDisabled) {
                 getParent().requestDisallowInterceptTouchEvent(false);
             }
             mScrollHandler.actionTouchesEnded(event);
             return true;
-        }
+        } else if (action == MotionEvent.ACTION_CANCEL) {
+            // touch canceled
 
-        // touch canceled
-        else if (action == MotionEvent.ACTION_CANCEL) {
             // check parent and enable intercept of touches
-            if(getParent()!=null && mParentTouchInterceptionDisabled) {
+            if (getParent() != null && mParentTouchInterceptionDisabled) {
                 getParent().requestDisallowInterceptTouchEvent(false);
             }
             mScrollHandler.actionTouchesCancelled(event);
             return true;
-        }
+        } else {
+            // something else
 
-        // something else
-        else {
             // check parent and enable intercept of touches
-            if(getParent()!=null && mParentTouchInterceptionDisabled) {
+            if(getParent() != null && mParentTouchInterceptionDisabled) {
                 getParent().requestDisallowInterceptTouchEvent(false);
             }
         }
@@ -437,13 +443,15 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
         // release old drag access
         releaseAllDragAccesses();
+        // reset scroll handler
+        mScrollHandler = null;
 
         // remember
         mSliderContent = content;
 
-        if(mSliderContent!=null) {
+        if (mSliderContent != null) {
             lp = mSliderContent.getLayer().getLayoutParams();
-            if (lp == null){
+            if (lp == null) {
                 lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             }
             mSliderContent.getLayer().setLayoutParams(lp);
@@ -451,6 +459,19 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
             // add the content to the layer
             ((ViewGroup)findViewById(R.id.pdeslider_content_slot)).addView(mSliderContent.getLayer());
         }
+
+        if (content instanceof PDESliderContentSliderBar) {
+            setScrollHandler(new PDESliderScrollHandlerSliderBar());
+        } else if(content instanceof PDESliderContentScrollBar) {
+            setScrollHandler(
+                    new PDESliderScrollHandlerScrollBar(((PDESliderContentScrollBar)content).getContentOrientation()));
+        } else if (content instanceof PDESliderContentProgressBar) {
+            // in this case no handler is needed
+        } else {
+            // custom class -> handler needs to be set manually
+            Log.d(LOG_TAG,"setSliderContent - custom class. There was no handler set, if needed do it manually!");
+        }
+
 
         // new content needs to be initialized with parameters
         requestSliderContentInit();
@@ -616,7 +637,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
     }
 
 
-    // needs to be public otherwise it cannot be called from eventsource (11.10.2012)
+    // needs to be public otherwise it cannot be called from event source (11.10.2012)
 
     /**
      * @brief   Called on changes from the slider controllers.
@@ -648,7 +669,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
     }
 
 
-    // needs to be public otherwise it cannot be called from eventsource (11.10.2012)
+    // needs to be public otherwise it cannot be called from event source (11.10.2012)
 
     /**
      * @brief   Called on specially requested initializations from our slider controllers.
@@ -708,8 +729,6 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
             // get sending Slider Controller
             if (associator.sliderController == event.getSender()) {
-
-
                 // set id
                 slideEvent.setSliderControllerId(associator.sliderControllerId);
             }
@@ -732,9 +751,9 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
 
     /**
-     * @brief Add event Listener.
+     * @brief Add event Listener - hold strong pointer to it.
      *
-     * PDEIEventSource Interface implementation.
+     * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
      *
      * @param target    Object which will be called in case of an event.
      * @param methodName Function in the target object which will be called.
@@ -745,14 +764,15 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
      */
     @Override
     public Object addListener(Object target, String methodName) {
+        mStrongPDEEventListenerHolder.add(target);
         return mEventSource.addListener(target, methodName);
     }
 
 
     /**
-     * @brief Add event Listener.
+     * @brief Add event Listener - hold strong pointer to it.
      *
-     * PDEIEventSource Interface implementation.
+     * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
      *
      * @param target    Object which will be called in case of an event.
      * @param methodName Function in the target object which will be called.
@@ -766,18 +786,22 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
      */
     @Override
     public Object addListener(Object target, String methodName, String eventMask) {
+        mStrongPDEEventListenerHolder.add(target);
         return mEventSource.addListener(target, methodName, eventMask);
     }
 
 
     /**
-     * @brief Remove the specified listener .
+     * @brief Remove the specified listener.
+     *
+     * Also deletes local strong pointer.
      *
      * @param listener The listener reference returned by addListener.
      * @return  Returns whether we have found & removed the listener or not.
      */
     @SuppressWarnings("unused")
     public boolean removeListener(Object listener) {
+        mStrongPDEEventListenerHolder.remove(listener);
         return mEventSource.removeListener(listener);
     }
 
@@ -802,13 +826,14 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
     }
 
 
+
 // ------ drag access --------------------------------------------------------------------------------------------------
 
 
     /**
      * @brief   Get Drag Access to given controller.
      *
-     * @return                  Boolen if access is given
+     * @return                  Boolean if access is given
      * @param   controllerId    controller id to get drag access
      */
     public boolean getDragAccessForController(int controllerId) {
@@ -847,7 +872,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
      */
     public void releaseAllDragAccesses() {
 
-        // releas drag access for all contollers
+        // release drag access for all controllers
         for (PDESliderControllerAssociator associator: mSliderControllerBag) {
 
             // release access
@@ -857,7 +882,7 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
 
     /**
-     * @brief Release Drag Access if this View is detachted from it's window
+     * @brief Release Drag Access if this View is detached from it's window
      *
      */
     @Override

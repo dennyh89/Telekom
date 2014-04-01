@@ -81,7 +81,7 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
      * @brief Sets a background color for this multilayer (drawn with the cliprect bounds).
      */
     public void setMultilayerBackgroundColor(PDEColor color) {
-        if(color==null) {
+        if (color == null) {
             mBackgroundPaint = null;
         }
         else {
@@ -116,8 +116,8 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
      */
     public void insertLayerAtIndex(Drawable layer, int index) {
         // safety: modify negative indices; change too high indices to add
-        if(index < 0) index=0;
-        if(index >= mDrawableArray.size()){
+        if (index < 0) index=0;
+        if (index >= mDrawableArray.size()){
             addLayer(layer);
             return;
         }
@@ -141,13 +141,13 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
         index = getIndexOfLayer(referenceLayer);
 
         // if not found, add to tail
-        if(index==-1) {
+        if (index == -1) {
             addLayer(newLayer);
             return;
         }
 
         // insert after specified index
-        insertLayerAtIndex(newLayer,index+1);
+        insertLayerAtIndex(newLayer, index + 1);
     }
 
 
@@ -163,13 +163,13 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
         index = getIndexOfLayer(referenceLayer);
 
         // if not found, add to tail
-        if(index==-1) {
+        if (index == -1) {
             addLayer(newLayer);
             return;
         }
 
         // insert before specified index
-        insertLayerAtIndex(newLayer,index);
+        insertLayerAtIndex(newLayer, index);
     }
 
 
@@ -180,7 +180,7 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
      */
     public void removeLayerAtIndex(int index) {
         // if index is invalid do nothing
-        if(index<0 || index>=mDrawableArray.size()) return;
+        if (index < 0 || index >= mDrawableArray.size()) return;
 
         // forget element itself and its callback
         mDrawableArray.get(index).setCallback(null);
@@ -199,18 +199,19 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
 
         // find in list of elements
         index = getIndexOfLayer(layer);
-        if(index==-1) return;
+        if (index == -1) return;
 
         // remove via index
         removeLayerAtIndex(index);
     }
+
 
     /**
      * @brief remove all drawables from the layout.
      */
     public void clearLayers() {
         int i;
-        for (i=mDrawableArray.size()-1; i>=0; i--) {
+        for (i = mDrawableArray.size()-1; i >= 0; i--) {
             removeLayerAtIndex(i);
         }
     }
@@ -223,8 +224,10 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
      */
     private int getIndexOfLayer(Drawable referenceLayer) {
         int i;
-        for(i=0;i<mDrawableArray.size();i++) {
-            if(mDrawableArray.get(i)==referenceLayer) return i;
+        for (i = 0; i < mDrawableArray.size(); i++) {
+            if (mDrawableArray.get(i) == referenceLayer) {
+                return i;
+            }
         }
         // not found
         return -1;
@@ -237,7 +240,7 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
      * If reference object cannot be found, insert at tail.
      */
     public Drawable getLayerAtIndex(int index) {
-        if(mDrawableArray.size()==0 || index>=mDrawableArray.size()) return null;
+        if (mDrawableArray.size() == 0 || index >= mDrawableArray.size()) return null;
 
         return mDrawableArray.get(index);
     }
@@ -287,9 +290,9 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
             canvas.drawRect(bounds, mBackgroundPaint);
         }
 
-        // translate canvas matrix to have relativ positions in subdrawables
+        // translate canvas matrix to have relatiev positions in sub-drawables
         canvas.translate(bounds.left,bounds.top);
-        for (int i=0; i<numLayers; i++) {
+        for (int i = 0; i < numLayers; i++) {
             mDrawableArray.get(i).draw(canvas);
         }
 
@@ -305,7 +308,7 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
     public boolean setVisible(boolean visible, boolean restart) {
         boolean changed = super.setVisible(visible, restart);
         int numLayers = mDrawableArray.size();
-        for (int i=0; i<numLayers; i++) {
+        for (int i = 0; i < numLayers; i++) {
             mDrawableArray.get(i).setVisible(visible, restart);
         }
         invalidateSelf();
@@ -320,6 +323,7 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
     public int getOpacity() {
         int numLayers = mDrawableArray.size();
         int op = numLayers > 0 ? mDrawableArray.get(0).getOpacity() : PixelFormat.TRANSPARENT;
+
         for (int i = 1; i < numLayers; i++) {
             op = Drawable.resolveOpacity(op, mDrawableArray.get(i).getOpacity());
         }
@@ -333,6 +337,7 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
     @Override
     public void setDither(boolean dither) {
         int numLayers = mDrawableArray.size();
+
         for (int i=0; i<numLayers; i++) {
             mDrawableArray.get(i).setDither(dither);
         }
@@ -346,6 +351,7 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
     @Override
     public void setAlpha(int alpha) {
         int numLayers = mDrawableArray.size();
+
         for (int i=0; i<numLayers; i++) {
             mDrawableArray.get(i).setAlpha(alpha);
         }
@@ -514,7 +520,9 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
-        if (mOnBoundsChangeListener != null) mOnBoundsChangeListener.onPDEBoundsChange(this,bounds);
+        if (mOnBoundsChangeListener != null) {
+            mOnBoundsChangeListener.onPDEBoundsChange(this, bounds);
+        }
         doLayout(/*bounds*/);
     }
 
@@ -569,7 +577,6 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
     }
 
 
-
     /**
      * @brief Set additional padding that is needed to display things outside of the element like e.g. outer shadow.
      *
@@ -584,6 +591,7 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
         // remember
         mNeededPadding = padding;
     }
+
 
     /**
      * @brief Returns the padding the element needs to be displayed correctly.

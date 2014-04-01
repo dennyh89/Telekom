@@ -88,10 +88,12 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
         return mEventSource;
     }
 
+
     @Override
     public Object addListener(Object target, String methodName) {
         return mEventSource.addListener(target, methodName);
     }
+
 
     @Override
     public Object addListener(Object target, String methodName, String eventMask) {
@@ -110,6 +112,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
     public PDEAgentController getAgentController() {
         return mAgentController;
     }
+
 
     public void setAgentController(PDEAgentController controller) {
         mAgentController = controller;
@@ -180,7 +183,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
                         // if the view is a List-Item it should have a tap-timeout before it really reacts (like it is
                         // also handled in the native android lists). So we remember the touchdown by setting the
                         // touchdown-mode and check after a timeout if we're still in touchdown-mode. If we're still
-                        // in touchdown-mode the tap is accepted and we start the wisual reaction. Cancel- and
+                        // in touchdown-mode the tap is accepted and we start the visual reaction. Cancel- and
                         // Up-Events during the timeout reset the touchdown-mode and therefore cancel the tap.
                         // If the view is not an element of a list it can react immediately.
                         if (mIsListItem){
@@ -200,7 +203,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
                         break;
                     case MotionEvent.ACTION_CANCEL:
                         if (DEBUG) Log.d(LOG_TAG,"Agent: ActionCancel");
-                        // if we're part of a list and the touch down already occured we have to cancel the pending
+                        // if we're part of a list and the touch down already occurred we have to cancel the pending
                         // check for a valid tap and reset the touch mode
                         if (mIsListItem && mTouchDownMode){
                             // reset touch mode to false
@@ -212,7 +215,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
                         break;
                     case MotionEvent.ACTION_UP:
                         if (DEBUG) Log.d(LOG_TAG,"Agent: ActionUp");
-                        // if we're part of a list and the touch down already occured we have to cancel the pending
+                        // if we're part of a list and the touch down already occurred we have to cancel the pending
                         // check for a valid tap and reset the touch mode
                         if (mIsListItem && mTouchDownMode){
                             // reset touch mode to false
@@ -227,7 +230,6 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
                                 // start touch down action with the data we remembered before.
                                 actionTouchDown(mTouchDownView, mDownEvent);
                             }
-
                         }
                         // check if we released inside or outside of the view
                         if (hitRect.contains(currentXPosition, currentYPosition)) {
@@ -434,8 +436,6 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
             getAgentController().cancelPress();
         }
     }
-
-
 
 
 // -------- List Specials ----------------------------------------------------------------------------------------------

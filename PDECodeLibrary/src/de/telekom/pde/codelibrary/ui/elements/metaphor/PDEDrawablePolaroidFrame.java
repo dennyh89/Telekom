@@ -26,7 +26,7 @@ import de.telekom.pde.codelibrary.ui.elements.icon.PDEDrawableIconImage;
 public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
 
     // basic properties
-    private final static float CONST_ASPECTRATIO = 185.0f/255.0f;
+    private final static float CONST_ASPECT_RATIO = 185.0f/255.0f;
     // colors
     protected PDEColor mElementBackgroundColor;
     protected PDEColor mElementPolaroidFrameColor;
@@ -57,7 +57,7 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
 
     /**
      * @brief internal initial helper to init needed layers. shadow is not created here, it must
-     *        inited by createShadow separately
+     *        initialized by createShadow separately
      */
     private void initLayers() {
         // initialize polaroid frame layer
@@ -93,15 +93,15 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
     /**
      * @brief Helper function to get aspect ratio
      *
-     * @return Current valid aspect ratip
+     * @return Current valid aspect ratio
      */
     private float getElementAspectRatio() {
-        if (mElementImageDrawable == null) return CONST_ASPECTRATIO;
+        if (mElementImageDrawable == null) return CONST_ASPECT_RATIO;
 
         if (mElementImageDrawable.getIntrinsicWidth() >= mElementImageDrawable.getIntrinsicHeight()){
-            return CONST_ASPECTRATIO;
+            return CONST_ASPECT_RATIO;
         } else {
-            return 1 / CONST_ASPECTRATIO;
+            return 1 / CONST_ASPECT_RATIO;
         }
     }
 
@@ -195,11 +195,10 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
     }
 
 
-
-
 //---------------------------------------------------------------------------------------------------------------------
 // ----- optional shadow ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
+
 
     /**
      * @brief init shadow drawable.
@@ -211,12 +210,14 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
     public PDEDrawableShapedShadow createElementShadow() {
         // already created?
         if (mElementShadowDrawable != null) return mElementShadowDrawable;
+
         // init shadow drawable
         mElementShadowDrawable = new PDEDrawableShapedShadow();
         mElementShadowDrawable.setElementShapeOpacity(0.25f);
         mElementShadowDrawable.setElementBlurRadius(5.0f);
         setNeededPadding(PDEBuildingUnits.oneHalfBU());
         updateElementShadowDrawable(new Point(getBounds().width(),getBounds().height()));
+
         // return
         return mElementShadowDrawable;
     }
@@ -252,7 +253,10 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
             // keep current shadow position, just update the size
             Rect frame;
             Rect bounds = mElementShadowDrawable.getBounds();
-            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x+(2*(int)mElementShadowDrawable.getElementBlurRadius()), bounds.top + elementSize.y+(2*(int)mElementShadowDrawable.getElementBlurRadius()));
+            frame = new Rect(bounds.left,
+                    bounds.top,
+                    bounds.left + elementSize.x + (2 * (int)mElementShadowDrawable.getElementBlurRadius()),
+                    bounds.top + elementSize.y + (2 * (int)mElementShadowDrawable.getElementBlurRadius()));
             //mElementShadowDrawable.setLayoutRect(frame);
             mElementShadowDrawable.setBounds(frame);
             mElementShadowDrawable.setElementShapeRoundedRect(mElementCornerRadius);
@@ -260,17 +264,19 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
     }
 
 
-////----------------------------------------------------------------------------------------------------------------------
-////----- getter / setter functions --------------------------------------------------------------------------------
-////----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+//----- getter / setter functions --------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
     /**
      * @brief polaroid color setting function
      */
     public void setElementPolaroidFrameColor(PDEColor color) {
         float red, green, blue, alpha,
               red2, green2, blue2, alpha2;
+
         // validation
-        if (color==null) return;
+        if (color == null) return;
 
         red = color.getRed();
         green = color.getGreen();
@@ -282,13 +288,16 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
         alpha2 = mElementPolaroidFrameColor.getAlpha();
 
         // changed?
-        if (red == red2 && green==green2 && blue==blue2 && alpha==alpha2) return;
+        if (red == red2 && green == green2 && blue == blue2 && alpha == alpha2) return;
+
         // remember new value
         mElementPolaroidFrameColor = color;
-       // mElementPolaroidDrawable.setElementBackgroundColor(mElementPolaroidFrameColor);
+        // mElementPolaroidDrawable.setElementBackgroundColor(mElementPolaroidFrameColor);
+
         // update
         invalidateSelf();
     }
+
 
     /**
     * @brief Get ElementPolaroidFrameColor
@@ -296,6 +305,7 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
     public PDEColor getElementPolaroidFrameColor() {
         return mElementPolaroidFrameColor;
     }
+
 
     /**
      * @brief Set Picture
@@ -308,6 +318,7 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
         //redraw
         doLayout();
     }
+
 
     /**
     * @brief Get Picture
@@ -324,6 +335,7 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
         return mElementPolaroidDrawable.getBounds().width() * (value/185.0f);
     }
 
+
 //----------------------------------------------------------------------------------------------------------------------
 //----- helper functions --------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
@@ -333,9 +345,11 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
      * @brief update helper function for the polaroid bg layer
      */
     private void updatePolaroidDrawable(Rect bounds) {
-        Rect frameRect = new Rect(0, 0, bounds.width(), bounds.height());
         PDEColor highColor;
         PDEColor lowColor;
+        float red, green, blue;
+        Rect frameRect = new Rect(0, 0, bounds.width(), bounds.height());
+
         mElementCornerRadius = bounds.width() * 0.07f;
         // update Frame
         mElementPolaroidDrawable.setBounds(frameRect);
@@ -344,10 +358,11 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
         // todo: this border stuff does not work properly!!! So we take a workaround.
         //mElementPolaroidDrawable.setElementBorderWidth(polaroidRelativeValue(2.5f));
         int border = Math.round(polaroidRelativeValue(2.5f));
-        mElementGradientDrawable.setBounds(frameRect.left + border, frameRect.top + border, frameRect.right - border,
-                                           frameRect.bottom - border);
+        mElementGradientDrawable.setBounds(frameRect.left + border,
+                frameRect.top + border,
+                frameRect.right - border,
+                frameRect.bottom - border);
 
-        float red, green, blue;
         red = mElementPolaroidFrameColor.getRed();
         blue = mElementPolaroidFrameColor.getBlue();
         green = mElementPolaroidFrameColor.getGreen();
@@ -365,12 +380,12 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
 
 
     /**
-     * @brief update function for the imagelayer (image self, image gradient, image innershadow)
+     * @brief update function for the image layer (image self, image gradient, image inner-shadow)
      */
     private void updateElementImageDrawable(Rect bounds) {
         PDEColor highColor, mainColor;
         PDEColor lowColor;
-        float placeHolderFrameDistance;
+//        float placeHolderFrameDistance;
         Rect imgBounds;
 
         //int
@@ -414,27 +429,27 @@ public class PDEDrawablePolaroidFrame extends PDEDrawableMultilayer {
         mElementImageDrawable.setElementClipPath(clipPath);
 
         // Add some gradient to the image view.
-        highColor = new PDEColor(1.0f,1.0f,1.0f,0.5f);
-        mainColor = new PDEColor(0.5f,0.5f,0.5f,0.25f);
-        lowColor = new PDEColor(0.0f,0.0f,0.0f,0.0f);
+        highColor = new PDEColor(1.0f, 1.0f, 1.0f, 0.5f);
+        mainColor = new PDEColor(0.5f, 0.5f, 0.5f, 0.25f);
+        lowColor = new PDEColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 //        highColor = new PDEColor(1.0f,0.0f,0.0f,0.5f);
 //        mainColor = new PDEColor(1.0f,0.0f,0.0f,0.5f);
 //        lowColor = new PDEColor(1.0f,0.0f,0.0f,0.5f);
 
         imgBounds = mElementImageDrawable.getBounds();
-        mElementImageGradientDrawable.setLayoutRect(new Rect(imgBounds.left-1, imgBounds.top-1,
-                                                             imgBounds.right+1, imgBounds.bottom+1));
+        mElementImageGradientDrawable.setLayoutRect(new Rect(imgBounds.left - 1, imgBounds.top - 1,
+                                                             imgBounds.right + 1, imgBounds.bottom + 1));
 
         mElementImageGradientDrawable.setElementBorderColor(PDEColor.valueOf("DTTransparentBlack"));
         mElementImageGradientDrawable.setElementCornerRadius(radius);
-        mElementImageGradientDrawable.setElementBackgroundGradientColors(highColor,mainColor,lowColor);
+        mElementImageGradientDrawable.setElementBackgroundGradientColors(highColor, mainColor, lowColor);
 
         // set inner shadow on image
         mElementInnerShadowDrawable.setElementBlurRadius(polaroidRelativeValue(8.0f));
-        RectF layoutRect = new RectF(mElementImageDrawable.getBounds().left, mElementImageDrawable.getBounds().top,
+/*        RectF layoutRect = new RectF(mElementImageDrawable.getBounds().left, mElementImageDrawable.getBounds().top,
                 mElementImageDrawable.getBounds().right,
-                mElementImageDrawable.getBounds().bottom);
+                mElementImageDrawable.getBounds().bottom);*/
         mElementInnerShadowDrawable.setLayoutRect(mElementImageGradientDrawable.getBounds());
         mElementInnerShadowDrawable.setElementShapeRoundedRect(radius);
     }

@@ -55,15 +55,18 @@ public class PDEDrawText extends View {
 
     }
 
+
     public PDEDrawText(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
+
     public PDEDrawText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
+
 
     @Override
     public void draw(Canvas canvas) {
@@ -84,15 +87,18 @@ public class PDEDrawText extends View {
         internalDraw(canvas, 0.0f, 0.0f, mPaint);
     }
 
+
     private void internalDraw(Canvas canvas, float offsetX, float offsetY, Paint paint) {
 
         canvas.drawText(mShownText, -mBoundsLeft + offsetX, -mMetricsTops + offsetY, paint);
 
     }
 
+
     public void setBackgroundColor(int color) {
         mBackgroundColor = color;       
     }
+
 
     /**
      * @brief Set the text color.
@@ -102,6 +108,7 @@ public class PDEDrawText extends View {
         mTextColor = color;
         mPaint.setColor(mTextColor);
     }
+
 
     /**
      * @brief Set the typeface.
@@ -119,6 +126,7 @@ public class PDEDrawText extends View {
         mTypeface = typeface;
         recalculate();
     }
+
 
     /**
      *  @brief Set text size in pixel.
@@ -155,6 +163,7 @@ public class PDEDrawText extends View {
         recalculate();
     }
 
+
     public void setSize(int w, int h) {
         onSizeChanged(w, h, mWidth, mHeight);
     }
@@ -186,6 +195,7 @@ public class PDEDrawText extends View {
         }
     }
 
+
     /**
      * @brief turn ellipsize on / off
      * 
@@ -194,6 +204,7 @@ public class PDEDrawText extends View {
     public void setEllipsize (boolean ellipsize) {
         mEllipsize = ellipsize;
     }
+
 
     /**
      * @brief Internal initializer.
@@ -213,6 +224,7 @@ public class PDEDrawText extends View {
 
         recalculate();
     }
+
 
     /**
      * @brief Prepare all values and the object for drawing.
@@ -293,8 +305,8 @@ public class PDEDrawText extends View {
 
         // mark as dirty
         invalidate();
-
     }
+
 
     /**
      * @brief Configure the text shadow layer.
@@ -321,6 +333,7 @@ public class PDEDrawText extends View {
 
         recalculate();
     }
+
 
     /**
      * @brief Configure the text shadow layer.

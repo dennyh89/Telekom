@@ -15,6 +15,7 @@ import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableRoundedBox;
 
 public class PDEDrawableStageFlat extends PDEDrawableRoundedBox {
 
+
     public PDEDrawableStageFlat() {
         super();
         init();
@@ -22,7 +23,7 @@ public class PDEDrawableStageFlat extends PDEDrawableRoundedBox {
 
 
     protected void init() {
-        if(PDECodeLibrary.getInstance().isDarkStyle()) {
+        if (PDECodeLibrary.getInstance().isDarkStyle()) {
             setElementBackgroundColor(PDEColor.valueOf("DTGrey100"));
             setElementBorderColor(PDEColor.valueOf("Black70Alpha"));
         } else {

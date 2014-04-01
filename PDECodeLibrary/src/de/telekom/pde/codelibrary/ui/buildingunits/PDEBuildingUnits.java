@@ -239,10 +239,11 @@ public class PDEBuildingUnits {
 
         Context appContext = PDECodeLibrary.getInstance().getApplicationContext();
         if (appContext != null) {
-            int screenLayoutSizeMask = appContext.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
-            if (screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_NORMAL ||
-                    screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_SMALL ||
-                    screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_UNDEFINED
+            int screenLayoutSizeMask = appContext.getResources().getConfiguration().screenLayout
+                                            & Configuration.SCREENLAYOUT_SIZE_MASK;
+            if (screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_NORMAL
+                    || screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_SMALL
+                    || screenLayoutSizeMask == Configuration.SCREENLAYOUT_SIZE_UNDEFINED
                     ) {
                 tablet = false;
 
@@ -252,7 +253,7 @@ public class PDEBuildingUnits {
                 // Configuration.SCREENLAYOUT_SIZE_XLARGE == 4
                 tablet = true;
             } else {
-                //e.g. a new screenlayout size? XXL?
+                //e.g. a new screen-layout size? XXL?
                 tablet = true;
             }
         }
@@ -267,10 +268,12 @@ public class PDEBuildingUnits {
 
     }
 
+
     // not needed in Android since Android uses always integer screen coordinates
     public static float exactRoundToScreenCoordinates(float coordinate) {
-        return (float) Math.floor(coordinate+0.5f);
+        return (float) Math.floor(coordinate + 0.5f);
     }
+
 
     /**
      * @brief Mathematically round to screen pixel coordinates.
@@ -281,7 +284,7 @@ public class PDEBuildingUnits {
      * @return rounded value of coordinate
      */
     public static int roundToScreenCoordinates(float coordinate) {
-        return (int)Math.floor(coordinate+0.5f);
+        return (int)Math.floor(coordinate + 0.5f);
     }
 
 
@@ -296,7 +299,7 @@ public class PDEBuildingUnits {
     }
 
 
-    //----- parsing helpers ------------------------------------------------------------------------------------------------
+    //----- parsing helpers --------------------------------------------------------------------------------------------
 
 
     /**
@@ -304,7 +307,7 @@ public class PDEBuildingUnits {
      *
      * Recognized units are BU; they are converted to pixel-sides BUs
      */
-     public static float parseSize(String sizeString)
+    public static float parseSize(String sizeString)
     {
         String unit;
         float size;
@@ -313,21 +316,20 @@ public class PDEBuildingUnits {
         size = 0.0f;
 
         // security
-        if ( TextUtils.isEmpty(sizeString) ) return size;
+        if (TextUtils.isEmpty(sizeString)) return size;
 
         unit = sizeString.trim();
 
         try {
-            // check if we have a BU value or normal float falue
-            if( unit.endsWith("BU") ) {
-                unit = unit.substring(0,unit.indexOf("BU"));
+            // check if we have a BU value or normal float value
+            if (unit.endsWith("BU")) {
+                unit = unit.substring(0, unit.indexOf("BU"));
                 unit = unit.trim();
                 size = Float.parseFloat(unit);
                 size = PDEBuildingUnits.pixelFromBU(size);
             } else {
                 size = Float.parseFloat(unit);
             }
-
         } catch (NumberFormatException exception){
            exception.printStackTrace();
         }

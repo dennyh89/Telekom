@@ -14,7 +14,7 @@ package de.telekom.pde.codelibrary.ui.components.lists;
 
 import android.view.View;
 import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEIconView;
-import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDELayerTextView;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView;
 import de.telekom.pde.codelibrary.ui.components.elementwrappers.metaphors.PDEPhotoFrameView;
 
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public class PDEHolder implements PDEHolderInterface {
                 // store extracted subview as targetView
                 target.targetView = subView;
                 // find out the type  of the targetView and remember it
-                if (target.targetView instanceof PDELayerTextView){
+                if (target.targetView instanceof PDETextView){
                     // text type
                     target.type = TargetViewHelper.TYPE_PDE_TEXT;
                 } else if (target.targetView instanceof PDEIconView) {
@@ -102,7 +102,7 @@ public class PDEHolder implements PDEHolderInterface {
         if (target != null) {
             // fill in the content by using the setters of the respective type
             if (target.type == TargetViewHelper.TYPE_PDE_TEXT && target.targetView != null){
-                ((PDELayerTextView) target.targetView).setText(value);
+                ((PDETextView) target.targetView).setText(value);
             } else if (target.type == TargetViewHelper.TYPE_PDE_ICON && target.targetView != null){
                 ((PDEIconView) target.targetView).setIconString(value);
             }  else if (target.type == TargetViewHelper.TYPE_PDE_PHOTO_FRAME && target.targetView != null){
@@ -126,7 +126,7 @@ public class PDEHolder implements PDEHolderInterface {
         if (target != null) {
             if (target.type == TargetViewHelper.TYPE_PDE_TEXT && target.targetView != null){
                 // fill in the string addressed by a resource ID
-                ((PDELayerTextView) target.targetView).setTextFromID(value);
+                ((PDETextView) target.targetView).setTextFromID(value);
             } else if (target.type == TargetViewHelper.TYPE_PDE_ICON && target.targetView != null){
                 // fill in the drawable addressed by a resource ID
                 ((PDEIconView) target.targetView).setIconFromID(value);

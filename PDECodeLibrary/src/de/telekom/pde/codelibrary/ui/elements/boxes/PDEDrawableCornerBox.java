@@ -127,17 +127,19 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
             Path shadowPath;
 
             // set shadow bounds
-            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x+(2*(int)mElementShadowDrawable.getElementBlurRadius()), bounds.top + elementSize.y+(2*(int)mElementShadowDrawable.getElementBlurRadius()));
+            frame = new Rect(bounds.left,
+                    bounds.top,
+                    bounds.left + elementSize.x + (2 * (int)mElementShadowDrawable.getElementBlurRadius()),
+                    bounds.top + elementSize.y + (2 * (int)mElementShadowDrawable.getElementBlurRadius()));
             mElementShadowDrawable.setBounds(frame);
             // make a copy of the original element path for the shadow
             shadowPath = new Path(mElementPath);
             // offset by blur radius of shadow
-            shadowPath.offset(mElementShadowDrawable.getElementBlurRadius(),mElementShadowDrawable.getElementBlurRadius());
+            shadowPath.offset(mElementShadowDrawable.getElementBlurRadius(),
+                              mElementShadowDrawable.getElementBlurRadius());
             mElementShadowDrawable.setElementShapePath(shadowPath);
         }
     }
-
-
 
 
 
@@ -148,7 +150,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
     /**
      * @brief Set fill (background) color.
      *
-     * @param color The new backgroundcolor of the speech bubble.
+     * @param color The new background color of the speech bubble.
      */
     public void setElementBackgroundColor(PDEColor color) {
         // any change?
@@ -174,6 +176,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
         return mElementBackgroundColor;
     }
 
+
     /**
      * @brief Set border color.
      *
@@ -192,6 +195,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
         // update
         update();
     }
+
 
     /**
      * @brief Get outline color.
@@ -217,6 +221,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
     public float getElementBorderWidth() {
         return mElementBorderWidth;
     }
+
 
     /**
      * @brief Set corner radius.
@@ -266,12 +271,12 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Sets the complete path for being drawn
      *
      * @param path The path that should be drawn on screen.
      */
-
     private void setElementPath(Path path) {
         // change?
         if (mElementPath == path) {
@@ -281,6 +286,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
         // store a copy of the path
         mElementPath = path;
     }
+
 
     /**
      * @brief Sets the configuration of the rounded corners
@@ -331,16 +337,17 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
         updateElementShadowDrawable(elementSize);
     }
 
+
     /**
-     * @brief Get drawing start point
+     * @brief Get drawing start point.
      *
      * Calculate & deliver the start point of the drawing path.
-     * We start drawing at the left startpoint of the top edge.
-     * The used pixelShift is needed to avoid an antialiasing bug which appears if we're not correctly pixelaligned.
+     * We start drawing at the left start point of the top edge.
+     * The used pixelShift is needed to avoid an antialiasing bug which appears if we're not correctly pixel-aligned.
      *
      * @return start point of drawing
      */
-    private PointF getStartPoint(){
+    private PointF getStartPoint() {
         if ((mElementRoundedCornerConfiguration & PDEDrawableCornerBoxCornerTopLeft) != 0 ) {
             // TopLeftCorner
             return new PointF(mElementCornerRadius + mPixelShift,  mPixelShift);

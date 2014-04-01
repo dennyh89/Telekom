@@ -5,9 +5,10 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.ActionProvider;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import com.actionbarsherlock.view.MenuItem;
+
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEMenuItemUtils

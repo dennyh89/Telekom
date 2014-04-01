@@ -49,12 +49,10 @@ class PDEEditText extends EditText {
     // agent controller and helpers
     private PDEAgentController mAgentController = null;
     private PDEAgentControllerAdapterView mAgentControllerAdapter = null;
-
-    PDEDrawableIcon mLeftIcon;
+    private PDEDrawableIcon mLeftIcon = null;
 
     // internal icon-font ratio
-    float mIconToTextHeightRatio;
-
+    private float mIconToTextHeightRatio;
 
     /**
      * @brief Constructor.
@@ -130,16 +128,16 @@ class PDEEditText extends EditText {
      */
     private void setTextCursorDrawable(int drawableId) {
         // valid?
-        if(drawableId==-1)return;
+        if(drawableId ==- 1)return;
 
-        Field field = null;
+        Field field;
         Class<?> tmpClass = getClass();
 
-        while(tmpClass!=null) {
-            if(tmpClass==TextView.class){
+        while(tmpClass != null) {
+            if (tmpClass == TextView.class){
                 try {
                     field = tmpClass.getDeclaredField("mCursorDrawableRes");
-                    if(field!=null){
+                    if (field != null){
                         field.setAccessible(true);
                         field.setInt(this, drawableId);
                     }
@@ -150,7 +148,7 @@ class PDEEditText extends EditText {
                 // we finished trying to change cursor color
                 return;
             }
-            tmpClass=tmpClass.getSuperclass();
+            tmpClass = tmpClass.getSuperclass();
         }
     }
 
@@ -160,7 +158,7 @@ class PDEEditText extends EditText {
      */
     public void setTargetListener(PDEIEventSource targetListener) {
         // valid?
-        if(targetListener==null) return;
+        if(targetListener == null) return;
 
         // create agent controller
         mAgentController = new PDEAgentController();
@@ -197,9 +195,9 @@ class PDEEditText extends EditText {
      */
     private void updateLeftIconColor() {
         //valid?
-        if(mLeftIcon==null) return;
-        if(mLeftIcon.isIconfont()) {
-            //set the current text color, not the parameter color (parameters dont hold default values...)
+        if (mLeftIcon == null) return;
+        if (mLeftIcon.isIconfont()) {
+            //set the current text color, not the parameter color (parameters don't hold default values...)
             mLeftIcon.setElementIconColor(PDEColor.valueOf(getCurrentTextColor()));
         }
     }
@@ -212,19 +210,21 @@ class PDEEditText extends EditText {
 
         // Is there a icon we need to adjust, normally there must be a icon if mLeftIcon is not null
         if (mLeftIcon.hasElementIcon()) {
-            //has iconlayer a native size
-            if(mLeftIcon.hasNativeSize()) {
+            // check if icon-layer has a native size
+            if (mLeftIcon.hasNativeSize()) {
                 iconSize = mLeftIcon.getNativeSize();
             } else {
                 //calculate icon font height
-                iconSize.y = PDEBuildingUnits.roundToScreenCoordinates(PDEFontHelpers.getCapHeight(getTypeface(),getTextSize())*mIconToTextHeightRatio);
+                iconSize.y = PDEBuildingUnits.roundToScreenCoordinates(PDEFontHelpers.getCapHeight(getTypeface(),
+                                                                       getTextSize()) * mIconToTextHeightRatio);
                 iconSize.x = iconSize.y;
             }
         }
         mLeftIcon.setLayoutSize(iconSize);
-        //setCompoundDrawables must called when icon size changed because internal they work with the size the icon
-        // had at the call of the function. Size change afterwards dont have any effect!!!
-        setCompoundDrawables(mLeftIcon,null,null,null);
+
+        // setCompoundDrawables must called when icon size changed because internal they work with the size the icon
+        // had at the call of the function. Size change afterwards don't have any effect!!!
+        setCompoundDrawables(mLeftIcon, null, null, null);
         updateLeftIconColor();
     }
 
@@ -258,21 +258,21 @@ class PDEEditText extends EditText {
      */
     @Override
     public void setTextSize(int unit, float size) {
-        super.setTextSize(unit,size);
+        super.setTextSize(unit, size);
         //size maybe changed so update left icon if exists
         updateLeftIcon();
     }
 
 
     private void createLeftIcon(Object object) {
-        if(object!=null){
+        if (object != null){
             mLeftIcon = new PDEDrawableIcon();
             mLeftIcon.setElementIcon(object);
-            //setCompoundDrawables must called when icon size changed because internal they work with the size the icon
-            // had at the call of the function. Size change afterwards dont have any effect!!!
+            // setCompoundDrawables must called when icon size changed because internal they work with the size the icon
+            // had at the call of the function. Size change afterwards don't have any effect!!!
         } else {
             mLeftIcon = null;
-            setCompoundDrawables(null,null,null,null);
+            setCompoundDrawables(null, null, null, null);
         }
         updateLeftIcon();
     }
@@ -327,7 +327,7 @@ class PDEEditText extends EditText {
      * @brief Get the left icon of this inputfield
      */
     public Object getLeftIcon() {
-        if(mLeftIcon!=null){
+        if (mLeftIcon != null){
             return mLeftIcon.getElementIcon();
         }
         return null;
@@ -338,7 +338,7 @@ class PDEEditText extends EditText {
      * @brief Get the left icon drawable of this inputfield
      */
     public Drawable getLeftIconDrawable() {
-        if(mLeftIcon!=null){
+        if (mLeftIcon != null){
             return mLeftIcon.getElementIconDrawable();
         }
         return null;
@@ -355,12 +355,14 @@ class PDEEditText extends EditText {
         return null;
     }
 
+
     /**
      * @brief Returns true if icon image or icon string was set
      */
     public boolean hasLeftIcon() {
-        return (mLeftIcon!=null);
+        return (mLeftIcon != null);
     }
+
 
     /**
      * @brief Returns ratio of icon height to text height

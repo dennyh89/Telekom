@@ -9,6 +9,7 @@ package de.telekom.pde.codelibrary.ui.modules.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -20,19 +21,19 @@ import android.text.style.URLSpan;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import java.util.Locale;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.R;
-import de.telekom.pde.codelibrary.ui.activity.PDESherlockFragmentActivity;
+import de.telekom.pde.codelibrary.ui.activity.PDEActionBarActivity;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.buttons.PDEButton;
 import de.telekom.pde.codelibrary.ui.components.inputfields.PDEInputField;
 import de.telekom.pde.codelibrary.ui.components.inputfields.PDEInputFieldEvent;
+import de.telekom.pde.codelibrary.ui.components.notification.PDEInfoFlagView;
 import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableCornerBox;
 import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableNotificationFrame;
 import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableRoundedBox;
@@ -41,6 +42,7 @@ import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.helpers.*;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 import de.telekom.pde.codelibrary.ui.layout.PDEBoundedRelativeLayout;
+
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEBaseLoginScreenActivity
@@ -53,7 +55,7 @@ import de.telekom.pde.codelibrary.ui.layout.PDEBoundedRelativeLayout;
  * The activity implements (when finished) the login pattern mobile for android.
  */
 @SuppressWarnings("unused")
-public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActivity {
+public abstract class PDEBaseLoginScreenActivity extends PDEActionBarActivity {
 
 
     // debugging log tag
@@ -65,8 +67,7 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
     protected PDEButton mButtonLogin;
     protected PDEInputField mUsernameInputField;
     protected PDEInputField mPasswordInputField;
-    protected ToolTip mLoginButtonToolTip;
-    protected ToolTip mLoginScreenPositionableToolTip;
+    protected PDEInfoFlagView mLoginScreenPositionableInfoFlag;
 
     protected View mLoginScreenHeaderArea;
     protected View mLoginScreenDescriptionArea;
@@ -93,7 +94,6 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
     protected PDEConstants.PDEContentStyle mStyle = PDEConstants.PDEContentStyle.PDEContentStyleFlat;
 
 
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -101,9 +101,9 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
         if (callIntent != null) {
             String text = callIntent.getStringExtra(PDEConstants.PDE_CODELIB_EXTRA_CONTENTSTYLE);
             if (!TextUtils.isEmpty(text)){
-                if (PDEString.contains(text.toUpperCase(), "haptic".toUpperCase()))  {
+                if (PDEString.contains(text.toUpperCase(Locale.ENGLISH), "haptic".toUpperCase(Locale.ENGLISH)))  {
                     mStyle = PDEConstants.PDEContentStyle.PDEContentStyleHaptic;
-                } else if (PDEString.contains(text.toUpperCase(), "flat".toUpperCase())) {
+                } else if (PDEString.contains(text.toUpperCase(Locale.ENGLISH), "flat".toUpperCase())) {
                     mStyle = PDEConstants.PDEContentStyle.PDEContentStyleFlat;
                 }
             }
@@ -115,9 +115,7 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
         // load layout from xml
         this.setContentView(R.layout.pde_module_login_base_screen);
 
-
-        mLoginButtonToolTip = (ToolTip)findViewById(R.id.LoginScreenToolTipLoginButton);
-        mLoginScreenPositionableToolTip = (ToolTip)findViewById(R.id.LoginScreenPositionableToolTip);
+        mLoginScreenPositionableInfoFlag = (PDEInfoFlagView)findViewById(R.id.LoginScreenPositionableInfoFlag);
 
         // get area as member variables
         mLoginScreenHeaderArea = findViewById(R.id.LoginScreenHeaderArea);
@@ -242,10 +240,6 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
         // prevent keyboard from showing in beginning
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        RelativeLayout.MarginLayoutParams marginLayoutParams =
-                new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                                                ViewGroup.LayoutParams.WRAP_CONTENT);
-
         updateLoginState();
     }
 
@@ -360,7 +354,10 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
             int height = PDEUtils.getDisplayDimension(this).y;
 
             if (getSupportActionBar() != null) {
-                height -= getResources().getDimension(R.dimen.abs__action_bar_default_height);
+                final TypedArray styledAttributes = getTheme().obtainStyledAttributes(
+                        new int[] { R.attr.actionBarSize });
+                height -=  (int) styledAttributes.getDimension(0, 0);
+                styledAttributes.recycle();
             }
 
             if ((getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) == 0){
@@ -555,7 +552,7 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
                         if (url.startsWith(toolTipSearch)) {
                             url = url.substring(toolTipSearch.length());
                         }
-                        showPositionedToolTip((TextView)widget, this, url, mLoginScreenPositionableToolTip);
+                        showPositionedToolTip((TextView)widget, this, url, mLoginScreenPositionableInfoFlag);
                     } else {
                         Uri uri = Uri.parse(getURL());
                         Context context = widget.getContext();
@@ -583,7 +580,7 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
      * @param clickedText the clicked link
      * @param textToShow text to show in the tooltip
      */
-    protected void showPositionedToolTip(TextView textView, CharacterStyle clickedText, String textToShow, ToolTip toolTip) {
+    protected void showPositionedToolTip(TextView textView, CharacterStyle clickedText, String textToShow, PDEInfoFlagView infoFlag) {
 
         boolean keywordIsInMultiLine;
         int toolTipHeight;
@@ -620,7 +617,10 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
 
         // adjust offset by height of ActionBar and StatusBar
         if (getSupportActionBar() != null) {
-            parentTextViewYOffset -= getResources().getDimension(R.dimen.abs__action_bar_default_height);
+            final TypedArray styledAttributes = getTheme().obtainStyledAttributes(
+                    new int[] { R.attr.actionBarSize });
+            parentTextViewYOffset -=  (int) styledAttributes.getDimension(0, 0);
+            styledAttributes.recycle();
         }
         if ((getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) == 0){
             parentTextViewYOffset -= PDEUtils.getStatusBarHeight(this);
@@ -664,39 +664,38 @@ public abstract class PDEBaseLoginScreenActivity extends PDESherlockFragmentActi
         // apply calculated values
 
         // set the new text (for size calculation)
-        toolTip.setText(textToShow);
-
+        infoFlag.setMessageText(textToShow);
+        infoFlag.setTitleEnabled(false);
         // same width as the text view
-        toolTip.setMaxWidth(textView.getWidth());
+        infoFlag.setMaxWidth(textView.getWidth());
 
         // measure size
-        toolTip.measure(
+        infoFlag.measure(
                 View.MeasureSpec.makeMeasureSpec(textView.getWidth(), View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(spanRect.top, View.MeasureSpec.AT_MOST));
 
         // get height of tooltip
-        toolTipHeight = toolTip.getMeasuredHeight();
+        toolTipHeight = infoFlag.getMeasuredHeight();
 
         // set the Point of the tooltip
-        toolTip.setElementTriangleTipPositionAbsolute(
-                spanRect.left + ((spanRect.right - spanRect.left) / 2.0f)
-                        - parentTextViewLocation[0],
+        infoFlag.setTriangleTipPositionAbsolute(
+                spanRect.left + ((spanRect.right - spanRect.left) / 2.0f) - parentTextViewLocation[0],
                 PDEDrawableNotificationFrame.TriangleSide.SideBottom);
 
         // set the position of the tooltip
         PDEAbsoluteLayout.LayoutParams
                 lp = (PDEAbsoluteLayout.LayoutParams)
-                toolTip.getLayoutParams();
+                infoFlag.getLayoutParams();
         lp.x = parentTextViewLocation[0];
         lp.y = spanRect.top - toolTipHeight;
-        toolTip.setLayoutParams(lp);
+        infoFlag.setLayoutParams(lp);
 
         // measure it again to ensure that the right position is shown
-        toolTip.measure(
+        infoFlag.measure(
                 View.MeasureSpec.makeMeasureSpec(textView.getWidth(), View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(Math.min(toolTipHeight, spanRect.top), View.MeasureSpec.EXACTLY));
 
         // display the tooltip
-        toolTip.show();
+        infoFlag.show();
     }
 }

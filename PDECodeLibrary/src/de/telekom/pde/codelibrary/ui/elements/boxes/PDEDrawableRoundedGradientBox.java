@@ -123,7 +123,10 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
             // keep current shadow position, just update the size
             Rect frame;
             Rect bounds = mElementShadowDrawable.getBounds();
-            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x+(2*(int)mElementShadowDrawable.getElementBlurRadius()), bounds.top + elementSize.y+(2*(int)mElementShadowDrawable.getElementBlurRadius()));
+            frame = new Rect(bounds.left,
+                    bounds.top,
+                    bounds.left + elementSize.x + ( 2 * (int)mElementShadowDrawable.getElementBlurRadius()),
+                    bounds.top + elementSize.y + (2 * (int)mElementShadowDrawable.getElementBlurRadius()));
             mElementShadowDrawable.setBounds(frame);
             mElementShadowDrawable.setElementShapeRoundedRect(mElementCornerRadius);
         }
@@ -197,6 +200,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
         return mElementBackgroundTopColor;
     }
 
+
     /**
      * @brief Get background main color.
      *
@@ -206,6 +210,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
         return mElementBackgroundMainColor;
     }
 
+
     /**
      * @brief Get background bottom color.
      *
@@ -214,6 +219,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
     public PDEColor getElementBackgroundBottomColor() {
         return mElementBackgroundBottomColor;
     }
+
 
     /**
      * @brief Set border color.
@@ -256,6 +262,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Get outline color.
      *
@@ -264,6 +271,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
     public PDEColor getElementBorderColor() {
         return mElementBorderColor;
     }
+
 
     /**
      * @brief Private helper that applies all new colors.
@@ -274,6 +282,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
                 mElementBackgroundMainColor.newIntegerColorWithCombinedAlpha(mAlpha),
                 mElementBackgroundBottomColor.newIntegerColorWithCombinedAlpha(mAlpha)};
     }
+
 
     /**
      * @brief Set the positions how the gradient colors should be distributed.
@@ -312,6 +321,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
         return mElementBorderWidth;
     }
 
+
     /**
      * @brief Set corner radius.
      *
@@ -328,6 +338,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
         doLayout();
         update();
     }
+
 
     /**
      * @brief Get corner radius.
@@ -433,9 +444,11 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
         if (bounds.width()<=0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
         // normalized and pixelshifted
         frame = new RectF(mPixelShift, mPixelShift, bounds.width() - mPixelShift, bounds.height() - mPixelShift);
-        mBackgroundPaint.setShader(new LinearGradient( (frame.right - frame.left) / 2,frame.top,
-                                                       (frame.right - frame.left) / 2,frame.bottom, mColors, mDistributionPositions,
-                                                       Shader.TileMode.MIRROR));
+        mBackgroundPaint.setShader(new LinearGradient((frame.right - frame.left) / 2, frame.top,
+                                                      (frame.right - frame.left) / 2, frame.bottom,
+                                                      mColors,
+                                                      mDistributionPositions,
+                                                      Shader.TileMode.MIRROR));
         c.drawRoundRect(frame, mElementCornerRadius, mElementCornerRadius, mBackgroundPaint);
         c.drawRoundRect(frame, mElementCornerRadius, mElementCornerRadius, mBorderPaint);
     }

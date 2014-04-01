@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.PDE" parent="Theme.Sherlock.Light">
+    <style name="Theme.PDE" parent="Theme.AppCompat.Light">
         
         <item name="android:windowTitleBackgroundStyle">@style/actionBarStyle</item>
+
+        <item name="android:windowContentOverlay">@drawable/actionbar_bottom_line</item>
         
-        <item name="windowContentOverlay">@drawable/actionbar_bottom_line</item> 
-        <item name="android:windowContentOverlay">@drawable/actionbar_bottom_line</item> 
-        
-    	<item name="actionBarStyle">@style/actionBarStyle</item>  	
-    	<item name="android:actionBarStyle">@style/actionBarStyle</item>  	
-    	
+    	<item name="actionBarStyle">@style/actionBarStyle</item>
+        <item name="android:actionBarStyle">@style/actionBarStyle</item>
+
     	<item name="actionModeBackground">@drawable/action_mode_background</item>
     	<item name="android:actionModeBackground">@drawable/action_mode_background</item>
-    	
+
     	<item name="actionModeSplitBackground">@drawable/action_mode_split_background</item>
     	<item name="android:actionModeSplitBackground">@drawable/action_mode_split_background</item>
     </style>
 
-    <style name="Theme.PDE.NoActionBar" parent="Theme.Sherlock.NoActionBar" />
+    <style name="Theme.PDE.NoActionBar" parent="Theme.PDE">
+        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
     
-    <style name="actionBarStyle" parent="Widget.Sherlock.ActionBar">
+    <style name="actionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@drawable/action_mode_background</item>
         <item name="background">@drawable/action_mode_background</item>
     </style>
@@ -28,7 +31,7 @@
     
     <!-- ################################################################################################# -->
  
-    <style name="Theme.Pde" parent="@style/Theme.Sherlock.Light">
+    <style name="Theme.Pde" parent="@style/Theme.AppCompat.Light">
         <item name="actionBarItemBackground">@drawable/selectable_background_pde</item>
         <item name="popupMenuStyle">@style/PopupMenu.Pde</item>
         <item name="dropDownListViewStyle">@style/DropDownListView.Pde</item>
@@ -40,7 +43,12 @@
         <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Pde</item>
     </style>
 
-    <style name="Theme.OKDialog" parent="android:Theme.Translucent.NoTitleBar">
+
+
+
+
+    <style name="Theme.PDEDialog" parent="android:Theme.Translucent.NoTitleBar">
+
         <!--
         <item name="android:windowFrame">@null</item>
 

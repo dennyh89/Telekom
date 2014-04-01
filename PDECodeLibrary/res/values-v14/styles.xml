@@ -2,7 +2,7 @@
 
 <resources>
 
-    <style name="Theme.Pde" parent="@style/Theme.Sherlock.Light">
+    <style name="Theme.Pde" parent="@style/Theme.AppCompat.Light">
         <item name="android:actionBarItemBackground">@drawable/selectable_background_pde</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Pde</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Pde</item>
@@ -15,20 +15,20 @@
         <item name="android:actionOverflowButtonStyle">@style/OverFlow.PDE</item>
     </style>
 
-    <style name="ActionBar.Solid.Pde" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">
+    <style name="ActionBar.Solid.Pde" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
         <item name="android:background">@drawable/action_mode_background</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_pde</item>
         <item name="android:backgroundSplit">@drawable/action_mode_split_background</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Pde</item>
     </style>
 
-    <style name="ActionBar.Transparent.Pde" parent="@style/Widget.Sherlock.Light.ActionBar">
+    <style name="ActionBar.Transparent.Pde" parent="@style/Widget.AppCompat.Light.ActionBar">
         <item name="android:background">@drawable/ab_transparent_pde</item>
         <item name="android:progressBarStyle">@style/ProgressBar.Pde</item>
     </style>
     
     <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.Pde.Widget" parent="@style/Theme.Sherlock">
+    <style name="Theme.Pde.Widget" parent="@style/Theme.AppCompat">
         <item name="android:popupMenuStyle">@style/PopupMenu.Pde</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Pde</item>
     </style>

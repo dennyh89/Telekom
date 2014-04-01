@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @brief   This is used to control Sliders.
  *
  *          Every change of it's properties sends a Event with id -1 and all stored values to listening Sliders.
- *          The Slider will decide, what he wants to do with the sended information.
+ *          The Slider will decide, what he wants to do with the received information.
  *
  *          Also a user has the possibility to define his own range of values, he wants to set to a controller.
  *          For default the range is 0...1.
@@ -81,28 +81,32 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
     /**
      * @brief   Initialization Event type
      */
-    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_INITIALIZE = "PDESliderController.action.initialize*";
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_INITIALIZE
+                                                                            = "PDESliderController.action.initialize*";
 
     /**
      * @brief   Event is send to set the parameters finally.
      */
-    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_DID_CHANGE = "PDESliderController.action.didChange*";
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_DID_CHANGE
+                                                                            = "PDESliderController.action.didChange*";
 
     /**
      * @brief   Event is send to inform when the controller wants to change parameters.
      *          This gives an user the possibility to manually customize the data
      *          before the slider will set values.
      */
-    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_WILL_CHANGE = "PDESliderController.data.willChange*";
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_WILL_CHANGE
+                                                                            = "PDESliderController.data.willChange*";
 
     /**
      * @brief   This Event is send to inform, that parameters finally have been set.
      */
-    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_HAS_CHANGED = "PDESliderController.data.hasChanged*";
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_HAS_CHANGED
+                                                                            = "PDESliderController.data.hasChanged*";
 
 
     /**
-     * @brief Tell Event wich changes where made on Controller.
+     * @brief Tell Event which changes where made on Controller.
      */
     enum PDESliderControllerChanges{
                 PDESliderControllerChanged_None,
@@ -227,7 +231,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
     public void setSliderPosition(float sliderPosition) {
 
         // call with fromUser = false
-        setSliderPosition(sliderPosition,false);
+        setSliderPosition(sliderPosition, false);
     }
 
 
@@ -409,7 +413,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         internalValue = convertUserPageSizeIntoInternal(sliderPageSizeUserRange);
 
         // set page size
-        setPageSize(internalValue,sliderPageSizeUserRange);
+        setPageSize(internalValue, sliderPageSizeUserRange);
     }
 
 
@@ -438,20 +442,20 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         // set new value
         mSliderValueRangeMinimum = sliderValueRangeMinimum;
 
-        // limiate the old values to the new range
+        // limit the old values to the new range
         if (mUsesTwistedRange) {
-            // check if slider position is inbetween the new range
+            // check if slider position is in-between the new range
             if  (mSliderStartPositionUserRange < mSliderValueRangeMaximum) {
 
-                // limitate it to new range start
+                // limit it to new range start
                 mSliderPositionUserRange = mSliderValueRangeMaximum;
                 mSliderPosition = 0;
             }
 
-            // check if slider start position is inbetween the new range
+            // check if slider start position is in-between the new range
             if  (mSliderStartPositionUserRange < mSliderValueRangeMaximum) {
 
-                // limitate it to new range start
+                // limit it to new range start
                 mSliderStartPositionUserRange = mSliderValueRangeMaximum;
                 mSliderStartPosition = 0;
             }
@@ -462,18 +466,18 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
         else {
 
-            // check if slider position is inbetween the new range
+            // check if slider position is in-between the new range
             if  (mSliderPositionUserRange < mSliderValueRangeMinimum) {
 
-                // limitate it to new range start
+                // limit it to new range start
                 mSliderPositionUserRange = mSliderValueRangeMinimum;
                 mSliderPosition = 0;
             }
 
-            // check if slider start position is inbetween the new range
+            // check if slider start position is in-between the new range
             if  (mSliderStartPositionUserRange < mSliderValueRangeMinimum) {
 
-                // limitate it to new range start
+                // limit it to new range start
                 mSliderStartPositionUserRange = mSliderValueRangeMinimum;
                 mSliderStartPosition = 0;
             }
@@ -485,7 +489,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
 
     /**
-     * @brief   Returns the End value of the definable value range. Default value is 0.
+     * @brief   Returns the end value of the definable value range. Default value is 1.
      *
      */
     @SuppressWarnings("unused")
@@ -530,9 +534,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
             // update page Size and send change event
             setSliderPageSize(mSliderPageSize);
-        }
-
-        else {
+        } else {
 
             // check if slider position is in between the new range
             if  (mSliderPositionUserRange > mSliderValueRangeMaximum) {
@@ -565,7 +567,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
      * @param   internalValue   value out of 0...1 range
      * @param   userValue       value out of user defined range
      */
-    private void setPosition(float internalValue,float userValue,boolean fromUser) {
+    private void setPosition(float internalValue, float userValue, boolean fromUser) {
 
         PDEEventSliderControllerState willChangeEvent;
         PDEEventSliderControllerState hasChangedEvent;
@@ -579,7 +581,8 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         // send first event to listeners
         willChangeEvent = createStateEvent();
         willChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_WILL_CHANGE);
-        willChangeEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
+        willChangeEvent.setSliderControllerChanges(
+                                        EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
         willChangeEvent.setSliderChangeFromUser(fromUser);
         mEventSource.sendEvent(willChangeEvent);
 
@@ -599,10 +602,8 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
                 // set values
                 mSliderPosition = position;
                 mSliderPositionUserRange = convertInternalPositionValueIntoUserValue(position);
-            }
-
-            // has changed position in user range ?
-            else if (positionUserRange != userValue) {
+            } else if (positionUserRange != userValue) {
+                // has changed position in user range ?
 
                 // security check
                 positionUserRange = checkUserRangeValue(positionUserRange);
@@ -617,14 +618,16 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         // send event to change parameters
         didChangeEvent = createStateEvent();
         didChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_DID_CHANGE);
-        didChangeEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
+        didChangeEvent.setSliderControllerChanges(
+                                        EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
         didChangeEvent.setSliderChangeFromUser(fromUser);
         mEventSource.sendEvent(didChangeEvent);
 
         // send final event to inform listeners
         hasChangedEvent = createStateEvent();
         hasChangedEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_HAS_CHANGED);
-        hasChangedEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
+        hasChangedEvent.setSliderControllerChanges(
+                                        EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
         hasChangedEvent.setSliderChangeFromUser(fromUser);
         mEventSource.sendEvent(hasChangedEvent);
     }
@@ -650,7 +653,8 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         // send first event to listeners
         willChangeEvent = createStateEvent();
         willChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_WILL_CHANGE);
-        willChangeEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_StartPosition));
+        willChangeEvent.setSliderControllerChanges(
+                                    EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_StartPosition));
         mEventSource.sendEvent(willChangeEvent);
 
         // check if data has been changed. if yes change our data
@@ -669,10 +673,8 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
                 // set values
                 mSliderStartPosition = position;
                 mSliderStartPositionUserRange = convertInternalPositionValueIntoUserValue(position);
-            }
-
-            // has changed position in user range ?
-            else if (positionUserRange != userValue) {
+            } else if (positionUserRange != userValue) {
+                // has changed position in user range ?
 
                 // security check
                 positionUserRange = checkUserRangeValue(positionUserRange);
@@ -681,25 +683,26 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
                 mSliderStartPosition = convertUserPositionValueIntoInternal(positionUserRange);
                 mSliderStartPositionUserRange = positionUserRange;
             }
-
         }
 
         // send event to change parameters
         didChangeEvent = createStateEvent();
         didChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_DID_CHANGE);
-        didChangeEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_StartPosition));
+        didChangeEvent.setSliderControllerChanges(
+                                    EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_StartPosition));
         mEventSource.sendEvent(didChangeEvent);
 
         // send final event to inform listeners
         hasChangedEvent = createStateEvent();
         hasChangedEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_HAS_CHANGED);
-        hasChangedEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_StartPosition));
+        hasChangedEvent.setSliderControllerChanges(
+                                    EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_StartPosition));
         mEventSource.sendEvent(hasChangedEvent);
     }
 
 
     /**
-     * @brief   Sets the pagesize of the slider informs that changes will be made and sends a final event.
+     * @brief   Sets the page size of the slider informs that changes will be made and sends a final event.
      *
      * @param   internalValue   value out of 0...1 range
      * @param   userValue       value out of user defined range
@@ -718,7 +721,8 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         // send first event to listeners
         willChangeEvent = createStateEvent();
         willChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_WILL_CHANGE);
-        willChangeEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_PageSize));
+        willChangeEvent.setSliderControllerChanges(
+                                            EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_PageSize));
         mEventSource.sendEvent(willChangeEvent);
 
         // check if data has been changed. if yes change our data
@@ -737,10 +741,8 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
                 // set values
                 mSliderPageSize = pageSize;
                 mSliderPageSizeUserRange = convertInternalPageSizeValueIntoUserValue(pageSize);
-            }
-
-            // has changed pageSize in user range ?
-            else if (pageSize != userValue) {
+            } else if (pageSize != userValue) {
+                // has changed pageSize in user range ?
 
                 // security check
                 pageSizeUserRange = checkUserRangeValue(pageSizeUserRange);
@@ -755,13 +757,15 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         // send event to change parameters
         didChangeEvent = createStateEvent();
         didChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_DID_CHANGE);
-        didChangeEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_PageSize));
+        didChangeEvent.setSliderControllerChanges(
+                                        EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_PageSize));
         mEventSource.sendEvent(didChangeEvent);
 
         // send final event to inform listeners
         hasChangedEvent = createStateEvent();
         hasChangedEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_HAS_CHANGED);
-        hasChangedEvent.setSliderControllerChanges(EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_PageSize));
+        hasChangedEvent.setSliderControllerChanges(
+                                        EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_PageSize));
         mEventSource.sendEvent(hasChangedEvent);
     }
 
@@ -771,15 +775,14 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
     /**
      * @brief   Check if this value is in between 0..1 range.
-     *          If this is not the case it will limitate the value to
-     *          the next border of the range.
+     *          If this is not the case it will limit the value to  the next border of the range.
      *
-     * @return          limitated value
+     * @return          limited value
      * @param   value   value to check
      */
      private float checkInternalValue(float value) {
 
-         // limitate to internal range
+         // limit to internal range
          if (value < 0) value = 0;
          if (value > 1) value = 1;
 
@@ -790,22 +793,20 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
     /**
      * @brief   Check if this value is in between the User defined range.
-     *          If this is not the case it will limitate the value to
+     *          If this is not the case it will limit the value to
      *          the next border of the range.
      *
-     * @return          limitated value
+     * @return          limited value
      * @param   value   value to check
      */
      private float checkUserRangeValue(float value) {
 
-         // limitate to user range
+         // limit to user range
          if (mUsesTwistedRange) {
-
              // start is bigger than end
              if (value > mSliderValueRangeMinimum) value = mSliderValueRangeMinimum;
              if (value < mSliderValueRangeMaximum) value = mSliderValueRangeMaximum;
          } else {
-
              // start is smaller than end
              if (value < mSliderValueRangeMinimum) value = mSliderValueRangeMinimum;
              if (value > mSliderValueRangeMaximum) value = mSliderValueRangeMaximum;
@@ -876,7 +877,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
 
     /**
-     * @brief   Helper to turn given user coordinates pagesize back into 0..1 range.
+     * @brief   Helper to translate user coordinates page size into internal 0..1 range.
      *
      * @return        page size value out of range 0..1
      * @param   value page size value out of user range
@@ -903,7 +904,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
 
     /**
-     * @brief   Helper to turn given 0..1 range into User Coordinates.
+     * @brief   Helper to translate 0..1 range into user defined coordinates.
      *
      * @return          position value in user range
      * @param   value   position value in 0..1 range
@@ -1040,7 +1041,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
      * @brief Remove the specified listener .
      *
      * @param listener The listener reference returned by addListener:
-     * @result Returns whether we have found & removed the listener or not
+     * @return Returns whether we have found & removed the listener or not
      */
     @SuppressWarnings("unused")
     public boolean removeListener(Object listener) {
@@ -1066,7 +1067,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
         if (mDragHolder == slider) {
             // unlock
             mDragAccessLock.unlock();
-            // is alread holder
+            // is already holder
             return true;
         }
 

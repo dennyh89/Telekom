@@ -33,7 +33,7 @@
                 pdecodelibrary:iconColor="@color/DTUIText"
                 />
 
-        <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDELayerTextView
+        <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
                 android:id = "@+id/PDEList_ItemText"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/Telekom.BU2_1_2"
@@ -46,7 +46,7 @@
                 android:layout_toRightOf="@id/PDEList_ItemIcon"
                 />
 
-        <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDELayerTextView
+        <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
                 android:id = "@+id/PDEList_ItemSubText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

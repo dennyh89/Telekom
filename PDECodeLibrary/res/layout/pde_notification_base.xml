@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Deutsche Telekom AG owns the right of use concerning the following code taken from the Deutsche Telekom
+  ~ Experience Toolbox. You can obtain a copy of the terms and conditions of the Experience Toolbox at
+  ~ https://www.design.telekom.com/myaccount/terms-of-use/
+  ~
+  ~ Copyright (c) 2012. Neuland Multimedia GmbH.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:pdecodelibrary="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:id="@+id/Notification"
+             >
+
+    <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            pdecodelibrary:maxLines="1"
+            pdecodelibrary:ellipsizeText="true"
+            android:id="@+id/NotificationTitle"
+            pdecodelibrary:textColor="@color/DTWhite"
+            />
+
+    <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/NotificationMessage"
+            pdecodelibrary:textColor="@color/DTWhite"
+            pdecodelibrary:ellipsizeText="true"
+            />
+
+
+</LinearLayout>

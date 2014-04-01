@@ -40,8 +40,6 @@ public class PDEDrawableRoundedBox extends PDEDrawableBase {
     private Paint mBackgroundPaint;
 
 
-
-
     // initialization
     public PDEDrawableRoundedBox()
     {
@@ -100,6 +98,7 @@ public class PDEDrawableRoundedBox extends PDEDrawableBase {
         setNeededPadding(0);
     }
 
+
     /**
      * @brief Update the shadow drawable if we've got one.
      */
@@ -111,7 +110,10 @@ public class PDEDrawableRoundedBox extends PDEDrawableBase {
             // keep current shadow position, just update the size
             Rect frame;
             Rect bounds = mElementShadowDrawable.getBounds();
-            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x+(2*(int)mElementShadowDrawable.getElementBlurRadius()), bounds.top + elementSize.y+(2*(int)mElementShadowDrawable.getElementBlurRadius()));
+            frame = new Rect(bounds.left,
+                    bounds.top,
+                    bounds.left + elementSize.x + (2 * (int)mElementShadowDrawable.getElementBlurRadius()),
+                    bounds.top + elementSize.y + (2 *(int)mElementShadowDrawable.getElementBlurRadius()));
             //mElementShadowDrawable.setLayoutRect(frame);
             mElementShadowDrawable.setBounds(frame);
             mElementShadowDrawable.setElementShapeRoundedRect(mElementCornerRadius);
@@ -127,7 +129,7 @@ public class PDEDrawableRoundedBox extends PDEDrawableBase {
     /**
      * @brief Set fill (background) color.
      *
-     * @param color The new backgroundcolor of the speech bubble.
+     * @param color The new background color of the speech bubble.
      */
     public void setElementBackgroundColor(PDEColor color) {
         // any change?
@@ -168,6 +170,7 @@ public class PDEDrawableRoundedBox extends PDEDrawableBase {
         // update
         update();
     }
+
 
     /**
      * @brief Get outline color.

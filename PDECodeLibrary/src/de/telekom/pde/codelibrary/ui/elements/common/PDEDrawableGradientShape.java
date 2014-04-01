@@ -51,8 +51,6 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
 
     /**
      * @brief Set corner radius (rounded rect).
-     *
-     * @param radius
      */
     public void setElementCornerRadius(float radius){
         // any change?
@@ -76,19 +74,20 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
 
     /**
      * @brief Set all colors of the gradient at once.
-     *
-     * @param topColor
-     * @param middleColor
-     * @param bottomColor
      */
     public void setElementColors(int topColor, int middleColor, int bottomColor){
         // any change?
-        if (topColor == mElementBackgroundTopColor && middleColor == mElementBackgroundMainColor &&
-            bottomColor == mElementBackgroundBottomColor) return;
+        if (topColor == mElementBackgroundTopColor
+                && middleColor == mElementBackgroundMainColor
+                && bottomColor == mElementBackgroundBottomColor) {
+            return;
+        }
+
         // remember
         mElementBackgroundTopColor = topColor;
         mElementBackgroundMainColor = middleColor;
         mElementBackgroundBottomColor = bottomColor;
+
         // update
         update(true);
     }
@@ -99,6 +98,7 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
      *
      * @param color the top color.
      */
+    @SuppressWarnings("unused")
     public void setElementTopColor(int color){
         // any change?
         if (mElementBackgroundTopColor == color) return;
@@ -114,6 +114,7 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
      *
      * @param color the middle color.
      */
+    @SuppressWarnings("unused")
     public void setElementMiddleColor(int color){
         // any change?
         if (mElementBackgroundMainColor == color) return;
@@ -129,6 +130,7 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
      *
      * @param color the bottom color.
      */
+    @SuppressWarnings("unused")
     public void setElementBottomColor(int color){
         // any change?
         if (mElementBackgroundBottomColor == color) return;
@@ -143,6 +145,7 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
      *
      * @return top color of gradient.
      */
+    @SuppressWarnings("unused")
     public int getElementTopColor(){
         return mElementBackgroundTopColor;
     }
@@ -153,6 +156,7 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
      *
      * @return middle color of gradient.
      */
+    @SuppressWarnings("unused")
     public int getElementMiddleColor(){
         return mElementBackgroundMainColor;
     }
@@ -163,9 +167,11 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
      *
      * @return bottom color of gradient.
      */
+    @SuppressWarnings("unused")
     public int getElementBottomColor(){
         return mElementBackgroundBottomColor;
     }
+
 
     /**
      * @brief Set custom shape as a path.
@@ -173,11 +179,8 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
      * @param path the custom shape of the element.
      */
     public void setElementShapePath(Path path) {
-        // ToDo: Don't know if equals() is meaningful overridden here.
-        // any change?
-        if (mShapePath.equals(path)) {
-            return;
-        }
+        // security
+        if (path == null) return;
 
         // store the path
         mShapePath = path;
@@ -186,18 +189,22 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Get custom shape as a path.
      *
      * @return custom path
      */
+    @SuppressWarnings("unused")
     public Path getElementShapePath() {
         return mShapePath;
     }
 
+
     /**
      * @brief Set a rectangular path
      */
+    @SuppressWarnings("unused")
     public void setElementShapeRect() {
         mShapeType = PDEAvailableShapes.SHAPE_RECT;
         update();
@@ -216,6 +223,7 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
     /**
      * @brief Set a oval inscribing the rect. Use a square to get a circle
      */
+    @SuppressWarnings("unused")
     public void setElementShapeOval() {
         mShapeType = PDEAvailableShapes.SHAPE_OVAL;
         update();
@@ -226,7 +234,7 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
      */
     private void updateColors() {
         // set colors
-        mColors = new int[]{PDEColor.getIntegerColorCombinedWithAlpha(mElementBackgroundTopColor,mAlpha),
+        mColors = new int[]{PDEColor.getIntegerColorCombinedWithAlpha(mElementBackgroundTopColor, mAlpha),
                             PDEColor.getIntegerColorCombinedWithAlpha(mElementBackgroundMainColor, mAlpha),
                             PDEColor.getIntegerColorCombinedWithAlpha(mElementBackgroundBottomColor, mAlpha)};
     }
@@ -277,7 +285,7 @@ public class PDEDrawableGradientShape extends PDEDrawableBase {
 
         // security
         if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
-        // normalized and pixelshifted
+        // normalized and pixel-shifted
         frame = new RectF(mPixelShift,mPixelShift,bounds.width() - mPixelShift,bounds.height() - mPixelShift);
         mBackgroundPaint.setShader(new LinearGradient((frame.right - frame.left) / 2, frame.top,
                                                       (frame.right - frame.left) / 2, frame.bottom, mColors,

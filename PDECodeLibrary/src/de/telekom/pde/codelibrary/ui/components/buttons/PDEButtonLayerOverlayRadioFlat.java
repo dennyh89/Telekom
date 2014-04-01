@@ -35,7 +35,6 @@ class PDEButtonLayerOverlayRadioFlat extends PDEButtonLayerOverlayRadioBase {
     private final static String LOG_TAG = PDEButtonLayerOverlayRadioHaptic.class.getName();
 
 
-
     /**
      * @brief Class initialization.
      */
@@ -43,6 +42,7 @@ class PDEButtonLayerOverlayRadioFlat extends PDEButtonLayerOverlayRadioBase {
     public PDEButtonLayerOverlayRadioFlat(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
 
     /**
      * @brief Class initialization.
@@ -52,12 +52,14 @@ class PDEButtonLayerOverlayRadioFlat extends PDEButtonLayerOverlayRadioBase {
         super(context, attrs, defStyle);
     }
 
+
     /**
      * @brief Class initialization.
      */
     public PDEButtonLayerOverlayRadioFlat(Context context) {
         super (context);
     }
+
 
     /**
      * @brief Factory function that decides which background we use.

@@ -32,7 +32,7 @@ public class PDEDrawableStageHaptic extends PDEDrawableMultilayer {
     protected void init() {
         // create stage drawable & configure
         mStageDrawable = new PDEDrawableRoundedGradientBox();
-        if(PDECodeLibrary.getInstance().isDarkStyle()) {
+        if (PDECodeLibrary.getInstance().isDarkStyle()) {
             mStageDrawable.setElementBackgroundGradientColors(PDEColor.valueOf("DTGrey2"),
                                                               PDEColor.valueOf("DTGrey100"),
                                                               PDEColor.valueOf("DTGrey75"));
@@ -55,7 +55,6 @@ public class PDEDrawableStageHaptic extends PDEDrawableMultilayer {
     }
 
 
-
     /**
      * @brief Listener for bounds changes of multilayer
      *
@@ -69,12 +68,15 @@ public class PDEDrawableStageHaptic extends PDEDrawableMultilayer {
         // get padding for shadow
         int padding = mStageDrawable.getNeededPadding();
         // set new bounds of stage
-        mStageDrawable.setBounds(new Rect(bounds.left + padding, bounds.top + padding, bounds.right - padding,
-                                          bounds.bottom -padding));
+        mStageDrawable.setBounds(new Rect(bounds.left + padding,
+                bounds.top + padding,
+                bounds.right - padding,
+                bounds.bottom -padding));
 
         if (mShadow == null) return;
         // set new offset for shadow
-        mShadow.setLayoutOffset(new Point(Math.round(mStageDrawable.getBounds().left-mShadow.getElementBlurRadius()),
-                                          Math.round(mStageDrawable.getBounds().top-mShadow.getElementBlurRadius()) + PDEBuildingUnits.oneTwelfthsBU()));
+        mShadow.setLayoutOffset(new Point(Math.round(mStageDrawable.getBounds().left - mShadow.getElementBlurRadius()),
+                                          Math.round(mStageDrawable.getBounds().top - mShadow.getElementBlurRadius())
+                                                  + PDEBuildingUnits.oneTwelfthsBU()));
     }
 }

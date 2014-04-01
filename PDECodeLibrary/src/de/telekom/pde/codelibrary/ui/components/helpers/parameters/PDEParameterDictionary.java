@@ -595,7 +595,35 @@ public class PDEParameterDictionary {
         return param.getBoolForKey(key, defaultValue);
     }
 
+    /**
+     * @brief Retrieve the basic parameter value.
+     */
+    public int parameterIntForName(String name)
+    {
+        PDEParameter param;
 
+        // seek the param
+        param = parameterForName(name);
+        if (param==null) return 0;
+
+        // retrieve the basic value
+        return param.getBaseInt();
+    }
+
+    /**
+     * @brief Retrieve the basic parameter value.
+     */
+    public int parameterIntForName(String name,int defaultValue)
+    {
+        PDEParameter param;
+
+        // seek the param
+        param = parameterForName(name);
+        if (param==null) return defaultValue;
+
+        // retrieve the basic value
+        return param.getIntForKey("", defaultValue);
+    }
 
     /**
      * @brief Retrieve the basic parameter value.

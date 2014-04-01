@@ -31,7 +31,7 @@ import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
  */
 public abstract class PDEListBaseAdapter extends BaseAdapter {
 
-//-----  properties ---------------------------------------------------------------------------------------------------
+//-----  properties ----------------------------------------------------------------------------------------------------
     // resource ID of the item layout
     protected int mItemTemplateResourceID;
     // number of items in the list
@@ -96,7 +96,6 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
     public abstract long getItemId(int position);
 
 
-
     /**
      * @brief Get a View that displays the data at the specified position in the data set.
      *
@@ -104,7 +103,7 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      * list items into PDEListItems. This function does the needed work for you. It creates the PDEListItem object
      * and delivers this object the resource ID of the list item layout. The PDEListItem object inflates it
      * internally. This method also does the automatic creation of the holder elements which increase the list
-     * performance. It calls the functions initListItem and fillListItem which should be overriden by the user in the
+     * performance. It calls the functions initListItem and fillListItem which should be overridden by the user in the
      * derived adapter for initialization / content update purposes. Normally you have to override at least
      * fillListItem because we use list item recycling and so you always have to set the actual contents of the list
      * item. At the end the method delivers the PDEListItem View.
@@ -147,14 +146,13 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
             listItem.setListPosition(position);
         }
 
-
-
        // fill list item with actual data
        fillListItem(listItem);
 
         // return the list item
         return listItem;
     }
+
 
     /**
      * @brief Initialize layout elements of the list item
@@ -164,6 +162,7 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      * @param listItem the listitem that should be initialized
      */
     protected void initListItem(PDEListItem listItem){}
+
 
     /**
      * @brief Fill list item with actual data
@@ -205,6 +204,7 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
         mItemCount = num;
     }
 
+
     /**
      * @brief Turn on / off automatic creation of holder objects.
      *
@@ -215,7 +215,7 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      *
      * @param autoCreation true -> automatic creation on / false -> automatic creation off
      */
-    public void setAutomaticHolderCreation (boolean autoCreation) {
+    public void setAutomaticHolderCreation(boolean autoCreation) {
         mCreateHolderAutomatically = autoCreation;
     }
 
@@ -226,7 +226,7 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      * @return true -> automatic holder generation is on, false -> automatic holder generation is off
      */
     @SuppressWarnings("unused")
-    public boolean isHolderCreatedAutomatically () {
+    public boolean isHolderCreatedAutomatically() {
         return  mCreateHolderAutomatically;
     }
 }

@@ -48,7 +48,7 @@ public class PDEDictionary implements Serializable {
             Log.e("PDEDictionary", "Number of parameters isn't even. We need pairs of keys and values here");
             return;
         }
-        for (int i = 0; i < params.length; i += 2){
+        for (int i = 0; i < params.length; i += 2) {
             if (!(params[i] instanceof String)){
                 Log.e("PDEDictionary", "Keys always have to be of type String!");
                 return;
@@ -67,20 +67,18 @@ public class PDEDictionary implements Serializable {
         super();
 
         mMap = new HashMap<String,Object>(map);
-
     }
 
-    // copy's the hashmap-dictionary but keeps references to the containend objects -> should do the same like on ios!
+    // copy's the hashmap-dictionary but keeps references to the contained objects -> should do the same like on ios!
     public PDEDictionary(PDEDictionary dict)
     {
         super();
 
         mMap = new HashMap<String,Object>(dict.getHashMap());
-
     }
 
 
-    // copy's the hashmap-dictionary but keeps references to the containend objects -> should do the same like on ios!
+    // copy's the hashmap-dictionary but keeps references to the contained objects -> should do the same like on ios!
     public PDEDictionary copy()
     {
         return new PDEDictionary(this);

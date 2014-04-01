@@ -37,7 +37,6 @@ public class PDEDrawableDelimiter extends PDEDrawableBase {
 
 
     // initialization
-
     public PDEDrawableDelimiter() {
         super();
         mElementType = PDEDrawableDelimiterType.PDEDrawableDelimiterTypeHorizontal;
@@ -100,6 +99,7 @@ public class PDEDrawableDelimiter extends PDEDrawableBase {
                 break;
         }
     }
+
 
     /**
      * @brief Get horizontal or vertical orientation of delimiter.
@@ -170,7 +170,7 @@ public class PDEDrawableDelimiter extends PDEDrawableBase {
     * @param bounds New bounds of the delimiter.
     */
     private Rect limitBounds(Rect bounds) {
-        Rect newBounds = new Rect(bounds.left,bounds.top,bounds.right,bounds.bottom);
+        Rect newBounds = new Rect(bounds.left, bounds.top, bounds.right, bounds.bottom);
 
         // security
         if (mElementType == PDEDrawableDelimiterType.PDEDrawableDelimiterTypeHorizontal && bounds.height() > 1){
@@ -182,7 +182,7 @@ public class PDEDrawableDelimiter extends PDEDrawableBase {
          return newBounds;
     }
 
-// todo Alex: please check this function:
+
     /**
      * @brief In order to be usable als delimiter in android native list, there has to be an intrinsic height.
      * @return 1 if it is an element of type horizontal
@@ -196,7 +196,6 @@ public class PDEDrawableDelimiter extends PDEDrawableBase {
     }
 
 
-// todo Alex: please check this function:
     /**
      * @brief In order to be usable als delimiter in android native list, there has to be an intrinsic width.
      * @return 1 if it is an element of type vertical
@@ -210,8 +209,7 @@ public class PDEDrawableDelimiter extends PDEDrawableBase {
     }
 
 
-
-    //---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 // ----- Helpers ------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
 

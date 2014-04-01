@@ -20,7 +20,6 @@ import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.elements.metaphor.PDEDrawableVideoMetaphor;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
-import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -31,8 +30,12 @@ import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
  * @brief Wrapper class hosting a PDEDrawableVideoMetaphorHaptic for usage in Layouts
  */
 public class PDEVideoMetaphorView extends View {
+
+    // metaphor drawable
     private PDEDrawableVideoMetaphor mVideo;
 
+    // rect helper variable to avoid allocation during layout/measure
+    private Rect mInternalCalculateAspectRatioBounds;
 
     /**
      * @brief Constructor.
@@ -48,7 +51,7 @@ public class PDEVideoMetaphorView extends View {
      */
     @SuppressWarnings("unused")
     public PDEVideoMetaphorView(Context context, AttributeSet attrs){
-        super(context,attrs);
+        super(context, attrs);
         init(attrs);
     }
 
@@ -70,10 +73,13 @@ public class PDEVideoMetaphorView extends View {
         mVideo = new PDEDrawableVideoMetaphor(null, "");
         mVideo.setElementMiddleAligned(true);
 
+        mInternalCalculateAspectRatioBounds = new Rect(0,0,0,0);
+
         PDEUtils.setViewBackgroundDrawable(this, mVideo);
 
         setAttributes(attrs);
     }
+
 
     /**
      * @brief Load XML attributes.
@@ -87,12 +93,14 @@ public class PDEVideoMetaphorView extends View {
         //check icon source or string
         if (sa.hasValue(R.styleable.PDEVideoMetaphorView_src)) {
             //check if this is a resource value
-            int resourceID = sa.getResourceId(R.styleable.PDEVideoMetaphorView_src,0);
-            if(resourceID != 0){
+            int resourceID = sa.getResourceId(R.styleable.PDEVideoMetaphorView_src, 0);
+            if (resourceID != 0){
                 setPictureDrawable(getContext().getResources().getDrawable(resourceID));
             }
         } else {
-            int res = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android","src",-1);
+            int res = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android",
+                    "src",
+                    -1);
             if (res != -1) {
                 setPictureDrawable(getContext().getResources().getDrawable(res));
             }
@@ -101,8 +109,8 @@ public class PDEVideoMetaphorView extends View {
         //set picture string
         if (sa.hasValue(R.styleable.PDEVideoMetaphorView_pictureString)) {
             //check if this is a resource value
-            int resourceID = sa.getResourceId(R.styleable.PDEVideoMetaphorView_pictureString,0);
-            if(resourceID==0){
+            int resourceID = sa.getResourceId(R.styleable.PDEVideoMetaphorView_pictureString, 0);
+            if (resourceID == 0){
                 setPictureString(sa.getString(R.styleable.PDEVideoMetaphorView_pictureString));
             } else {
                 setPictureDrawable(getContext().getResources().getDrawable(resourceID));
@@ -132,12 +140,14 @@ public class PDEVideoMetaphorView extends View {
         }
     }
 
+
     /**
      * @brief Set visual style.
      */
     public void setContentStyle(PDEConstants.PDEContentStyle style) {
         mVideo.setElementContentStyle(style);
     }
+
 
     /**
      * @brief Set visual style.
@@ -152,12 +162,14 @@ public class PDEVideoMetaphorView extends View {
         mVideo.setElementContentStyle(contentStyle);
     }
 
+
     /**
      * @brief Get visual style.
      */
     public PDEConstants.PDEContentStyle getStyle() {
         return mVideo.getElementContentStyle();
     }
+
 
     /**
      * @brief Set picture from int id.
@@ -177,6 +189,7 @@ public class PDEVideoMetaphorView extends View {
         invalidate();
     }
 
+
     /**
      * @brief Set picture drawable.
      */
@@ -186,6 +199,7 @@ public class PDEVideoMetaphorView extends View {
         invalidate();
     }
 
+
     /**
      * @brief Set time string.
      */
@@ -194,6 +208,7 @@ public class PDEVideoMetaphorView extends View {
         requestLayout();
         invalidate();
     }
+
 
     /**
      * @brief Set if 16/9 format.
@@ -213,12 +228,14 @@ public class PDEVideoMetaphorView extends View {
         return mVideo.getElementScene();
     }
 
+
     /**
      * @brief Activate shadow.
      */
     public void setShadowEnabled(boolean enabled) {
         mVideo.setElementShadowEnabled(enabled);
     }
+
 
     /**
      * @brief Get if shadow is activated.
@@ -227,6 +244,7 @@ public class PDEVideoMetaphorView extends View {
     public boolean getShadowEnabled() {
         return mVideo.getElementShadowEnabled();
     }
+
 
     /**
      * @brief Returns the native size of the icon (e.g. from resource image)
@@ -263,47 +281,12 @@ public class PDEVideoMetaphorView extends View {
 
 
     /**
-     * @brief Set View Size.
-     */
-    public void setViewSize(float width, float height){
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.width = Math.round(width);
-        layerParams.height = Math.round(height);
-        setLayoutParams(layerParams);
-    }
-
-
-    /**
-     * @brief Set View Offset.
-     */
-    public void setViewOffset(float x, float y){
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.x = Math.round(x);
-        layerParams.y = Math.round(y);
-        setLayoutParams(layerParams);
-    }
-
-
-    /**
-     * @brief Set View Rect.
-     */
-    public void setViewLayoutRect(Rect rect) {
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.x = rect.left;
-        layerParams.y = rect.top;
-        layerParams.width = rect.width();
-        layerParams.height = rect.height();
-
-        setLayoutParams(layerParams);
-    }
-
-    /**
      * @brief Determine layout size of element.
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int height;
-        int width;
+        int height, newHeight;
+        int width, newWidth;
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
 
@@ -311,7 +294,7 @@ public class PDEVideoMetaphorView extends View {
         height = MeasureSpec.getSize(heightMeasureSpec);
         width = MeasureSpec.getSize(widthMeasureSpec);
 
-        int newWidth = PDEBuildingUnits.roundUpToScreenCoordinates(getElementWidth());
+        newWidth = PDEBuildingUnits.roundUpToScreenCoordinates(getElementWidth());
 
         if (newWidth < width) {
             width = newWidth;
@@ -321,17 +304,22 @@ public class PDEVideoMetaphorView extends View {
             width = newWidth;
         }
 
-        int newheight = PDEBuildingUnits.roundUpToScreenCoordinates(getElementHeight());
+        newHeight = PDEBuildingUnits.roundUpToScreenCoordinates(getElementHeight());
 
-        if (newheight < height) {
-            height = newheight;
+        if (newHeight < height) {
+            height = newHeight;
         }
 
         if (heightSpecMode == MeasureSpec.UNSPECIFIED && height == 0) {
-            height = newheight;
+            height = newHeight;
         }
 
-        mVideo.setInternalBounds(width, height);
+        if (mVideo != null) {
+            mInternalCalculateAspectRatioBounds.set(0,0,width,height);
+            mInternalCalculateAspectRatioBounds = mVideo.elementCalculateAspectRatioBounds(mInternalCalculateAspectRatioBounds);
+            width = mInternalCalculateAspectRatioBounds.width();
+            height = mInternalCalculateAspectRatioBounds.height();
+        }
 
         // return the values
         setMeasuredDimension(resolveSize(width, widthMeasureSpec),

@@ -20,7 +20,7 @@
                     android:layout_height="@dimen/Telekom.BU5"
             >
 
-        <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDELayerTextView
+        <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
                 android:id = "@+id/PDEList_ItemText"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/Telekom.BU5"

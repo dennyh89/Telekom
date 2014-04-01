@@ -32,7 +32,7 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 /**
  * @brief Shows a speech bubble shaped tooltip.
  * The class is currently very simple and has not many function (e.g. you cannot controll the drawable which draws the
- * bubble), and it should be also based on PDELayerTextView (To follow the styleguide distance requirement). So it is
+ * bubble), and it should be also based on PDETextView (To follow the styleguide distance requirement). So it is
  * not intended to be used elsewhere. But we definitly should write this component.
  */
 @SuppressWarnings("unused")

@@ -15,10 +15,6 @@ import de.telekom.pde.codelibrary.ui.color.PDEColor;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-// todo: 1) Check if path drawing and resizing is working properly
-// todo: 2) Set initial border color
-
-
 /**
  * @brief With this Drawable the outline of the button is drawn.
  *
@@ -28,7 +24,7 @@ import de.telekom.pde.codelibrary.ui.color.PDEColor;
 
 public class PDEDrawableBorderLine extends PDEDrawableBase {
 
-//-----  properties ---------------------------------------------------------------------------------------------------
+//-----  properties ----------------------------------------------------------------------------------------------------
     // parameters
     protected float mElementCornerRadius;
     protected float mElementBorderWidth;
@@ -56,6 +52,7 @@ public class PDEDrawableBorderLine extends PDEDrawableBase {
         mElementBorderWidth = 2.0f;
         mShapeType = PDEAvailableShapes.SHAPE_ROUNDED_RECT;
         mElementShapePath = new Path();
+        mElementBorderColor = PDEColor.valueOf("DTGrey237_Idle_Border").getIntegerColor();
 
         update(true);
     }
@@ -87,24 +84,29 @@ public class PDEDrawableBorderLine extends PDEDrawableBase {
         return mElementCornerRadius;
     }
 
+
     /**
      * @brief Set the width of the outline
      */
     public void setElementBorderWidth(float width) {
         // anything to do?
         if (width == mElementBorderWidth) return;
+
         // remember
         mElementBorderWidth = width;
         mBorderPaint.setStrokeWidth(mElementBorderWidth);
+
         // update
         update();
     }
+
 
     /**
      * @brief Get the width of the outline
      *
      * @return Width of the outline
      */
+    @SuppressWarnings("unused")
     public float getElementBorderWidth() {
         return mElementBorderWidth;
     }
@@ -141,13 +143,9 @@ public class PDEDrawableBorderLine extends PDEDrawableBase {
      *
      * @param path A path that defines a custom shape
      */
-    // ToDo: test this
     public void setElementShapePath(Path path) {
-        // ToDo: Don't know if equals() is meaningful overriden here.
-        // any change?
-        if (mElementShapePath.equals(path)) {
-            return;
-        }
+        // security
+        if (path == null) return;
 
         // store the path
         mElementShapePath = path;
@@ -162,6 +160,7 @@ public class PDEDrawableBorderLine extends PDEDrawableBase {
      *
      * @return path of our custom shape
      */
+    @SuppressWarnings("unused")
     public Path getElementShapePath() {
         return mElementShapePath;
     }
@@ -188,6 +187,7 @@ public class PDEDrawableBorderLine extends PDEDrawableBase {
         // update
         update();
     }
+
 
     /**
      * @brief Set oval shape of outline.
@@ -259,7 +259,6 @@ public class PDEDrawableBorderLine extends PDEDrawableBase {
                           normalizedBoundsRect.bottom - mPixelShift);
 
 
-        // ToDo: Custom path needs testing
         // draw the desired shape of the outline
         switch (mShapeType) {
             case PDEAvailableShapes.SHAPE_RECT:

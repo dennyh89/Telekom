@@ -11,7 +11,6 @@ package de.telekom.pde.codelibrary.ui.components.elementwrappers;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -22,8 +21,9 @@ import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.icon.PDEDrawableIcon;
+import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
+import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
-import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +54,7 @@ public class PDEIconView extends View {
      * @brief Constructor.
      */
     public PDEIconView(Context context, AttributeSet attrs){
-        super(context,attrs);
+        super(context, attrs);
         init(attrs);
     }
 
@@ -76,7 +76,7 @@ public class PDEIconView extends View {
     protected void init(AttributeSet attrs){
         mIcon = new PDEDrawableIcon("");
 
-        PDEUtils.setViewBackgroundDrawable(this,mIcon);
+        PDEUtils.setViewBackgroundDrawable(this, mIcon);
 
 
         setAttributes(attrs);
@@ -84,7 +84,7 @@ public class PDEIconView extends View {
 
 
     /**
-     * @brief Load XML attributs
+     * @brief Load XML attributes
      *
      *
      */
@@ -114,7 +114,7 @@ public class PDEIconView extends View {
         if (sa.hasValue(R.styleable.PDEIconView_iconString)) {
             //check if this is a resource value
             int resourceID = sa.getResourceId(R.styleable.PDEIconView_iconString,0);
-            if (resourceID==0){
+            if (resourceID == 0){
                 setIconString(sa.getString(R.styleable.PDEIconView_iconString));
             } else {
                 setIconDrawable(getContext().getResources().getDrawable(resourceID));
@@ -392,52 +392,10 @@ public class PDEIconView extends View {
 
 
     /**
-     * @brief Checks if icon drawable is PDEIconfont.
+     * @brief Checks if icon drawable is PDEIconFont.
      */
     public boolean isIconfont() {
         return mIcon.isIconfont();
-    }
-
-
-    /**
-     * @brief Set View Size.
-     *
-     *
-     */
-    public void setViewSize(float width, float height){
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.width = Math.round(width);
-        layerParams.height = Math.round(height);
-        setLayoutParams(layerParams);
-    }
-
-
-    /**
-     * @brief Set View Offset.
-     *
-     *
-     */
-    public void setViewOffset(float x, float y){
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.x = Math.round(x);
-        layerParams.y = Math.round(y);
-        setLayoutParams(layerParams);
-    }
-
-
-    /**
-     * @brief Set View Rect.
-     *
-     *
-     */
-    public void setViewLayoutRect(Rect rect) {
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.x = rect.left;
-        layerParams.y = rect.top;
-        layerParams.width = rect.width();
-        layerParams.height = rect.height();
-
-        setLayoutParams(layerParams);
     }
 
 
@@ -455,24 +413,24 @@ public class PDEIconView extends View {
         height = MeasureSpec.getSize(heightMeasureSpec);
         width = MeasureSpec.getSize(widthMeasureSpec);
 
-        int newwidth = PDEBuildingUnits.roundUpToScreenCoordinates(getElementWidth());
+        int newWidth = PDEBuildingUnits.roundUpToScreenCoordinates(getElementWidth());
 
-        if (newwidth < width) {
-            width = newwidth;
+        if (newWidth < width) {
+            width = newWidth;
         }
 
         if (widthSpecMode == MeasureSpec.UNSPECIFIED && width == 0) {
-            width = newwidth;
+            width = newWidth;
         }
 
-        int newheight = PDEBuildingUnits.roundUpToScreenCoordinates(getElementHeight());
+        int newHeight = PDEBuildingUnits.roundUpToScreenCoordinates(getElementHeight());
 
-        if (newheight < height) {
-            height = newheight;
+        if (newHeight < height) {
+            height = newHeight;
         }
 
         if (heightSpecMode == MeasureSpec.UNSPECIFIED && height == 0) {
-            height = newheight;
+            height = newHeight;
         }
 
         // return the values
@@ -507,7 +465,7 @@ public class PDEIconView extends View {
                 endOfFloatIndex < dimensionString.length()) {
             String unitPart = dimensionString.substring(endOfFloatIndex);
             if (unitPart.compareToIgnoreCase("BU") == 0) {
-                size = PDEBuildingUnits.exactPixelFromBU(size);
+                size = PDEFontHelpers.calculateFontSize(PDETypeface.sDefaultFont, PDEBuildingUnits.exactPixelFromBU(size));
             } else if (unitPart.compareToIgnoreCase("px") == 0) {
                 size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, size, metrics);
             } else if (unitPart.compareToIgnoreCase("dp") == 0 ||

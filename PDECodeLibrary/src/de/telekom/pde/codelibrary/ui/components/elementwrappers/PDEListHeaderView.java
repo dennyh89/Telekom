@@ -2,8 +2,6 @@ package de.telekom.pde.codelibrary.ui.components.elementwrappers;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -13,10 +11,6 @@ import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.complex.PDEDrawableListHeader;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
-import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -55,10 +49,10 @@ public class PDEListHeaderView extends View {
      *
      */
     protected void init(AttributeSet attrs){
-        mHeader = new PDEDrawableListHeader();
 
-        boolean clippingDrawableSet = false;
-        Method method;
+        if (isInEditMode()) return;
+
+        mHeader = new PDEDrawableListHeader();
 
         // adapt to light / dark style
         if(PDECodeLibrary.getInstance().isDarkStyle()) {
@@ -81,8 +75,6 @@ public class PDEListHeaderView extends View {
 
     /**
      * @brief Load XML attributes
-     *
-     *
      */
     private void setAttributes(AttributeSet attrs) {
         // valid?
@@ -114,7 +106,7 @@ public class PDEListHeaderView extends View {
         if (sa.hasValue(R.styleable.PDEListHeaderView_textColor)) {
             //to have dark/light style use PDEColor with color id
             int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_textColor,0);
-            if (resourceID!=0) {
+            if (resourceID != 0) {
                 setTextColor(PDEColor.valueOfColorID(resourceID));
             } else {
                 setTextColor(sa.getColor(R.styleable.PDEListHeaderView_textColor, R.color.DTBlack));
@@ -125,7 +117,7 @@ public class PDEListHeaderView extends View {
         if (sa.hasValue(R.styleable.PDEListHeaderView_subTextColor)) {
             //to have dark/light style use PDEColor with color id
             int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_subTextColor,0);
-            if (resourceID!=0) {
+            if (resourceID != 0) {
                 setSubTextColor(PDEColor.valueOfColorID(resourceID));
             } else {
                 setSubTextColor(sa.getColor(R.styleable.PDEListHeaderView_subTextColor, R.color.DTBlack));
@@ -136,7 +128,7 @@ public class PDEListHeaderView extends View {
         if (sa.hasValue(R.styleable.PDEListHeaderView_backgroundColor)) {
             //to have dark/light style use PDEColor with color id
             int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_backgroundColor,0);
-            if (resourceID!=0) {
+            if (resourceID != 0) {
                 setBackgroundColor(PDEColor.valueOfColorID(resourceID));
             } else {
                 setBackgroundColor(sa.getColor(R.styleable.PDEListHeaderView_backgroundColor, R.color.DTBlack));
@@ -150,7 +142,8 @@ public class PDEListHeaderView extends View {
             if (resourceID!=0) {
                 setDelimiterBackgroundColor(PDEColor.valueOfColorID(resourceID));
             } else {
-                setDelimiterBackgroundColor(sa.getColor(R.styleable.PDEListHeaderView_delimiterBackgroundColor, R.color.DTBlack));
+                setDelimiterBackgroundColor(sa.getColor(R.styleable.PDEListHeaderView_delimiterBackgroundColor,
+                                                        R.color.DTBlack));
             }
         }
         
@@ -326,30 +319,5 @@ public class PDEListHeaderView extends View {
     }
 
 
-    public void setViewSize(float width, float height){
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.width = Math.round(width);
-        layerParams.height = Math.round(height);
-        setLayoutParams(layerParams);
-    }
-
-
-    public void setViewOffset(float x, float y){
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.x = Math.round(x);
-        layerParams.y = Math.round(y);
-        setLayoutParams(layerParams);
-    }
-
-
-    public void setViewLayoutRect(Rect rect) {
-        PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) getLayoutParams();
-        layerParams.x = rect.left;
-        layerParams.y = rect.top;
-        layerParams.width = rect.width();
-        layerParams.height = rect.height();
-
-        setLayoutParams(layerParams);
-    }
 }
 

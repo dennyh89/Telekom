@@ -1,16 +1,19 @@
 package de.telekom.pde.codelibrary.ui.activity;
 
 
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.View;
 import de.telekom.pde.codelibrary.ui.R;
-import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDELayerTextView;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView;
 import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 
 
-public class PDEActivitySplash extends PDESherlockActivity
+public class PDEActivitySplash extends PDEActionBarActivity
 {
-	private PDELayerTextView	splashAppName;
+	private PDETextView splashAppName;
 
 
 	/**
@@ -41,15 +44,28 @@ public class PDEActivitySplash extends PDESherlockActivity
 
 
 	private void setupLayout() {
+        View splashAppIcon;
+        Display display;
+		final PDETextView splashAppName;
+        Typeface typeface;
 
-		final PDELayerTextView splashAppName = (PDELayerTextView) findViewById(R.id.splash_activity_app_name);
         // remember
+        typeface = PDEFontHelpers.getNormal().getTypeface();
+        splashAppName = (PDETextView) findViewById(R.id.splash_activity_app_name);
         this.splashAppName = splashAppName;
 
+        // get view and display
+        splashAppIcon = findViewById(R.id.splash_activity_app_icon);
+        display = PDEUtils.getDisplay(this);
+
         // align splash activity icon to golden ratio
-		de.telekom.pde.codelibrary.ui.helpers.PDEUtils.setGoldenRatioTo(findViewById(R.id.splash_activity_app_icon), PDEUtils.getDisplay(this));
+        if(splashAppIcon != null && display != null) {
+            de.telekom.pde.codelibrary.ui.helpers.PDEUtils.setGoldenRatioTo(splashAppIcon, display);
+        }
 
-		PDEFontHelpers.setViewFontTo(splashAppName, PDEFontHelpers.getNormal().getTypeface());
-
+        // set view font
+        if (splashAppName != null && typeface != null) {
+            PDEFontHelpers.setViewFontTo(splashAppName, typeface);
+        }
 	}
 }

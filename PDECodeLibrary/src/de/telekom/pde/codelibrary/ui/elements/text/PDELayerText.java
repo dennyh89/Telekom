@@ -7,6 +7,7 @@
 package de.telekom.pde.codelibrary.ui.elements.text;
 
 import android.graphics.*;
+import android.text.TextUtils;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
@@ -46,16 +47,13 @@ public class PDELayerText extends PDEDrawableBase {
     private boolean mDither;
     private ColorFilter mColorFilter;
 
-
     private float mTextSize;
     private PDETypeface mTypeface;
     private boolean mEllipsize = false;
     private int mMetricsTopDistance;
     private int mMetricsBottomDistance;
-    private int mBoundsLeft;
     private int mBaseLine;
     private int mInternalBaseLine;
-    private int mOffset;
     private int mCapHeight;
     private Paint.FontMetrics mMetrics;
 
@@ -70,8 +68,6 @@ public class PDELayerText extends PDEDrawableBase {
     private PDEColor mShadowColor;
     private boolean mShadowEnabled;
 
-    private int mBoundsWidth;
-    private int mBoundsHeight;
     private int mPaddingTop;
     private int mPaddingLeft;
     private int mPaddingRight;
@@ -184,8 +180,6 @@ public class PDELayerText extends PDEDrawableBase {
 
     /**
      * @brief Set the typeface.
-     *
-     * @param typeface
      */
     public void setElementTypeface(PDETypeface typeface){
         // security
@@ -295,7 +289,10 @@ public class PDELayerText extends PDEDrawableBase {
      */
     public void setElementPaddingAll(int padding) {
         //any change?
-        if (padding == mPaddingLeft && padding == mPaddingTop && padding == mPaddingRight && padding == mPaddingBottom) {
+        if (padding == mPaddingLeft
+                && padding == mPaddingTop
+                && padding == mPaddingRight
+                && padding == mPaddingBottom) {
             return;
         }
 
@@ -435,7 +432,7 @@ public class PDELayerText extends PDEDrawableBase {
 
 
     /**
-     * @brief Get baseline, resulting from set baseline, padding and vertical aligment
+     * @brief Get baseline, resulting from set baseline, padding and vertical alignment
      */
     public float getElementInternalBaseLine() {
         return mInternalBaseLine;
@@ -585,6 +582,7 @@ public class PDELayerText extends PDEDrawableBase {
     /**
      * @brief Set shadow alpha
      */
+    @SuppressWarnings("unused")
     public void setElementShadowAlpha(float alpha) {
         //any change?
         if (alpha == mShadowAlpha) return;
@@ -597,13 +595,14 @@ public class PDELayerText extends PDEDrawableBase {
     /**
      * @brief Get shadow alpha
      */
+    @SuppressWarnings("unused")
     public float getElementShadowAlpha() {
         return  mShadowAlpha;
     }
 
     /**
-     * @brief Set ellipsize
-     * @param ellipsize
+     * @brief Set ellipsize.
+     * @param ellipsize enable (true) or disable (false)
      */
     public void setElementEllipsize (boolean ellipsize) {
         //any change?
@@ -703,7 +702,7 @@ public class PDELayerText extends PDEDrawableBase {
 //    }
 
     /**
-     * @brief Set the offest of the layer.
+     * @brief Set the offset of the layer.
      *
      * @param offset The new offset of the element.
      */
@@ -820,20 +819,21 @@ public class PDELayerText extends PDEDrawableBase {
     protected void updateDrawingBitmap(Canvas c, Rect bounds) {
         //text paint and metrics parameters
         refreshMetrics();
+        int offset, boundsLeft, boundsWidth, boundsHeight;
 
         Rect originalbounds = new Rect(Math.round(mPixelShift), Math.round(mPixelShift),
                 Math.round(bounds.width()-mPixelShift), Math.round(bounds.height()-mPixelShift));
 
         Rect newbounds;
-        mBoundsWidth = originalbounds.width();
-        mBoundsHeight = originalbounds.height();
+        boundsWidth = originalbounds.width();
+        boundsHeight = originalbounds.height();
 
         // security
         if (originalbounds.width()<=0 || originalbounds.height() <= 0) return;
 
         //draw background
         if (mBackgroundPaint != null) {
-            c.drawRect(new Rect(0,0, mBoundsWidth, mBoundsHeight),mBackgroundPaint);
+            c.drawRect(new Rect(0,0, boundsWidth, boundsHeight),mBackgroundPaint);
         }
 
         //create bounds with padding
@@ -843,73 +843,79 @@ public class PDELayerText extends PDEDrawableBase {
         // security
         if (newbounds.width()<=0 || newbounds.height() <= 0) return;
 
-        mBoundsLeft = -newbounds.left+2*mPaddingLeft;
+        boundsLeft = -newbounds.left+2*mPaddingLeft;
 
         //draw text based on alignment
         if (mAlignmentMode != PDELayerTextAlignmentMode.PDELayerTextAlignmentModeBaseLine){
             //draw text for standard and capheight alignment mode
             //draws text and text shadow on top if vertical alignment is top
             if (mVerticalAlignment == PDEConstants.PDEVerticalAlignment.PDEAlignmentTop) {
-                if (mShadowEnabled) drawMultilineText(mText, mBoundsLeft+mShadowOffsetX, mMetricsTopDistance +mShadowOffsetY,
-                        c, newbounds, mShadowPaint, true);
+                if (mShadowEnabled) drawMultilineText(mText, boundsLeft+mShadowOffsetX,
+                        mMetricsTopDistance +mShadowOffsetY, c, newbounds, mShadowPaint, true);
 
-                mTextHeight = drawMultilineText(mText, mBoundsLeft, mMetricsTopDistance, c, newbounds, mTextPaint, true);
+                mTextHeight = drawMultilineText(mText, boundsLeft, mMetricsTopDistance, c,
+                        newbounds, mTextPaint, true);
 
             } else {
                 //if vertical alignment is not top, first text height is calculated
-                mTextHeight = drawMultilineText(mText, mBoundsLeft, mMetricsTopDistance, c, newbounds, mTextPaint, false);
+                mTextHeight = drawMultilineText(mText, boundsLeft, mMetricsTopDistance, c,
+                        newbounds, mTextPaint, false);
 
                 //draws text in center
                 if (mVerticalAlignment == PDEConstants.PDEVerticalAlignment.PDEAlignmentVerticalCenter) {
-                    mOffset = mBoundsHeight -mTextHeight-(mBoundsHeight -mTextHeight)/2+mCapHeight;
-                    mTextOffset = mOffset - mCapHeight;
-                    mInternalBaseLine = mOffset;
+                    offset = boundsHeight -mTextHeight-(boundsHeight -mTextHeight)/2+mCapHeight;
+                    mTextOffset = offset - mCapHeight;
+                    mInternalBaseLine = offset;
 
-                    if (mShadowEnabled) drawMultilineText(mText, mBoundsLeft+mShadowOffsetX, mOffset+mShadowOffsetY,
+                    if (mShadowEnabled) drawMultilineText(mText, boundsLeft+mShadowOffsetX, offset+mShadowOffsetY,
                             c, newbounds, mShadowPaint, true);
 
-                    drawMultilineText(mText, mBoundsLeft, mOffset, c, newbounds, mTextPaint, true);
+                    drawMultilineText(mText, boundsLeft, offset, c, newbounds, mTextPaint, true);
                 }
 
                 //draws text at bottom
                 if (mVerticalAlignment == PDEConstants.PDEVerticalAlignment.PDEAlignmentBottom) {
-                    mOffset = mBoundsHeight -mTextHeight + mCapHeight -mPaddingBottom;
-                    mTextOffset = mOffset - mCapHeight;
-                    mInternalBaseLine = mBoundsHeight-mPaddingBottom;
+                    offset = boundsHeight -mTextHeight + mCapHeight -mPaddingBottom;
+                    mTextOffset = offset - mCapHeight;
+                    mInternalBaseLine = boundsHeight-mPaddingBottom;
 
-                    if (mShadowEnabled) drawMultilineText(mText, mBoundsLeft+mShadowOffsetY, mOffset+mShadowOffsetY,
+                    if (mShadowEnabled) drawMultilineText(mText, boundsLeft+mShadowOffsetY, offset+mShadowOffsetY,
                             c, newbounds, mShadowPaint, true);
 
-                    drawMultilineText(mText, mBoundsLeft, mOffset, c, newbounds, mTextPaint, true);
+                    drawMultilineText(mText, boundsLeft, offset, c, newbounds, mTextPaint, true);
                 }
             }
         } else {
             //draw for BaseLine alignment mode
-            mOffset = 0;
+            offset = 0;
 
             //define offset based on alignment, baseline and padding
             if (mVerticalAlignment == PDEConstants.PDEVerticalAlignment.PDEAlignmentTop) {
-                newbounds = new Rect(newbounds.left, newbounds.top, newbounds.right, Math.round(newbounds.bottom-mBaseLine+mCapHeight));
-                mOffset = mBaseLine+mPaddingTop;
-                mInternalBaseLine = mOffset;
+                newbounds = new Rect(newbounds.left, newbounds.top, newbounds.right,
+                        Math.round(newbounds.bottom-mBaseLine+mCapHeight));
+                offset = mBaseLine+mPaddingTop;
+                mInternalBaseLine = offset;
             } else if (mVerticalAlignment == PDEConstants.PDEVerticalAlignment.PDEAlignmentVerticalCenter) {
-                mOffset = mBaseLine + mBoundsHeight /2;
-                newbounds = new Rect(newbounds.left, newbounds.top, newbounds.right, Math.round(newbounds.bottom-(mBaseLine + mBoundsHeight /2.0f)+mCapHeight));
-                mInternalBaseLine = mOffset;
+                offset = mBaseLine + boundsHeight /2;
+                newbounds = new Rect(newbounds.left, newbounds.top, newbounds.right,
+                        Math.round(newbounds.bottom-(mBaseLine + boundsHeight /2.0f)+mCapHeight));
+                mInternalBaseLine = offset;
             } else if (mVerticalAlignment == PDEConstants.PDEVerticalAlignment.PDEAlignmentBottom) {
-                newbounds = new Rect(newbounds.left, newbounds.top, newbounds.right, Math.round(newbounds.bottom+mBaseLine));
-                mTextHeight = drawMultilineText(mText, mBoundsLeft, mMetricsTopDistance, c, newbounds, mTextPaint, false);
-                mOffset = mBaseLine + mBoundsHeight -mTextHeight-mPaddingBottom;
-                mInternalBaseLine = mBaseLine + mBoundsHeight-mPaddingBottom;
+                newbounds = new Rect(newbounds.left, newbounds.top,
+                        newbounds.right, Math.round(newbounds.bottom+mBaseLine));
+                mTextHeight = drawMultilineText(mText, boundsLeft, mMetricsTopDistance, c,
+                        newbounds, mTextPaint, false);
+                offset = mBaseLine + boundsHeight -mTextHeight-mPaddingBottom;
+                mInternalBaseLine = mBaseLine + boundsHeight-mPaddingBottom;
             }
 
-            mTextOffset = mOffset - mCapHeight;
+            mTextOffset = offset - mCapHeight;
 
             //draw text
-            if (mShadowEnabled) drawMultilineText(mText, mBoundsLeft+mShadowOffsetY, mOffset+mShadowOffsetY,
+            if (mShadowEnabled) drawMultilineText(mText, boundsLeft+mShadowOffsetY, offset+mShadowOffsetY,
                     c, newbounds, mShadowPaint, true);
 
-            drawMultilineText(mText, mBoundsLeft, mOffset, c, newbounds, mTextPaint, true);
+            drawMultilineText(mText, boundsLeft, offset, c, newbounds, mTextPaint, true);
         }
     }
 
@@ -923,14 +929,14 @@ public class PDELayerText extends PDEDrawableBase {
      * @param canvas canvas to be drawn on
      * @param drawSpace available space in which is drawn
      * @param draw sets if text is really drawn, if false no text is drawn, only height of the text is measured
-     * @return
      */
-    private int drawMultilineText(String text, float x, float y, Canvas canvas, Rect drawSpace, Paint paint, boolean draw) {
+    private int drawMultilineText(String text, float x, float y, Canvas canvas,
+                                  Rect drawSpace, Paint paint, boolean draw) {
         if (paint == null) return 0;
-        int linebottom, totalHeight,  lineTop, lineHeight;
+        int lineBottom, totalHeight,  lineTop, lineHeight;
         float lineWidth, lineStart;
-        int lineoffset = 0;
-        int linecount = 1;
+        int lineOffset = 0;
+        int lineCount = 1;
 
         //horizontal alignment parameters
         boolean left = false;
@@ -940,15 +946,19 @@ public class PDELayerText extends PDEDrawableBase {
         boolean right = false;
         if (draw && mHorizontalAlignment == PDEConstants.PDEAlignment.PDEAlignmentRight) right = true;
 
+        if (text.contains("\n")) {
+            text = text.replaceAll("\n", " \n ");
+        }
+
         //splits text in array of single words
-        String[] lines = text.split(" ");
+        String[] words = text.split(" ");
 
         // set line height
         lineHeight = Math.round(-mMetrics.ascent) + Math.round(mMetrics.descent);
-        linebottom = lineHeight-mCapHeight;
+        lineBottom = lineHeight-mCapHeight;
 
-        //set line distance based on linedistancefactor, when linedistancefactor is 1 standard line distance is used
-        lineHeight = lineHeight - Math.round(1 - mLineDistanceFactor)*linebottom;
+        //set line distance based on lineDistanceFactor, when lineDistanceFactor is 1 standard line distance is used
+        lineHeight = lineHeight - Math.round(1 - mLineDistanceFactor)*lineBottom;
 
         lineTop = 0;
         //if Alignment Mode is standard, distance over and below the text must be added to textsize,
@@ -959,25 +969,44 @@ public class PDELayerText extends PDEDrawableBase {
 
         // draws text, word for word
         String line = "";
-        for (int i = 0; i < lines.length; ++i) {
+        for (int i = 0; i < words.length; ++i) {
+            //deletes newline and spaces, if there are any, so the line begins at the left
+            if (line.contains("\n")) {
+                line = line.replaceAll("\n", "");
+                line = line.trim();
+            }
+
             if (i==0) {
                 //starts at first word
-                line = lines[i];
-            } else if(calculateTextWidth(line + " " + lines[i], paint) <= drawSpace.width()){
+                line = words[i];
+            } else if(calculateTextWidth(line + " " + words[i], paint) <= drawSpace.width()
+                    && !TextUtils.equals(words[i], "\n")) {
                 //adds one more word if there is enough space in line
-                line = line + " " + lines[i];
+                if (TextUtils.isEmpty(line)) {
+                    line = words[i];
+                } else {
+                    line = line + " " + words[i];
+                }
+
             } else if (calculateTextWidth(line, paint) <= drawSpace.width()) {
                 //draws words if line is full
-                linecount++;
+                lineCount++;
 
                 //if there is no space for a another line writes line and returns
-                if ((lineHeight * linecount) - linebottom + mMetricsBottomDistance > drawSpace.height() || (mMaxLines != -1 && linecount > mMaxLines)) {
+                if ((lineHeight * lineCount) - lineBottom + mMetricsBottomDistance > drawSpace.height()
+                        || (mMaxLines != -1 && lineCount > mMaxLines)) {
                     //adds next word, which gets ellipsized, but prevents that whole word is cut off instead of using
                     //remaining available space
-                    line = line + " " + lines[i];
+                    line = line + " " + words[i];
+
+                    if (line.contains("\n")) {
+                        line = line.replaceAll("\n", "");
+                        line = line.trim();
+                    }
 
                     //write
-                    if (left) canvas.drawText(getEllipsisString(line, drawSpace.width(), paint), x, y + lineoffset, paint);
+                    if (left) canvas.drawText(getEllipsisString(line, drawSpace.width(), paint), x,
+                            y + lineOffset, paint);
 
                     if (center || right) {
                         lineWidth = calculateTextWidth(getEllipsisString(line, drawSpace.width(), paint), paint);
@@ -986,15 +1015,16 @@ public class PDELayerText extends PDEDrawableBase {
                         } else {
                             lineStart = drawSpace.width() - lineWidth;
                         }
-                        canvas.drawText(getEllipsisString(line, drawSpace.width(), paint), x + lineStart, y + lineoffset, paint);
+                        canvas.drawText(getEllipsisString(line, drawSpace.width(), paint), x + lineStart,
+                                y + lineOffset, paint);
                     }
 
-                    totalHeight = (linecount-2)*lineHeight + mCapHeight + mMetricsBottomDistance + lineTop;
+                    totalHeight = (lineCount-2)*lineHeight + mCapHeight + mMetricsBottomDistance + lineTop;
                     return totalHeight;
                 } else {
                     //writes line and goes to new line
                     if (!line.equals("")){
-                        if (left) canvas.drawText(line, x, y + lineoffset, paint);
+                        if (left) canvas.drawText(line, x, y + lineOffset, paint);
 
                         if (center || right) {
                             lineWidth = calculateTextWidth(line, paint);
@@ -1003,12 +1033,12 @@ public class PDELayerText extends PDEDrawableBase {
                             } else {
                                 lineStart = drawSpace.width() - lineWidth;
                             }
-                            canvas.drawText(line, x + lineStart, y + lineoffset, paint);
+                            canvas.drawText(line, x + lineStart, y + lineOffset, paint);
                         }
 
-                        lineoffset = lineoffset + lineHeight;
+                        lineOffset = lineOffset + lineHeight;
                     }
-                    line = lines[i];
+                    line = words[i];
                 }
             } else {
                 // if line is too narrow for a whole word, writes single chars and linewraps inbetween word
@@ -1019,27 +1049,30 @@ public class PDELayerText extends PDEDrawableBase {
                         word = word + line.charAt(j);
                     } else {
                         //writes chars
-                        linecount++;
+                        lineCount++;
 
-                        if ((lineHeight * linecount) - linebottom + mMetricsBottomDistance > drawSpace.height() || (mMaxLines != -1 && linecount > mMaxLines)) {
+                        if ((lineHeight * lineCount) - lineBottom + mMetricsBottomDistance > drawSpace.height()
+                                || (mMaxLines != -1 && lineCount > mMaxLines)) {
                             //writes chars and returns if there is no space for a new line
-                            if (left) canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x, y + lineoffset, paint);
+                            if (left) canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x,
+                                    y + lineOffset, paint);
 
                             if (center || right) {
-                                lineWidth = calculateTextWidth(getEllipsisString(word, drawSpace.width(), paint), paint);
+                                lineWidth = calculateTextWidth(getEllipsisString(word,drawSpace.width(), paint), paint);
                                 if (center) {
                                     lineStart = (drawSpace.width() - lineWidth)/2.0f;
                                 } else {
                                     lineStart = drawSpace.width() - lineWidth;
                                 }
-                                canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x + lineStart, y + lineoffset, paint);
+                                canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x + lineStart,
+                                        y + lineOffset, paint);
                             }
 
-                            totalHeight = (linecount-2)*lineHeight + mCapHeight + mMetricsBottomDistance + lineTop;
+                            totalHeight = (lineCount-2)*lineHeight + mCapHeight + mMetricsBottomDistance + lineTop;
                             return totalHeight;
                         } else {
                             //writes chars and goes to new line
-                            if (left) canvas.drawText(word, x, y + lineoffset, paint);
+                            if (left) canvas.drawText(word, x, y + lineOffset, paint);
 
                             if (center || right) {
                                 lineWidth = calculateTextWidth(word, paint);
@@ -1048,23 +1081,25 @@ public class PDELayerText extends PDEDrawableBase {
                                 } else {
                                     lineStart = drawSpace.width() - lineWidth;
                                 }
-                                canvas.drawText(word, x + lineStart, y + lineoffset, paint);
+                                canvas.drawText(word, x + lineStart, y + lineOffset, paint);
                             }
 
-                            lineoffset = lineoffset + lineHeight;
+                            lineOffset = lineOffset + lineHeight;
                             word = "" + line.charAt(j);
                         }
                     }
                 }
 
                 //add remaining chars to new line
-                if (calculateTextWidth(word + " " + lines[i], paint) > drawSpace.width()) {
+                if (calculateTextWidth(word + " " + words[i], paint) > drawSpace.width()) {
                     //writes only remaining chars, if not enough space for next word is available
-                    linecount++;
+                    lineCount++;
 
-                    if ((lineHeight * linecount) - linebottom + mMetricsBottomDistance > drawSpace.height() || (mMaxLines != -1 && linecount > mMaxLines)) {
+                    if ((lineHeight * lineCount) - lineBottom + mMetricsBottomDistance > drawSpace.height()
+                            || (mMaxLines != -1 && lineCount > mMaxLines)) {
                         //returns if there is no more space for another line
-                        if (left) canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x, y + lineoffset, paint);
+                        if (left) canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x,
+                                y + lineOffset, paint);
 
                         if (center || right) {
                             lineWidth = calculateTextWidth(getEllipsisString(word, drawSpace.width(), paint), paint);
@@ -1073,14 +1108,15 @@ public class PDELayerText extends PDEDrawableBase {
                             } else {
                                 lineStart = drawSpace.width() - lineWidth;
                             }
-                            canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x + lineStart, y + lineoffset, paint);
+                            canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x + lineStart,
+                                    y + lineOffset, paint);
                         }
 
-                        totalHeight = (linecount-2)*lineHeight + mCapHeight + mMetricsBottomDistance + lineTop;
+                        totalHeight = (lineCount-2)*lineHeight + mCapHeight + mMetricsBottomDistance + lineTop;
                         return totalHeight;
                     } else {
                         //writes chars and goes to next line
-                        if (left) canvas.drawText(word, x, y + lineoffset, paint);
+                        if (left) canvas.drawText(word, x, y + lineOffset, paint);
 
                         if (center || right) {
                             lineWidth = calculateTextWidth(word, paint);
@@ -1089,16 +1125,16 @@ public class PDELayerText extends PDEDrawableBase {
                             } else {
                                 lineStart = drawSpace.width() - lineWidth;
                             }
-                            canvas.drawText(word, x + lineStart, y + lineoffset, paint);
+                            canvas.drawText(word, x + lineStart, y + lineOffset, paint);
                         }
 
-                        lineoffset = lineoffset + lineHeight;
-                        line = lines[i];
+                        lineOffset = lineOffset + lineHeight;
+                        line = words[i];
                     }
 
                 } else {
                     //adds next word if enough space is available
-                    line = word + " " + lines[i];
+                    line = word + " " + words[i];
                 }
             }
         }
@@ -1108,7 +1144,7 @@ public class PDELayerText extends PDEDrawableBase {
         if (calculateTextWidth(line, paint) <= drawSpace.width())
         {
             //writes line
-            if (left) canvas.drawText(line, x, y + lineoffset, paint);
+            if (left) canvas.drawText(line, x, y + lineOffset, paint);
 
             if (center || right) {
                 lineWidth = calculateTextWidth(line, paint);
@@ -1117,7 +1153,7 @@ public class PDELayerText extends PDEDrawableBase {
                 } else {
                     lineStart = drawSpace.width() - lineWidth;
                 }
-                canvas.drawText(line, x + lineStart, y + lineoffset, paint);
+                canvas.drawText(line, x + lineStart, y + lineOffset, paint);
             }
         } else {
             //if line does not fit, writes as many single chars as fit, then writes remaining chars in next lines
@@ -1129,11 +1165,13 @@ public class PDELayerText extends PDEDrawableBase {
                     word = word + line.charAt(j);
                 } else {
                     //writes chars
-                    linecount++;
+                    lineCount++;
 
-                    if ((lineHeight * linecount) - linebottom + mMetricsBottomDistance > drawSpace.height() || (mMaxLines != -1 && linecount > mMaxLines)) {
+                    if ((lineHeight * lineCount) - lineBottom + mMetricsBottomDistance > drawSpace.height()
+                            || (mMaxLines != -1 && lineCount > mMaxLines)) {
                         //writes chars and returns if there is no space for a new line
-                        if (left) canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x, y + lineoffset, paint);
+                        if (left) canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x,
+                                y + lineOffset, paint);
 
                         if (center || right) {
                             lineWidth = calculateTextWidth(getEllipsisString(word, drawSpace.width(), paint), paint);
@@ -1142,14 +1180,15 @@ public class PDELayerText extends PDEDrawableBase {
                             } else {
                                 lineStart = drawSpace.width() - lineWidth;
                             }
-                            canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x + lineStart, y + lineoffset, paint);
+                            canvas.drawText(getEllipsisString(word, drawSpace.width(), paint), x + lineStart,
+                                    y + lineOffset, paint);
                         }
 
-                        totalHeight = (linecount-2)*lineHeight + mCapHeight + mMetricsBottomDistance + lineTop;
+                        totalHeight = (lineCount-2)*lineHeight + mCapHeight + mMetricsBottomDistance + lineTop;
                         return totalHeight;
                     } else {
                         //writes chars and goes to new line
-                        if (left) canvas.drawText(word, x, y + lineoffset, paint);
+                        if (left) canvas.drawText(word, x, y + lineOffset, paint);
 
                         if (center || right) {
                             lineWidth = calculateTextWidth(word, paint);
@@ -1158,17 +1197,17 @@ public class PDELayerText extends PDEDrawableBase {
                             } else {
                                 lineStart = drawSpace.width() - lineWidth;
                             }
-                            canvas.drawText(word, x + lineStart, y + lineoffset, paint);
+                            canvas.drawText(word, x + lineStart, y + lineOffset, paint);
                         }
 
-                        lineoffset = lineoffset + lineHeight;
+                        lineOffset = lineOffset + lineHeight;
                         word = "" + line.charAt(j);
                     }
                 }
             }
 
             //writes remaining chars
-            if (left) canvas.drawText(word, x, y + lineoffset, paint);
+            if (left) canvas.drawText(word, x, y + lineOffset, paint);
 
             if (center || right) {
                 lineWidth = calculateTextWidth(word, paint);
@@ -1177,11 +1216,11 @@ public class PDELayerText extends PDEDrawableBase {
                 } else {
                     lineStart = drawSpace.width() - lineWidth;
                 }
-                canvas.drawText(word, x + lineStart, y + lineoffset, paint);
+                canvas.drawText(word, x + lineStart, y + lineOffset, paint);
             }
         }
 
-        totalHeight = (linecount - 1)*lineHeight + mCapHeight + mMetricsBottomDistance + lineTop;
+        totalHeight = (lineCount - 1)*lineHeight + mCapHeight + mMetricsBottomDistance + lineTop;
         return totalHeight;
     }
 
@@ -1257,8 +1296,10 @@ public class PDELayerText extends PDEDrawableBase {
      * @brief Returns necessary height of element, which consists of text height and paddings
      */
     public float getElementHeightForWidth(String text, float width) {
-        //1.0f is added because of pixel shift in PDELayerText, which reduces the bounds by 1 pixel
-        return mPaddingTop + getTextHeightForWidth(text, width - mPaddingLeft - mPaddingRight) + mPaddingBottom +1.0f;
+        //1.0f is added because of pixel shift in PDELayerText, which reduces the bounds by 1 pixel.
+        //in getTextHeightForWidth the 1.0f is substracted, also because of the pixel shift.
+        return mPaddingTop + getTextHeightForWidth(text, width - mPaddingLeft - mPaddingRight - 1.0f)
+                + mPaddingBottom +1.0f;
     }
 
 
@@ -1266,15 +1307,15 @@ public class PDELayerText extends PDEDrawableBase {
      * @brief returns text width for given text, typeface and fontsize
      */
     public float getTextWidth(String text, PDETypeface font, float fontsize) {
-        Paint testpaint = new Paint();
+        Paint testPaint = new Paint();
         if (font == null) {
-            testpaint.setTypeface(PDETypeface.sDefaultFont.getTypeface());
+            testPaint.setTypeface(PDETypeface.sDefaultFont.getTypeface());
         } else {
-            testpaint.setTypeface(font.getTypeface());
+            testPaint.setTypeface(font.getTypeface());
         }
-        testpaint.setTextSize(fontsize);
+        testPaint.setTextSize(fontsize);
 
-        return calculateTextWidth(text, testpaint);
+        return calculateTextWidth(text, testPaint);
     }
 
 

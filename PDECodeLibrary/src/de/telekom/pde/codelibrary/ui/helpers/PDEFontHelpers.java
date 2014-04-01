@@ -19,12 +19,9 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
 import de.telekom.pde.codelibrary.ui.R;
-import de.telekom.pde.codelibrary.ui.R.string;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
-import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDELayerTextView;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView;
 import de.telekom.pde.codelibrary.ui.utils.PDETypefaceSpan;
-
-import javax.annotation.Nonnull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -416,7 +413,7 @@ public class PDEFontHelpers {
         // security
         if (context == null) return null;
 
-        return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_GroteskFet));
+        return PDETypeface.createFromAsset(context.getResources().getString(R.string.Tele_GroteskFet));
     }
 
     /**
@@ -434,7 +431,7 @@ public class PDEFontHelpers {
         // security
         if (context == null) return null;
 
-        return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_GroteskHal));
+        return PDETypeface.createFromAsset(context.getResources().getString(R.string.Tele_GroteskHal));
     }
 
     /**
@@ -452,7 +449,7 @@ public class PDEFontHelpers {
         // security
         if (context == null) return null;
 
-        return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_GroteskUlt));
+        return PDETypeface.createFromAsset(context.getResources().getString(R.string.Tele_GroteskUlt));
     }
 
     /**
@@ -469,7 +466,7 @@ public class PDEFontHelpers {
         // security
         if (context == null) return null;
 
-        return PDETypeface.createFromAsset(context.getResources().getString(string.Tele_Iconfont));
+        return PDETypeface.createFromAsset(context.getResources().getString(R.string.Tele_Iconfont));
     }
 
 
@@ -480,15 +477,15 @@ public class PDEFontHelpers {
         return PDETypeface.sIconFont;
     }
 
-    public static void setViewFontTo(@Nonnull final TextView view, @Nonnull final Typeface typeface) {
+    public static void setViewFontTo(final TextView view, final Typeface typeface) {
         if (view == null) throw new NullPointerException("TextView is NULL!!!");
         if (typeface == null)  throw new NullPointerException("typeface is NULL!!!");
 
         view.setTypeface(typeface);
     }
 
-    public static void setViewFontTo(@Nonnull final PDELayerTextView view, @Nonnull final Typeface typeface) {
-        if (view == null) throw new NullPointerException("PDELayerTextView is NULL!!!");
+    public static void setViewFontTo(final PDETextView view, final Typeface typeface) {
+        if (view == null) throw new NullPointerException("PDETextView is NULL!!!");
         if (typeface == null)  throw new NullPointerException("typeface is NULL!!!");
 
         view.setTypeface(PDETypeface.createByNameAndTypeface(typeface.toString(),typeface));
@@ -511,11 +508,6 @@ public class PDEFontHelpers {
         }
 
         final SpannableString spannableString = new SpannableString(text);
-
-        // todo remove again!!!! -> is here to check if this causes the error!!
-        if (spannableString.length() == 0) {
-            Log.e(LOG_TAG, "::createSpannableString text with length null! -> Error! Do something");
-        }
 
         spannableString.setSpan(new PDETypefaceSpan(typeface.getTypeface()), 0, spannableString.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

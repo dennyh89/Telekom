@@ -404,10 +404,6 @@ public class PDEDrawableScrollBarIndicative extends PDEDrawableMultilayer {
         float fullSize, newSize, newPos, width, height;
         Rect frame;
 
-        // init
-        width = 0;
-        height = 0;
-
         // division by zero check
         if (mElementScrollContentSize == 0) {
             return;

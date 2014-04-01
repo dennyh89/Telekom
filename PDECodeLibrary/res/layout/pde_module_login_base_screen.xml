@@ -76,7 +76,6 @@
                         android:focusable="true"
                         android:id="@+id/LoginScreenUsernameArea"
                         android:layout_below="@id/LoginScreenDescriptionArea">
-                        >
                     <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -226,24 +225,14 @@
                             android:layout_centerInParent="true"/>
                 </RelativeLayout>
 
-                <de.telekom.pde.codelibrary.ui.modules.login.ToolTip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@id/LoginScreenButtonLogin"
-                        android:layout_centerHorizontal="true"
-                        android:id="@+id/LoginScreenToolTipLoginButton"
-                        android:visibility="gone"
-                        android:layout_marginLeft="@dimen/Telekom.BU2"
-                        android:layout_marginRight="@dimen/Telekom.BU2"
-                        />
 
-                <de.telekom.pde.codelibrary.ui.modules.login.ToolTip
+                <de.telekom.pde.codelibrary.ui.components.notification.PDEInfoFlagView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        pdecodelibrary:titleEnabled="false"
                         android:layout_above="@id/LoginScreenUsernameInputField"
                         android:layout_centerHorizontal="true"
                         android:id="@+id/LoginScreenUsernameInfoToolTip"
-                        android:visibility="gone"
                         android:text="@string/login_screen_oneidm_activity_username_info_box"
                         android:layout_marginLeft="@dimen/Telekom.BU2"
                         android:layout_marginRight="@dimen/Telekom.BU2"
@@ -255,11 +244,12 @@
     <de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <de.telekom.pde.codelibrary.ui.modules.login.ToolTip
+
+
+        <de.telekom.pde.codelibrary.ui.components.notification.PDEInfoFlagView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/LoginScreenPositionableToolTip"
-                android:visibility="gone"
+                android:id="@+id/LoginScreenPositionableInfoFlag"
                 android:text="pos"
                 android:layout_marginLeft="@dimen/Telekom.BU2"
                 android:layout_marginRight="@dimen/Telekom.BU2"

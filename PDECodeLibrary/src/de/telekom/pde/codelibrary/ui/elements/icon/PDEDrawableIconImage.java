@@ -121,7 +121,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
      * @return  Rect with correct aspect ratio, fitting in available space
      */
     private Rect elementCalculateAspectRatioBounds(Rect bounds) {
-        Rect newBounds = null;
+        Rect newBounds;
 
         if (!mAspectRatioEnabled) return bounds;
         if ((float)bounds.width() / (float)bounds.height() > mImageAspectRatio ) {

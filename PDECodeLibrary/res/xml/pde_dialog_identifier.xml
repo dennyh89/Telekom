@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+    <dict>
+	<key>NETWORK_ERROR</key>
+	<dict>
+		<key>Title</key>
+		<string>NETWORK_ERROR_title</string>
+		<key>Text</key>
+		<string>NETWORK_ERROR_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE_RETRY</string>
+	</dict>
+
+	<key>LOGIN_FAILED_TARPIT_TIME</key>
+	<dict>
+		<key>Title</key>
+		<string>LOGIN_FAILED_TARPIT_TIME_title</string>
+		<key>Text</key>
+		<string>LOGIN_FAILED_TARPIT_TIME_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>LOGIN_FAILED_ACCOUNT_LOCKED</key>
+	<dict>
+		<key>Title</key>
+		<string>LOGIN_FAILED_ACCOUNT_LOCKED_title</string>
+		<key>Text</key>
+		<string>LOGIN_FAILED_ACCOUNT_LOCKED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>LOGIN_UNAVAILABLE_TARPIT_TIME</key>
+	<dict>
+		<key>Title</key>
+		<string>LOGIN_UNAVAILABLE_TARPIT_TIME_title</string>
+		<key>Text</key>
+		<string>LOGIN_UNAVAILABLE_TARPIT_TIME_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>LOGIN_ERROR_ACCOUNT_BLOCKED</key>
+	<dict>
+		<key>Title</key>
+		<string>LOGIN_ERROR_ACCOUNT_BLOCKED_title</string>
+		<key>Text</key>
+		<string>LOGIN_ERROR_ACCOUNT_BLOCKED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>LOGIN_SERVER_ERROR_500</key>
+	<dict>
+		<key>Title</key>
+		<string>LOGIN_SERVER_ERROR_500_title</string>
+		<key>Text</key>
+		<string>LOGIN_SERVER_ERROR_500_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>LOGIN_INTERNAL_ERROR</key>
+	<dict>
+		<key>Title</key>
+		<string>LOGIN_INTERNAL_ERROR_title</string>
+		<key>Text</key>
+		<string>LOGIN_INTERNAL_ERROR_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>APP_UPDATE_REQUIRED</key>
+	<dict>
+		<key>Title</key>
+		<string>APP_UPDATE_REQUIRED_title</string>
+		<key>Text</key>
+		<string>APP_UPDATE_REQUIRED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE_UPDATE</string>
+	</dict>
+
+	<key>APP_GET_FROM_STORE</key>
+	<dict>
+		<key>Title</key>
+		<string>APP_GET_FROM_STORE_title</string>
+		<key>Text</key>
+		<string>APP_GET_FROM_STORE_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE_PURCHASE</string>
+	</dict>
+
+	<key>APP_OPEN_ON_DEVICE</key>
+	<dict>
+		<key>Title</key>
+		<string>APP_OPEN_ON_DEVICE_title</string>
+		<key>Text</key>
+		<string>APP_OPEN_ON_DEVICE_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE_OPEN</string>
+	</dict>
+
+	<key>APP_OPEN_IN_APP</key>
+	<dict>
+		<key>Title</key>
+		<string>APP_OPEN_IN_APP_title</string>
+		<key>Text</key>
+		<string>APP_OPEN_IN_APP_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE_OPEN</string>
+	</dict>
+
+	<key>APP_FUNCTION_NOT_POSSIBLE</key>
+	<dict>
+		<key>Title</key>
+		<string>APP_FUNCTION_NOT_POSSIBLE_title</string>
+		<key>Text</key>
+		<string>APP_FUNCTION_NOT_POSSIBLE_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>ITEM_NOT_FOUND</key>
+	<dict>
+		<key>Title</key>
+		<string>ITEM_NOT_FOUND_title</string>
+		<key>Text</key>
+		<string>ITEM_NOT_FOUND_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>ITEM_EXISTS</key>
+	<dict>
+		<key>Title</key>
+		<string>ITEM_EXISTS_title</string>
+		<key>Text</key>
+		<string>ITEM_EXISTS_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>APP_LOAD_ERROR</key>
+	<dict>
+		<key>Title</key>
+		<string>APP_LOAD_ERROR_title</string>
+		<key>Text</key>
+		<string>APP_LOAD_ERROR_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>APP_LOAD_NETWORK_ERROR</key>
+	<dict>
+		<key>Title</key>
+		<string>APP_LOAD_NETWORK_ERROR_title</string>
+		<key>Text</key>
+		<string>APP_LOAD_NETWORK_ERROR_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>MEDIA_PLAYBACK_UNAVAILABLE</key>
+	<dict>
+		<key>Title</key>
+		<string>MEDIA_PLAYBACK_UNAVAILABLE_title</string>
+		<key>Text</key>
+		<string>MEDIA_PLAYBACK_UNAVAILABLE_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>INVALID_DATE</key>
+	<dict>
+		<key>Title</key>
+		<string>INVALID_DATE_title</string>
+		<key>Text</key>
+		<string>INVALID_DATE_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>INVALID_EMAIL_ADDRESS</key>
+	<dict>
+		<key>Title</key>
+		<string>INVALID_EMAIL_ADDRESS_title</string>
+		<key>Text</key>
+		<string>INVALID_EMAIL_ADDRESS_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>INVALID_PHONE_NUMBER</key>
+	<dict>
+		<key>Title</key>
+		<string>INVALID_PHONE_NUMBER_title</string>
+		<key>Text</key>
+		<string>INVALID_PHONE_NUMBER_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>EMPTY_LAST_NAME_ENTRY</key>
+	<dict>
+		<key>Title</key>
+		<string>EMPTY_LAST_NAME_ENTRY_title</string>
+		<key>Text</key>
+		<string>EMPTY_LAST_NAME_ENTRY_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>EMPTY_FIRST_NAME_ENTRY</key>
+	<dict>
+		<key>Title</key>
+		<string>EMPTY_FIRST_NAME_ENTRY_title</string>
+		<key>Text</key>
+		<string>EMPTY_FIRST_NAME_ENTRY_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>INVALID_CHARACTERS_USED</key>
+	<dict>
+		<key>Title</key>
+		<string>INVALID_CHARACTERS_USED_title</string>
+		<key>Text</key>
+		<string>INVALID_CHARACTERS_USED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>VALID_CHARACTER_SET</key>
+	<dict>
+		<key>Title</key>
+		<string>VALID_CHARACTER_SET_title</string>
+		<key>Text</key>
+		<string>VALID_CHARACTER_SET_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>EMPTY_TITLE_ENTRY</key>
+	<dict>
+		<key>Title</key>
+		<string>EMPTY_TITLE_ENTRY_title</string>
+		<key>Text</key>
+		<string>EMPTY_TITLE_ENTRY_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>CHANGE_PASSWORD_DENIED</key>
+	<dict>
+		<key>Title</key>
+		<string>CHANGE_PASSWORD_DENIED_title</string>
+		<key>Text</key>
+		<string>CHANGE_PASSWORD_DENIED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>CHANGE_PASSWORDS_IDENTICAL</key>
+	<dict>
+		<key>Title</key>
+		<string>CHANGE_PASSWORDS_IDENTICAL_title</string>
+		<key>Text</key>
+		<string>CHANGE_PASSWORDS_IDENTICAL_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>START_DATE_AFTER_END</key>
+	<dict>
+		<key>Title</key>
+		<string>START_DATE_AFTER_END_title</string>
+		<key>Text</key>
+		<string>START_DATE_AFTER_END_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>EMPTY_REQUIRED_FIELD</key>
+	<dict>
+		<key>Title</key>
+		<string>EMPTY_REQUIRED_FIELD_title</string>
+		<key>Text</key>
+		<string>EMPTY_REQUIRED_FIELD_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>SERVICE_TEMPORARILY_UNAVAILABLE</key>
+	<dict>
+		<key>Title</key>
+		<string>SERVICE_TEMPORARILY_UNAVAILABLE_title</string>
+		<key>Text</key>
+		<string>SERVICE_TEMPORARILY_UNAVAILABLE_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>TEST_ERROR_DIALOG</key>
+	<dict>
+		<key>Title</key>
+		<string>TEST_ERROR_DIALOG_title</string>
+		<key>Text</key>
+		<string>TEST_ERROR_DIALOG_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>MISSING_FLASH</key>
+	<dict>
+		<key>Title</key>
+		<string>MISSING_FLASH_title</string>
+		<key>Text</key>
+		<string>MISSING_FLASH_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE_DOWNLOAD</string>
+	</dict>
+
+	<key>FUNCTION_TEMPORARILY_UNAVAILABLE</key>
+	<dict>
+		<key>Title</key>
+		<string>FUNCTION_TEMPORARILY_UNAVAILABLE_title</string>
+		<key>Text</key>
+		<string>FUNCTION_TEMPORARILY_UNAVAILABLE_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>FUNCTION_UNAVAILABLE_BECAUSE</key>
+	<dict>
+		<key>Title</key>
+		<string>FUNCTION_UNAVAILABLE_BECAUSE_title</string>
+		<key>Text</key>
+		<string>FUNCTION_UNAVAILABLE_BECAUSE_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>UPLOAD_FAILED</key>
+	<dict>
+		<key>Title</key>
+		<string>UPLOAD_FAILED_title</string>
+		<key>Text</key>
+		<string>UPLOAD_FAILED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>INFORMATION_DISPLAY_FAILED</key>
+	<dict>
+		<key>Title</key>
+		<string>INFORMATION_DISPLAY_FAILED_title</string>
+		<key>Text</key>
+		<string>INFORMATION_DISPLAY_FAILED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>INTERNET_ERROR_IN_LOGIN</key>
+	<dict>
+		<key>Title</key>
+		<string>INTERNET_ERROR_IN_LOGIN_title</string>
+		<key>Text</key>
+		<string>INTERNET_ERROR_IN_LOGIN_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>EMPTY_SEARCH_RESULTS</key>
+	<dict>
+		<key>Title</key>
+		<string>EMPTY_SEARCH_RESULTS_title</string>
+		<key>Text</key>
+		<string>EMPTY_SEARCH_RESULTS_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>LOGIN_REQUIRED</key>
+	<dict>
+		<key>Title</key>
+		<string>LOGIN_REQUIRED_title</string>
+		<key>Text</key>
+		<string>LOGIN_REQUIRED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>LOGIN_DATA_INCORRECT</key>
+	<dict>
+		<key>Title</key>
+		<string>LOGIN_DATA_INCORRECT_title</string>
+		<key>Text</key>
+		<string>LOGIN_DATA_INCORRECT_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>LOGIN_FAILED</key>
+	<dict>
+		<key>Title</key>
+		<string>LOGIN_FAILED_title</string>
+		<key>Text</key>
+		<string>LOGIN_FAILED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>EMPTY_ITEM_NAME</key>
+	<dict>
+		<key>Title</key>
+		<string>EMPTY_ITEM_NAME_title</string>
+		<key>Text</key>
+		<string>EMPTY_ITEM_NAME_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>NETWORK_CHANGED</key>
+	<dict>
+		<key>Title</key>
+		<string>NETWORK_CHANGED_title</string>
+		<key>Text</key>
+		<string>NETWORK_CHANGED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>PASSWORD_VALIDATION_FAILED</key>
+	<dict>
+		<key>Title</key>
+		<string>PASSWORD_VALIDATION_FAILED_title</string>
+		<key>Text</key>
+		<string>PASSWORD_VALIDATION_FAILED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>PAGE_NOT_FOUND</key>
+	<dict>
+		<key>Title</key>
+		<string>PAGE_NOT_FOUND_title</string>
+		<key>Text</key>
+		<string>PAGE_NOT_FOUND_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>EMAIL_RECIPIENT_UNKNOWN</key>
+	<dict>
+		<key>Title</key>
+		<string>EMAIL_RECIPIENT_UNKNOWN_title</string>
+		<key>Text</key>
+		<string>EMAIL_RECIPIENT_UNKNOWN_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>SEND_EMAIL_FAILED</key>
+	<dict>
+		<key>Title</key>
+		<string>SEND_EMAIL_FAILED_title</string>
+		<key>Text</key>
+		<string>SEND_EMAIL_FAILED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE_RETRY</string>
+	</dict>
+
+	<key>MISSING_MEMORY_CARD</key>
+	<dict>
+		<key>Title</key>
+		<string>MISSING_MEMORY_CARD_title</string>
+		<key>Text</key>
+		<string>MISSING_MEMORY_CARD_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>TECHNICAL_ERROR</key>
+	<dict>
+		<key>Title</key>
+		<string>TECHNICAL_ERROR_title</string>
+		<key>Text</key>
+		<string>TECHNICAL_ERROR_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>MISSING_SIM_CARD</key>
+	<dict>
+		<key>Title</key>
+		<string>MISSING_SIM_CARD_title</string>
+		<key>Text</key>
+		<string>MISSING_SIM_CARD_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>UNKOWN_ERROR</key>
+	<dict>
+		<key>Title</key>
+		<string>UNKOWN_ERROR_title</string>
+		<key>Text</key>
+		<string>UNKOWN_ERROR_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>INVALID_SECURITY_CODE</key>
+	<dict>
+		<key>Title</key>
+		<string>INVALID_SECURITY_CODE_title</string>
+		<key>Text</key>
+		<string>INVALID_SECURITY_CODE_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>CONNECTION_TO_FAILED</key>
+	<dict>
+		<key>Title</key>
+		<string>CONNECTION_TO_FAILED_title</string>
+		<key>Text</key>
+		<string>CONNECTION_TO_FAILED_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+
+	<key>CONNECTION_LOST</key>
+	<dict>
+		<key>Title</key>
+		<string>CONNECTION_LOST_title</string>
+		<key>Text</key>
+		<string>CONNECTION_LOST_text</string>
+		<key>Buttons</key>
+		<string>BTN_CLOSE</string>
+	</dict>
+    </dict>
+</plist>

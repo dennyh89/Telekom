@@ -85,7 +85,7 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
      * @param opacity new opacity of the element.
      */
     public void setElementShapeOpacity(float opacity){
-        int alpha = Math.round(opacity*255);
+        int alpha = Math.round(opacity * 255);
         setAlpha(alpha);
     }
 
@@ -96,7 +96,7 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
      * @return element opacity
      */
     public float getElementShapeOpacity(){
-        return mAlpha/255;
+        return mAlpha / 255;
     }
 
 
@@ -143,6 +143,7 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Get shadow blur radius.
      */
@@ -166,6 +167,7 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
         // store the path
         mElementShapePath = path;
         mShapeType = PDEAvailableShapes.SHAPE_CUSTOM_PATH;
+
         // update
         update();
     }
@@ -271,11 +273,13 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
      */
     public void setElementLightIncidenceOffset(PointF offset){
         // anything to do?
-        if(offset.x == mElementLightIncidenceOffset.x && offset.y == mElementLightIncidenceOffset.y){
+        if (offset.x == mElementLightIncidenceOffset.x && offset.y == mElementLightIncidenceOffset.y){
             return;
         }
+
         // remember
         mElementLightIncidenceOffset = offset;
+
         // update
         createDrawingBitmap();
         update();
@@ -345,14 +349,14 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
         }
 
         // determine offset factor
-        if (Math.abs(mElementLightIncidenceOffset.x)>Math.abs(mElementLightIncidenceOffset.y)){
+        if (Math.abs(mElementLightIncidenceOffset.x) > Math.abs(mElementLightIncidenceOffset.y)){
             mOffsetFactor = Math.abs(mElementLightIncidenceOffset.x);
         } else {
             mOffsetFactor = Math.abs(mElementLightIncidenceOffset.y);
         }
         // drawing rect
-        mDrawRect = new RectF(bounds.left- mOffsetFactor,bounds.top- mOffsetFactor,
-                              bounds.right+ mOffsetFactor,bounds.bottom+ mOffsetFactor);
+        mDrawRect = new RectF(bounds.left - mOffsetFactor,bounds.top - mOffsetFactor,
+                              bounds.right + mOffsetFactor,bounds.bottom + mOffsetFactor);
 
         mDrawingBitmap = Bitmap.createBitmap((int)mDrawRect.width(), (int)mDrawRect.height(), Bitmap.Config.ARGB_8888);
     }
@@ -379,14 +383,14 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
         mPaint3.setAntiAlias(true);
 
         // security
-        if (bounds.width() <= 0 || bounds.height() <= 0 || mElementBlurRadius + mOffsetFactor <=0 ||
-            mDrawingBitmap == null) {
+        if (bounds.width() <= 0 || bounds.height() <= 0 || mElementBlurRadius + mOffsetFactor <=0
+                || mDrawingBitmap == null) {
             return;
         }
 
         // normalized version of drawing rect
-        normalizedBoundingRect = new RectF(0,0, mDrawRect.right- mDrawRect.left,
-                                           mDrawRect.bottom- mDrawRect.top);
+        normalizedBoundingRect = new RectF(0, 0, mDrawRect.right - mDrawRect.left,
+                                           mDrawRect.bottom - mDrawRect.top);
         // rect of the outline
         outlineRect = new RectF(normalizedBoundingRect.left-1.0f,
                                 normalizedBoundingRect.top-1.0f,
@@ -411,10 +415,10 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
         mPaint3.setStyle(Paint.Style.FILL);
         clipPath.reset();
         clipPath.addRect(outlineRect, Path.Direction.CW);
-        shadowClipRect = new RectF(outlineRect.left+ mOffsetFactor - mElementLightIncidenceOffset.x+1.0f,
-                                   outlineRect.top+ mOffsetFactor - mElementLightIncidenceOffset.y+1.0f,
-                                   outlineRect.right- mOffsetFactor - mElementLightIncidenceOffset.x-1.0f,
-                                   outlineRect.bottom- mOffsetFactor - mElementLightIncidenceOffset.y-1.0f);
+        shadowClipRect = new RectF(outlineRect.left + mOffsetFactor - mElementLightIncidenceOffset.x+1.0f,
+                                   outlineRect.top + mOffsetFactor - mElementLightIncidenceOffset.y+1.0f,
+                                   outlineRect.right - mOffsetFactor - mElementLightIncidenceOffset.x-1.0f,
+                                   outlineRect.bottom - mOffsetFactor - mElementLightIncidenceOffset.y-1.0f);
 
 
         switch(mShapeType){

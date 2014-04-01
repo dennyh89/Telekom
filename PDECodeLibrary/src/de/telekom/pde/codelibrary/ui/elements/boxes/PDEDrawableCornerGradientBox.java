@@ -31,7 +31,7 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
  */
 public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
 
-    //-----  properties ---------------------------------------------------------------------------------------------------
+    //-----  properties ------------------------------------------------------------------------------------------------
     // basic properties
     // colors
     protected PDEColor mElementBackgroundTopColor;
@@ -133,12 +133,16 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
             Path shadowPath;
 
             // set shadow bounds
-            frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x+(2*(int)mElementShadowDrawable.getElementBlurRadius()), bounds.top + elementSize.y+(2*(int)mElementShadowDrawable.getElementBlurRadius()));
+            frame = new Rect(bounds.left,
+                    bounds.top,
+                    bounds.left + elementSize.x + (2 * (int)mElementShadowDrawable.getElementBlurRadius()),
+                    bounds.top + elementSize.y + (2 * (int)mElementShadowDrawable.getElementBlurRadius()));
             mElementShadowDrawable.setBounds(frame);
             // make a copy of the original element path for the shadow
             shadowPath = new Path(mElementPath);
             // offset by blur radius of shadow
-            shadowPath.offset(mElementShadowDrawable.getElementBlurRadius(),mElementShadowDrawable.getElementBlurRadius());
+            shadowPath.offset(mElementShadowDrawable.getElementBlurRadius(),
+                              mElementShadowDrawable.getElementBlurRadius());
             mElementShadowDrawable.setElementShapePath(shadowPath);
         }
     }
@@ -282,9 +286,11 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
     @SuppressWarnings("unused")
     public void setElementBackgroundGradientColors(PDEColor top, PDEColor main, PDEColor bottom) {
         // any change?
-        if (top.getIntegerColor() == mElementBackgroundTopColor.getIntegerColor() &&
-            main.getIntegerColor() == mElementBackgroundMainColor.getIntegerColor() &&
-            bottom.getIntegerColor() == mElementBackgroundBottomColor.getIntegerColor()) return;
+        if (top.getIntegerColor() == mElementBackgroundTopColor.getIntegerColor()
+                && main.getIntegerColor() == mElementBackgroundMainColor.getIntegerColor()
+                && bottom.getIntegerColor() == mElementBackgroundBottomColor.getIntegerColor()) {
+            return;
+        }
 
         // remember
         mElementBackgroundTopColor = top;
@@ -393,12 +399,12 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Sets the complete path for being drawn
      *
      * @param path The path that should be drawn on screen.
      */
-
     private void setElementPath(Path path) {
         // change?
         if (mElementPath == path) {
@@ -408,6 +414,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
         // store a copy of the path
         mElementPath = path;
     }
+
 
     /**
      * @brief Sets the configuration of the rounded corners
@@ -457,6 +464,7 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
         // update shadow
         updateElementShadowDrawable(elementSize);
     }
+
 
     /**
      * @brief Get drawing start point
@@ -552,16 +560,14 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
             destination = new PointF(currentPoint.x ,currentPoint.y - elementSize.y + 2* mElementCornerRadius);
         }
 
-        if(( mElementRoundedCornerConfiguration & PDEDrawableCornerBox.PDEDrawableCornerBoxCornerTopLeft) == 0)
+        if ((mElementRoundedCornerConfiguration & PDEDrawableCornerBox.PDEDrawableCornerBoxCornerTopLeft) == 0)
         {
-            path.lineTo(destination.x ,destination.y);
-
-
+            path.lineTo(destination.x, destination.y);
         } else {
             path.lineTo(destination.x,destination.y + mElementCornerRadius);
             // draw left-lower corner
             path.arcTo(new RectF(destination.x , destination.y - mElementCornerRadius,
-                                 destination.x + 2* mElementCornerRadius, destination.y +  mElementCornerRadius),
+                                 destination.x + 2 * mElementCornerRadius, destination.y +  mElementCornerRadius),
                        180.0f, 90.0f);
         }
         path.close();
@@ -610,9 +616,11 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
         mBorderPaint.setColor(mElementBorderColor.newIntegerColorWithCombinedAlpha(mAlpha));
     }
 
+
 //---------------------------------------------------------------------------------------------------------------------
 // ----- Drawing Bitmap ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
+
 
     /**
      * @brief Updates our drawing bitmap and triggers a redraw of this element.
@@ -626,10 +634,10 @@ public class PDEDrawableCornerGradientBox extends PDEDrawableBase {
         if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null) {
             return;
         }
-        mBackgroundPaint.setShader(new LinearGradient( (bounds.right - bounds.left) / 2,bounds.top,
-                                                       (bounds.right - bounds.left) / 2,bounds.bottom, mColors,
-                                                       mDistributionPositions,
-                                                       Shader.TileMode.MIRROR));
+        mBackgroundPaint.setShader(new LinearGradient((bounds.right - bounds.left) / 2, bounds.top,
+                                                      (bounds.right - bounds.left) / 2, bounds.bottom, mColors,
+                                                      mDistributionPositions,
+                                                      Shader.TileMode.MIRROR));
         c.drawPath(mElementPath, mBackgroundPaint);
         c.drawPath(mElementPath, mBorderPaint);
     }

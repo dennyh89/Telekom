@@ -20,6 +20,8 @@ import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 
+import java.util.ArrayList;
+
 //----------------------------------------------------------------------------------------------------------------------
 // PDEListView
 //----------------------------------------------------------------------------------------------------------------------
@@ -40,6 +42,8 @@ public class PDEListView extends ListView implements PDEIEventSource {
      * @brief PDEEventSource instance that provides the event sending behaviour.
      */
     private PDEEventSource mEventSource;
+
+    protected ArrayList<Object> mStrongPDEEventListenerHolder;
 
 
 //----- init -----------------------------------------------------------------------------------------------------------
@@ -89,6 +93,7 @@ public class PDEListView extends ListView implements PDEIEventSource {
         mEventSource = new PDEEventSource();
         // set ourselves as the default sender (optional)
         mEventSource.setEventDefaultSender(this, true);
+        mStrongPDEEventListenerHolder = new ArrayList<Object>();
     }
 
 
@@ -180,6 +185,7 @@ public class PDEListView extends ListView implements PDEIEventSource {
      */
     @Override
     public Object addListener(Object target, String methodName) {
+        mStrongPDEEventListenerHolder.add(target);
         return mEventSource.addListener(target, methodName);
     }
 
@@ -201,6 +207,7 @@ public class PDEListView extends ListView implements PDEIEventSource {
      */
     @Override
     public Object addListener(Object target, String methodName, String eventMask) {
+        mStrongPDEEventListenerHolder.add(target);
         return mEventSource.addListener(target, methodName, eventMask);
     }
 
@@ -213,6 +220,7 @@ public class PDEListView extends ListView implements PDEIEventSource {
      */
     @SuppressWarnings("unused")
     public boolean removeListener(Object listener) {
+        mStrongPDEEventListenerHolder.remove(listener);
         return mEventSource.removeListener(listener);
     }
 }

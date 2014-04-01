@@ -9,9 +9,9 @@ import android.view.LayoutInflater;
 import android.view.LayoutInflater.Factory;
 import android.view.View;
 import android.widget.TextView;
-import com.actionbarsherlock.view.MenuItem;
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
+import android.view.MenuItem;
 
 
 /**
@@ -25,12 +25,13 @@ public class PDEFontLayoutFactory implements Factory
 	@Override
 	public View onCreateView(final String name, final Context context, final AttributeSet attrs)
 	{
-		if (name.equalsIgnoreCase("com.android.internal.view.menu.IconMenuItemView")
+        if (name.equalsIgnoreCase("com.android.internal.view.menu.IconMenuItemView")
+                || name.equalsIgnoreCase("com.android.internal.view.menu.ActionMenuItem")
 				|| name.equalsIgnoreCase("TextView")
                 || name.equals(TextView.class.getName())
                 )
 		{
-			try
+            try
 			{
 				final LayoutInflater li = LayoutInflater.from(context);
                 View view;
@@ -46,11 +47,7 @@ public class PDEFontLayoutFactory implements Factory
                 if (view instanceof TextView) {
                     ((TextView) view).setTypeface(PDETypeface.sDefaultFont.getTypeface());
                 }
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
-                {
-                    // If pre-honeycomb device set the background programmatically,
-                    view.setBackgroundResource(R.drawable.selectable_background_pde);
-                }
+
 				/*new Handler().post(new Runnable()
 				{
 
@@ -75,6 +72,33 @@ public class PDEFontLayoutFactory implements Factory
 				// Handle any ClassNotFoundException here
 			}
 		}
+
+        // this part of the code was done for all text views before - heaven might know why (I don't)
+        // so we only set this now for some very special case (don't know if it worth it)
+        if (name.equalsIgnoreCase("com.android.internal.view.menu.IconMenuItemView")) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
+            {
+                try
+                {
+                    View view;
+                    final LayoutInflater li = LayoutInflater.from(context);
+
+                    view = li.createView(name, null, attrs);
+
+
+                    // If pre-honeycomb device set the background programmatically,
+                    view.setBackgroundResource(R.drawable.selectable_background_pde);
+
+                } catch (final InflateException e) {
+                    e.printStackTrace();
+                    // Handle any inflation exception here
+                } catch (final ClassNotFoundException e) {
+                    e.printStackTrace();
+                    // Handle any ClassNotFoundException here
+                }
+            }
+        }
+
 		return null;
 	}
 

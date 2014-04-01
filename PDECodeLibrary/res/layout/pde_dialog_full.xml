@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:pdecodelibrary="http://schemas.android.com/apk/res-auto"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#55000000"
+                android:id="@+id/pde_dialog_root">
+
+    <de.telekom.pde.codelibrary.ui.layout.PDEBoundedRelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/Telekom.BU2"
+            android:id="@+id/pde_dialog_plane"
+            android:layout_centerInParent="true"
+            pdecodelibrary:max_width="@dimen/Telekom.BU7"
+            >
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/pde_dialog_linearlayout"
+                >
+            <!-- This view takes care hat the dialog is a wide as possible, even if there is no title area -->
+            <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="1px"
+                    />
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/pde_dialog_title_area">
+
+                <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pde_dialog_title"
+                        android:layout_marginLeft="@dimen/Telekom.BU2"
+                        android:layout_marginRight="@dimen/Telekom.BU2"
+                        pdecodelibrary:paddingTop="@dimen/Telekom.BU3_1_2"
+                        pdecodelibrary:paddingBottom="@dimen/Telekom.BU"
+                        pdecodelibrary:alignmentMode="capHeight"
+                        pdecodelibrary:maxLines="1"
+                        pdecodelibrary:ellipsizeText="true"
+                        pdecodelibrary:horizontalAlignment="center"
+                        />
+
+                <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1px"
+                        android:id="@+id/pde_dialog_title_delimiter"
+                        />
+            </LinearLayout>
+            <ScrollView android:layout_width="match_parent" android:layout_height="0dp"
+                        android:layout_marginLeft="@dimen/Telekom.BU2"
+                        android:layout_marginRight="@dimen/Telekom.BU2"
+                        android:paddingTop="@dimen/Telekom.BU1_1_2"
+                        android:paddingBottom="@dimen/Telekom.BU"
+                        android:layout_weight="1"
+                        android:overScrollMode="never"
+                    >
+
+                <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pde_dialog_message"
+                        pdecodelibrary:alignmentMode="capHeight"
+                        />
+            </ScrollView>
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/pde_dialog_button_container"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="@dimen/Telekom.BU2"
+                    >
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </de.telekom.pde.codelibrary.ui.layout.PDEBoundedRelativeLayout>
+
+</RelativeLayout>

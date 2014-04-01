@@ -203,7 +203,7 @@ class PDEButtonLayerBackgroundTextHaptic extends PDEAbsoluteLayout implements PD
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         super.onSizeChanged(width, height, oldWidth, oldHeight);
-        mSunkenDrawable.getWrapperView().setViewLayoutRect(new Rect(0, 0, width, height));
+        PDEAbsoluteLayoutHelper.setViewRect(mSunkenDrawable.getWrapperView(),new Rect(0, 0, width, height));
         mSunkenDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
         mSunkenDrawable.setElementShapeRoundedRect(PDEBuildingUnits.oneThirdBU());

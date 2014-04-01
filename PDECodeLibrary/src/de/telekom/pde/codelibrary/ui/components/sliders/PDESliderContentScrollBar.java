@@ -228,6 +228,13 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
         return contentRect;
     }
 
+    /**
+     * @brief Get information about the orientation of the content.
+     */
+    public PDESliderContentOrientation getContentOrientation() {
+        return mContentOrientation;
+    }
+
 
 //----- PDESliderContentInterface implementation -----------------------------------------------------------------------
 

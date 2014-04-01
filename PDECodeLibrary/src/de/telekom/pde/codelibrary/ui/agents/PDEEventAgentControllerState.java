@@ -26,7 +26,7 @@ public class PDEEventAgentControllerState extends PDEEvent {
      */
     protected String mCurrentState;
     /**
-     * @brief Next highlevel state if a state animation is happening.
+     * @brief Next high-level state if a state animation is happening.
      *
      * Be careful - state animations may turn around, so this state may never be fully reached. The agent may
      * turn the animation around at any time without further notice.

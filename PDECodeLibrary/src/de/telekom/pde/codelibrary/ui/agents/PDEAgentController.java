@@ -103,7 +103,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
     /**
      * @brief Event is sent when user activates the agent.
      *
-     * Activation usually happens when the user klicks on the agent. The agent stays active as long
+     * Activation usually happens when the user clicks on the agent. The agent stays active as long
      * as the click is active and the mouse is over the input area. The active status can be used
      * for behaviours like for e.g. forward buttons in music players. Don't use end of activation for
      * triggering events! Use DTAgentControllerActionSelected or DTAgentControllerActionWillBeSelected instead.
@@ -238,7 +238,6 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      * @brief PDEEventSource instance that provides the event sending behaviour
      */
     private PDEEventSource mEventSource;
-
 
     /**
      * @brief Input enabled. Has no effect on the looks of the agent. Visual disablement is a different entity.
@@ -505,6 +504,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         addAction(PDE_AGENT_CONTROLLER_ACTION_GENERIC);
     }
 
+
     /**
      * @brief Get the main state.
      */
@@ -512,6 +512,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
     {
         return mState;
     }
+
 
     /**
      * @brief Enable/disable input.
@@ -602,6 +603,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         }
     }
 
+
     /**
      * @brief Remove focus.
      */
@@ -609,7 +611,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
        // count down focus
         mNumFocus--;
 
-        if(DEBUG_COUNTS){
+        if (DEBUG_COUNTS){
             Log.d(LOG_TAG,"Removing focus; focuscount: "+mNumFocus);
         }
         // any relevant change? -> add to pending actions
@@ -617,6 +619,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
             addAction(PDE_AGENT_CONTROLLER_ACTION_UNFOCUS);
         }
     }
+
 
     /**
      * @brief Add highlight.
@@ -626,7 +629,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         mNumHighlights++;
 
         // debugging
-        if(DEBUG_COUNTS){
+        if (DEBUG_COUNTS){
             Log.d(LOG_TAG,"Adding highlight; highlightcount: "+mNumHighlights);
         }
 
@@ -645,7 +648,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         mNumHighlights--;
 
         // debugging
-        if(DEBUG_COUNTS){
+        if (DEBUG_COUNTS){
             Log.d (LOG_TAG,"Removing highlight; highlightcount: "+mNumHighlights);
         }
 
@@ -654,6 +657,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
             addAction(PDE_AGENT_CONTROLLER_ACTION_UNHIGHLIGHT);
         }
     }
+
 
     /**
      * @brief Add a press.
@@ -673,6 +677,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         }
     }
 
+
     /**
      * @brief Perform a press (active).
      *
@@ -688,15 +693,16 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         mNumPresses--;
 
         // debugging
-        if(DEBUG_COUNTS){
+        if (DEBUG_COUNTS){
             Log.d (LOG_TAG,"Doing press; presscount: "+mNumPresses);
         }
 
         // any relevant change? -> add to pending actions
-        if (mNumPresses==0 && mInputEnabled) {
+        if (mNumPresses == 0 && mInputEnabled) {
             addAction(PDE_AGENT_CONTROLLER_ACTION_DO_PRESS);
         }
     }
+
 
     /**
      * @brief Cancel a press.
@@ -720,6 +726,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         }
     }
 
+
     /**
      * @brief EventSource implementation. Get Event Sender instance.
      */
@@ -728,15 +735,18 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         return mEventSource;
     }
 
+
     @Override
     public Object addListener(Object target, String methodName) {
         return mEventSource.addListener(target, methodName);
     }
 
+
     @Override
     public Object addListener(Object target, String methodName, String eventMask) {
         return mEventSource.addListener(target, methodName, eventMask);
     }
+
 
     /**
      * @brief EventSourceDelegate implementation. Send data update for initialization and
@@ -753,18 +763,19 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
 
         if (mOutsideActiveBracket) {
             // send
-            if( DEBUG_ACTIONS ){
+            if (DEBUG_ACTIONS) {
                 Log.d(LOG_TAG,"AgentController: BeginInteraction (on listener add)");
             }
-            getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_BEGIN_INTERACTION,listener);
+            getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_BEGIN_INTERACTION, listener);
         }
+
         // if we're outside active, we must maintain a consistent state with the listener
         if (mOutsideActive) {
             // send
             if(DEBUG_ACTIONS){
                 Log.d(LOG_TAG,"Activated (on listener add)");
             }
-            getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_ACTIVATED,listener);
+            getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_ACTIVATED, listener);
         }
     }
 
@@ -777,17 +788,17 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
           // if we're outside active, we must remove the state from the listener
           if (mOutsideActive) {
               //send
-              if(DEBUG_ACTIONS){
+              if (DEBUG_ACTIONS) {
                   Log.d(LOG_TAG,"Deactivated (on listener remove)");
               }
-              getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_DEACTIVATED,listener);
+              getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_DEACTIVATED, listener);
           }
           if (mOutsideActiveBracket) {
               // send
-              if(DEBUG_ACTIONS){
+              if (DEBUG_ACTIONS) {
                   Log.d(LOG_TAG,"AgentController: EndInteraction (on listener remove)");
               }
-              getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_END_INTERACTION,listener);
+              getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_END_INTERACTION, listener);
           }
       }
 
@@ -808,7 +819,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         mInputCheckScheduled = true;
 
         // schedule it
-        PDEFrameTiming.getInstance().postExecuteFunction(this,"checkInput");
+        PDEFrameTiming.getInstance().postExecuteFunction(this, "checkInput");
     }
 
 
@@ -827,7 +838,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         checkAnimation();
 
         // some animation change might have happened immediately -> update the state (the next state update might
-        // rechange the state again). For single-state timings, we need to catch the visual update
+        // re-change the state again). For single-state timings, we need to catch the visual update
         updateAnimationData();
 
         // we performed, so we're no longer scheduled
@@ -844,8 +855,8 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         Number action;
 
         // perform them all (note that actions could be added while processing (e.g. state changes), so do a
-        // oldstyle enumeration
-        for (i=0; i<mPendingActions.size(); i++) {
+        // old-style enumeration
+        for (i = 0; i<mPendingActions.size(); i++) {
             action = (Number)mPendingActions.get(i);
             performAction(action.intValue());
         }
@@ -901,10 +912,10 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
                 mInternalPress = false;
                 break;
             case PDE_AGENT_CONTROLLER_ACTION_GENERIC:
-                // generic actions only serve as a wakeup call to update the state. Do nothing here.
+                // generic actions only serve as a wake-up call to update the state. Do nothing here.
                 break;
             default:
-                Log.d(LOG_TAG, "Unhandled case performAction action:"+action);
+                Log.d(LOG_TAG, "Unhandled case performAction action:" + action);
                 break;
         }
 
@@ -929,16 +940,10 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
     @SuppressWarnings("unused")
     public boolean stateCanHandleAction(int action)
     {
-        // basic states do
-        if (mAgentState == PDE_AGENT_CONTROLLER_STATE_IDLE
+        // is in interactive states or will be in interactive state on the action
+        return mAgentState == PDE_AGENT_CONTROLLER_STATE_IDLE
                 || mAgentState == PDE_AGENT_CONTROLLER_STATE_INTERACTIVE
-                || mAgentState == PDE_AGENT_CONTROLLER_STATE_SHOWING) {
-            // these are interactive states or will be interactive states on the action
-            return true;
-        } else {
-            // this state must not handle user interaction (and also not cache it)
-            return false;
-        }
+                || mAgentState == PDE_AGENT_CONTROLLER_STATE_SHOWING;
     }
 
 
@@ -961,7 +966,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         count = 0;
         do {
             // remember old state
-            oldState=mAgentState;
+            oldState = mAgentState;
             // check a single state change
             checkSingleState(allowTiming);
             // safety
@@ -970,7 +975,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
                 Log.e(LOG_TAG,"***********BUG: state not stable");
                 break;
             }
-        } while (oldState!=mAgentState);
+        } while (oldState != mAgentState);
     }
 
     /**
@@ -989,7 +994,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
                 break;
             case PDE_AGENT_CONTROLLER_STATE_INTERACTIVE:
                 // action taken depends on pending selections
-                if (mInternalSelections>0) {
+                if (mInternalSelections > 0) {
                     // continue with showing (the selections are sent out at the end of
                     // showing state and resetted there)
                     setAgentState(PDE_AGENT_CONTROLLER_STATE_SHOWING);
@@ -1004,9 +1009,10 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
                 // act safely. Only allow this change to happen if we're actually timed (we want to stay in this
                 // state for at least one frame).
                 if (allowTiming) {
-                    if ((!mPressAnimation.isRunning() && mPressAnimation.getTimeSinceDone()>=getActionShowTime())
-                            && (!mDownAnimation.isRunning() && mDownAnimation.getTimeSinceDone()>=mActionShowTime)
-                            && (!mInteractionAnimation.isRunning() && mInteractionAnimation.getTimeSinceDone()>=getActionShowTime())) {
+                    if ((!mPressAnimation.isRunning() && mPressAnimation.getTimeSinceDone() >= getActionShowTime())
+                            && (!mDownAnimation.isRunning() && mDownAnimation.getTimeSinceDone() >= mActionShowTime)
+                            && (!mInteractionAnimation.isRunning()
+                                && mInteractionAnimation.getTimeSinceDone() >= getActionShowTime())) {
                         // remember any pending selections for mass sending later (we want to preserve the order)
                         mPendingSelections2 = mInternalSelections;
                         mInternalSelections = 0;
@@ -1025,6 +1031,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         }
     }
 
+
     /**
      * @brief Set the new state
      *
@@ -1034,12 +1041,12 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         int oldState;
 
         // any change?
-        if (mAgentState==agentState) return;
+        if (mAgentState == agentState) return;
 
         // remember old state, set new one
         //noinspection UnusedAssignment
-        oldState=mAgentState;
-        mAgentState=agentState;
+        oldState = mAgentState;
+        mAgentState = agentState;
 
         // some states are timed, set accordingly
         if (mAgentState == PDE_AGENT_CONTROLLER_STATE_SHOWING) {
@@ -1049,10 +1056,11 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         }
 
         // debug
-        if(DEBUG_STATE){
-            Log.d (LOG_TAG,"State change "+oldState+"->"+mAgentState);
+        if (DEBUG_STATE) {
+            Log.d (LOG_TAG,"State change " + oldState + "->" + mAgentState);
         }
     }
+
 
     /**
      * @brief Check for pending actions
@@ -1061,55 +1069,59 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
      * input state.
      */
     public void checkActions() {
-        // depending on state, we might have to send out active/deactive and interactionstart/end events
+        // depending on state, we might have to send out active / de-active and inter-action-start / -end events
         if ( stateCanHandleAction(PDE_AGENT_CONTROLLER_ACTION_GENERIC) ) {
             // do we need to start with interaction? (we need to do so if we're pressed)
             if (mInternalPress && !mOutsideActiveBracket) {
                 // now active
                 mOutsideActiveBracket = true;
                 // send the action
-                if(DEBUG_ACTIONS){
+                if (DEBUG_ACTIONS) {
                     Log.d (LOG_TAG,"AgentController: BeginInteraction");
                 }
                 getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_BEGIN_INTERACTION);
             }
+
             // are we active?
-            if (mInternalPress && (mInternalHighlight||mInternalFocus) && !mOutsideActive) {
+            if (mInternalPress && (mInternalHighlight || mInternalFocus) && !mOutsideActive) {
                 // now active
                 mOutsideActive = true;
                 // send the action
-                if(DEBUG_ACTIONS){
+                if (DEBUG_ACTIONS){
                     Log.d (LOG_TAG,"AgentController: Activated");
                 }
                 getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_ACTIVATED);
             }
-            // send out pending presses inbetween here keeps good ordering
-            while (mPendingSelections1>0) {
+
+            // send out pending presses in-between here keeps good ordering
+            while (mPendingSelections1 > 0) {
                 // count down
                 mPendingSelections1--;
                 // send the action
-                if(DEBUG_ACTIONS){
+                if (DEBUG_ACTIONS) {
                     Log.d (LOG_TAG,"AgentController: WillBeSelected");
                 }
                 getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED);
             }
+
             // are we inactive?
-            if ((!mInternalPress || !(mInternalHighlight||mInternalFocus)) && mOutsideActive) {
+            if ((!mInternalPress || !(mInternalHighlight || mInternalFocus)) && mOutsideActive) {
                 // no longer active
                 mOutsideActive = false;
                 // send the action
-                if(DEBUG_ACTIONS){
+                if (DEBUG_ACTIONS) {
                     Log.d (LOG_TAG,"AgentController: Deactivated");
                 }
                 getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_DEACTIVATED);
             }
+
             // did we stop interaction?
             if (!mInternalPress && mOutsideActiveBracket) {
                 // no longer active
                 mOutsideActiveBracket = false;
                 // send the action
-                if(DEBUG_ACTIONS){
-                    Log.d (LOG_TAG,"AgentController: EndInteraction");
+                if (DEBUG_ACTIONS) {
+                    Log.d (LOG_TAG, "AgentController: EndInteraction");
                 }
                 getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_END_INTERACTION);
             }
@@ -1119,8 +1131,8 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
                 // no longer active
                 mOutsideActive = false;
                 // send the action
-                if(DEBUG_ACTIONS){
-                    Log.d (LOG_TAG,"AgentController: Deactivated");
+                if (DEBUG_ACTIONS) {
+                    Log.d (LOG_TAG, "AgentController: Deactivated");
                 }
                 getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_DEACTIVATED);
             }
@@ -1128,35 +1140,36 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
                 // no longer active
                 mOutsideActiveBracket = false;
                 // send the action
-                if(DEBUG_ACTIONS){
-                    Log.d (LOG_TAG,"AgentController: EndInteraction");
+                if (DEBUG_ACTIONS) {
+                    Log.d (LOG_TAG, "AgentController: EndInteraction");
                 }
                 getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_END_INTERACTION);
             }
         }
 
         // send out any still pending "will be selected"
-        while (mPendingSelections1>0) {
+        while (mPendingSelections1 > 0) {
             // count down
             mPendingSelections1--;
             // send the action
-            if(DEBUG_ACTIONS){
-                Log.d (LOG_TAG,"AgentController: WillBeSelected");
+            if (DEBUG_ACTIONS) {
+                Log.d (LOG_TAG, "AgentController: WillBeSelected");
             }
             getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED);
         }
 
         // send out any pending "selected"
-        while (mPendingSelections2>0) {
+        while (mPendingSelections2 > 0) {
             // count down
             mPendingSelections2--;
             // send the action
-            if(DEBUG_ACTIONS){
+            if (DEBUG_ACTIONS) {
                 Log.d (LOG_TAG,"AgentController: Selected");
             }
             getEventSource().sendEvent(PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED);
         }
     }
+
 
     /**
      * @brief Update animation states.
@@ -1221,10 +1234,10 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         // and apply it (speed is dependent on the direction)
         if (show) {
             // on: fast
-            mFocusAndHighlightAnimation.goToValueWithDurationForDistance(1.0,getInteractiveAttackTime(),1.0);
+            mFocusAndHighlightAnimation.goToValueWithDurationForDistance(1.0, getInteractiveAttackTime(), 1.0);
         } else {
             // off: slow
-            mFocusAndHighlightAnimation.goToValueWithDurationForDistance(0.0,getInteractiveDecayTime(),1.0);
+            mFocusAndHighlightAnimation.goToValueWithDurationForDistance(0.0, getInteractiveDecayTime(), 1.0);
         }
 
         // determine value for pressed
@@ -1272,7 +1285,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         }
 
         // determine value for combined interaction
-        if (mAgentState== PDE_AGENT_CONTROLLER_STATE_SHOWING) {
+        if (mAgentState == PDE_AGENT_CONTROLLER_STATE_SHOWING) {
             // when showing, we are always visible
             value = 2.0;
         } else if (mAgentState== PDE_AGENT_CONTROLLER_STATE_INTERACTIVE) {
@@ -1303,10 +1316,10 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
             // only do something on change, but now use the actual value where we are as indicator for the timing
             if (value > mInteractionAnimation.getValue()) {
                 // on: fast
-                mInteractionAnimation.goToValueWithDurationLimitedAtDistance(value,getInteractiveAttackTime(),1.0);
+                mInteractionAnimation.goToValueWithDurationLimitedAtDistance(value, getInteractiveAttackTime(), 1.0);
             } else if (value < mInteractionAnimation.getValue()) {
                 // off: slow
-                mInteractionAnimation.goToValueWithDurationLimitedAtDistance(value,getInteractiveDecayTime(),1.0);
+                mInteractionAnimation.goToValueWithDurationLimitedAtDistance(value, getInteractiveDecayTime(), 1.0);
             }
         }
 
@@ -1316,13 +1329,13 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
                 // we're going back to the current state -> reverse now
                 mStateAnimationReversed = true;
                 // and adjust the animation
-                mStateAnimation.goToValueWithDurationForDistance(0.0,mStateChangeTime,1.0);
+                mStateAnimation.goToValueWithDurationForDistance(0.0, mStateChangeTime, 1.0);
             }
             if (mStateAnimationReversed && mState.equals(mNextState)) {
                 // we want to go to the original state again
                 mStateAnimationReversed = false;
                 // and adjust the animation
-                mStateAnimation.goToValueWithDurationForDistance(1.0,mStateChangeTime,1.0);
+                mStateAnimation.goToValueWithDurationForDistance(1.0, mStateChangeTime, 1.0);
             }
         }
 
@@ -1337,18 +1350,19 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
             event.setType(PDE_AGENT_CONTROLLER_EVENT_ANIMATION_BEGIN_STATE_CHANGE);
             getEventSource().sendEvent(event);
             // start the animation
-            mStateAnimation.goToValueWithDurationForDistance(1.0,mStateChangeTime,1.0);
+            mStateAnimation.goToValueWithDurationForDistance(1.0, mStateChangeTime, 1.0);
         }
 
         // should we change visual enabled state?
         if (mVisualEnabled) {
            // on: fast
-            mVisualEnabledAnimation.goToValueWithDurationForDistance(1.0,mStateChangeTime,1.0);
+            mVisualEnabledAnimation.goToValueWithDurationForDistance(1.0, mStateChangeTime, 1.0);
         } else {
             // off: slow
-            mVisualEnabledAnimation.goToValueWithDurationForDistance(0.0,mStateChangeTime,1.0);
+            mVisualEnabledAnimation.goToValueWithDurationForDistance(0.0, mStateChangeTime, 1.0);
         }
     }
+
 
     /**
      * @brief Take over current animation data
@@ -1464,7 +1478,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         }
 
         // is the state animation done?
-        if (mNextState!=null && !mStateAnimation.isRunning()) {
+        if (mNextState != null && !mStateAnimation.isRunning()) {
             // stop the animation by setting the current state
             if (!mStateAnimationReversed) {
                 mCurrentState = mNextState;
@@ -1486,7 +1500,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
                 event.setType(PDE_AGENT_CONTROLLER_EVENT_ANIMATION_BEGIN_STATE_CHANGE);
                 getEventSource().sendEvent(event);
                 // start the animation
-                mStateAnimation.goToValueWithDurationForDistance(1.0,mStateChangeTime,1.0);
+                mStateAnimation.goToValueWithDurationForDistance(1.0, mStateChangeTime, 1.0);
             }
         }
     }
@@ -1494,9 +1508,9 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
 
     // frame timing
     /**
-     * @brief Turn autotiming on or off
+     * @brief Turn auto-timing on or off
      *
-     * Autotiming is done by linking into the global display timing
+     * Auto-timing is done by linking into the global display timing
      */
     public void setTiming (boolean timing){
         // any change?
@@ -1508,7 +1522,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         // and perform action
         if (mTiming) {
             // debug
-            if(DEBUG_TIMING){
+            if (DEBUG_TIMING) {
                 Log.d(LOG_TAG,"Starting secondary timing");
             }
             // link to global timing
@@ -1517,17 +1531,18 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
             // unlink from global timing
             PDEFrameTiming.getInstance().removeListener(this);
             // debug
-            if(DEBUG_TIMING){
+            if (DEBUG_TIMING) {
                 Log.d(LOG_TAG,"Stopped secondary timing");
             }
         }
     }
 
+
     /**
      * @brief Timing function called when manually timed, or when something in the animations changed.
      *
      * It's necessary to run the full checks if something in the animations changed; they might have changed their state,
-     * which would then retrigger the next phase.
+     * which would then re-trigger the next phase.
      *
      * Manual timing is only invoked for special cases where an animation is not timed, but needs to be checked if it's
      * done for a given time.
@@ -1555,6 +1570,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         updateAnimationData();
     }
 
+
     /**
      * @brief timing function
      *
@@ -1568,7 +1584,6 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
     }
 
 
-
     /**
      * @brief Event data helper.
      */
@@ -1576,7 +1591,7 @@ public class PDEAgentController implements PDEIEventSource, PDEIEventSourceDeleg
         PDEEventAgentControllerState event;
 
         // create event
-        event=new PDEEventAgentControllerState();
+        event = new PDEEventAgentControllerState();
 
         // fill in data
         event.setCurrentState(mCurrentState);

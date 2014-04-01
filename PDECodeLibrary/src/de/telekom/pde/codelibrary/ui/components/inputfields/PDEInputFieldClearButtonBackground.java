@@ -72,6 +72,7 @@ class PDEInputFieldClearButtonBackground extends PDEAbsoluteLayout implements PD
         init(context);
     }
 
+
     /**
      * @brief Class initialization.
      */
@@ -79,6 +80,7 @@ class PDEInputFieldClearButtonBackground extends PDEAbsoluteLayout implements PD
         super(context, attrs);
         init(context);
     }
+
 
     /**
      * @brief Class initialization.
@@ -124,6 +126,7 @@ class PDEInputFieldClearButtonBackground extends PDEAbsoluteLayout implements PD
         return this;
     }
 
+
     /**
      * @brief Process agent events.
      */
@@ -158,7 +161,9 @@ class PDEInputFieldClearButtonBackground extends PDEAbsoluteLayout implements PD
         mParameters = parameters.copy();
 
         // check for color or border changes (all in one go)
-        if (force || !PDEParameterDictionary.areParametersEqual(mParameters, oldParams, PDEButton.PDEButtonParameterColor)) {
+        if (force
+                || !PDEParameterDictionary.areParametersEqual(mParameters, oldParams,
+                                                              PDEButton.PDEButtonParameterColor)) {
             prepareColors();
         }
     }
@@ -268,7 +273,7 @@ class PDEInputFieldClearButtonBackground extends PDEAbsoluteLayout implements PD
         }
 
 
-        mMainDrawable.getWrapperView().setViewLayoutRect(new Rect(0, 0, width, height));
+        PDEAbsoluteLayoutHelper.setViewRect(mMainDrawable.getWrapperView(),new Rect(0, 0, width, height));
         mMainDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                                                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
     }

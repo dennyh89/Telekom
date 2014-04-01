@@ -10,8 +10,7 @@ import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
-import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableMultilayer;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -22,54 +21,23 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
 /**
  * @brief Shows Music Metaphor
  */
-public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
+public class PDEDrawableMusicMetaphor extends PDEDrawableMultilayer {
 
     @SuppressWarnings("unused")
     private final static String LOG_TAG = PDEDrawableMusicMetaphor.class.getName();
+
+    private PDEDrawableMusicMetaphorImage mMusicMetaphorImage;
     
 //-----  properties ---------------------------------------------------------------------------------------------------
     private PDEConstants.PDEContentStyle mStyle;
 
-
-    private final static float CONST_ASPECTRATIO = 20.0f / 18.0f;
+    private final static float CONST_ASPECT_RATIO = 20.0f / 18.0f;
     private Drawable mPicture;
     private boolean mMiddleAligned;
     private int mOriginalHeight;
     private int mOriginalWidth;
-    private Rect mSetBounds;
 
     private boolean mShadowEnabled;
-
-    private PDEColor mOutlineFlatColor;
-    private Paint mOutlineFlatPaint;
-    private Rect mPictureRect;
-    private RectF mOuterRect;
-    private boolean mDarkStyle;
-
-    private PDEColor mPictureBackgroundColor;
-    private Paint mPictureBackgroundPaint;
-    private PDEColor mOutlineColor;
-    private Paint mOutlinePaint;
-    private PDEColor mOutlineFillingColor;
-    private Paint mOutlineFillingPaint;
-    private PDEColor mLeftBarColor;
-    private Paint mLeftBarPaint;
-    private PDEColor mLeftBarBorderColor;
-    private Paint mLeftBarBorderPaint;
-    private PDEColor mHandleColor;
-    private Paint mHandlePaint;
-    private PDEColor mHandleFillingColor;
-    private Paint mHandleFillingPaint;
-    private PDEColor mShapeColor;
-    private Paint mShapePaint;
-    private float mElementUnit;
-    private boolean mElementSimple;
-    private Path mShapePath;
-    private float mOuterCornerRadius;
-    private float mHandleCornerRadius;
-    private Rect mFrame;
-    private Rect mLeftBarRect;
-    private RectF mHandleRect;
     private PDEDrawableShapedShadow mElementShadowDrawable;
 
 
@@ -94,115 +62,16 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
         }
 
         mShadowEnabled = false;
-
-        //define colors
-        mOutlineFlatColor = new PDEColor();
-        mOutlineFlatColor.setColor(PDEColor.valueOf("Black45Alpha").getIntegerColor());
-
-        // init PDE defaults
-        mElementSimple = false;
-        mElementUnit = 0;
-        // shadow is created on demand
         mElementShadowDrawable = null;
 
-        //define colors
-        //color of outline
-        mOutlineColor = new PDEColor();
-        mOutlineColor.setColor(PDEColor.valueOf("Black30Alpha").getIntegerColor());
-        //picture background color
-        mPictureBackgroundColor = new PDEColor();
-        mPictureBackgroundColor.setColor(PDEColor.valueOf("DTWhite").getIntegerColor());
-        //background color of border
-        mOutlineFillingColor = new PDEColor();
-        mOutlineFillingColor.setColor(PDEColor.valueOf("#f2f2f2").getIntegerColor());
-        mOutlineFillingColor = mOutlineFillingColor.newColorWithCombinedAlpha(77);
-        //color of the black bar at the left
-        mLeftBarColor = new PDEColor();
-        mLeftBarColor.setColor(PDEColor.valueOf("#262626").getIntegerColor());
-        //border color of the black bar at the left
-        mLeftBarBorderColor = new PDEColor();
-        mLeftBarBorderColor.setColor(PDEColor.valueOf("DTBlack").getIntegerColor());
-        //border color of the handle
-        mHandleColor = new PDEColor();
-        mHandleColor.setColor(PDEColor.valueOf("Black30Alpha").getIntegerColor());
-        //background color of the handle
-        mHandleFillingColor = new PDEColor();
-        mHandleFillingColor.setColor(PDEColor.valueOf("#f2f2f2").getIntegerColor());
-        mHandleFillingColor = mOutlineFillingColor.newColorWithCombinedAlpha(128);
-        //white shape over the case
-        mShapeColor = new PDEColor();
-        mShapeColor.setColor(PDEColor.valueOf("DTWhite").getIntegerColor());
-        mShapeColor = mShapeColor.newColorWithCombinedAlpha(31);
-
-        // update all paints
-        update(true);
+        mMusicMetaphorImage = new PDEDrawableMusicMetaphorImage(drawable);
+        addLayer(mMusicMetaphorImage);
     }
 
 
-    //---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 // ----- optional shadow ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * @brief init shadow drawable.
-     *
-     * Creates and delivers the outer shadow drawable.
-     *
-     * @return The outer shadow drawable.
-     */
-    public Drawable createElementShadow() {
-        // already created?
-        if (mElementShadowDrawable != null) return mElementShadowDrawable;
-        // init shadow drawable
-        mElementShadowDrawable = new PDEDrawableShapedShadow();
-        mElementShadowDrawable.setElementShapeOpacity(0.25f);
-        setNeededPadding(PDEBuildingUnits.oneHalfBU());
-        updateElementShadowDrawable(new Point(getBounds().width(),getBounds().height()));
-        // return
-        return mElementShadowDrawable;
-    }
-
-
-    /**
-     * @brief shadow getter
-     *
-     * @return drawable of outer shadow
-     */
-    public Drawable getElementShadow() {
-        // return
-        return mElementShadowDrawable;
-    }
-
-
-    /**
-     * @brief forget shadow drawable.
-     */
-    public void clearElementShadow() {
-        mElementShadowDrawable = null;
-        setNeededPadding(0);
-    }
-
-
-    /**
-     * @brief Update the shadow drawable if we've got one.
-     */
-    private void updateElementShadowDrawable(Point elementSize) {
-        // check if we have a shadow set
-        if (mElementShadowDrawable != null) {
-            Rect frame;
-            if (mShadowEnabled == false) {
-                // keep current shadow position, just update the size
-                Rect bounds = mElementShadowDrawable.getBounds();
-                frame = new Rect(bounds.left, bounds.top, bounds.left + elementSize.x+(2*(int)mElementShadowDrawable.getElementBlurRadius()),
-                        bounds.top + elementSize.y+(2*(int)mElementShadowDrawable.getElementBlurRadius()));
-                mElementShadowDrawable.setBounds(frame);
-            } else {
-                if (mOuterRect == null) return;
-                mElementShadowDrawable.setBounds(mFrame);
-            }
-        }
-    }
-
 
     /**
      * @brief Activate shadow.
@@ -214,12 +83,14 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
         mShadowEnabled = enabled;
 
         if (mShadowEnabled) {
-            createElementShadow();
+            mElementShadowDrawable = mMusicMetaphorImage.createElementShadow();
+            insertLayerAtIndex(mElementShadowDrawable, 0);
         } else {
-            clearElementShadow();
+            removeLayer(mElementShadowDrawable);
+            mElementShadowDrawable = null;
         }
 
-        update();
+        doLayout();
     }
 
     /**
@@ -228,8 +99,6 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
     public boolean getElementShadowEnabled() {
         return mShadowEnabled;
     }
-
-
 
 
 
@@ -245,10 +114,25 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
         if (style == mStyle) return;
         //remember
         mStyle = style;
+        mMusicMetaphorImage.setElementContentStyle(style);
 
-        //redraw
-        update();
+        if (mShadowEnabled
+                && mStyle == PDEConstants.PDEContentStyle.PDEContentStyleFlat
+                && mElementShadowDrawable != null) {
+            removeLayer(mElementShadowDrawable);
+            mElementShadowDrawable = null;
+        }
+
+        if (mShadowEnabled
+                && mStyle == PDEConstants.PDEContentStyle.PDEContentStyleHaptic
+                && mElementShadowDrawable == null) {
+            mElementShadowDrawable = mMusicMetaphorImage.createElementShadow();
+            insertLayerAtIndex(mElementShadowDrawable,0);
+        }
+
+        doLayout();
     }
+
 
     /**
      * @brief Get visual style
@@ -264,18 +148,19 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
     public void setElementPicture(Drawable picture) {
         //any change?
         if (picture == mPicture) return;
+
         //remember
         mPicture = picture;
 
         mOriginalHeight = 0;
         mOriginalWidth = 0;
+
         if (mPicture != null) {
             mOriginalHeight = mPicture.getIntrinsicHeight();
             mOriginalWidth = mPicture.getIntrinsicWidth();
         }
 
-        //redraw
-        update();
+        mMusicMetaphorImage.setElementPicture(picture);
     }
 
 
@@ -286,30 +171,21 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
         return mPicture;
     }
 
+
     /**
      * @brief Set darkstyle color
      */
     public void setElementDarkStyle(boolean isDarkStyle) {
-        if (isDarkStyle == mDarkStyle) return;
-
-        mDarkStyle = isDarkStyle;
-
-        if (mDarkStyle) {
-            mOutlineFlatColor.setColor(PDEColor.valueOf("DTBlack").getIntegerColor());
-
-        } else {
-            mOutlineFlatColor.setColor(PDEColor.valueOf("Black45Alpha").getIntegerColor());
-        }
-        // update all paints
-        update(true);
+        mMusicMetaphorImage.setElementDarkStyle(isDarkStyle);
     }
+
 
     /**
      * @brief Get if element is colored in dark style
      */
     @SuppressWarnings("unused")
     public boolean getElementDarkStyle() {
-        return mDarkStyle;
+        return mMusicMetaphorImage.getElementDarkStyle();
     }
 
 
@@ -322,6 +198,8 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
     public void setElementMiddleAligned(boolean aligned) {
         if (mMiddleAligned == aligned) return;
         mMiddleAligned = aligned;
+
+        doLayout();
     }
 
 
@@ -341,20 +219,19 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
         return mPicture != null;
     }
 
+
     /**
      * @brief Get element height.
      */
     public int getElementHeight() {
         int returnValue = 0;
-        if (mSetBounds != null && mSetBounds.height() != 0) {
-            returnValue = mSetBounds.height();
-        } else if (mOriginalHeight >= 0) {
+
+        if (mOriginalHeight > 0) {
             if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleFlat) {
                 returnValue = calculateElementHeightFlat();
             } else {
                 returnValue = calculateElementHeightHaptic();
             }
-
         }
 
         return returnValue;
@@ -366,23 +243,17 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
      */
     public int getElementWidth() {
         int returnValue = 0;
-        if (mSetBounds != null && mSetBounds.width() != 0) {
-            returnValue = mSetBounds.width();
-        }
 
-        if (mOriginalWidth >= 0) {
+        if (mOriginalWidth > 0) {
             if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleFlat) {
                 returnValue = calculateElementWidthFlat();
             } else {
                 returnValue = calculateElementWidthHaptic();
             }
-
         }
 
         return returnValue;
     }
-
-
 
 
     /**
@@ -409,7 +280,6 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
     }
 
 
-
     /**
      * @brief Calculates element height
      */
@@ -420,9 +290,9 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
         }
 
         if (mOriginalHeight > mOriginalWidth) {
-            return Math.round(((float)mOriginalWidth /34.5f) * 40.0f) + 2*shadowWidth;
+            return Math.round(((float)mOriginalWidth / 34.5f) * 40.0f) + 2 * shadowWidth;
         } else {
-            return Math.round(((float)mOriginalHeight /34.5f) * 40.0f) + 2*shadowWidth;
+            return Math.round(((float)mOriginalHeight / 34.5f) * 40.0f) + 2 * shadowWidth;
         }
     }
 
@@ -437,9 +307,9 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
         }
 
         if (mOriginalHeight > mOriginalWidth) {
-            return Math.round(((float)mOriginalWidth /34.5f) * 36.0f) + 2*shadowWidth;
+            return Math.round(((float)mOriginalWidth / 34.5f) * 36.0f) + 2 * shadowWidth;
         } else {
-            return Math.round(((float)mOriginalHeight /34.5f) * 36.0f) + 2*shadowWidth;
+            return Math.round(((float)mOriginalHeight / 34.5f) * 36.0f) + 2 * shadowWidth;
         }
     }
 
@@ -459,7 +329,10 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
     @Override
     public void setBounds(int left, int top, int right, int bottom) {
         Rect aspectRatioBounds = elementCalculateAspectRatioBounds(new Rect(left, top, right, bottom));
-        super.setBounds(aspectRatioBounds.left, aspectRatioBounds.top, aspectRatioBounds.right, aspectRatioBounds.bottom);
+        super.setBounds(aspectRatioBounds.left,
+                aspectRatioBounds.top,
+                aspectRatioBounds.right,
+                aspectRatioBounds.bottom);
     }
 
 
@@ -474,7 +347,7 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
      * @param bounds Available space for the element
      * @return Rect with correct aspect ratio, fitting in available space
      */
-    private Rect elementCalculateAspectRatioBounds(Rect bounds) {
+    public Rect elementCalculateAspectRatioBounds(Rect bounds) {
         Rect newBounds;
 
         //calculate bounds depending on aspect ratio
@@ -492,37 +365,13 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
             newBounds.bottom = newBounds.top + Math.round((float)newBounds.width() / 1);
 
             if (mMiddleAligned) {
-                int verticalShift = (bounds.height()-newBounds.height())/2;
+                int verticalShift = (bounds.height()-newBounds.height()) / 2;
                 newBounds.top += verticalShift;
                 newBounds.bottom += verticalShift;
             }
         }
 
-        mSetBounds = newBounds;
         return newBounds;
-    }
-
-
-    /**
-     * @brief Help function for use in views for layouting, to make sure Wrap_content works correctly.
-     *
-     * Does essentially the same as elementCalculateAspectRatioBounds but with less use of resources, for cheaper
-     * use in views.
-     *
-     */
-    public void setInternalBounds(float width, float height) {
-        Rect newBounds;
-
-        //calculate bounds depending on aspect ratio
-        if (width / height > 1 ) {
-            newBounds = new Rect(0, 0, Math.round(width), Math.round(height));
-            newBounds.right = newBounds.left + Math.round(((float)newBounds.height() * 1));
-        } else {
-            newBounds = new Rect(0, 0, Math.round(width), Math.round(height));
-            newBounds.bottom = newBounds.top + Math.round((float)newBounds.width() / 1);
-        }
-
-        mSetBounds = newBounds;
     }
 
 
@@ -534,9 +383,10 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
     @Override
     public void setLayoutWidth(int width) {
         if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleFlat) {
+            // height == width
             setLayoutSize(new Point(width, width ));
         } else {
-            setLayoutSize(new Point(width, Math.round((float) width / CONST_ASPECTRATIO)));
+            setLayoutSize(new Point(width, Math.round((float) width / CONST_ASPECT_RATIO)));
         }
 
     }
@@ -550,358 +400,54 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableBase {
     @Override
     public void setLayoutHeight(int height) {
         if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleFlat) {
+            // width == height!!
             setLayoutSize(new Point(height, height));
         } else {
-            setLayoutSize(new Point(Math.round(height * CONST_ASPECTRATIO), height));
+            setLayoutSize(new Point(Math.round(height * CONST_ASPECT_RATIO), height));
         }
 
     }
 
 
     /**
-     * @brief Update all of my sublayers.
+     * @brief Function where the multilayer reacts on bound changes.
      */
     @Override
     protected void doLayout() {
-        // do needed layout calculations.
-        performLayoutCalculations(new Rect(getBounds()));
+        Rect bounds = getBounds();
+
+        bounds = updateShadowDrawable(bounds);
+        updateFilmImageDrawable(bounds);
+
+        //inform this layer about changes
+        invalidateSelf();
     }
 
 
     /**
-     * @brief Calls function to perform layout calculations, based on flat or haptic style
+     * @brief update function for the image
      */
-    private void performLayoutCalculations(Rect bounds) {
-        if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleFlat) {
-            performLayoutCalculationsFlat(bounds);
-        } else {
-            performLayoutCalculationsHaptic(bounds);
-        }
-    }
-
-
-    /**
-     * @brief Perform the layout calculations that are needed before the next drawing phase (because bounds have
-     * changed).
-     */
-    private void performLayoutCalculationsFlat(Rect bounds){
-        Rect frame = new Rect(Math.round(mPixelShift), Math.round(mPixelShift), Math.round(bounds.width() - mPixelShift),
-                Math.round(bounds.height() - mPixelShift));
-
-        //size of the outline
-        mOuterRect = new RectF(frame.left, frame.top, frame.right, frame.bottom);
-
-        //picture size
-        mPictureRect = new Rect(Math.round(frame.left + 2),
-                Math.round(frame.top + 2),
-                Math.round(frame.right - 2),
-                Math.round(frame.bottom - 2));
-    }
-
-
-    /**
-     * @brief Perform the layout calculations that are needed before the next drawing phase (because bounds have
-     * changed).
-     */
-    private void performLayoutCalculationsHaptic(Rect bounds){
-        mFrame = new Rect(Math.round(mPixelShift), Math.round(mPixelShift), Math.round(bounds.width() - mPixelShift),
-                Math.round(bounds.height() - mPixelShift));
-
-        //adjust frame when shadow is enabled
-        if (mShadowEnabled) {
-            mElementShadowDrawable.setBounds(mFrame);
+    private Rect updateShadowDrawable(Rect bounds) {
+        Rect frameRect = new Rect(0, 0, bounds.width(), bounds.height());
+        if (mElementShadowDrawable != null) {
+            mElementShadowDrawable.setBounds(frameRect);
             int shadowWidth = (int)mElementShadowDrawable.getElementBlurRadius();
-            mFrame = new Rect(mFrame.left + shadowWidth, mFrame.top + shadowWidth -PDEBuildingUnits.oneTwelfthsBU(),
-                    mFrame.right - shadowWidth, mFrame.bottom - shadowWidth - PDEBuildingUnits.oneTwelfthsBU());
+            frameRect = new Rect(frameRect.left + shadowWidth,
+                    frameRect.top + shadowWidth - PDEBuildingUnits.oneTwelfthsBU(),
+                    frameRect.right - shadowWidth,
+                    frameRect.bottom - shadowWidth - PDEBuildingUnits.oneTwelfthsBU());
         }
 
-        //calculate size unit
-        mElementUnit = (1.0f / 40.0f) * mFrame.width();
-
-        //calculates sizes if width > 5 BUs, else only the size of the picture is needed
-        if (mElementSimple) {
-            mPictureRect = new Rect(Math.round(mFrame.left), Math.round(mFrame.top),
-                    Math.round(mFrame.right), Math.round(mFrame.bottom));
-        } else {
-            //size of the outline
-            mOuterRect = new RectF(mFrame.left, mFrame.top, mFrame.right, mFrame.bottom);
-            mOuterCornerRadius = 0.75f * mElementUnit;
-            //size of the left bar
-            mLeftBarRect = new Rect(mFrame.left, mFrame.top+ Math.round(0.75f * mElementUnit),
-                    mFrame.left+Math.round(4.75f * mElementUnit),
-                    mFrame.bottom-Math.round(0.75f * mElementUnit));
-            //picture size
-            mPictureRect = new Rect(Math.round(mFrame.left + 4.75f * mElementUnit),
-                    Math.round(mFrame.top + 0.75f * mElementUnit),
-                    Math.round(mFrame.left + 39.25f * mElementUnit),
-                    Math.round(mFrame.bottom - 0.75f * mElementUnit));
-            //handle sizes
-            mHandleCornerRadius = 0.3f * mElementUnit;
-            mHandleRect = new RectF(mFrame.left + Math.round(38.5f * mElementUnit),
-                    mFrame.top + Math.round(14.0f * mElementUnit),
-                    mFrame.right + Math.round(2.0f * mElementUnit),
-                    mFrame.bottom - Math.round(14.0f * mElementUnit));
-            //create shape
-            mShapePath = elementCreateShapePath(new Rect(Math.round(mFrame.left), Math.round(mFrame.top),
-                    Math.round(mFrame.right), Math.round(mFrame.bottom)));
-        }
-    }
-
-
-
-//---------------------------------------------------------------------------------------------------------------------
-// ----- Helpers ------------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * @brief update all used paints
-     */
-    @Override
-    protected void updateAllPaints() {
-        createOutlineFlatPaint();
-        createHandleFillingPaint();
-        createHandlePaint();
-        createOutlineFillingPaint();
-        createOutlinePaint();
-        createLeftBarPaint();
-        createLeftBarBorderPaint();
-        createShapePaint();
-        createPictureBackgroundPaint();
+        return frameRect;
     }
 
 
     /**
-     * @brief create paint for the filling of the outline.
+     * @brief update function for the image
      */
-    private void createOutlineFlatPaint() {
-        mOutlineFlatPaint = new Paint();
-        mOutlineFlatPaint.setAntiAlias(true);
-        mOutlineFlatPaint.setColorFilter(mColorFilter);
-        mOutlineFlatPaint.setDither(mDither);
-        mOutlineFlatPaint.setColor(mOutlineFlatColor.newIntegerColorWithCombinedAlpha(mAlpha));
+    private void updateFilmImageDrawable(Rect bounds) {
+        mMusicMetaphorImage.setLayoutSize(bounds.width(), bounds.height());
+        mMusicMetaphorImage.setLayoutOffset(bounds.left, bounds.top);
     }
 
-    /**
-     * @brief create paint for the filling of the handle.
-     */
-    private void createHandleFillingPaint() {
-        mHandleFillingPaint = new Paint();
-        mHandleFillingPaint.setAntiAlias(true);
-        mHandleFillingPaint.setColorFilter(mColorFilter);
-        mHandleFillingPaint.setDither(mDither);
-        mHandleFillingPaint.setColor(mHandleFillingColor.newIntegerColorWithCombinedAlpha(mAlpha));
-    }
-
-
-    /**
-     * @brief create paint for the outline of the handle.
-     */
-    private void createHandlePaint() {
-        mHandlePaint = new Paint();
-        mHandlePaint.setAntiAlias(true);
-        mHandlePaint.setStyle(Paint.Style.STROKE);
-        mHandlePaint.setColorFilter(mColorFilter);
-        mHandlePaint.setDither(mDither);
-        mHandlePaint.setColor(mHandleColor.newIntegerColorWithCombinedAlpha(mAlpha));
-    }
-
-    /**
-     * @brief create paint for picture background.
-     */
-    private void createPictureBackgroundPaint() {
-        mPictureBackgroundPaint = new Paint();
-        mPictureBackgroundPaint.setAntiAlias(true);
-        mPictureBackgroundPaint.setColorFilter(mColorFilter);
-        mPictureBackgroundPaint.setDither(mDither);
-        mPictureBackgroundPaint.setColor(mPictureBackgroundColor.newIntegerColorWithCombinedAlpha(mAlpha));
-    }
-
-
-    /**
-     * @brief create paint for the filling of the outline.
-     */
-    private void createOutlineFillingPaint() {
-        mOutlineFillingPaint = new Paint();
-        mOutlineFillingPaint.setAntiAlias(true);
-        mOutlineFillingPaint.setColorFilter(mColorFilter);
-        mOutlineFillingPaint.setDither(mDither);
-        mOutlineFillingPaint.setColor(mOutlineFillingColor.newIntegerColorWithCombinedAlpha(mAlpha));
-    }
-
-
-    /**
-     * @brief create paint for the outline.
-     */
-    private void createOutlinePaint() {
-        mOutlinePaint = new Paint();
-        mOutlinePaint.setAntiAlias(true);
-        mOutlinePaint.setStyle(Paint.Style.STROKE);
-        mOutlinePaint.setColorFilter(mColorFilter);
-        mOutlinePaint.setDither(mDither);
-        mOutlinePaint.setColor(mOutlineColor.newIntegerColorWithCombinedAlpha(mAlpha));
-    }
-
-
-    /**
-     * @brief create paint for the left bar.
-     */
-    private void createLeftBarPaint() {
-        mLeftBarPaint = new Paint();
-        mLeftBarPaint.setAntiAlias(true);
-        mLeftBarPaint.setColorFilter(mColorFilter);
-        mLeftBarPaint.setDither(mDither);
-        mLeftBarPaint.setColor(mLeftBarColor.newIntegerColorWithCombinedAlpha(mAlpha));
-    }
-
-
-    /**
-     * @brief create paint for the outline of the left bar.
-     */
-    private void createLeftBarBorderPaint() {
-        mLeftBarBorderPaint = new Paint();
-        mLeftBarBorderPaint.setAntiAlias(true);
-        mLeftBarBorderPaint.setStrokeWidth(2);
-        mLeftBarBorderPaint.setStyle(Paint.Style.STROKE);
-        mLeftBarBorderPaint.setColorFilter(mColorFilter);
-        mLeftBarBorderPaint.setDither(mDither);
-        mLeftBarBorderPaint.setColor(mLeftBarBorderColor.newIntegerColorWithCombinedAlpha(mAlpha));
-    }
-
-
-    /**
-     * @brief create paint for the shape.
-     */
-    private void createShapePaint() {
-        mShapePaint = new Paint();
-        mShapePaint.setAntiAlias(true);
-        mShapePaint.setColorFilter(mColorFilter);
-        mShapePaint.setDither(mDither);
-        mShapePaint.setColor(mShapeColor.newIntegerColorWithCombinedAlpha(mAlpha));
-    }
-
-
-    /**
-     * @brief Changes of paint properties should also affect the picture, so use the update hook for this.
-     *
-     * @param paintPropertiesChanged shows if an update of the used Paint-Instances is needed.
-     */
-    @Override
-    protected void updateHook(boolean paintPropertiesChanged) {
-        if (!paintPropertiesChanged) return;
-        if (mPicture == null) return;
-        mPicture.setAlpha(mAlpha);
-        mPicture.setDither(mDither);
-        mPicture.setColorFilter(mColorFilter);
-    }
-
-
-    /**
-     * @brief Creates Shape Path for the white Area over the Cover.
-     *
-     * @param bounds Size of the element
-     * @return Path of the overlay
-     */
-    private Path elementCreateShapePath(Rect bounds) {
-        Path shapepath = new Path();
-        //move to upper left
-        shapepath.moveTo(bounds.left, bounds.top);
-        //move down
-        shapepath.lineTo(bounds.left, (21.5f / 36.0f) * bounds.height());
-        //move up right
-        shapepath.lineTo(bounds.right, (7.5f / 36.0f) * bounds.height());
-        //move up
-        shapepath.lineTo(bounds.right, bounds.top);
-        //close path
-        shapepath.close();
-
-        return shapepath;
-    }
-
-
-
-//---------------------------------------------------------------------------------------------------------------------
-// ----- Drawing Bitmap ----------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------
-
-
-    /**
-     * @brief Calls function to update our drawing bitmap and trigger a redraw of this element based on flat or haptic style.
-     */
-    @Override
-    protected void updateDrawingBitmap(Canvas c, Rect bounds) {
-        if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleFlat) {
-            updateDrawingBitmapFlat(c, bounds);
-        } else {
-            updateDrawingBitmapHaptic(c, bounds);
-        }
-    }
-
-
-    /**
-     * @brief Updates our drawing bitmap and triggers a redraw of this element.
-     *
-     * If a drawing parameter changes, we need to call this function in order to update our drawing-bitmap and
-     * in order to trigger the draw of our updated bitmap to the canvas.
-     */
-    private void updateDrawingBitmapFlat(Canvas c, Rect bounds) {
-        // security
-        if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
-
-        //draw outline and background
-        c.drawRect(mOuterRect, mOutlineFlatPaint);
-        c.drawRect(mPictureRect, mPictureBackgroundPaint);
-
-        //draw picture
-        if (mPicture != null) {
-            mPicture.setBounds(mPictureRect);
-            mPicture.draw(c);
-        }
-    }
-
-    /**
-     * @brief Updates our drawing bitmap and triggers a redraw of this element.
-     *
-     * If a drawing parameter changes, we need to call this function in order to update our drawing-bitmap and
-     * in order to trigger the draw of our updated bitmap to the canvas.
-     */
-    private void updateDrawingBitmapHaptic(Canvas c, Rect bounds) {
-        // security
-        if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
-
-        //draw shadow
-        if (mShadowEnabled && mElementShadowDrawable != null) {
-            mElementShadowDrawable.draw(c);
-        }
-
-        c.clipRect(mFrame);
-
-        //draws complete case when width > 5 BUs, only picture else
-        if (!mElementSimple) {
-            //draw outline and background
-            c.drawRoundRect(mOuterRect, mOuterCornerRadius, mOuterCornerRadius, mOutlineFillingPaint);
-            c.drawRoundRect(mOuterRect, mOuterCornerRadius, mOuterCornerRadius, mOutlinePaint);
-            c.drawRect(mPictureRect, mPictureBackgroundPaint);
-            //draw picture
-            if (mPicture != null) {
-                mPicture.setBounds(mPictureRect);
-                mPicture.draw(c);
-            }
-            //draw left black bar and its outline
-            c.drawRect(mLeftBarRect, mLeftBarPaint);
-            c.drawRect(mLeftBarRect.left+1, mLeftBarRect.top+1, mLeftBarRect.right-1, mLeftBarRect.bottom-1, mLeftBarBorderPaint);
-            //draw handle
-            c.drawRoundRect(mHandleRect, mHandleCornerRadius, mHandleCornerRadius, mHandleFillingPaint);
-            c.drawRoundRect(mHandleRect, mHandleCornerRadius, mHandleCornerRadius, mHandlePaint);
-            //draw shape over the case
-            c.clipPath(mShapePath);
-            c.drawRoundRect(mOuterRect, mOuterCornerRadius, mOuterCornerRadius, mShapePaint);
-        } else {
-            if (mPicture != null) {
-                c.drawRect(mFrame, mPictureBackgroundPaint);
-                mPicture.setBounds(mFrame);
-                mPicture.draw(c);
-            }
-
-        }
-    }
 }

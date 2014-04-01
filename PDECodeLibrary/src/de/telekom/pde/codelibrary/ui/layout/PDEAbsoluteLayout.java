@@ -24,6 +24,8 @@ package de.telekom.pde.codelibrary.ui.layout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,74 @@ import de.telekom.pde.codelibrary.ui.R;
  */
 @RemoteView
 public class PDEAbsoluteLayout extends ViewGroup {
+
+    public static class PDEAbsoluteLayoutHelper {
+
+
+        /**
+         * @brief Set View Size.
+         */
+        public static void setViewSize(View view, float width, float height){
+            PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) view.getLayoutParams();
+            layerParams.width = Math.round(width);
+            layerParams.height = Math.round(height);
+            view.setLayoutParams(layerParams);
+        }
+
+
+        /**
+         * @brief Set View Size.
+         */
+        public static void setViewSize(View view, PointF size){
+            setViewSize(view, size.x, size.y);
+        }
+
+
+        /**
+         * @brief Set View width.
+         */
+        public static void setViewWidth(View view, float width){
+            PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) view.getLayoutParams();
+            setViewSize(view, width, layerParams.height);
+        }
+
+
+        /**
+         * @brief Set View height.
+         */
+        public static void setViewHeight(View view, float height){
+            PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) view.getLayoutParams();
+            setViewSize(view, layerParams.width, height);
+        }
+
+
+        /**
+         * @brief Set View Offset.
+         */
+        public static void setViewOffset(View view, float x, float y){
+            PDEAbsoluteLayout.LayoutParams layerParams = (PDEAbsoluteLayout.LayoutParams) view.getLayoutParams();
+            layerParams.x = Math.round(x);
+            layerParams.y = Math.round(y);
+            view.setLayoutParams(layerParams);
+        }
+
+
+        /**
+         * @brief Set View Offset.
+         */
+        public static void setViewOffset(View view, PointF offset){
+            setViewOffset(view, offset.x, offset.y);
+        }
+
+
+        /**
+         * @brief Set View Rect.
+         */
+        public static void setViewRect(View view, Rect rect) {
+            setViewOffset(view,rect.left,rect.top);
+            setViewSize(view,rect.width(),rect.height());
+        }
+    }
 
     /**
      * Constructor

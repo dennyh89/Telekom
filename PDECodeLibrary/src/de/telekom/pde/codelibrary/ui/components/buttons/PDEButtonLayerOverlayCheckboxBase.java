@@ -42,7 +42,7 @@ import java.lang.reflect.Method;
 
 
 /**
- * @brief Background for an Checkbox button.
+ * @brief Overlay for an Checkbox button.
  */
 public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayout implements PDEButtonLayerInterface {
 
@@ -52,7 +52,7 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
      */
     private final static String LOG_TAG = PDEButtonLayerOverlayCheckboxBase.class.getName();
     // debug messages switch
-    private final static boolean DEBUGPARAMS = false;
+    private final static boolean DEBUG_PARAMS = false;
     private final static boolean SHOW_DEBUG_LOGS = false;
 
 
@@ -66,14 +66,17 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
 
     // global variables
     //
-    static PDEDictionary PDEButtonLayerOverlayCheckboxGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_check_radio_color_defaults");
-    static PDEDictionary PDEButtonLayerOverlayCheckboxGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
+    static PDEDictionary PDEButtonLayerOverlayCheckboxGlobalColorDefault
+            = PDEComponentHelpers.readDefaultColorDictionary("dt_button_check_radio_color_defaults");
+    static PDEDictionary PDEButtonLayerOverlayCheckboxGlobalBorderDefault
+            = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
 
     // parameters needed
     protected PDEParameterDictionary mParameters;
     protected PDEParameter mParamColor;
     protected PDEParameter mParamBorderColor;
     protected PDEParameter mParamState;
+    int mHorizontalPadding;
 
     // content layers
     protected PDEDrawableArea mAreaDrawable;
@@ -136,6 +139,7 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
         mCheckboxAlignment = PDEConstants.PDEAlignment.PDEAlignmentCenter;
         mCheckboxSizeMode = PDEButtonLayerOverlayCheckboxSizeMode.PDEButtonLayerOverlayCheckboxSizeModeStyleguide;
         mCheckboxSize = 0.0f;
+        mHorizontalPadding = PDEBuildingUnits.pixelFromBU(2.0f);
 
         // agent helper
         mAgentHelper = new PDEAgentHelper();
@@ -216,8 +220,9 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
             prepareState();
         }
 
-        // non-animatable properties do their change management internally
+        // non-animateable properties do their change management internally
         prepareAlignment();
+        prepareHorizontalPadding();
         //prepareSize();
         requestLayout();
     }
@@ -228,18 +233,17 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
 
 
     /**
-     * @brief Set the (animatable) title color.
+     * @brief Set the (animateable) title color.
      *
      * If no title color is given, the title color is calculated from a) the main color, and b) the hints (indicative
      * buttons have a special color), and c) the system preset (dark or light system).
      *
      * The shadow color is also calculated; the shadow color depends solely on the main color (and does only change
-     * inbetween states)
+     * in-between states)
      */
-    protected void prepareColor()
-    {
+    protected void prepareColor() {
         // debug output
-        if( DEBUGPARAMS ){
+        if (DEBUG_PARAMS){
             mParamColor.debugOut("Color before building");
             mParamBorderColor.debugOut("Border before building");
         }
@@ -257,11 +261,12 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
         PDEComponentHelpers.buildColors(mParamBorderColor, PDEButtonLayerOverlayCheckboxGlobalBorderDefault,
                                         mParamColor, null, PDEAgentHelper.PDEAgentHelperAnimationInteractive);
 
-        // if border color for a state is still not defined, calculate it from main agent colors (use gradient darker step)
+        // if border color for a state is still not defined, calculate it from main agent colors
+        // (use gradient darker step)
         PDEComponentHelpers.fillBorderColors(mParamBorderColor, mParamColor);
 
         // debug output
-        if( DEBUGPARAMS ){
+        if(DEBUG_PARAMS){
             mParamColor.debugOut("Color after building");
             mParamBorderColor.debugOut("Border after building");
         }
@@ -274,18 +279,17 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
     /**
      * @brief Prepare shadow strength parameter set.
      *
-     * Shadow strengs animates the shadow as a whole. The range is 0.0..1.0.
+     * Shadow strength animates the shadow as a whole. The range is 0.0..1.0.
      */
-    protected void prepareState()
-    {
+    protected void prepareState() {
         // set the new values
         mParamState.removeAllObjects();
 
         // create fixed defaults (old way for old compilers, dictionary literal would be better readable)
-        mParamState.setWithDictionary(new PDEDictionary("default","0.0","selected","1.0"));
+        mParamState.setWithDictionary(new PDEDictionary("default", "0.0", "selected", "1.0"));
 
         // debug output
-        if( DEBUGPARAMS ){
+        if(DEBUG_PARAMS){
             mParamState.debugOut("State before building");
         }
 
@@ -296,7 +300,7 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
         mParamState.convertToNumber();
 
         // debug output
-        if( DEBUGPARAMS ){
+        if(DEBUG_PARAMS){
             mParamState.debugOut("State after building");
         }
 
@@ -313,8 +317,7 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
      *
      * IconOnRightSide and IconTextAlignment are non-animated and uses the base parameter
      */
-    protected void prepareAlignment()
-    {
+    protected void prepareAlignment() {
         String alignmentString;
         PDEConstants.PDEAlignment alignment;
 
@@ -350,8 +353,7 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
      *
      * Preparation function for the font which evaluates the parameters. Note that we need to
      */
-    protected void prepareSize(float height)
-    {
+    protected void prepareSize(float height) {
         Object sizeObject;
         PDEButtonLayerOverlayCheckboxSizeMode checkboxMode;
         float checkboxSize;
@@ -361,19 +363,20 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
         sizeObject = mParameters.parameterObjectForName(PDEButton.PDEButtonParameterFontSize);
 
         // parse font size
-        if ( sizeObject instanceof  Number ) {
+        if (sizeObject instanceof  Number) {
             // use given size directly
             checkboxMode = PDEButtonLayerOverlayCheckboxSizeMode.PDEButtonLayerOverlayCheckboxSizeModeFixed;
             checkboxSize = ((Number)sizeObject).floatValue();
-        } else if ( sizeObject instanceof String ) {
+        } else if (sizeObject instanceof String) {
             // extract string
             str = (String)sizeObject;
             // button specific mode / fixed size?
-            if ( str.equals(PDEButton.PDEButtonParameterValueSizeAuto) || str.equals(PDEButton.PDEButtonParameterValueSizeAutomatic) ) {
+            if (str.equals(PDEButton.PDEButtonParameterValueSizeAuto)
+                    || str.equals(PDEButton.PDEButtonParameterValueSizeAutomatic)) {
                 // automatic sizing
                 checkboxMode = PDEButtonLayerOverlayCheckboxSizeMode.PDEButtonLayerOverlayCheckboxSizeModeAutomatic;
                 checkboxSize = 0.0f;
-            } else if ( str.equals(PDEButton.PDEButtonParameterValueSizeStyleguide) ) {
+            } else if (str.equals(PDEButton.PDEButtonParameterValueSizeStyleguide)) {
                 // styleguide defined sizes sizing
                 checkboxMode = PDEButtonLayerOverlayCheckboxSizeMode.PDEButtonLayerOverlayCheckboxSizeModeStyleguide;
                 checkboxSize = 0.0f;
@@ -389,7 +392,9 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
         }
 
         // changed?
-        if (checkboxMode == mCheckboxSizeMode && checkboxSize == mCheckboxSize && height == mHeightUsedForSizeCalculation) {
+        if (checkboxMode == mCheckboxSizeMode
+                && checkboxSize == mCheckboxSize
+                && height == mHeightUsedForSizeCalculation) {
             return;
         }
 
@@ -404,6 +409,26 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
     }
 
 
+    /**
+     * @brief Prepare HorizontalPadding.
+     */
+    private void prepareHorizontalPadding() {
+        int distance;
+
+        distance = mParameters.parameterIntForName(PDEButton.PDEButtonParameterHorizontalPadding,
+                PDEBuildingUnits.pixelFromBU(2.0f));
+
+        // anything to do??
+        if (distance == mHorizontalPadding) return;
+
+        // remember
+        mHorizontalPadding = distance;
+
+        // update
+        relayout();
+    }
+
+
 //----- fixed parameters -----------------------------------------------------------------------------------------------
 
 
@@ -413,15 +438,16 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
     /**
      * @brief protected function - update all colors.
      *
-     * Title colors, shadow colors. All colors are precalculated and only animated.
+     * Title colors, shadow colors. All colors are pre-calculated and only animated.
      */
-    protected void updateColors()
-    {
-        PDEColor color,border;
+    protected void updateColors() {
+        PDEColor color, border;
 
         // interpolate colors by calling complex logic color interpolation helper
-        color = PDEComponentHelpers.interpolateColor(mParamColor, mAgentHelper, PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
-        border = PDEComponentHelpers.interpolateColor(mParamBorderColor, mAgentHelper, PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
+        color = PDEComponentHelpers.interpolateColor(mParamColor, mAgentHelper,
+                PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
+        border = PDEComponentHelpers.interpolateColor(mParamBorderColor, mAgentHelper,
+                PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
 
         // set color
         mAreaDrawable.setElementBackgroundColor(color);
@@ -438,16 +464,17 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
         Method method = null;
 
         // interpolate colors by calling complex logic color interpolation helper
-        alpha = PDEComponentHelpers.interpolateFloat(mParamState, mAgentHelper, PDEAgentHelper.PDEAgentHelperAnimationStateOnly, null);
+        alpha = PDEComponentHelpers.interpolateFloat(mParamState, mAgentHelper,
+                PDEAgentHelper.PDEAgentHelperAnimationStateOnly, null);
 
         // show/hide Icon
         // since the setAlpha(int) method is deprecated in API 16 we go by reflection.
         if (sImageViewSetAlphaMethod == null) {
             try {
-                method = mIconLayer.getClass().getMethod("setImageAlpha",new Class[] {int.class});
+                method = mIconLayer.getClass().getMethod("setImageAlpha", new Class[] {int.class});
             } catch (NoSuchMethodException e) {
                 try {
-                    method = mIconLayer.getClass().getMethod("setAlpha",new Class[] {int.class});
+                    method = mIconLayer.getClass().getMethod("setAlpha", new Class[] {int.class});
                 } catch (NoSuchMethodException e2) {
                     //that should never happen!
                     Log.e(LOG_TAG,"no method for setting alpha for ImageView");
@@ -458,7 +485,7 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
 
         if (sImageViewSetAlphaMethod != null) {
             try {
-                sImageViewSetAlphaMethod.invoke(mIconLayer, (int)alpha*255);
+                sImageViewSetAlphaMethod.invoke(mIconLayer, (int)alpha * 255);
             } catch (IllegalAccessException e) {
                 Log.e(LOG_TAG,"can't invoke method for changing alpha of imageView - IllegalAccessException");
             } catch (InvocationTargetException e) {
@@ -473,10 +500,9 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
      *
      * The layouting positions the graphical element; the sizing of red dot and sunken layer is done here.
      */
-    protected void updateSize(float height)
-    {
+    protected void updateSize(float height) {
         Context context = PDECodeLibrary.getInstance().getApplicationContext();
-        int resourceID = 0;
+        int resourceID;
         float checkboxSize;
         String iconFile;
 
@@ -488,19 +514,24 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
         if (mCheckboxSizeMode == PDEButtonLayerOverlayCheckboxSizeMode.PDEButtonLayerOverlayCheckboxSizeModeAutomatic) {
             // height is 2/3 button size
             checkboxSize = PDEBuildingUnits.roundToScreenCoordinates(height * 2.0f / 3.0f);
-        } else if (mCheckboxSizeMode == PDEButtonLayerOverlayCheckboxSizeMode.PDEButtonLayerOverlayCheckboxSizeModeStyleguide) {
+        } else if (mCheckboxSizeMode
+                    == PDEButtonLayerOverlayCheckboxSizeMode.PDEButtonLayerOverlayCheckboxSizeModeStyleguide) {
             // standardized heights: buttons defined are 4BU, 3BU and 2.5BU; use the nearest one to calculate
             if (height > PDEBuildingUnits.exactPixelFromBU(3.5f) ) {
                 // display height > 3,5*BU -> use 4 BU as reference size
-                checkboxSize = PDEBuildingUnits.roundToScreenCoordinates(PDEBuildingUnits.pixelFromBU(4.0f) * 2.0f / 3.0f);
+                checkboxSize = PDEBuildingUnits.roundToScreenCoordinates(
+                        PDEBuildingUnits.pixelFromBU(4.0f) * 2.0f / 3.0f);
             } else if (height > PDEBuildingUnits.exactPixelFromBU(2.75f) ) {
                 // 2,75*BU < display height <= 3,5*BU -> use 3 BU as reference size
-                checkboxSize = PDEBuildingUnits.roundToScreenCoordinates(PDEBuildingUnits.pixelFromBU(3.0f) * 2.0f / 3.0f);
+                checkboxSize = PDEBuildingUnits.roundToScreenCoordinates(
+                        PDEBuildingUnits.pixelFromBU(3.0f) * 2.0f / 3.0f);
             } else {
                 // display height < 2,75*BU -> use 2.5 BU as reference size
-                checkboxSize = PDEBuildingUnits.roundToScreenCoordinates(PDEBuildingUnits.pixelFromBU(2.5f) * 2.0f / 3.0f);
+                checkboxSize = PDEBuildingUnits.roundToScreenCoordinates(
+                        PDEBuildingUnits.pixelFromBU(2.5f) * 2.0f / 3.0f);
             }
-        } else if (mCheckboxSizeMode == PDEButtonLayerOverlayCheckboxSizeMode.PDEButtonLayerOverlayCheckboxSizeModeFixed) {
+        } else if (mCheckboxSizeMode
+                    == PDEButtonLayerOverlayCheckboxSizeMode.PDEButtonLayerOverlayCheckboxSizeModeFixed) {
             // fixed height
             checkboxSize = mCheckboxSize;
         } else {
@@ -537,7 +568,7 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
 
 
         //directly apply to the layers
-//        mSunkenDrawable.getWrapperView().setViewLayoutRect(new Rect(0,0,Math.round(mCheckboxUsedSize),
+//        PDEAbsoluteLayoutHelper.setViewRect(mSunkenDrawable.getWrapperView(),new Rect(0,0,Math.round(mCheckboxUsedSize),
 //                                                    Math.round(mCheckboxUsedSize)));
 //        mSunkenDrawable.setElementShapeRoundedRect(PDEBuildingUnits.oneThirdBU());
 
@@ -567,10 +598,9 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
      * Use the stored layout. This is not correct since it does not update dependent layers. When we have change
      * management we must trigger a complete button layout here.
      */
-    protected void relayout()
-    {
+    protected void relayout() {
         ViewGroup innerLayout = null;
-        ViewGroup overlaySlot = null;
+        ViewGroup overlaySlot;
 
         overlaySlot = (ViewGroup) getParent();
 
@@ -586,7 +616,9 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
             }
 
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_left)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_left))
+                        .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                  ViewGroup.LayoutParams.MATCH_PARENT));
             }
         } else if (mCheckboxAlignment == PDEConstants.PDEAlignment.PDEAlignmentCenter) {
             if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
@@ -595,7 +627,9 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
             }
 
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_center)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_center))
+                        .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                  ViewGroup.LayoutParams.MATCH_PARENT));
             }
 
         } else if (mCheckboxAlignment == PDEConstants.PDEAlignment.PDEAlignmentRight) {
@@ -605,10 +639,13 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
             }
 
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_right)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_right))
+                        .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                  ViewGroup.LayoutParams.MATCH_PARENT));
             }
         }
     }
+
 
     @Override
     public void collectHints(PDEDictionary hints) {
@@ -637,10 +674,11 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
         int width;
 
         if (SHOW_DEBUG_LOGS) {
-            Log.d(LOG_TAG, "onMeasure "+MeasureSpec.toString(widthMeasureSpec)+" x "+MeasureSpec.toString(heightMeasureSpec));
+            Log.d(LOG_TAG, "onMeasure " + MeasureSpec.toString(widthMeasureSpec) + " x "
+                    + MeasureSpec.toString(heightMeasureSpec));
         }
 
-        // measure the children (otherwise e.g. the sunkenlayer will not be visible!)
+        // measure the children (otherwise e.g. the sunken-layer will not be visible!)
         measureChildren(widthMeasureSpec,heightMeasureSpec);
 
         // take the height from the parameter ...
@@ -650,16 +688,18 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
         prepareSize(height);
 
         // now mCheckboxUsedSize contains the size (width = height) of the checkbox background
-        width = PDEBuildingUnits.roundToScreenCoordinates(PDEBuildingUnits.BU() + mCheckboxUsedSize);
+        width = PDEBuildingUnits.roundToScreenCoordinates(mHorizontalPadding + mCheckboxUsedSize);
 
         if (SHOW_DEBUG_LOGS) {
-            Log.d(LOG_TAG, "onMeasure result: "+resolveSize(width, widthMeasureSpec)+" x "+resolveSize(height, heightMeasureSpec)+" mCheckboxUsedSize:"+mCheckboxUsedSize);
+            Log.d(LOG_TAG, "onMeasure result: " + resolveSize(width, widthMeasureSpec) + " x "
+                    + resolveSize(height, heightMeasureSpec) + " mCheckboxUsedSize:" + mCheckboxUsedSize);
         }
 
         // return the values
         setMeasuredDimension(resolveSize(width, widthMeasureSpec),
                              resolveSize(height, heightMeasureSpec));
     }
+
 
     /**
      *  @brief Size changed.
@@ -679,15 +719,13 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
         float iconX;
         float iconY;
         ViewGroup innerLayout = null;
-        ViewGroup overlaySlot = null;
-
+        ViewGroup overlaySlot;
 
         // commonly used data (adjusted for our special clipping logic)
         //xOffset = layout.mLayoutRect.left - layout.mClipRect.left;
         //yOffset = layout.mLayoutRect.top - layout.mClipRect.top;
         xOffset = 0;
         yOffset = 0;
-
 
         updateSize(height);
 
@@ -708,11 +746,13 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
             }
 
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_left)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_left))
+                        .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                  ViewGroup.LayoutParams.MATCH_PARENT));
             }
 
             // left, one BU from border
-            checkboxX = PDEBuildingUnits.BU();
+            checkboxX = mHorizontalPadding;
         } else if (mCheckboxAlignment == PDEConstants.PDEAlignment.PDEAlignmentCenter) {
             if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
                 // remove from old slot
@@ -720,7 +760,9 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
             }
 
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_center)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_center))
+                        .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                  ViewGroup.LayoutParams.MATCH_PARENT));
             }
 
             // centered, aligned to screen pixels
@@ -732,7 +774,9 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
                 overlaySlot.removeView(this);
             }
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_right)).addView(this,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_right))
+                        .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                                  ViewGroup.LayoutParams.MATCH_PARENT));
             }
 
             // right, one BU from border
@@ -746,28 +790,32 @@ public abstract class PDEButtonLayerOverlayCheckboxBase extends PDEAbsoluteLayou
         if (SHOW_DEBUG_LOGS) {
             Log.d(LOG_TAG, "mCheckboxUsedSize: "+mCheckboxUsedSize);
         }
-        mAreaDrawable.getWrapperView().setViewLayoutRect(new Rect(Math.round(checkboxX), Math.round(checkboxY),
-                                                                    Math.round(mCheckboxUsedSize) + Math.round(checkboxX),
-                                                                    Math.round(mCheckboxUsedSize) + Math.round(checkboxY)));
+        PDEAbsoluteLayoutHelper.setViewRect(mAreaDrawable.getWrapperView(), new Rect(Math.round(checkboxX),
+                                                            Math.round(checkboxY),
+                                                            Math.round(mCheckboxUsedSize) + Math.round(checkboxX),
+                                                            Math.round(mCheckboxUsedSize) + Math.round(checkboxY)));
 
-        mAreaDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(Math.round(mCheckboxUsedSize), MeasureSpec.EXACTLY),
-                                                 MeasureSpec.makeMeasureSpec(Math.round(mCheckboxUsedSize), MeasureSpec.EXACTLY));
+        mAreaDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(Math.round(mCheckboxUsedSize),
+                        MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(Math.round(mCheckboxUsedSize), MeasureSpec.EXACTLY));
 
         PDEAbsoluteLayout.LayoutParams iconLayerParams = (PDEAbsoluteLayout.LayoutParams) mIconLayer.getLayoutParams();
+
         // measure to get width & height of Icon correctly
-        mIconLayer.measure(0,0);
+        mIconLayer.measure(0, 0);
         // Icon X centered inside checkbox, round to screen
         iconX = checkboxX
                 + PDEBuildingUnits.roundToScreenCoordinates((mCheckboxUsedSize-mIconLayer.getMeasuredWidth()) / 2.0f);
         // center Icon Y inside checkbox, round to screen
         iconY = checkboxY
-                + PDEBuildingUnits.roundToScreenCoordinates((mCheckboxUsedSize-mIconLayer.getMeasuredHeight())
-                                                            / 2.0f);
+                + PDEBuildingUnits.roundToScreenCoordinates((mCheckboxUsedSize-mIconLayer.getMeasuredHeight()) / 2.0f);
         iconLayerParams.x = PDEBuildingUnits.roundToScreenCoordinates(iconX);
         iconLayerParams.y = PDEBuildingUnits.roundToScreenCoordinates(iconY);
+
         // also width & height???
         mIconLayer.setLayoutParams(iconLayerParams);
     }
+
 
     /**
      * @brief Factory function that decides which background we use.

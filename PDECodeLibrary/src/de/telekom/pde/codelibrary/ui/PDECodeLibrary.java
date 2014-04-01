@@ -10,7 +10,6 @@ package de.telekom.pde.codelibrary.ui;
 // imports
 import android.content.Context;
 import android.util.Log;
-import de.telekom.pde.codelibrary.ui.errorhandling.PDERuntimeException;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -143,10 +142,13 @@ public final class PDECodeLibrary {
      * @return Current application context.
      */
     public Context getApplicationContext() {
-        if (!PDECodeLibraryInitialized) {
+        if (!PDECodeLibraryInitialized || mApplicationContext == null) {
             // library is uninitialized
             // we don't have resources at the moment, since there is no context!
-            throw new PDERuntimeException("getApplicationContext was call on an uninitialized library");
+            //throw new PDERuntimeException("getApplicationContext was call on an uninitialized library");
+
+            Log.e(LOG_TAG,"PDECodeLibrary was not initialized correctly!");
+
         }
         return mApplicationContext;
     }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-        >
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- background slot (will be handled differently in PDEButton.java -->
     <LinearLayout
             android:id="@+id/pdebutton_background_slot"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             />
+    <!-- needed since pdebutton_inner_layout wants some margin -->
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -17,50 +17,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/pdebutton_inner_layout">
-                <LinearLayout
+            <!-- space for center checkbox / radio element - should not be used together with icon and or text -->
+            <LinearLayout
                     android:id="@+id/pdebutton_overlay_slot_center"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:orientation="horizontal"
                     />
-                <LinearLayout
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/pdebutton_overlay_foreground_holder"
                     >
+                <!-- space for left checkbox / radio element -->
                 <LinearLayout
                         android:id="@+id/pdebutton_overlay_slot_left"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
                         android:orientation="horizontal"
-                        >
-                </LinearLayout>
+                        />
+                <!-- space for icon text element -->
                 <LinearLayout
                         android:id="@+id/pdebutton_foreground_slot"
                         android:layout_width="0dip"
                         android:layout_height="match_parent"
-                        android:layout_toLeftOf="@+id/pdebutton_overlay_slot_right"
-                        android:layout_toRightOf="@+id/pdebutton_overlay_slot_left"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
                         android:orientation="horizontal"
-                        >
-                </LinearLayout>
-                <!-- todo: FrameLayout instead of LinearLayout????? -->
+                        />
+                <!-- space for right checkbox / radio element -->
                 <LinearLayout
                         android:id="@+id/pdebutton_overlay_slot_right"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
                         android:orientation="horizontal"
-                        >
-                </LinearLayout>
-
+                        />
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
-
 
 </merge>

@@ -43,8 +43,8 @@ public class PDEComponentHelpers {
     // debug configurations
     //
     private final static boolean DEBUG = false;
-    private final static boolean DEBUGPRESETS = DEBUG;
-    private final static boolean PERFORMANCECHECK = DEBUG;
+    private final static boolean DEBUG_PRESETS = DEBUG;
+    private final static boolean PERFORMANCE_CHECK = DEBUG;
 
 
     /**
@@ -64,17 +64,17 @@ public class PDEComponentHelpers {
         defaultObject = parameter.getBaseObject();
 
         // if there is no main object, try to use the default state object
-        if (defaultObject==null) {
+        if (defaultObject == null) {
             defaultObject = parameter.getObjectForKey(PDEButton.PDEButtonStateDefault);
         }
 
         // if there is still no main object, try if we have a default object for the idle agent state
-        if (defaultObject==null) {
+        if (defaultObject == null) {
             defaultObject = parameter.getObjectForKey(PDEButton.PDEButtonStateDefaultIdle);
         }
 
         // if we can't find one, use the supplied default
-        if (defaultObject==null) {
+        if (defaultObject == null) {
             defaultObject = externalDefault;
         }
 
@@ -82,7 +82,7 @@ public class PDEComponentHelpers {
         if (defaultObject==null) return;
 
         // The "default" state is always included in the list, define it if it's not already defined
-        if ( parameter.getObjectForKey(PDEButton.PDEButtonStateDefault)==null) {
+        if (parameter.getObjectForKey(PDEButton.PDEButtonStateDefault) == null) {
             // create default state with default object
             parameter.addObject(defaultObject, PDEButton.PDEButtonStateDefault);
         }
@@ -90,9 +90,9 @@ public class PDEComponentHelpers {
         // now set the default object to all known states
         for (String state: parameter.states()) {
             // if no default object exists, set it
-            if (parameter.getObjectForKey(state)==null) {
+            if (parameter.getObjectForKey(state) == null) {
                 // create default state key with base key
-                parameter.addObject(defaultObject,state);
+                parameter.addObject(defaultObject, state);
             }
         }
     }
@@ -101,7 +101,7 @@ public class PDEComponentHelpers {
     /**
      * @brief Calculate missing agent state colors for all given states.
      */
-    public static void fillAgentStates(PDEParameter parameter,int animation)
+    public static void fillAgentStates(PDEParameter parameter, int animation)
     {
         // go trough all states of the parameter
         for (String state: parameter.states()) {
@@ -112,9 +112,9 @@ public class PDEComponentHelpers {
 
 
     /**
-     * @brief Agent state fillup. Only propagates values.
+     * @brief Agent state fill-up. Only propagates values.
      */
-    public static void fillAgentStates(PDEParameter parameter,int animation,String state)
+    public static void fillAgentStates(PDEParameter parameter, int animation, String state)
     {
         Object object,next;
         String key;
@@ -122,20 +122,20 @@ public class PDEComponentHelpers {
         // don't propagate at all if we have a state only animation
         if (animation == PDEAgentHelper.PDEAgentHelperAnimationStateOnly) return;
 
-        // get startout object -> prioritized order where to take the starting object from. If we can't find
+        // get start-out object -> prioritized order where to take the starting object from. If we can't find
         // a starting object assume nothing until we find one.
         object = parameter.getObjectForKey(state);
-        if (object==null) object = parameter.getObjectForKey(PDEButton.PDEButtonStateDefault);
-        if (object==null) object = parameter.getBaseObject();
-        if (object==null) object = parameter.getObjectForKey(PDEButton.PDEButtonStateDefaultIdle);
+        if (object == null) object = parameter.getObjectForKey(PDEButton.PDEButtonStateDefault);
+        if (object == null) object = parameter.getBaseObject();
+        if (object == null) object = parameter.getObjectForKey(PDEButton.PDEButtonStateDefaultIdle);
 
         // check our state's idle color, set to previous color
         key = state + "." + PDEButton.PDEButtonAgentStateIdle;
         next = parameter.getObjectForKey(key);
-        if (next==null && object!=null) {
+        if (next == null && object != null) {
             // not defined and can be defined? -> set use the current color
             next = object;
-            parameter.addObject(next,key);
+            parameter.addObject(next, key);
         }
         object = next;
 
@@ -145,20 +145,20 @@ public class PDEComponentHelpers {
             // check our state's focus value
             key = state+ "." + PDEButton.PDEButtonAgentStateFocus;
             next = parameter.getObjectForKey(key);
-            if (next==null && object!=null) {
+            if (next == null && object != null) {
                 // not defined and can be defined? -> propagate value
                 next = object;
-                parameter.addObject(next,key);
+                parameter.addObject(next, key);
             }
             object = next;
 
             // check our state's taking input value
             key = state + "." + PDEButton.PDEButtonAgentStateTakingInput;
             next = parameter.getObjectForKey(key);
-            if (next==null && object!=null) {
+            if (next == null && object != null) {
                 // not defined and can be defined? -> propagate value
                 next = object;
-                parameter.addObject(next,key);
+                parameter.addObject(next, key);
             }
 
         } else if (animation == PDEAgentHelper.PDEAgentHelperAnimationDown) {
@@ -166,10 +166,10 @@ public class PDEComponentHelpers {
             // check our state's down value
             key = state + "." + PDEButton.PDEButtonAgentStateDown;
             next = parameter.getObjectForKey(key);
-            if (next==null && object!=null) {
+            if (next == null && object != null) {
                 // not defined and can be defined? -> propagate value
                 next = object;
-                parameter.addObject(next,key);
+                parameter.addObject(next, key);
             }
 
         }
@@ -182,7 +182,7 @@ public class PDEComponentHelpers {
     /**
      * @brief Calculate missing agent state colors for all given states.
      */
-    public static void fillAgentStateColors(PDEParameter parameter,int animation)
+    public static void fillAgentStateColors(PDEParameter parameter, int animation)
     {
         // go trough all states of the parameter
         for (String state: parameter.states()) {
@@ -195,7 +195,7 @@ public class PDEComponentHelpers {
     /**
      * @brief Agent state calculation for single state.
      */
-    public static void fillAgentStateColors(PDEParameter parameter,int animation, String state)
+    public static void fillAgentStateColors(PDEParameter parameter, int animation, String state)
     {
         PDEColor color;
         PDEColor next;
@@ -207,17 +207,17 @@ public class PDEComponentHelpers {
         // get startout color -> prioritized order where to take the starting color from. If we can't find
         // a starting color assume nothing until we find one.
         color = (PDEColor)parameter.getObjectForKey(state);
-        if (color==null) color = (PDEColor)parameter.getObjectForKey(PDEButton.PDEButtonStateDefault);
-        if (color==null) color = (PDEColor)parameter.getBaseObject();
-        if (color==null) color = (PDEColor)parameter.getObjectForKey(PDEButton.PDEButtonStateDefaultIdle);
+        if (color == null) color = (PDEColor)parameter.getObjectForKey(PDEButton.PDEButtonStateDefault);
+        if (color == null) color = (PDEColor)parameter.getBaseObject();
+        if (color == null) color = (PDEColor)parameter.getObjectForKey(PDEButton.PDEButtonStateDefaultIdle);
 
         // check our state's idle color, set to previous color
         key = state + "." + PDEButton.PDEButtonAgentStateIdle;
         next = (PDEColor)parameter.getObjectForKey(key);
-        if (next==null && color!=null) {
+        if (next == null && color != null) {
             // not defined and can be defined? -> set use the current color
             next = color;
-            parameter.addObject(next,key);
+            parameter.addObject(next, key);
         }
         color = next;
 
@@ -227,20 +227,20 @@ public class PDEComponentHelpers {
             // check our state's focus color (make it darker if not defined)
             key = state + "." + PDEButton.PDEButtonAgentStateFocus;
             next = (PDEColor)parameter.getObjectForKey(key);
-            if (next==null && color!=null) {
+            if (next == null && color != null) {
                 // not defined and can be defined? -> set use the current color, make darker
                 next = color.styleguideAgentStateColor(1.0f);
-                parameter.addObject(next,key);
+                parameter.addObject(next, key);
             }
             color = next;
 
             // check our state's taking input color (make it darker if not defined)
             key = state + "." + PDEButton.PDEButtonAgentStateTakingInput;
             next = (PDEColor)parameter.getObjectForKey(key);
-            if (next==null && color!=null) {
+            if (next == null && color != null) {
                 // not defined and can be defined? -> set use the current color, make darker
                 next = color.styleguideAgentStateColor(1.0f);
-                parameter.addObject(next,key);
+                parameter.addObject(next, key);
             }
 
         } else if (animation == PDEAgentHelper.PDEAgentHelperAnimationDown) {
@@ -248,12 +248,11 @@ public class PDEComponentHelpers {
             // check our state's down color (make it darker if not defined, two steps)
             key = state + "." + PDEButton.PDEButtonAgentStateDown;
             next = (PDEColor)parameter.getObjectForKey(key);
-            if (next==null && color!=null) {
+            if (next == null && color != null) {
                 // not defined and can be defined? -> set use the current color, make darker
                 next = color.styleguideAgentStateColor(2.0f);
                 parameter.addObject(next,key);
             }
-
         }
     }
 
@@ -282,10 +281,10 @@ public class PDEComponentHelpers {
             if (pos == -1) continue;
             // check key -> second dot must not be present
             searchStartPos = pos+indexOfStr.length();
-            pos = key.indexOf(indexOfStr,searchStartPos);
-            if (pos!=-1) continue;
+            pos = key.indexOf(indexOfStr, searchStartPos);
+            if (pos != -1) continue;
             // now calculate the gradient colors
-            fillGradientColors(parameter,key);
+            fillGradientColors(parameter, key);
         }
     }
 
@@ -350,16 +349,23 @@ public class PDEComponentHelpers {
         for (String key: mainColor.getParameters().keySet()) {
             // check key -> first dot must be present
             pos = key.indexOf(indexOfStr);
+
             if (pos == -1) continue;
+
             // check key -> second dot must not be present
             searchStartPos = pos+indexOfStr.length();
             pos = key.indexOf(indexOfStr, searchStartPos);
+
             if (pos != -1) continue;
-            // check if key alrady exists in border
+
+            // check if key already exists in border
             if (borderToFill.getObjectForKey(key) != null) continue;
+
             // build darker color and set it
             c = mainColor.getObjectForKey(key);
+
             if (c == null || !(c instanceof PDEColor)) continue;
+
             c = ((PDEColor)c).styleguideBorderColor();
             borderToFill.addObject(c,key);
         }
@@ -375,13 +381,16 @@ public class PDEComponentHelpers {
     {
         Object c;
 
-        // go through keys in color ###2do we're changing the keys, so basic enumeration does not work, now using a copy in allKeys => find a better way for this!
+        // go through keys in color ###2do we're changing the keys, so basic enumeration does not work, now using a
+        // copy in allKeys => find a better way for this!
         for (String key: color.getParameters().keySet()) {
             // build lighter color and set it
             c = color.getObjectForKey(key);
-            if (c==null || !(c instanceof PDEColor)) continue;
+
+            if (c == null || !(c instanceof PDEColor)) continue;
+
             c = ((PDEColor)c).styleguideBrightColor();
-            color.addObject(c,key);
+            color.addObject(c, key);
         }
     }
 
@@ -433,7 +442,8 @@ public class PDEComponentHelpers {
      *
      * Used in gradient style buttons; for main colors only. Shadow colors only depend on the reference color.
      */
-    public static void fillTitleShadowColors(PDEParameter shadowColors ,PDEParameter fromMainColors, PDEColor transparentBackground)
+    public static void fillTitleShadowColors(PDEParameter shadowColors, PDEParameter fromMainColors,
+                                             PDEColor transparentBackground)
     {
         int pos;
         PDEColor c,sc;
@@ -473,9 +483,11 @@ public class PDEComponentHelpers {
      * Used in gradient style buttons; for main colors only. Shadow colors only depend on the reference color.
      * Shadows for dark fonts are below, shadows for light fonts are above
      *
-     * !!!!!!!!!!!!!ON IOS A NSValue (with CGPointMake) is stored in shadowOffset PDEParameter, here we save a PointF direct!!!!!!!!!!
+     * !!!!!!!!!!!!!ON IOS A NSValue (with CGPointMake) is stored in shadowOffset PDEParameter,
+     * here we save a PointF direct!!!!!!!!!!
      */
-    public static void fillTitleShadowOffsets(PDEParameter shadowOffsets,PDEParameter fromMainColors, PDEColor transparentBackground)
+    public static void fillTitleShadowOffsets(PDEParameter shadowOffsets,PDEParameter fromMainColors,
+                                              PDEColor transparentBackground)
     {
         int pos;
         PDEColor c;
@@ -540,7 +552,7 @@ public class PDEComponentHelpers {
                         defaultSet = reference.get(key);
                         if (defaultSet!=null) {
                             // debug
-                            if (DEBUGPRESETS){
+                            if (DEBUG_PRESETS){
                                 Log.d(LOG_TAG,"Found preset for " + key);
                             }
 
@@ -549,7 +561,7 @@ public class PDEComponentHelpers {
                                 parameter.addObjectsWithDictionaryForState((PDEDictionary)defaultSet,state);
                             }
                             // debug
-                            if (DEBUGPRESETS){
+                            if (DEBUG_PRESETS){
                                 parameter.debugOut("Parameter after setting preset");
                             }
                         }
@@ -585,7 +597,8 @@ public class PDEComponentHelpers {
      * Flexible version, can use reference on itself, or on empty parameters using a base parameter and
      * the base's states.
      */
-    public static void buildColors(PDEParameter parameter,PDEDictionary reference,PDEParameter baseParameter,Object defaultObject,int animation)
+    public static void buildColors(PDEParameter parameter, PDEDictionary reference, PDEParameter baseParameter,
+                                   Object defaultObject, int animation)
     {
         Object defaultSet;
         boolean changed;
@@ -601,7 +614,7 @@ public class PDEComponentHelpers {
         // convert all to UIColor (default object might not have been a color, so do it later)
         parameter.convertToColor();
 
-        // do lookups if we have a reference
+        // do look-ups if we have a reference
         if (reference!=null) {
             // which mode? if we have a reference parameter and reference states, use it
             if (baseParameter!=null) {
@@ -611,14 +624,14 @@ public class PDEComponentHelpers {
                     if (!parameter.hasState(state)) {
                         // get the color to lookup from the base
                         color = (PDEColor)baseParameter.getObjectForKey(state);
-                        if (color!=null) {
+                        if (color != null) {
                             // convert to hex string for searching
                             colorString = color.getHexColorString();
                             // do we have it?
                             defaultSet = reference.get(colorString);
                             if (defaultSet!=null) {
                                 // debug
-                                if (DEBUGPRESETS){
+                                if (DEBUG_PRESETS){
                                     Log.d(LOG_TAG, "Found preset for " + colorString);
                                 }
                                 // take over result (if it's a dictionary)
@@ -626,7 +639,7 @@ public class PDEComponentHelpers {
                                     parameter.addObjectsWithDictionaryForState((PDEDictionary) defaultSet, state);
                                 }
                                 // debug
-                                if (DEBUGPRESETS){
+                                if (DEBUG_PRESETS){
                                     parameter.debugOut("Parameter after setting preset");
                                 }
                                 // remember as changed for later.
@@ -649,7 +662,7 @@ public class PDEComponentHelpers {
                             defaultSet = reference.get(colorString);
                             if (defaultSet!=null) {
                                 // debug
-                                if (DEBUGPRESETS){
+                                if (DEBUG_PRESETS){
                                     Log.d(LOG_TAG,"Found preset for " + colorString);
                                 }
                                 // take over result (if it's a dictionary)
@@ -657,7 +670,7 @@ public class PDEComponentHelpers {
                                     parameter.addObjectsWithDictionaryForState((PDEDictionary)defaultSet,state);
                                 }
                                 // debug
-                                if (DEBUGPRESETS){
+                                if (DEBUG_PRESETS){
                                     parameter.debugOut("Parameter after setting preset");
                                 }
                                 // remember as changed for later.
@@ -684,14 +697,18 @@ public class PDEComponentHelpers {
     /**
      * @brief Interpolation helper function, extracting the necessary parameters from a PDEAgentHelper.
      */
-    public static float interpolateFloat(PDEParameter parameter,PDEAgentHelper agentHelper,int animation,String suffix)
+    public static float interpolateFloat(PDEParameter parameter, PDEAgentHelper agentHelper, int animation,
+                                         String suffix)
     {
         float value;
 
-        PDEAgentHelper.InterpolationStateHelper interpolationHelper = agentHelper.getInterpolationInformationForAnimation(animation);
+        PDEAgentHelper.InterpolationStateHelper interpolationHelper
+                = agentHelper.getInterpolationInformationForAnimation(animation);
 
         // interpolate colors by calling complex logic color interpolation helper
-        value = interpolateFloat(parameter,interpolationHelper.mState1,interpolationHelper.mState2,interpolationHelper.mStateBlend,interpolationHelper.mSubState1,interpolationHelper.mSubState2,interpolationHelper.mSubStateBlend,suffix);
+        value = interpolateFloat(parameter, interpolationHelper.mState1, interpolationHelper.mState2,
+                interpolationHelper.mStateBlend, interpolationHelper.mSubState1, interpolationHelper.mSubState2,
+                interpolationHelper.mSubStateBlend, suffix);
 
         // done
         return value;
@@ -701,12 +718,13 @@ public class PDEComponentHelpers {
     /**
      * @brief Complex interpolation (between states and substates) for floats.
      */
-    public static float interpolateFloat(PDEParameter parameter,String state1,String state2,float stateblend,String substate1,String substate2,float substateblend,String suffix)
+    public static float interpolateFloat(PDEParameter parameter, String state1, String state2, float stateBlend,
+                                         String subState1, String subState2, float subStateBlend, String suffix)
     {
         float value,value2,value3;
 
         // safety: do nothing if state1 is not defined
-        if (state1==null) return 0.0f;
+        if (state1 == null) return 0.0f;
 
         // additional fallback: if a state is requested, but is not defined at all, we use the default state
         if (!parameter.hasState(state1)) {
@@ -717,31 +735,31 @@ public class PDEComponentHelpers {
         }
 
         // limit blend factors
-        if (stateblend < 0.0f) stateblend = 0.0f;
-        if (stateblend > 1.0f) stateblend = 1.0f;
-        if (substateblend < 0.0f) substateblend = 0.0f;
-        if (substateblend > 1.0f) substateblend = 1.0f;
+        if (stateBlend < 0.0f) stateBlend = 0.0f;
+        if (stateBlend > 1.0f) stateBlend = 1.0f;
+        if (subStateBlend < 0.0f) subStateBlend = 0.0f;
+        if (subStateBlend > 1.0f) subStateBlend = 1.0f;
 
-        // start with first state and substate
-        value = getFloat(parameter,state1,substate1,suffix);
+        // start with first state and sub-state
+        value = getFloat(parameter, state1, subState1, suffix);
 
         // add in second substate if required
-        if (substate2!=null) {
-            value2 = getFloat(parameter,state1,substate2,suffix);
-            value = (value*(1.0f-substateblend)) + (value2*substateblend);
+        if (subState2 != null) {
+            value2 = getFloat(parameter, state1, subState2, suffix);
+            value = (value * (1.0f - subStateBlend)) + (value2 * subStateBlend);
         }
 
         // if we have a second state, also calculate this
-        if (state2!=null) {
+        if (state2 != null) {
             // second state first substate
-            value2 = getFloat(parameter,state2,substate1,suffix);
+            value2 = getFloat(parameter, state2, subState1, suffix);
             // add in second substate if required
-            if (substate2!=null) {
-                value3 = getFloat(parameter,state2,substate2,suffix);
-                value2 = (value2*(1.0f-substateblend)) + (value3*substateblend);
+            if (subState2 != null) {
+                value3 = getFloat(parameter, state2, subState2, suffix);
+                value2 = (value2 * (1.0f - subStateBlend)) + (value3 * subStateBlend);
             }
             // now mix states
-            value = (value*(1.0f-stateblend)) + (value2*stateblend);
+            value = (value * (1.0f - stateBlend)) + (value2 * stateBlend);
         }
 
         // done
@@ -752,26 +770,26 @@ public class PDEComponentHelpers {
     /**
      * @brief Helper function to retrieve a coded float.
      */
-    public static float getFloat(PDEParameter parameter,String state,String substate,String suffix)
+    public static float getFloat(PDEParameter parameter, String state, String subState, String suffix)
     {
         String str;
         float value;
 
         // build string
-        str=state;
-        if (!TextUtils.isEmpty(substate)) {
-            str = str + "." + substate;
+        str = state;
+        if (!TextUtils.isEmpty(subState)) {
+            str = str + "." + subState;
         }
         if (!TextUtils.isEmpty(suffix)) {
             str = str + suffix;
         }
 
         // performance warning
-        if( PERFORMANCECHECK ){
+        if (PERFORMANCE_CHECK){
             Object object;
             object = parameter.getObjectForKey(str);
-            if( !(object instanceof Number) ){
-                Log.w(LOG_TAG,"Interpolation number lookup: class mismatch");
+            if (!(object instanceof Number)){
+                Log.w(LOG_TAG, "Interpolation number lookup: class mismatch");
             }
         }
 
@@ -786,7 +804,8 @@ public class PDEComponentHelpers {
     /**
      * @brief Interpolation helper function, extracting the necessary parameters from a PDEAgentHelper.
      */
-    public static PDEColor interpolateColor(PDEParameter parameter,PDEAgentHelper agentHelper,int animation,String suffix)
+    public static PDEColor interpolateColor(PDEParameter parameter, PDEAgentHelper agentHelper, int animation,
+                                            String suffix)
     {
         PDEColor color;
         PDEAgentHelper.InterpolationStateHelper interpolationHelper;
@@ -795,7 +814,9 @@ public class PDEComponentHelpers {
         interpolationHelper = agentHelper.getInterpolationInformationForAnimation(animation);
 
         // interpolate colors by calling complex logic color interpolation helper
-        color = interpolateColor(parameter,interpolationHelper.mState1,interpolationHelper.mState2,interpolationHelper.mStateBlend,interpolationHelper.mSubState1,interpolationHelper.mSubState2,interpolationHelper.mSubStateBlend,suffix);
+        color = interpolateColor(parameter, interpolationHelper.mState1, interpolationHelper.mState2,
+                interpolationHelper.mStateBlend, interpolationHelper.mSubState1, interpolationHelper.mSubState2,
+                interpolationHelper.mSubStateBlend, suffix);
 
         // done
         return color;
@@ -805,47 +826,47 @@ public class PDEComponentHelpers {
     /**
      * @brief Complex color interpolation (between states and substates)
      */
-    public static PDEColor interpolateColor(PDEParameter parameter,String state1,String state2,float stateblend,String substate1,String substate2,float substateblend,String suffix)
-    {
-        PDEColor color,color2,color3;
+    public static PDEColor interpolateColor(PDEParameter parameter, String state1, String state2, float stateBlend,
+                                            String subState1, String subState2, float subStateBlend, String suffix) {
+        PDEColor color, color2, color3;
 
         // safety: do nothing if state1 is not defined
-        if (state1==null) return PDEColor.valueOf("DTBlack");
+        if (state1 == null) return PDEColor.valueOf("DTBlack");
 
         // additional fallback: if a state is requested, but is not defined at all, we use the default state
         if (!parameter.hasState(state1)) {
             state1 = PDEButton.PDEButtonStateDefault;
         }
-        if (state2!=null && !parameter.hasState(state2)) {
+        if (state2 != null && !parameter.hasState(state2)) {
             state2 = PDEButton.PDEButtonStateDefault;
         }
 
         // limit blend factors
-        if (stateblend < 0.0f) stateblend = 0.0f;
-        if (stateblend > 1.0f) stateblend = 1.0f;
-        if (substateblend < 0.0f) substateblend = 0.0f;
-        if (substateblend > 1.0f) substateblend = 1.0f;
+        if (stateBlend < 0.0f) stateBlend = 0.0f;
+        if (stateBlend > 1.0f) stateBlend = 1.0f;
+        if (subStateBlend < 0.0f) subStateBlend = 0.0f;
+        if (subStateBlend > 1.0f) subStateBlend = 1.0f;
 
         // start with first state and substate
-        color = getColor(parameter,state1,substate1,suffix);
+        color = getColor(parameter,state1,subState1,suffix);
 
         // add in second substate if required
-        if (substate2!=null) {
-            color2 = getColor(parameter,state1,substate2,suffix);
-            color = color.mixColors(color2,substateblend);
+        if (subState2!=null) {
+            color2 = getColor(parameter, state1, subState2, suffix);
+            color = color.mixColors(color2, subStateBlend);
         }
 
         // if we have a second state, also calculate this
-        if (state2!=null) {
+        if (state2 != null) {
             // second state first substate
-            color2 = getColor(parameter,state2,substate1,suffix);
+            color2 = getColor(parameter, state2, subState1, suffix);
             // add in second substate if required
-            if (substate2!=null) {
-                color3 = getColor(parameter,state2,substate2,suffix);
-                color2 = color2.mixColors(color3,substateblend);
+            if (subState2 != null) {
+                color3 = getColor(parameter, state2, subState2, suffix);
+                color2 = color2.mixColors(color3, subStateBlend);
             }
             // now mix states
-            color = color.mixColors(color2,stateblend);
+            color = color.mixColors(color2, stateBlend);
         }
 
         // done
@@ -856,24 +877,24 @@ public class PDEComponentHelpers {
     /**
      * @brief Helper function to retrieve a coded color.
      */
-    public static PDEColor getColor(PDEParameter parameter,String state,String substate,String suffix)
+    public static PDEColor getColor(PDEParameter parameter, String state, String subState, String suffix)
     {
         String str;
         PDEColor color;
 
         // build string
-        str=state;
-        if (substate!=null) {
-            str = str + "." + substate;
+        str = state;
+        if (subState != null) {
+            str = str + "." + subState;
         }
-        if (suffix!=null) {
+        if (suffix != null) {
             str = str + suffix;
         }
 
-        if( PERFORMANCECHECK ){
+        if (PERFORMANCE_CHECK){
             Object object;
             object = parameter.getObjectForKey(str);
-            if( !(object instanceof PDEColor) ){
+            if (!(object instanceof PDEColor)){
                 Log.w(LOG_TAG,"Interpolation color lookup: class mismatch");
             }
         }
@@ -890,7 +911,8 @@ public class PDEComponentHelpers {
     /**
      * @brief Interpolation helper function, extracting the necessary parameters from a PDEAgentHelper.
      */
-    public static PointF interpolatePosition(PDEParameter parameter,PDEAgentHelper agentHelper,int animation, String suffix)
+    public static PointF interpolatePosition(PDEParameter parameter, PDEAgentHelper agentHelper, int animation,
+                                             String suffix)
     {
         PDEAgentHelper.InterpolationStateHelper isHelper;
         PointF value;
@@ -899,7 +921,8 @@ public class PDEComponentHelpers {
         isHelper = agentHelper.getInterpolationInformationForAnimation(animation);
 
         // interpolate colors by calling complex logic color interpolation helper
-        value = interpolatePosition(parameter,isHelper.mState1,isHelper.mState2,isHelper.mStateBlend,isHelper.mSubState1,isHelper.mSubState2,isHelper.mSubStateBlend,suffix);
+        value = interpolatePosition(parameter, isHelper.mState1, isHelper.mState2, isHelper.mStateBlend,
+                isHelper.mSubState1, isHelper.mSubState2, isHelper.mSubStateBlend, suffix);
 
         // done
         return value;
@@ -909,50 +932,51 @@ public class PDEComponentHelpers {
     /**
      * @brief Complex interpolation (between states and substates) for floats.
      */
-    public static PointF interpolatePosition(PDEParameter parameter,String state1,String state2,float stateblend,String substate1,String substate2,float substateblend,String suffix)
+    public static PointF interpolatePosition(PDEParameter parameter, String state1, String state2, float stateBlend,
+                                             String subState1, String subState2, float subStateBlend, String suffix)
     {
         PointF value,value2,value3;
 
         // safety: do nothing if state1 is not defined
-        if (state1==null) return new PointF(0.0f,0.0f);
+        if (state1 == null) return new PointF(0.0f, 0.0f);
 
         // additional fallback: if a state is requested, but is not defined at all, we use the default state
         if (!parameter.hasState(state1)) {
             state1 = PDEButton.PDEButtonStateDefault;
         }
-        if (state2!=null && !parameter.hasState(state2)) {
+        if (state2 != null && !parameter.hasState(state2)) {
             state2 = PDEButton.PDEButtonStateDefault;
         }
 
         // limit blend factors
-        if (stateblend < 0.0f) stateblend = 0.0f;
-        if (stateblend > 1.0f) stateblend = 1.0f;
-        if (substateblend < 0.0f) substateblend = 0.0f;
-        if (substateblend > 1.0f) substateblend = 1.0f;
+        if (stateBlend < 0.0f) stateBlend = 0.0f;
+        if (stateBlend > 1.0f) stateBlend = 1.0f;
+        if (subStateBlend < 0.0f) subStateBlend = 0.0f;
+        if (subStateBlend > 1.0f) subStateBlend = 1.0f;
 
         // start with first state and substate
-        value = getPosition(parameter,state1,substate1,suffix);
+        value = getPosition(parameter,state1,subState1,suffix);
 
         // add in second substate if required
-        if (substate2!=null) {
-            value2 = getPosition(parameter,state1,substate2,suffix);
-            value.x = (value.x*(1.0f-substateblend)) + (value2.x*substateblend);
-            value.y = (value.y*(1.0f-substateblend)) + (value2.y*substateblend);
+        if (subState2 != null) {
+            value2 = getPosition(parameter,state1,subState2,suffix);
+            value.x = (value.x*(1.0f-subStateBlend)) + (value2.x*subStateBlend);
+            value.y = (value.y*(1.0f-subStateBlend)) + (value2.y*subStateBlend);
         }
 
         // if we have a second state, also calculate this
-        if (state2!=null) {
+        if (state2 != null) {
             // second state first substate
-            value2 = getPosition(parameter,state2,substate1,suffix);
+            value2 = getPosition(parameter,state2,subState1,suffix);
             // add in second substate if required
-            if (substate2!=null) {
-                value3 = getPosition(parameter,state2,substate2,suffix);
-                value2.x = (value2.x*(1.0f-substateblend)) + (value3.x*substateblend);
-                value2.y = (value2.y*(1.0f-substateblend)) + (value3.y*substateblend);
+            if (subState2 != null) {
+                value3 = getPosition(parameter,state2,subState2,suffix);
+                value2.x = (value2.x*(1.0f-subStateBlend)) + (value3.x*subStateBlend);
+                value2.y = (value2.y*(1.0f-subStateBlend)) + (value3.y*subStateBlend);
             }
             // now mix states
-            value.x = (value.x*(1.0f-stateblend)) + (value2.x*stateblend);
-            value.y = (value.y*(1.0f-stateblend)) + (value2.y*stateblend);
+            value.x = (value.x*(1.0f-stateBlend)) + (value2.x*stateBlend);
+            value.y = (value.y*(1.0f-stateBlend)) + (value2.y*stateBlend);
         }
 
         // done
@@ -963,23 +987,23 @@ public class PDEComponentHelpers {
     /**
      * @brief Helper function to retrieve a coded float.
      */
-    public static PointF getPosition(PDEParameter parameter,String state,String substate,String suffix)
+    public static PointF getPosition(PDEParameter parameter, String state, String subState, String suffix)
     {
         String str;
         PointF position;
 
         // build string
         str=state;
-        if (substate!=null) {
+        if (subState!=null) {
             str += ".";
-            str += substate;
+            str += subState;
         }
         if (suffix!=null) {
             str += suffix;
         }
 
         // performance warning
-        if( PERFORMANCECHECK ){
+        if (PERFORMANCE_CHECK){
             Object object;
             object = parameter.getObjectForKey(str);
             if (!(object instanceof PointF)) {
@@ -1010,7 +1034,7 @@ public class PDEComponentHelpers {
         source = readDictionaryXml(dictionaryName);
 
         // error while reading?
-        if (source==null) return null;
+        if (source == null) return null;
 
         // create new dictionary
         dest = new PDEDictionary();
@@ -1021,7 +1045,7 @@ public class PDEComponentHelpers {
             color = PDEColor.valueOf(key);
             object = source.get(key);
             // valid?
-            if (color!=null) {
+            if (color != null) {
                 // store key in new dictionary
                 dest.put(color.getHexColorString(),object);
             }
@@ -1042,16 +1066,16 @@ public class PDEComponentHelpers {
      */
     public static PDEDictionary readDictionaryXml(String dictionaryName){
         PDEDictionary destDict = new PDEDictionary();
-        int id=0;
+        int id;
 
         // try to find the dictionary
-        Context context = null;
+        Context context;
 
         context = PDECodeLibrary.getInstance().getApplicationContext();
 
         //DOM parser only works with xml files in the raw resource, but there are some other problems....
         id = getDictionaryNameIdentifier(dictionaryName);
-        if( id == 0 ) return null;
+        if (id == 0) return null;
 
         try {
             XmlPullParser parser=context.getResources().getXml(id);
@@ -1070,7 +1094,8 @@ public class PDEComponentHelpers {
      * @brief  MUST HAVE THE SAME STRUCT LIKE IOS PLIST FILE !!!!!!!!!!!!!!!!!
      *
      */
-    private static void parseXML(XmlPullParser parser, PDEDictionary dictToFill, PDEDictionary parent)  throws XmlPullParserException, IOException{
+    private static void parseXML(XmlPullParser parser, PDEDictionary dictToFill, PDEDictionary parent)
+            throws XmlPullParserException, IOException {
         String keyString = "";
 
         int eventType = parser.getEventType();
@@ -1082,24 +1107,21 @@ public class PDEComponentHelpers {
             switch(eventType) {
                 case XmlPullParser.START_TAG:
                     //check the start of the plist (root)
-                    if( tagName.equalsIgnoreCase("plist")){
+                    if (tagName.equalsIgnoreCase("plist")){
                         //the next element must be the root dict
-                        eventType = parser.next();
+                        parser.next();
                         parser.require(XmlPullParser.START_TAG, null, "dict");
                         parser.next();
                         //set new dict
                         parseXML(parser,dictToFill,parent);
-                    }
-                    else if( tagName.equalsIgnoreCase("key")){
+                    } else if (tagName.equalsIgnoreCase("key")){
                         keyString = parser.nextText();
-                    }
-                    else if(tagName.equalsIgnoreCase("dict")){
+                    } else if (tagName.equalsIgnoreCase("dict")){
                         parser.next();
                         PDEDictionary newDict = new PDEDictionary();
                         parseXML(parser,newDict,parent);
                         dictToFill.put(keyString,newDict);
-                    }
-                    else if( tagName.equalsIgnoreCase("string")){
+                    } else if (tagName.equalsIgnoreCase("string")){
                         dictToFill.put(keyString,parser.nextText());
                     }
                     break;
@@ -1138,18 +1160,18 @@ public class PDEComponentHelpers {
 
         // cascading lookups: explicitly set overall background color
         object = hints.get(PDEButton.PDEButtonHintBackgroundColor);
-        if (object!=null) {
+        if (object != null) {
             // something is set; might be a string or a color
-            if ( object instanceof PDEColor) {
+            if (object instanceof PDEColor) {
                 return ((PDEColor)object).isDarkColor();
-            } else if ( object instanceof String) {
+            } else if (object instanceof String) {
                 return PDEColor.valueOf((String) object).isDarkColor();
             }
         }
 
         // explicitly set dark style flag
         object = hints.get(PDEButton.PDEButtonHintDarkStyle);
-        if (object!=null && (object instanceof  Boolean) ) {
+        if (object != null && (object instanceof  Boolean)) {
             // use the flag
             return (Boolean)object;
         }
@@ -1171,18 +1193,18 @@ public class PDEComponentHelpers {
 
         // cascading lookups: explicitly set overall background color
         object = hints.get(PDEButton.PDEButtonHintBackgroundColor);
-        if (object!=null) {
+        if (object != null) {
             // something is set; might be a string or a color
-            if ( object instanceof PDEColor) {
+            if (object instanceof PDEColor) {
                 return (PDEColor)object;
-            } else if ( object instanceof String ) {
+            } else if (object instanceof String ) {
                 return PDEColor.valueOf((String) object);
             }
         }
 
         // explicitly set dark style flag
         object = hints.get(PDEButton.PDEButtonHintDarkStyle);
-        if (object!=null && (object instanceof Boolean)) {
+        if (object != null && (object instanceof Boolean)) {
             // get the flag
             darkStyle = (Boolean)object;
             // use system default for this style
@@ -1215,7 +1237,7 @@ public class PDEComponentHelpers {
 
         // check for hint
         object = hints.get(PDEButton.PDEButtonHint3DStyle);
-        if (object!=null && (object instanceof Boolean) )  {
+        if (object != null && (object instanceof Boolean) )  {
             // use the flag
             return (Boolean)object;
         }
@@ -1237,9 +1259,9 @@ public class PDEComponentHelpers {
         object = hints.get(PDEButton.PDEButtonHintDefaultColor);
         if (object != null) {
             // something is set; might be a string or a color
-            if ( object instanceof PDEColor) {
+            if (object instanceof PDEColor) {
                 return (PDEColor)object;
-            } else if ( object instanceof String ) {
+            } else if (object instanceof String) {
                 return PDEColor.valueOf((String) object);
             }
         }
@@ -1250,8 +1272,7 @@ public class PDEComponentHelpers {
         // color dependent on dark style
         if (darkStyle){
             return PDEColor.valueOf("DTDarkUIInteractive");
-        }
-        else{
+        } else {
             return PDEColor.valueOf("DTLightUIInteractive");
         }
     }
@@ -1266,12 +1287,12 @@ public class PDEComponentHelpers {
         boolean darkStyle;
 
         // cascaded: first check if we have something explicitly set
-        object=hints.get(PDEButton.PDEButtonHintTextOnTransparentColor);
-        if (object!=null) {
+        object = hints.get(PDEButton.PDEButtonHintTextOnTransparentColor);
+        if (object != null) {
             // something is set; might be a string or a color
             if (object instanceof PDEColor) {
                 return (PDEColor)object;
-            } else if ( object instanceof String) {
+            } else if (object instanceof String) {
                 return PDEColor.valueOf((String) object);
             }
         }
@@ -1282,8 +1303,7 @@ public class PDEComponentHelpers {
         // now the color depends on the dark style: white on dark, black on light
         if (darkStyle){
             return PDEColor.valueOf("DTDarkUIText");
-        }
-        else {
+        } else {
             return PDEColor.valueOf("DTLightUIText");
         }
     }

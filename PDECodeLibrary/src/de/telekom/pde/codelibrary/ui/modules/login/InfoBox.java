@@ -32,7 +32,7 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 
 /**
  * @brief Special info box which was intended to show some Information on the login screen, but wasn't used finally.
- * It should be also based on the PDELayerTextView to follow Styleguide distances.
+ * It should be also based on the PDETextView to follow Styleguide distances.
  * The class is also not really sophisticated, so not ready to use as a PDEComponent.
  */
 @SuppressWarnings("unused")

@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
+import de.telekom.pde.codelibrary.ui.helpers.PDEString;
 
 import java.util.*;
 
@@ -32,16 +33,16 @@ public class PDEParameter {
             mNumValues = 0;
         }
 
-        public void setBaseValue(boolean baseValue){
+        public void setBaseValue(boolean baseValue) {
             mBaseValue = baseValue;
         }
 
 
-        public boolean hasBaseValue(){
+        public boolean hasBaseValue() {
             return mBaseValue;
         }
 
-        public void setNumValues(int numValues){
+        public void setNumValues(int numValues) {
             mNumValues = numValues;
         }
 
@@ -49,7 +50,7 @@ public class PDEParameter {
             return mNumValues;
         }
 
-        public PDEParameterMetaInformation copy(){
+        public PDEParameterMetaInformation copy() {
             PDEParameterMetaInformation copy = new PDEParameterMetaInformation();
 
             copy.setBaseValue(this.mBaseValue);
@@ -78,8 +79,7 @@ public class PDEParameter {
     /**
      * @brief Create a copy.
      */
-    public PDEParameter copy()
-    {
+    public PDEParameter copy()  {
         PDEParameter newParameter = new PDEParameter();
 
         // copy by setting
@@ -96,8 +96,7 @@ public class PDEParameter {
     /**
      * @brief Create a parameter with given main value.
      */
-    public static PDEParameter withString(String value)
-    {
+    public static PDEParameter withString(String value) {
         PDEParameter newParameter = new PDEParameter();
 
         // set data
@@ -111,8 +110,7 @@ public class PDEParameter {
     /**
      * @brief Create a parameter with given main object.
      */
-    public static PDEParameter withObject(Object object)
-    {
+    public static PDEParameter withObject(Object object) {
         PDEParameter newParameter = new PDEParameter();
 
         // set data
@@ -126,8 +124,7 @@ public class PDEParameter {
     /**
      * @brief Create a parameter with given main value.
      */
-    public static PDEParameter withParameter(PDEParameter parameter)
-    {
+    public static PDEParameter withParameter(PDEParameter parameter) {
         PDEParameter newParameter = new PDEParameter();
 
         // set data
@@ -141,8 +138,7 @@ public class PDEParameter {
     /**
      * @brief Create a parameter with given main value.
      */
-    public static PDEParameter withDictionary(PDEDictionary dictionary)
-    {
+    public static PDEParameter withDictionary(PDEDictionary dictionary) {
         PDEParameter newParameter = new PDEParameter();
 
         // set data
@@ -169,13 +165,12 @@ public class PDEParameter {
      *
      * All other values are deleted.
      */
-    public void setBaseValue(String value)
-    {
+    public void setBaseValue(String value) {
         // clear dictionary
         removeAllObjects();
 
         // merge in the value for an empty key
-        addValue(value,"");
+        addValue(value, "");
     }
 
 
@@ -184,32 +179,30 @@ public class PDEParameter {
      *
      * All other values are deleted.
      */
-    public void setBaseObject(Object object)
-    {
+    public void setBaseObject(Object object) {
         // clear dictionary
         removeAllObjects();
 
         // add the value as the empty key.
-        addObject(object,"");
+        addObject(object, "");
     }
 
 
     /**
      * @brief Set the given parameter. Overwrites all existing parameters.
      */
-    public void setWithParameter(PDEParameter parameter)
-    {
+    public void setWithParameter(PDEParameter parameter) {
         // clear everything
         removeAllObjects();
 
         // safety (helps when setting nonexistent parameters)
-        if (parameter==null) return;
+        if (parameter == null) return;
 
         // create mutable copy of parameters (the objects stored are unchanged)
         mParameters = parameter.getParameters().copy();
 
         // create new metadata by copying each object (the metadata itself needs to stay mutable)
-        for ( String key: parameter.getMetaInformation().keySet() ) {
+        for (String key : parameter.getMetaInformation().keySet()) {
             //copy the object and add to dictionary
             mMetaInformation.put(key, ((PDEParameterMetaInformation) parameter.getMetaInformation().get(key)).copy());
         }
@@ -232,14 +225,13 @@ public class PDEParameter {
     }
 
 
-//----- paremeter adding -----------------------------------------------------------------------------------------------
+//----- parameter adding -----------------------------------------------------------------------------------------------
 
 
     /**
      * @brief Add the value. If it already exists, overwrite it.
      */
-    public void addValue(String value,String key)
-    {
+    public void addValue(String value, String key) {
         // simply add the string as object
         addObject(value,key);
     }
@@ -250,18 +242,16 @@ public class PDEParameter {
      *
      * If nil is passed for the object, the key is removed.
      */
-    public void addObject(Object object,String key)
-    {
+    public void addObject(Object object, String key) {
         String state;
         PDEParameterMetaInformation meta;
 
         // safety (adds when adding nonexistent parameters)
-        if (key==null) return;
+        if (key == null) return;
 
         // delete
-        if (object==null) {
+        if (object == null) {
             removeObjectForKey(key);
-            //TODO Thomas is the return here right (otherwise we an exception will be thrown in setObject:nil ... later on)
             return;
         }
 
@@ -298,13 +288,12 @@ public class PDEParameter {
     /**
      * @brief All all values. Existing values get overwritten.
      */
-    public void addObjectsWithParameter(PDEParameter parameter)
-    {
+    public void addObjectsWithParameter(PDEParameter parameter) {
         // safety (adds when adding nonexistent parameters)
-        if (parameter==null) return;
+        if (parameter == null) return;
 
         // add values individually; we need to do metadata housekeeping.
-        for (String key: parameter.getParameters().keySet()) {
+        for (String key : parameter.getParameters().keySet()) {
             addObject(parameter.getParameters().get(key),key);
         }
     }
@@ -313,10 +302,9 @@ public class PDEParameter {
     /**
      * @brief Merge in all values. Existing values get overwritten.
      */
-    public void addObjectsWithDictionary(PDEDictionary dictionary)
-    {
+    public void addObjectsWithDictionary(PDEDictionary dictionary) {
         // safety (adds when adding nonexistent parameters)
-        if (dictionary==null) return;
+        if (dictionary == null) return;
 
         // add values individually; we need to do metadata housekeeping.
         for (String key: dictionary.keySet()) {
@@ -325,14 +313,13 @@ public class PDEParameter {
     }
 
 
-//----- paremeter removal ----------------------------------------------------------------------------------------------
+//----- parameter removal ----------------------------------------------------------------------------------------------
 
 
     /**
      * @brief Completely clear everything
      */
-    public void removeAllObjects()
-    {
+    public void removeAllObjects() {
         // clear parameters
         mParameters.clear();
 
@@ -345,13 +332,12 @@ public class PDEParameter {
     /**
      * @brief Remove the key.
      */
-    public void removeObjectForKey(String key)
-    {
+    public void removeObjectForKey(String key) {
         String state;
         PDEParameterMetaInformation meta;
 
         // safety
-        if (key==null) return;
+        if (key == null) return;
 
         // do nothing if we don't know the key
         if ( mParameters.get(key)==null ){
@@ -394,13 +380,12 @@ public class PDEParameter {
      *
      * The given state is prefixed before all dictionary entries before adding them.
      */
-    public void addObjectsWithDictionaryForState(PDEDictionary dictionary, String state)
-    {
+    public void addObjectsWithDictionaryForState(PDEDictionary dictionary, String state) {
         String prefix;
         String stateKey;
 
         // safety (adds when adding nonexistent parameters)
-        if (dictionary==null) return;
+        if (dictionary == null) return;
 
         // build the prefix (state + dot)
         prefix = state + ".";
@@ -427,8 +412,7 @@ public class PDEParameter {
     /**
      * @brief Check if we have any values at all.
      */
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return mParameters.isEmpty();
     }
 
@@ -436,8 +420,7 @@ public class PDEParameter {
     /**
      * @brief A parameter is simple if it contains exactly one value, and this value is for the empty key.
      */
-    public boolean isSimple()
-    {
+    public boolean isSimple() {
         // must have at most one object
         if ( mParameters.size() != 1) return false;
 
@@ -452,8 +435,7 @@ public class PDEParameter {
     /**
      * @brief Simple check if the base object exists.
      */
-    public boolean hasBase()
-    {
+    public boolean hasBase() {
         // access meta information directly
         return mBase;
     }
@@ -462,8 +444,7 @@ public class PDEParameter {
     /**
      * @brief Return a list of states used by our keys.
      */
-    public Set<String> states()
-    {
+    public Set<String> states() {
         // the states are listed as keys in the meta information storage
         return mMetaInformation.keySet();
     }
@@ -472,25 +453,23 @@ public class PDEParameter {
     /**
      * @brief Check if the requested state exists.
      */
-    public boolean hasState(String state)
-    {
+    public boolean hasState(String state) {
         // check the keys of the meta information storage
-        return (mMetaInformation.get(state)!=null );
+        return (mMetaInformation.get(state) != null);
     }
 
 
     /**
      * @brief Check if a state is simple: It has exactly one value, and this is the base value.
      */
-    public boolean isStateSimple(String state)
-    {
+    public boolean isStateSimple(String state) {
         PDEParameterMetaInformation meta;
 
         // get meta information
         meta = (PDEParameterMetaInformation)mMetaInformation.get(state);
 
         // no meta? -> cannot be simple
-        if (meta==null) return false;
+        if (meta == null) return false;
 
         // check count and base value
         if (meta.getNumValues() != 1) return false;
@@ -506,8 +485,7 @@ public class PDEParameter {
      * @brief Check if a state has a base value.
      */
     @SuppressWarnings("unused")
-    public boolean hasStateBase(String state)
-    {
+    public boolean hasStateBase(String state) {
         PDEParameterMetaInformation meta;
 
         // get meta information
@@ -525,8 +503,7 @@ public class PDEParameter {
      * @brief Check if a state has a base value.
      */
     @SuppressWarnings("unused")
-    public int countStateKeys(String state)
-    {
+    public int countStateKeys(String state) {
         PDEParameterMetaInformation meta;
 
         // get meta information
@@ -547,8 +524,7 @@ public class PDEParameter {
      *
      * @return The parameter value for the empty key. Or nil if there's no empty key.
      */
-    public String getBaseValue()
-    {
+    public String getBaseValue() {
         Object stringObj;
 
         stringObj = mParameters.get("");
@@ -566,8 +542,7 @@ public class PDEParameter {
      * @param key The key for the value to be retrieved.
      * @return The parameter value string for the given key. Or nil if there's no empty key set.
      */
-    public String getValueForKey(String key)
-    {
+    public String getValueForKey(String key) {
         Object stringObj;
 
         stringObj = mParameters.get(key);
@@ -582,8 +557,7 @@ public class PDEParameter {
     /**
      * @brief Get the value string for the given key or the default if not present.
      */
-    public String getValueForKey(String key, String defaultValue)
-    {
+    public String getValueForKey(String key, String defaultValue) {
         String value;
 
         // get it
@@ -602,8 +576,7 @@ public class PDEParameter {
      *
      * @return  The parameter object for the empty key. Or nil if there's no empty key.
      */
-    public Object getBaseObject()
-    {
+    public Object getBaseObject() {
         return mParameters.get("");
     }
 
@@ -614,8 +587,7 @@ public class PDEParameter {
      * @param key The key for the value to be retrieved.
      * @return The parameter object for the given subkey. Or nil if there's no empty key set.
      */
-    public Object getObjectForKey(String key)
-    {
+    public Object getObjectForKey(String key) {
         return mParameters.get(key);
     }
 
@@ -623,8 +595,7 @@ public class PDEParameter {
     /**
      * @brief Get the object for the given key or the default if not present.
      */
-    public Object getObjectForKey(String key, Object defaultObject)
-    {
+    public Object getObjectForKey(String key, Object defaultObject) {
         Object object;
 
         // get it
@@ -643,8 +614,7 @@ public class PDEParameter {
     /**
      * @brief Get the base value as NSNumber.
      */
-    public Number getBaseNumber()
-    {
+    public Number getBaseNumber() {
         return getNumberForKey("");
     }
 
@@ -654,8 +624,7 @@ public class PDEParameter {
      *
      * @return The NSNumber or nil if not found or not convertible.
      */
-    public Number getNumberForKey(String key)
-    {
+    public Number getNumberForKey(String key) {
         Object object;
 
         // get it
@@ -679,15 +648,14 @@ public class PDEParameter {
      *
      * @return The NSNumber or the default if not found or not convertible.
      */
-    public Number getNumberForKey(String key, Number defaultNumber)
-    {
+    public Number getNumberForKey(String key, Number defaultNumber) {
         Number number;
 
         // get it
         number = getNumberForKey(key);
 
         // return default if not available
-        if (number==null) return defaultNumber;
+        if (number == null) return defaultNumber;
 
         // done
         return number;
@@ -697,8 +665,7 @@ public class PDEParameter {
     /**
      * @brief Get the base value as UIColor.
      */
-    public PDEColor getBaseColor()
-    {
+    public PDEColor getBaseColor() {
         return getColorForKey("");
     }
 
@@ -708,18 +675,17 @@ public class PDEParameter {
  *
  * @return The UIColor or nil if not found or not convertible.
  */
-    public PDEColor getColorForKey(String key)
-    {
+    public PDEColor getColorForKey(String key) {
         Object object;
 
         // get it
         object = getObjectForKey(key);
 
         // try to convert
-        if ( object instanceof PDEColor) {
+        if (object instanceof PDEColor) {
             // already a color
             return (PDEColor)object;
-        } else if ( object instanceof String ) {
+        } else if (object instanceof String) {
             // convert to color
             return PDEColor.valueOf((String) object);
         } else {
@@ -734,15 +700,14 @@ public class PDEParameter {
      *
      * @return The UIColor or the default if not found or not convertible.
      */
-    public PDEColor getColorForKey(String key, PDEColor defaultColor)
-    {
+    public PDEColor getColorForKey(String key, PDEColor defaultColor) {
         PDEColor color;
 
         // get it
         color = getColorForKey(key);
 
         // return default if not available
-        if (color==null) return defaultColor;
+        if (color == null) return defaultColor;
 
         // done
         return color;
@@ -752,8 +717,7 @@ public class PDEParameter {
     /**
      * @brief Get the base value as float.
      */
-    public boolean getBaseBool()
-    {
+    public boolean getBaseBool() {
         // get via extended function
         return getBoolForKey("", false);
     }
@@ -764,8 +728,7 @@ public class PDEParameter {
      *
      * @return The float or 0.0f if not found or not convertible.
      */
-    public boolean getBoolForKey(String key)
-    {
+    public boolean getBoolForKey(String key)  {
         // get via extended function
         return getBoolForKey(key, false);
     }
@@ -776,25 +739,24 @@ public class PDEParameter {
      *
      * @return The float or the default if not found or not convertible.
      */
-    public boolean getBoolForKey(String key, boolean defaultValue)
-    {
+    public boolean getBoolForKey(String key, boolean defaultValue) {
         Object object;
 
         // get it
         object = getObjectForKey(key);
 
         // try to convert
-        if ( object instanceof Boolean ) {
+        if (object instanceof Boolean) {
             // already a value, retrieve BOOL
             return (Boolean)object;
-        } else if ( object instanceof String ) {
+        } else if (object instanceof String) {
             // convert string
-            if ( object.equals("0") ) return false;
-            else if ( ((String) object).equalsIgnoreCase("false") ) return false;
-            else if ( ((String) object).equalsIgnoreCase("NO") ) return false;
-            else if ( ((String) object).equalsIgnoreCase("1") ) return true;
-            else if ( ((String) object).equalsIgnoreCase("true") ) return true;
-            else if ( ((String) object).equalsIgnoreCase("YES") ) return true;
+            if (object.equals("0")) return false;
+            else if (((String) object).equalsIgnoreCase("false")) return false;
+            else if (((String) object).equalsIgnoreCase("NO")) return false;
+            else if (((String) object).equalsIgnoreCase("1")) return true;
+            else if (((String) object).equalsIgnoreCase("true")) return true;
+            else if (((String) object).equalsIgnoreCase("YES")) return true;
             else return defaultValue;
         } else {
             // unknown type
@@ -802,11 +764,57 @@ public class PDEParameter {
         }
     }
 
+
+    /**
+     * @brief Get the base value as int.
+     */
+    public int getBaseInt() {
+        return getIntForKey("");
+    }
+
+
+    /**
+     * @brief Get the value as int for the given key.
+     *
+     * @return The int or 0 if not found or not convertible.
+     */
+    public int getIntForKey(String key) {
+        Number number;
+
+        // get it
+        number = getNumberForKey(key);
+
+        // valid?
+        if (number == null) return 0;
+
+        // retrieve the value
+        return number.intValue();
+    }
+
+    /**
+     * @brief Get the value as int for the given key with fallback if not present.
+     *
+     * @return The int or the default if not found or not convertible.
+     */
+    public int getIntForKey(String key, int defaultFloat) {
+        Number number;
+
+        // get it
+        number = getNumberForKey(key);
+
+        // valid?
+        if (number == null) return defaultFloat;
+
+        // retrieve the value
+        return number.intValue();
+    }
+
+
+
     /**
      * @brief Get the base value as float.
      */
-    public float getBaseFloat()
-    {
+    public float getBaseFloat() {
         return getFloatForKey("");
     }
 
@@ -816,15 +824,14 @@ public class PDEParameter {
      *
      * @return The float or 0.0f if not found or not convertible.
      */
-    public float getFloatForKey(String key)
-    {
+    public float getFloatForKey(String key) {
         Number number;
 
         // get it
         number = getNumberForKey(key);
 
         // valid?
-        if (number==null) return 0.0f;
+        if (number == null) return 0.0f;
 
         // retrieve the value
         return number.floatValue();
@@ -836,15 +843,14 @@ public class PDEParameter {
      *
      * @return The float or the default if not found or not convertible.
      */
-    public float getFloatForKey(String key, float defaultFloat)
-    {
+    public float getFloatForKey(String key, float defaultFloat) {
         Number number;
 
         // get it
         number = getNumberForKey(key);
 
         // valid?
-        if (number==null) return defaultFloat;
+        if (number == null) return defaultFloat;
 
         // retrieve the value
         return number.floatValue();
@@ -855,8 +861,7 @@ public class PDEParameter {
      * @brief Get the base value as UIColor.
      */
     @SuppressWarnings("unused")
-    public PointF getBasePosition()
-    {
+    public PointF getBasePosition() {
         return getPositionForKey("");
     }
 
@@ -866,8 +871,7 @@ public class PDEParameter {
      *
      * @return The CGPoint 0.0f/0.0f if not found or not convertible.
      */
-    public PointF getPositionForKey(String key)
-    {
+    public PointF getPositionForKey(String key) {
         // use function with default
         return getPositionForKey(key, new PointF(0.0f, 0.0f));
     }
@@ -878,8 +882,7 @@ public class PDEParameter {
      *
      * @return The NSNumber or the default if not found or not convertible.
      */
-    public PointF getPositionForKey(String key, PointF defaultValue)
-    {
+    public PointF getPositionForKey(String key, PointF defaultValue) {
         Object object;
 
         // get it
@@ -889,12 +892,9 @@ public class PDEParameter {
         if ( object instanceof PointF ) {
             // already a value, retrieve CGPoint
             return (PointF)object;
-        } else if ( object instanceof String) {
+        } else if (object instanceof String) {
             // convert to position
-            Log.e(LOG_TAG, "IMPLEMENT FUNCTION TO PARSE STRING TO POINTF!!!!!!!!!!!!");
-            //todo implement funciton to parse string to pointF
-            //return CGPointFromString ([NSString stringWithFormat:@"{%@}",object]);
-            return new PointF(0.0f,0.0f);
+            return PDEString.stringToPoint((String) object);
         } else {
             // unknown type
             return defaultValue;
@@ -921,30 +921,29 @@ public class PDEParameter {
      *
      * Non convertibles are removed if requested
      */
-    public void convertToNumber(boolean removeNonConvertibles)
-    {
+    public void convertToNumber(boolean removeNonConvertibles) {
         Number number;
         Object object;
 
         // walk all subkeys (note we enumerate a copy of the keys, to be able to modify the dictionary)
-        for ( String key: mParameters.keySet() ) {
+        for (String key : mParameters.keySet()) {
             // get associated object
             object = getObjectForKey(key);
             // action depending on type
-            if ( object instanceof  String ) {
+            if (object instanceof  String) {
                 // convert to number
                 number = Float.valueOf((String)object);
                 // replace (if the number is nil, it gets removed)
-                if (number!=null) {
-                    addObject(number,key);
+                if (number != null) {
+                    addObject(number, key);
                 } else {
                     removeObjectForKey(key);
                 }
-            } else if ( object instanceof Number ) {
+            } else if (object instanceof Number) {
                 // already correct
                 continue;
             } else if (removeNonConvertibles) {
-                // remove nonfitting if requested
+                // remove non-fitting if requested
                 removeObjectForKey(key);
             }
         }
@@ -957,8 +956,7 @@ public class PDEParameter {
      * Default behaviour is to remove all non convertible entries.
      */
     @SuppressWarnings("unused")
-    public void convertToBool()
-    {
+    public void convertToBool() {
         convertToBool(true);
     }
 
@@ -968,31 +966,41 @@ public class PDEParameter {
      *
      * Non convertibles are removed if requested. Strings recognized are 0,1,YES,NO,TRUE,FALSE; regardless of case.
      */
-    public void convertToBool(boolean removeNonConvertibles)
-    {
-        boolean value=false;
-        boolean valid=false;
+    public void convertToBool(boolean removeNonConvertibles) {
+        boolean value = false;
+        boolean valid;
         Object object;
 
         // walk all sub keys (note we enumerate a copy of the keys, to be able to modify the dictionary)
-        for (String key: mParameters.keySet() ) {
+        for (String key : mParameters.keySet() ) {
             // get associated object
             object = getObjectForKey(key);
             // action depending on type
-            if ( object instanceof String) {
+            if (object instanceof String) {
                 // check well known strings
-                if ( ((String) object).equalsIgnoreCase("0")) {value=false; valid=true;}
-                else if ( ((String) object).equalsIgnoreCase("false")) {value=false; valid=true;}
-                else if ( ((String) object).equalsIgnoreCase("1")) {value=true; valid=true;}
-                else if ( ((String) object).equalsIgnoreCase("true")) {value=true; valid=true;}
-                else {valid=false;}
+                if (((String) object).equalsIgnoreCase("0")) {
+                    value = false;
+                    valid = true;
+                } else if (((String) object).equalsIgnoreCase("false")) {
+                    value = false;
+                    valid = true;
+                } else if (((String) object).equalsIgnoreCase("1")) {
+                    value = true;
+                    valid = true;
+                } else if (((String) object).equalsIgnoreCase("true")) {
+                    value = true;
+                    valid = true;
+                } else {
+                    valid = false;
+                }
+
                 // replace (if the number is nil, it gets removed)
                 if (valid) {
                     addObject(value,key);
                 } else {
                     removeObjectForKey(key);
                 }
-            } else if ( object instanceof Boolean ) {
+            } else if (object instanceof Boolean) {
                 // already correct
                 continue;
             } else if (removeNonConvertibles) {
@@ -1008,8 +1016,7 @@ public class PDEParameter {
      *
      * Default behaviour is to remove all non convertible entries.
      */
-    public void convertToColor()
-    {
+    public void convertToColor() {
         convertToColor(true);
     }
 
@@ -1019,26 +1026,25 @@ public class PDEParameter {
      *
      * Non-Strings values are kept as they are. Non-convertible colors are removed.
      */
-    public void convertToColor(boolean removeNonConvertibles)
-    {
+    public void convertToColor(boolean removeNonConvertibles) {
         PDEColor color;
         Object object;
 
-        // walk all subkeys (note we enumerate a copy of the keys, to be able to modify the dictionary)
-        for ( String key: mParameters.keySet() ) {
+        // walk all sub-keys (note we enumerate a copy of the keys, to be able to modify the dictionary)
+        for (String key: mParameters.keySet()) {
             // get associated object
             object = getObjectForKey(key);
             // can we convert it?
-            if ( object instanceof String ) {
+            if (object instanceof String) {
                 // convert to color
                 color = PDEColor.valueOf((String) object);
                 // replace (the returned color is always valid)
-                addObject(color,key);
-            } else if ( object instanceof PDEColor) {
+                addObject(color, key);
+            } else if (object instanceof PDEColor) {
                 // already correct
                 continue;
             } else if (removeNonConvertibles) {
-                // remove nonfitting if requested
+                // remove non-fitting if requested
                 removeObjectForKey(key);
             }
         }
@@ -1051,8 +1057,7 @@ public class PDEParameter {
      * Default behaviour is to remove all non convertible entries.
      */
     @SuppressWarnings("unused")
-    public void convertToPosition()
-    {
+    public void convertToPosition() {
         convertToPosition(true);
     }
 
@@ -1062,8 +1067,7 @@ public class PDEParameter {
      *
      * Non-Strings values are kept as they are. Non-convertible colors are removed.
      */
-    public void convertToPosition(boolean removeNonConvertibles)
-    {
+    public void convertToPosition(boolean removeNonConvertibles) {
         PointF position;
         Object object;
 
@@ -1072,20 +1076,17 @@ public class PDEParameter {
             // get associated object
             object = getObjectForKey(key);
             // can we convert it?
-            if ( object instanceof String ) {
+            if (object instanceof String) {
                 // convert to position
-                Log.e(LOG_TAG, "IMPLEMENT FUNCTION TO PARSE STRING TO POINTF!!!!!!!!!!!!");
-                //todo implement funciton to parse string to pointF
-                // convert to point (currently using an iOS class, use our own parser once it's ready)
-                //position = CGPointFromString ([NSString stringWithFormat:@"{%@}",object]);
-                position = new PointF(0.0f,0.0f);
+                position = PDEString.stringToPoint((String)object);
+
                 // replace (the returned color is always valid)
-                addObject(position,key);
+                addObject(position, key);
             } else if (object instanceof PointF) {
                 // already correct
                 continue;
             } else if (removeNonConvertibles) {
-                // remove nonfitting if requested
+                // remove non-fitting if requested
                 removeObjectForKey(key);
             }
         }
@@ -1102,9 +1103,8 @@ public class PDEParameter {
      * Meta information is built while building the dictionaries, so if they are equal, metainformation is also equal.
      * This function relies on Objective Cs dictionary comparison routines.
      */
-    public boolean isEqual(PDEParameter parameter)
-    {
-        return mParameters.equals(parameter.getParameters());
+    public boolean isEqual(PDEParameter parameter) {
+        return ((Object)mParameters).equals(parameter.getParameters());
     }
 
 
@@ -1114,10 +1114,10 @@ public class PDEParameter {
     /**
      * @brief Extract the state from a key.
      *
-     * Key definition is "<state>.<rest>" (the rest can be further subdevided, but that's not of interest at this level).
+     * Key definition is "<state>.<rest>"
+     * (the rest can be further sub-divided, but that's not of interest at this level).
      */
-    private String extractStateFromKey(String key)
-    {
+    private String extractStateFromKey(String key) {
         int pos;
 
         if( TextUtils.isEmpty(key)) return key;
@@ -1126,21 +1126,20 @@ public class PDEParameter {
         pos = key.indexOf(".");
 
         // found?
-        if (pos==-1) {
+        if (pos == -1) {
             // no dot -> return the whole string (it's a state base)
             return key;
         }
 
         // split off state
-        return key.substring(0,pos);
+        return key.substring(0, pos);
     }
 
 
     /**
      * @brief Debug output.
      */
-    public void debugOut(String title)
-    {
+    public void debugOut(String title) {
         List<String> keys = new ArrayList<String>();
         Object object;
 
@@ -1148,8 +1147,8 @@ public class PDEParameter {
         Log.d(LOG_TAG, "Parameter '" + title +"' (" + mParameters.size() + " entries):" );
 
         // get keys and sort them for output
-        //TODO check if this really copys the Dictionary key set, objects are untouched so this should work
-        keys.addAll( new HashSet<String>(mParameters.keySet()));
+        //TODO check if this really copies the Dictionary key set, objects are untouched so this should work
+        keys.addAll(new HashSet<String>(mParameters.keySet()));
 
 
         Collections.sort(keys);

@@ -23,7 +23,7 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedInnerShado
 @SuppressWarnings("unused")
 public class PDEDrawableSunkenArea extends PDEDrawableArea {
 
-    //-----  properties ---------------------------------------------------------------------------------------------------
+    //-----  properties ------------------------------------------------------------------------------------------------
 
     protected PDEDrawableShapedInnerShadow mElementInnerShadow;
     protected PDEColor mElementInnerShadowColor;
@@ -79,7 +79,6 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
 
         mWrapperView = null;
     }
-
 
 
     // internal helpers
@@ -168,9 +167,11 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
      */
     public void setElementInnerShadowOffset(Point offset){
         // anything to do?
-        if (mElementInnerShadowOffset.equals(offset.x,offset.y)) return;
+        if (mElementInnerShadowOffset.equals(offset.x, offset.y)) return;
+
         // remember
         mElementInnerShadowOffset = offset;
+
         // forward
         mElementInnerShadow.setLayoutOffset(mElementInnerShadowOffset);
     }
@@ -197,7 +198,9 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
      * @param radius new blur radius of inner shadow.
      */
     public void setElementInnerShadowBlurRadius(float radius){
+        // changes?
         if (mElementInnerShadowBlurRadius == radius) return;
+
         mElementInnerShadowBlurRadius = radius;
         mElementInnerShadow.setElementBlurRadius(mElementInnerShadowBlurRadius);
     }

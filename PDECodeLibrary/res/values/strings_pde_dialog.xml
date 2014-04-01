@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Deutsche Telekom AG owns the right of use concerning the following code taken from the Deutsche Telekom
+  ~ Experience Toolbox. You can obtain a copy of the terms and conditions of the Experience Toolbox at
+  ~ https://www.design.telekom.com/myaccount/terms-of-use/
+  ~
+  ~ Copyright (c) 2012. Neuland Multimedia GmbH.
+  -->
+
+<resources>
+    <!-- Dialog titles and texts -->
+    <string name="NETWORK_ERROR_title">"Keine Internetverbindung"</string>
+    <string name="NETWORK_ERROR_text">"Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es anschließend noch einmal."</string>
+
+    <string name="LOGIN_FAILED_TARPIT_TIME_title">"Login wiederholen"</string>
+    <string name="LOGIN_FAILED_TARPIT_TIME_text">"Benutzername oder Passwort ist nicht korrekt. Sie können sich in %1$s erneut einloggen."</string>
+
+    <string name="LOGIN_FAILED_ACCOUNT_LOCKED_title">"Benutzerkonto gesperrt"</string>
+    <string name="LOGIN_FAILED_ACCOUNT_LOCKED_text">"Bitte wenden Sie sich an %1$s, um Ihr Benutzerkonto entsperren zu lassen."</string>
+
+    <string name="LOGIN_UNAVAILABLE_TARPIT_TIME_title">"Login nicht verfügbar"</string>
+    <string name="LOGIN_UNAVAILABLE_TARPIT_TIME_text">"Sie können sich in %1$s erneut einloggen."</string>
+
+    <string name="LOGIN_ERROR_ACCOUNT_BLOCKED_title">"Benutzerkonto gesperrt"</string>
+    <string name="LOGIN_ERROR_ACCOUNT_BLOCKED_text">"Bitte wenden Sie sich an %1$s, um Ihr Benutzerkonto entsperren zu lassen."</string>
+
+    <string name="LOGIN_SERVER_ERROR_500_title">"Entschuldigung"</string>
+    <string name="LOGIN_SERVER_ERROR_500_text">"Der Login ist nicht möglich, weil der Server momentan nicht verfügbar ist. Bitte versuchen Sie es später noch einmal."</string>
+
+    <string name="LOGIN_INTERNAL_ERROR_title">"Entschuldigung"</string>
+    <string name="LOGIN_INTERNAL_ERROR_text">"Der Login ist nicht möglich. Bitte versuchen Sie es später noch einmal."</string>
+
+    <string name="APP_UPDATE_REQUIRED_title">"Neue Version"</string>
+    <string name="APP_UPDATE_REQUIRED_text">"Um %1$s weiterhin zu nutzen, laden Sie bitte die Aktualisierung aus %2$s herunter."</string>
+
+    <string name="APP_GET_FROM_STORE_title">"%1$s %2$s ansehen"</string>
+    <string name="APP_GET_FROM_STORE_text">""</string>
+
+    <string name="APP_OPEN_ON_DEVICE_title">"App öffnen"</string>
+    <string name="APP_OPEN_ON_DEVICE_text">""</string>
+
+    <string name="APP_OPEN_IN_APP_title">"In der App öffnen"</string>
+    <string name="APP_OPEN_IN_APP_text">""</string>
+
+    <string name="APP_FUNCTION_NOT_POSSIBLE_title">"Netz gewechselt"</string>
+    <string name="APP_FUNCTION_NOT_POSSIBLE_text">"%1$s ist nicht verfügbar, weil Sie sich nicht mehr im Telekom Mobilfunknetz befinden."</string>
+
+    <string name="ITEM_NOT_FOUND_title">"%1$s nicht gefunden"</string>
+    <string name="ITEM_NOT_FOUND_text">"Bitte überprüfen Sie %1$s."</string>
+
+    <string name="ITEM_EXISTS_title">"%1$s vergeben"</string>
+    <string name="ITEM_EXISTS_text">"Bitte wählen Sie einen anderen Namen."</string>
+
+    <string name="APP_LOAD_ERROR_title">"Entschuldigung"</string>
+    <string name="APP_LOAD_ERROR_text">"%1$s kann momentan nicht geladen werden. Bitte versuchen Sie es später noch einmal."</string>
+
+    <string name="APP_LOAD_NETWORK_ERROR_title">"Keine Internetverbindung"</string>
+    <string name="APP_LOAD_NETWORK_ERROR_text">"Bitte stellen Sie %1$s eine Internetverbindung her und starten Sie anschließend die App erneut."</string>
+
+    <string name="MEDIA_PLAYBACK_UNAVAILABLE_title">"Abspielen nicht möglich"</string>
+    <string name="MEDIA_PLAYBACK_UNAVAILABLE_text">"Entschuldigung, das hätte nicht passieren dürfen. Bitte versuchen Sie es später noch einmal."</string>
+
+    <string name="INVALID_DATE_title">"Bitte geben Sie ein gültiges Datum ein."</string>
+    <string name="INVALID_DATE_text">""</string>
+
+    <string name="INVALID_EMAIL_ADDRESS_title">"Bitte geben Sie eine gültige E-Mail-Adresse ein."</string>
+    <string name="INVALID_EMAIL_ADDRESS_text">""</string>
+
+    <string name="INVALID_PHONE_NUMBER_title">"Bitte geben Sie eine gültige Telefonnummer ein."</string>
+    <string name="INVALID_PHONE_NUMBER_text">""</string>
+
+    <string name="EMPTY_LAST_NAME_ENTRY_title">"Bitte geben Sie Ihren Nachnamen ein."</string>
+    <string name="EMPTY_LAST_NAME_ENTRY_text">""</string>
+
+    <string name="EMPTY_FIRST_NAME_ENTRY_title">"Bitte geben Sie Ihren Vornamen ein."</string>
+    <string name="EMPTY_FIRST_NAME_ENTRY_text">""</string>
+
+    <string name="INVALID_CHARACTERS_USED_title">"Bitte verwenden Sie nicht %1$s"</string>
+    <string name="INVALID_CHARACTERS_USED_text">""</string>
+
+    <string name="VALID_CHARACTER_SET_title">"Bitte verwenden Sie nur %1$s."</string>
+    <string name="VALID_CHARACTER_SET_text">""</string>
+
+    <string name="EMPTY_TITLE_ENTRY_title">"Bitte wählen Sie eine Anrede."</string>
+    <string name="EMPTY_TITLE_ENTRY_text">""</string>
+
+    <string name="CHANGE_PASSWORD_DENIED_title">"Das aktuelle Passwort ist nicht korrekt."</string>
+    <string name="CHANGE_PASSWORD_DENIED_text">""</string>
+
+    <string name="CHANGE_PASSWORDS_IDENTICAL_title">"Das neue Passwort ist identisch mit dem bisherigen Passwort."</string>
+    <string name="CHANGE_PASSWORDS_IDENTICAL_text">""</string>
+
+    <string name="START_DATE_AFTER_END_title">"Das Startdatum kann nicht nach dem Enddatum liegen."</string>
+    <string name="START_DATE_AFTER_END_text">""</string>
+
+    <string name="EMPTY_REQUIRED_FIELD_title">"Dies ist ein Pflichtfeld."</string>
+    <string name="EMPTY_REQUIRED_FIELD_text">""</string>
+
+    <string name="SERVICE_TEMPORARILY_UNAVAILABLE_title">"Entschuldigung"</string>
+    <string name="SERVICE_TEMPORARILY_UNAVAILABLE_text">"%1$s ist momentan nicht verfügbar. Bitte versuchen Sie es später noch einmal."</string>
+
+    <string name="TEST_ERROR_DIALOG_title">"Fehlertest"</string>
+    <string name="TEST_ERROR_DIALOG_text">"Dies ist ein Test."</string>
+
+    <string name="MISSING_FLASH_title">"Flash Player erforderlich"</string>
+    <string name="MISSING_FLASH_text">"Für diese Seite/Anwendung benötigen Sie den Adobe® Flash Player (Version %1$s oder höher)."</string>
+
+    <string name="FUNCTION_TEMPORARILY_UNAVAILABLE_title">"Entschuldigung"</string>
+    <string name="FUNCTION_TEMPORARILY_UNAVAILABLE_text">"Leider ist diese Funktion momentan nicht verfügbar. Bitte versuchen Sie es später noch einmal."</string>
+
+    <string name="FUNCTION_UNAVAILABLE_BECAUSE_title">"Entschuldigung"</string>
+    <string name="FUNCTION_UNAVAILABLE_BECAUSE_text">"Leider ist diese Funktion momentan nicht verfügbar, weil %1$s. Bitte versuchen Sie es später noch einmal."</string>
+
+    <string name="UPLOAD_FAILED_title">"Entschuldigung"</string>
+    <string name="UPLOAD_FAILED_text">"Leider war das Hochladen nicht möglich. Bitte versuchen Sie es noch einmal."</string>
+
+    <string name="INFORMATION_DISPLAY_FAILED_title">"Informationen nicht abrufbar"</string>
+    <string name="INFORMATION_DISPLAY_FAILED_text">""</string>
+
+    <string name="INTERNET_ERROR_IN_LOGIN_title">"Keine Internetverbindung"</string>
+    <string name="INTERNET_ERROR_IN_LOGIN_text">"Bitte stellen Sie eine Verbindung zum Internet her und loggen Sie sich erneut ein."</string>
+
+    <string name="EMPTY_SEARCH_RESULTS_title">"Keine Ergebnisse"</string>
+    <string name="EMPTY_SEARCH_RESULTS_text">"Ihre Suche ergab leider keine Ergebnisse. Versuchen Sie es doch mit einem anderen Suchbegriff."</string>
+
+    <string name="LOGIN_REQUIRED_title">"Bitte loggen Sie sich ein."</string>
+    <string name="LOGIN_REQUIRED_text">""</string>
+
+    <string name="LOGIN_DATA_INCORRECT_title">"Entschuldigung"</string>
+    <string name="LOGIN_DATA_INCORRECT_text">"E-Mail-Adresse oder Passwort ist nicht korrekt."</string>
+
+    <string name="LOGIN_FAILED_title">"Entschuldigung"</string>
+    <string name="LOGIN_FAILED_text">"Der Login ist nicht möglich. Bitte versuchen Sie es noch einmal."</string>
+
+    <string name="EMPTY_ITEM_NAME_title">"Name erforderlich"</string>
+    <string name="EMPTY_ITEM_NAME_text">"Bitte geben Sie einen Namen für %1$s ein."</string>
+
+    <string name="NETWORK_CHANGED_title">"Netzwerk gewechselt"</string>
+    <string name="NETWORK_CHANGED_text">"Bitte verbinden Sie sich wieder mit Ihrem Heimnetzwerk, um %1$s zu nutzen."</string>
+
+    <string name="PASSWORD_VALIDATION_FAILED_title">"Passwörter nicht identisch"</string>
+    <string name="PASSWORD_VALIDATION_FAILED_text">"Neues Passwort und -wiederholung stimmen nicht überein."</string>
+
+    <string name="PAGE_NOT_FOUND_title">"Entschuldigung"</string>
+    <string name="PAGE_NOT_FOUND_text">"Bitte versuchen Sie später noch einmal, die Seite aufzurufen."</string>
+
+    <string name="EMAIL_RECIPIENT_UNKNOWN_title">"Entschuldigung"</string>
+    <string name="EMAIL_RECIPIENT_UNKNOWN_text">"Die %1$s konnte nicht gesendet werden. Folgende Empfänger sind unbekannt: %2$s"</string>
+
+    <string name="SEND_EMAIL_FAILED_title">"Entschuldigung"</string>
+    <string name="SEND_EMAIL_FAILED_text">"Die %1$s konnte nicht gesendet werden. Bitte versuchen Sie es noch einmal."</string>
+
+    <string name="MISSING_MEMORY_CARD_title">"Speicherkarte einlegen"</string>
+    <string name="MISSING_MEMORY_CARD_text">"Bitte legen Sie Ihre Speicherkarte ein, um %1$s zu starten."</string>
+
+    <string name="TECHNICAL_ERROR_title">"Entschuldigung"</string>
+    <string name="TECHNICAL_ERROR_text">"Das hätte nicht passieren dürfen. Bitte wenden Sie sich mit dem Code %1$s an %2$s. "</string>
+
+    <string name="MISSING_SIM_CARD_title">"Telekom SIM-Karte einlegen"</string>
+    <string name="MISSING_SIM_CARD_text">"Diese App funktioniert nur mit einer Telekom SIM-Karte."</string>
+
+    <string name="UNKOWN_ERROR_title">"Entschuldigung"</string>
+    <string name="UNKOWN_ERROR_text">"Das hat leider nicht funktioniert. Bitte versuchen Sie es noch einmal."</string>
+
+    <string name="INVALID_SECURITY_CODE_title">"Ungültige Eingabe"</string>
+    <string name="INVALID_SECURITY_CODE_text">"Der Sicherheitscode wurde nicht korrekt eingegeben. Bitte versuchen Sie es noch einmal."</string>
+
+    <string name="CONNECTION_TO_FAILED_title">"Keine Verbindung"</string>
+    <string name="CONNECTION_TO_FAILED_text">"Es tut uns leid, wir konnten keine Verbindung zu %1$s herstellen. Bitte versuchen Sie es später noch einmal."</string>
+
+    <string name="CONNECTION_LOST_title">"Verbindung verloren"</string>
+    <string name="CONNECTION_LOST_text">"Bitte überprüfen Sie Ihre Internetverbindung."</string>
+
+    <!-- Dialog Button texts -->
+    <string name="dialog_btn_close">"Schließen"</string>
+    <string name="dialog_btn_retry">"Wiederholen"</string>
+    <string name="dialog_btn_update">"Update"</string>
+    <string name="dialog_btn_purchase">"Zum Store"</string>
+    <string name="dialog_btn_open">"App öffnen"</string>
+    <string name="dialog_btn_download">"Herunterladen"</string>
+    <string name="dialog_btn_help">"Hilfe"</string>
+
+    <!-- Dialog special buttons -->
+    <string name="dialog_btn_custom">"Der Button wurde vom Benutzer individuell beschriftet."</string>
+</resources>

@@ -107,11 +107,8 @@ public class PDEDrawableShape extends PDEDrawableBase {
      * @param path path of a custom shape
      */
     public void setElementShapePath(Path path) {
-        // ToDo: Don't know if equals() is meaningful overriden here.
-        // any change?
-        if (mShapePath.equals(path)) {
-            return;
-        }
+        // security
+        if (path == null) return;
 
         // store the path
         mShapePath = path;
@@ -195,7 +192,7 @@ public class PDEDrawableShape extends PDEDrawableBase {
         mBackgroundPaint.setStyle(Paint.Style.FILL);
         mBackgroundPaint.setColorFilter(mColorFilter);
         mBackgroundPaint.setDither(mDither);
-        mBackgroundPaint.setColor(PDEColor.getIntegerColorCombinedWithAlpha(mElementBackgroundColor,mAlpha));
+        mBackgroundPaint.setColor(PDEColor.getIntegerColorCombinedWithAlpha(mElementBackgroundColor, mAlpha));
     }
 
 
@@ -225,7 +222,7 @@ public class PDEDrawableShape extends PDEDrawableBase {
                 c.drawRect(frame, mBackgroundPaint);
                 break;
             case PDEAvailableShapes.SHAPE_ROUNDED_RECT:
-                c.drawRoundRect(frame, mElementCornerRadius, mElementCornerRadius,mBackgroundPaint);
+                c.drawRoundRect(frame, mElementCornerRadius, mElementCornerRadius, mBackgroundPaint);
                 break;
             case PDEAvailableShapes.SHAPE_OVAL:
                 c.drawOval(frame, mBackgroundPaint);
