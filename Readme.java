@@ -232,10 +232,8 @@ components.
 
 The documentation has no dependencies.
 
-Installation in Eclipse
----------------------------
-
-### Installing support libraries ###
+Installing support libraries
+----------------------------
 
 Ensure you have installed the support libraries. You find the support libraries
 in the SDK Manager, section "Extras". Select the checkbox "Support Library" and 
@@ -246,12 +244,15 @@ instructions and screenshot to install support libraries.
 The library is located in the <sdk>/extras/android/support/v7/appcompat/
 directory after you download the Android Support Libraries.
 
+Installation in Eclipse
+---------------------------
+
 ### Create a library project for the v7 support library ###
  
 To include the v7 support library in your application project, follow the
 instructions for adding libraries with resources at
 http://developer.android.com/tools/support-library/setup.html#libs-with-res
-from wich the following instructions are reproduced:
+from which the following instructions are reproduced:
 
 1. Select "File" -> "Import"
 2. Select "Existing Android Code Into Workspace" and click "Next".
@@ -307,10 +308,10 @@ dependency to ActionBarSherlock from your project settings.
 5. Click "Ok" to complete the changes.
 
 Pull the latest version of the CodeLibrary for Android, v4.0 from the master 
-branch of the git. The submodule will be removed from the git-files. The
+branch of the git. The sub-module will be removed from the git-files. The
 local files of the ActionBarSherlock are not removed because they might be
 in use in your other projects. If this is not the case, you might want to
-remove the files from the local filesystem by hand.
+remove the files from the local file system by hand.
 
 ### Creating the sample project ###
 
@@ -322,16 +323,15 @@ remove the files from the local filesystem by hand.
 5.	The project appears. Select the checkbox. If the checkbox is
 disabled, check if you already have a project with the same name.
 6.	Select "Finish".
-7.  Right click on the Project (in the Package Explorer) -> Properties
-    Android: Select appcompat as reference.
-    Select a recent Project Build Target (e.g. Android 4.4.2)
-    Select PDECodeLibrary as reference.
-    Apply 
+7.	Right click on the project and select "Properties".
+8.	Select section "Android" from the list on the left side.
+9.  Select a recent Project Build Target (e.g. Android 4.4.2)
+10. Select PDECodeLibrary as reference.
+11.	Click "Ok" to complete the changes. 
 
 
-You should now be able to build and run the sample in the emulator or on
-your device, if connected. Maybe you need to do a Project -> Clean ... before.
-
+Clean the project with "Project" -> "Clean". You should now be able to build
+and run the sample in the emulator or on your device, if connected.
 
 Installation in IntelliJ
 ------------------------
@@ -386,8 +386,8 @@ Keep as it is -> Finish
 => the Module will be created.
 8. Select "Project Structure" Button (or File->Project Structure)
 9. Select Module PDECodeSamples -> Dependencies: Add - Module Dependency: PDECodeLibrary 
-   Add - Library: Select android-support-v4.jar & android-support-v7-appcompat.jar (the libraries you created in step 7 
-   of the "Create the library project" section)
+   Add - Library: Select android-support-v4.jar & android-support-v7-appcompat.jar
+   (the libraries you created in step 7 of the "Create the library project" section)
 
 You should now be able to build and run the sample in the emulator or on
 your device, if connected.
