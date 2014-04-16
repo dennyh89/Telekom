@@ -156,40 +156,47 @@ E-mail: design-support@telekom.de<br />
 Phone: +49 (0) 228 181-22222
 
 The Code Library for Android
-============================
-                
+============================             
+
+Structure
+---------
+
+1. PDECodeLibrary_Android: The library for Android, including source code and
+minimal set of resources.
+2. PDECodeSamples_Android: The sample project for Android.
+3. PDECodeLibrary_Android_Docu: The documentation of the Android library in
+html for offline use. The documentation is also available online as part of
+the Experience Toolbox.
+
 Getting the Code Library
 ---
 
-You can clone from three repositories:
+You can clone the repositories using a git tool, such as the git bash,
+TortoiseGit or GitExtensions. Use commands such as
 
-1. The library for Android, including source code and minimal set of
-resources: https://git.design.telekom.com/git/PDECodeLibrary_Android.git
-2. The sample project for Android:
-https://git.design.telekom.com/git/PDECodeSamples_Android.git
-3. The documentation of the Android library in html for offline use:
-https://git.design.telekom.com/git/PDECodeLibrary_Android_Docu.git <br />
-The documentation is also available online as part of the Experience Toolbox.
-
+    git clone https://git.design.telekom.com/git/PDECodeLibrary_Android.git
+    git clone https://git.design.telekom.com/git/PDECodeSamples_Android.git
+    git clone https://git.design.telekom.com/git/PDECodeLibrary_Android_Docu.git
+    
 Modern development environments support sharing source code with Git. Please
 refer to the manual of your tool and enter the URL in the configuration.
-    
+
 Branches
 --------
 
 The master branch of the Git-system contains the latest version of the software
-components. Currently, the Code Library version 3.0 is available in the master
+components. Currently, the Code Library version 4.0 is available in the master
 branch. Previous versions are available in specific branches.
 
-The Code Library versions 1.0 and 2.0 are available in the branches
+The Code Library versions 1.0, 2.0, and 3.0 are available in the branches
 "release-X.Y". The branch can be cloned directly by using the option "-b".
 Please replace "X" with the major release number and "Y" with the minor release
 number.
 
-Example
+*Example*
 
-   git clone -b release-3.0 https://git.design.telekom.com/git/PDECodeLibrary_Android.git
-   git clone -b release-3.0 https://git.design.telekom.com/git/PDECodeSamples_Android.git
+	git clone -b release-3.0 https://git.design.telekom.com/git/PDECodeLibrary_Android.git
+	git clone -b release-3.0 https://git.design.telekom.com/git/PDECodeSamples_Android.git
 
 Installation
 ============
@@ -257,7 +264,7 @@ from which the following instructions are reproduced:
 1. Select "File" -> "Import"
 2. Select "Existing Android Code Into Workspace" and click "Next".
 3. Browse to the SDK installation directory and then to the Support Library
-folder, like <sdk>/extras/android/support/v7/appcompat/.
+folder, like <sdk>/extras/android/support/v7/appcompat/.<br />
 *Important note*: If you installed the sdk in a system folder, such as
 C:/Program Files/Android/android-sdk, then you need to copy the library into
 your workspace. Otherwise Eclipse will fail to generate the library files.
@@ -526,10 +533,30 @@ Release notes
 =============
 
 __Current public version__<br />
-4.0
+4.0.1
 
 __Current non-public version__<br />
-4.0
+4.0.1
+
+Hotfix 4.0.1 (public)
+------------------
+
+__Date__<br />
+16.04.2014
+ 
+__Server__<br />
+git.design.telekom.com
+ 
+__Repositories__<br />
+PDECodeLibrary_Android.git
+ 
+__Branch__<br />
+master
+ 
+__Content__<br />
+
+Typeface was cached under filename. The PDETypeface has been fixed to be
+cached under filepath.
 
 Major 4.0 (public)
 --------------------
@@ -611,7 +638,7 @@ Removed outer shadow from dialogs.
 Patch 3.7.3 (non-public)
 ---------------------------
 
-PDELayerText: Support for new line \n added
+PDELayerText: Support for new line added
 
 Patch 3.7.2 (non-public)
 ---------------------------
