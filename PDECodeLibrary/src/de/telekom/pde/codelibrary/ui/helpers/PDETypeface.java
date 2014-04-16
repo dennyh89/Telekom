@@ -55,7 +55,7 @@ public class PDETypeface {
     /** An <code>LruCache</code> for previously loaded typefaces. */
     private static LinkedHashMap<String, PDETypeface> mTypefaceCache;
 
-    private static int TELE_GROTESK_STRINGRESOURCE_ID = R.array.tele_grotesk;
+    private final static int TELE_GROTESK_STRINGRESOURCE_ID = R.array.tele_grotesk;
 
     // static initialize
     static {
@@ -213,7 +213,7 @@ public class PDETypeface {
         try {
             newFont = PDETypeface.loadTypeface(filePath);
             if (newFont == null) {
-                newFont = new PDETypeface(filename,
+                newFont = new PDETypeface(filePath,
                         Typeface.createFromAsset(PDECodeLibrary.getInstance().getApplicationContext().getAssets(),
                         filePath));
             }
