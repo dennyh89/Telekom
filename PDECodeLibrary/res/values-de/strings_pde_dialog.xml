@@ -57,8 +57,8 @@
 	<string name="APP_LOAD_NETWORK_ERROR_title">"Keine Internetverbindung"</string>
 	<string name="APP_LOAD_NETWORK_ERROR_text">"Bitte stellen Sie %1$s eine Internetverbindung her und starten Sie anschließend die App erneut."</string>
 
-	<string name="MEDIA_PLAYBACK_UNAVAILABLE_title">"Abspielen nicht möglich"</string>
-	<string name="MEDIA_PLAYBACK_UNAVAILABLE_text">"Entschuldigung, das hätte nicht passieren dürfen. Bitte versuchen Sie es später noch einmal."</string>
+	<string name="MEDIA_PLAYBACK_UNAVAILABLE_title">"Entschuldigung"</string>
+	<string name="MEDIA_PLAYBACK_UNAVAILABLE_text">"Das Abspielen ist momentan nicht möglich. Bitte versuchen Sie es später noch einmal."</string>
 
 	<string name="INVALID_DATE_title">"Bitte geben Sie ein gültiges Datum ein."</string>
 	<string name="INVALID_DATE_text">""</string>
@@ -154,7 +154,7 @@
 	<string name="MISSING_MEMORY_CARD_text">"Bitte legen Sie Ihre Speicherkarte ein, um %1$s zu starten."</string>
 
 	<string name="TECHNICAL_ERROR_title">"Entschuldigung"</string>
-	<string name="TECHNICAL_ERROR_text">"Das hätte nicht passieren dürfen. Bitte wenden Sie sich mit dem Code %1$s an %2$s. "</string>
+	<string name="TECHNICAL_ERROR_text">"Das hätte nicht passieren dürfen. Bitte wenden Sie sich an %1$s und geben Sie den Code %2$s an."</string>
 
 	<string name="MISSING_SIM_CARD_title">"Telekom SIM-Karte einlegen"</string>
 	<string name="MISSING_SIM_CARD_text">"Diese App funktioniert nur mit einer Telekom SIM-Karte."</string>
