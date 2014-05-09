@@ -57,8 +57,8 @@
 	<string name="APP_LOAD_NETWORK_ERROR_title">"No Internet Connection"</string>
 	<string name="APP_LOAD_NETWORK_ERROR_text">"Please establish an Internet connection %1$s, and restart the app thereafter."</string>
 
-	<string name="MEDIA_PLAYBACK_UNAVAILABLE_title">"Playback Not Possible"</string>
-	<string name="MEDIA_PLAYBACK_UNAVAILABLE_text">"We're sorry. That shouldn't have happened. Please try again later."</string>
+	<string name="MEDIA_PLAYBACK_UNAVAILABLE_title">"We're Sorry."</string>
+	<string name="MEDIA_PLAYBACK_UNAVAILABLE_text">"Playback is currently not possible. Please try again later."</string>
 
 	<string name="INVALID_DATE_title">"Please enter a valid date."</string>
 	<string name="INVALID_DATE_text">""</string>
@@ -106,10 +106,10 @@
 	<string name="MISSING_FLASH_text">"For this page/application, you need Adobe® Flash Player (Version %1$s or higher)."</string>
 
 	<string name="FUNCTION_TEMPORARILY_UNAVAILABLE_title">"We're Sorry."</string>
-	<string name="FUNCTION_TEMPORARILY_UNAVAILABLE_text">"Unfortunately, this service is currently unavailable. Please try again later."</string>
+	<string name="FUNCTION_TEMPORARILY_UNAVAILABLE_text">"Unfortunately, this function is currently unavailable. Please try again later."</string>
 
 	<string name="FUNCTION_UNAVAILABLE_BECAUSE_title">"We're Sorry."</string>
-	<string name="FUNCTION_UNAVAILABLE_BECAUSE_text">"Unfortunately, this service is currently unavailable due to %1$s. Please try again later."</string>
+	<string name="FUNCTION_UNAVAILABLE_BECAUSE_text">"Unfortunately, this function is currently unavailable due to %1$s. Please try again later."</string>
 
 	<string name="UPLOAD_FAILED_title">"We're Sorry."</string>
 	<string name="UPLOAD_FAILED_text">"Unfortunately, the upload wasn't possible. Please try again."</string>
@@ -121,7 +121,7 @@
 	<string name="INTERNET_ERROR_IN_LOGIN_text">"Please establish a connection to the Internet, and log in again."</string>
 
 	<string name="EMPTY_SEARCH_RESULTS_title">"No Results"</string>
-	<string name="EMPTY_SEARCH_RESULTS_text">"Unfortunately, no results were found your search. Please try again with a different search term."</string>
+	<string name="EMPTY_SEARCH_RESULTS_text">"Unfortunately, no results were found for your search. Please try again with a different search term."</string>
 
 	<string name="LOGIN_REQUIRED_title">"Please log in."</string>
 	<string name="LOGIN_REQUIRED_text">""</string>
@@ -130,7 +130,7 @@
 	<string name="LOGIN_DATA_INCORRECT_text">"E-mail address or password is incorrect."</string>
 
 	<string name="LOGIN_FAILED_title">"We're Sorry."</string>
-	<string name="LOGIN_FAILED_text">"The login isn't possible. Please try again later."</string>
+	<string name="LOGIN_FAILED_text">"The login isn't possible. Please try again."</string>
 
 	<string name="EMPTY_ITEM_NAME_title">"Name Required"</string>
 	<string name="EMPTY_ITEM_NAME_text">"Please enter a name for %1$s."</string>
