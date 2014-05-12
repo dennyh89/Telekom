@@ -533,10 +533,37 @@ Release notes
 =============
 
 __Current public version__<br />
-4.0.1
-
+4.0.2
+ 
 __Current non-public version__<br />
-4.0.1
+4.0.2
+ 
+Patch 4.0.2 (public)
+--------------------
+
+__Date__<br />
+15.05.2014
+ 
+__Server__<br />
+git.design.telekom.com
+ 
+__Repositories__<br />
+PDECodeLibrary_Android.git, PDECodeSamples_Android.git
+ 
+__Branch__<br />
+master
+ 
+__Content__<br />
+ 
+PDEDialog: language update including changed order of parameters
+ 
+The language department has modified dialog titles and texts.
+
+IMPORTANT NOTE: The sequence of the parameters of the standard dialog
+TECHNICAL_ERROR has been inverted. The new order is:
+ 
+par1: <Help posibilities> - A contact where the user can get help.
+par2: <Error code> - The code of the error.
 
 Hotfix 4.0.1 (public)
 ------------------
