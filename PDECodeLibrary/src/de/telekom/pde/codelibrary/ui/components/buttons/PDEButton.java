@@ -116,8 +116,8 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            out.writeValue(checked);
-            out.writeValue(mainState);
+            out.writeInt(checked ? 1 : 0);
+            out.writeString(mainState);
         }
 
         @Override
