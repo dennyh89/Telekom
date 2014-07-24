@@ -12,6 +12,7 @@ package de.telekom.pde.codelibrary.ui.elements.boxes;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedInnerShadow;
@@ -19,6 +20,7 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedInnerShado
 //----------------------------------------------------------------------------------------------------------------------
 // PDEDrawableSunkenArea
 //----------------------------------------------------------------------------------------------------------------------
+
 
 @SuppressWarnings("unused")
 public class PDEDrawableSunkenArea extends PDEDrawableArea {
@@ -35,10 +37,9 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
 
 //----- init -----------------------------------------------------------------------------------------------------------
 
+
     /**
      * @brief Constructor
-     *
-     *
      */
     public PDEDrawableSunkenArea() {
         mElementBackgroundColor = PDEColor.valueOf("DTWhite");
@@ -62,7 +63,7 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
         mElementBackground.setElementShapeRect();
 
         // init inner shadow
-        mElementInnerShadowOffset = new Point(1,1);
+        mElementInnerShadowOffset = new Point(1, 1);
         mElementInnerShadow.setElementShapeColor(mElementInnerShadowColor);
         // ToDo: check if this replacement is correct or should we use: setElementLightIncidenceOffset?
         //mElementInnerShadow.setShapeOffset(mElementInnerShadowOffset);
@@ -93,11 +94,9 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
     }
 
 
-
 //---------------------------------------------------------------------------------------------------------------------
 // ----- general setters and getters ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
-
 
 
     /**
@@ -105,7 +104,7 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
      *
      * @return color of inner shadow.
      */
-    public PDEColor getElementInnerShadowColor(){
+    public PDEColor getElementInnerShadowColor() {
         return mElementInnerShadowColor;
     }
 
@@ -115,7 +114,7 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
      *
      * @param color new color of inner shadow.
      */
-    public void setElementInnerShadowColor(PDEColor color){
+    public void setElementInnerShadowColor(PDEColor color) {
         // anything to do?
         if (color.getIntegerColor() == mElementInnerShadowColor.getIntegerColor()) return;
         // remember
@@ -130,7 +129,7 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
      *
      * @return opacity of inner shadow.
      */
-    public float getElementInnerShadowOpacity(){
+    public float getElementInnerShadowOpacity() {
         return mElementInnerShadowOpacity;
     }
 
@@ -140,7 +139,7 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
      *
      * @param opacity new opacity of inner shadow.
      */
-    public void setElementInnerShadowOpacity(float opacity){
+    public void setElementInnerShadowOpacity(float opacity) {
         // anything to do?
         if (mElementInnerShadowOpacity == opacity) return;
         // remember
@@ -155,7 +154,7 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
      *
      * @return Offset of inner shadow.
      */
-    public Point getElementInnerShadowOffset(){
+    public Point getElementInnerShadowOffset() {
         return mElementInnerShadowOffset;
     }
 
@@ -165,7 +164,7 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
      *
      * @param offset new offset of inner shadow.
      */
-    public void setElementInnerShadowOffset(Point offset){
+    public void setElementInnerShadowOffset(Point offset) {
         // anything to do?
         if (mElementInnerShadowOffset.equals(offset.x, offset.y)) return;
 
@@ -177,7 +176,7 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
     }
 
 
-    public void setElementInnerShadowLightIncidenceOffset(PointF offset){
+    public void setElementInnerShadowLightIncidenceOffset(PointF offset) {
         mElementInnerShadow.setElementLightIncidenceOffset(offset);
     }
 
@@ -187,7 +186,7 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
      *
      * @return blur radius of inner shadow.
      */
-    public float getElementInnerShadowBlurRadius(){
+    public float getElementInnerShadowBlurRadius() {
         return mElementInnerShadowBlurRadius;
     }
 
@@ -197,7 +196,7 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
      *
      * @param radius new blur radius of inner shadow.
      */
-    public void setElementInnerShadowBlurRadius(float radius){
+    public void setElementInnerShadowBlurRadius(float radius) {
         // changes?
         if (mElementInnerShadowBlurRadius == radius) return;
 
@@ -206,12 +205,9 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
     }
 
 
-
-
 //---------------------------------------------------------------------------------------------------------------------
 // ----- layout / sizing ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
-
 
 
     /**
@@ -229,7 +225,6 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
     }
 
 
-
     /**
      * @brief update the inner shadow when the bounds change.
      *
@@ -238,11 +233,9 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
     protected void updateInnerShadow(Rect bounds) {
         mElementInnerShadow.setLayoutRect(new Rect(mElementInnerShadowOffset.x + bounds.left,
                                                    mElementInnerShadowOffset.y + bounds.top,
-                                                   bounds.right -  mElementInnerShadowOffset.x,
+                                                   bounds.right - mElementInnerShadowOffset.x,
                                                    bounds.bottom - mElementInnerShadowOffset.y));
     }
-
-
 
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -252,12 +245,12 @@ public class PDEDrawableSunkenArea extends PDEDrawableArea {
 
     // ToDo: setElementShapePath
 
+
     /**
      * @brief Set the shape of the layer to a rectangle with the given size.
-     *
      */
     @Override
-    public void setElementShapeRect(){
+    public void setElementShapeRect() {
         // base class
         super.setElementShapeRect();
         // config inner shadow

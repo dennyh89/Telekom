@@ -30,6 +30,7 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
     protected float mElementBlurRadius;
     protected Path mElementShapePath;
     private int mShapeType;
+    private int mElementCornerConfiguration;
     protected float mElementCornerRadius;
     protected PointF mElementLightIncidenceOffset;
     // drawing helpers
@@ -173,6 +174,7 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
     }
 
 
+
     /**
      * @brief Get custom path.
      */
@@ -208,6 +210,13 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
     public void setElementShapeOval(){
         mShapeType = PDEAvailableShapes.SHAPE_OVAL;
         // update
+        update();
+    }
+
+    public void setElementShapeCustomCorners(int cornerConfiguration, float cornerRadius) {
+        mElementCornerConfiguration = cornerConfiguration;
+        mElementCornerRadius = cornerRadius;
+        mShapeType = PDEAvailableShapes.SHAPE_CUSTOM_CORNERS;
         update();
     }
 
@@ -255,8 +264,14 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
             case PDEAvailableShapes.SHAPE_OVAL:
                 canvas.drawOval(rect,paint);
                 break;
-            case PDEAvailableShapes.SHAPE_CUSTOM_PATH:         // ToDo: This option needs further testing
+            case PDEAvailableShapes.SHAPE_CUSTOM_PATH:
                 canvas.drawPath(mElementShapePath,paint);
+                break;
+            case PDEAvailableShapes.SHAPE_CUSTOM_CORNERS:
+                Path path = PDECornerConfigurations.createDrawingPath(mElementCornerConfiguration,
+                        new Point(Math.round(rect.width()), Math.round(rect.height())),
+                        radius,  new PointF(0, 0));
+                canvas.drawPath(path,paint);
                 break;
         }
     }
@@ -406,6 +421,7 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
         // inner rect
         mPaint2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
         mPaint2.setColor(Color.TRANSPARENT);
+        //mPaint2.setColor(Color.YELLOW);
         mPaint2.setMaskFilter(new BlurMaskFilter(mElementBlurRadius + mOffsetFactor, BlurMaskFilter.Blur.INNER));
         drawCurrentShape(c, normalizedBoundingRect, mElementCornerRadius, mPaint2);
 
@@ -420,7 +436,6 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
                                    outlineRect.right - mOffsetFactor - mElementLightIncidenceOffset.x-1.0f,
                                    outlineRect.bottom - mOffsetFactor - mElementLightIncidenceOffset.y-1.0f);
 
-
         switch(mShapeType){
             case PDEAvailableShapes.SHAPE_RECT:
                 clipPath.addRect(shadowClipRect,Path.Direction.CW);
@@ -431,8 +446,15 @@ public class PDEDrawableShapedInnerShadow extends PDEDrawableBase {
             case PDEAvailableShapes.SHAPE_OVAL:
                 clipPath.addOval(shadowClipRect,Path.Direction.CW);
                 break;
-            case PDEAvailableShapes.SHAPE_CUSTOM_PATH:         // ToDo: This option needs further testing
+            case PDEAvailableShapes.SHAPE_CUSTOM_PATH:
                 clipPath.addPath(mElementShapePath);
+                break;
+            case PDEAvailableShapes.SHAPE_CUSTOM_CORNERS:
+                Path path = PDECornerConfigurations.createDrawingPath(mElementCornerConfiguration,
+                        new Point(Math.round(shadowClipRect.width()), Math.round(shadowClipRect.height())),
+                        mElementCornerRadius + 1.0f,
+                        new PointF(mOffsetFactor - mElementLightIncidenceOffset.x, mOffsetFactor - mElementLightIncidenceOffset.y));
+                clipPath.addPath(path);
                 break;
         }
 

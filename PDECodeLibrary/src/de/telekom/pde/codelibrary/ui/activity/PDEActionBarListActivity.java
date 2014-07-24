@@ -7,8 +7,10 @@
 
 package de.telekom.pde.codelibrary.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.util.AttributeSet;
 import android.view.View;
@@ -18,9 +20,11 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.R;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableDelimiter;
 import de.telekom.pde.codelibrary.ui.inflater.PDEInflaterUtils;
 
 
+@SuppressLint("Registered")
 public class PDEActionBarListActivity extends ActionBarActivity {
     private ListView mListView;
 
@@ -75,6 +79,7 @@ public class PDEActionBarListActivity extends ActionBarActivity {
         ensureList();
 
         getListView().setOnItemClickListener(mOnClickListener);
+        getListView().setDivider(new PDEDrawableDelimiter());
     }
 
 
@@ -82,7 +87,7 @@ public class PDEActionBarListActivity extends ActionBarActivity {
      * @brief Create TextViews already here, to be able to set telegrotesk font.
      */
     @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
+    public View onCreateView(String name, @NonNull Context context, @NonNull AttributeSet attrs) {
         View view = super.onCreateView(name, context, attrs);
 
         if (view == null) {

@@ -1,10 +1,10 @@
 <resources>
-    <string name="Tele_Iconfont">Tele_Iconfont.ttf</string>
-    <string name="DTDefaultFont">TeleGroteskNormal.ttf</string>
-    <string name="Tele_GroteskNor">TeleGroteskNormal.ttf</string>
-    <string name="Tele_GroteskHal">TeleGroteskHalbfett.ttf</string>
-    <string name="Tele_GroteskFet">TeleGroteskFett.ttf</string>
-    <string name="Tele_GroteskUlt">TeleGroteskUltra.ttf</string>
+    <string name="Tele_Iconfont" translatable="false">Tele_Iconfont.ttf</string>
+    <string name="DTDefaultFont" translatable="false">@string/Tele_GroteskNor</string>
+    <string name="Tele_GroteskNor" translatable="false">TeleGroteskNormal.ttf</string>
+    <string name="Tele_GroteskHal" translatable="false">TeleGroteskHalbfett.ttf</string>
+    <string name="Tele_GroteskFet" translatable="false">TeleGroteskFett.ttf</string>
+    <string name="Tele_GroteskUlt" translatable="false">TeleGroteskUltra.ttf</string>
     <string-array name="tele_grotesk">
         <item>@string/Tele_GroteskNor</item>
         <item>@string/Tele_GroteskHal</item>

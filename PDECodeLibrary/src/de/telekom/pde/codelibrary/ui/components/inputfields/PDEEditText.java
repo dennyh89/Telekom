@@ -15,8 +15,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.lang.reflect.Field;
+
+import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.R;
-import de.telekom.pde.codelibrary.ui.R.color;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentControllerAdapterView;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
@@ -25,22 +28,25 @@ import de.telekom.pde.codelibrary.ui.elements.icon.PDEDrawableIcon;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
 
-import java.lang.reflect.Field;
-
-
 /// @cond INTERNAL_CLASS
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEEditText
 //----------------------------------------------------------------------------------------------------------------------
 
-// package protected no public/private/protected keyword
-class PDEEditText extends EditText {
+
+/**
+ * @brief Internal class only! Do not use outside.
+ *
+ * This class is only written for internal purpose and everything might change or the class itself can be deleted
+ * without notice.
+ */
+public class PDEEditText extends EditText {
 
     /**
      * @brief Global tag for log outputs.
      */
-    private final static String LOG_TAG = PDEEditText.class.getName();
+    private final static String LOG_TAG = PDEEditText.class.getSimpleName();
 
     //----- properties -----
 
@@ -48,11 +54,11 @@ class PDEEditText extends EditText {
 
     // agent controller and helpers
     private PDEAgentController mAgentController = null;
-    private PDEAgentControllerAdapterView mAgentControllerAdapter = null;
     private PDEDrawableIcon mLeftIcon = null;
 
     // internal icon-font ratio
     private float mIconToTextHeightRatio;
+
 
     /**
      * @brief Constructor.
@@ -60,7 +66,7 @@ class PDEEditText extends EditText {
     @SuppressWarnings("unused")
     public PDEEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
+        init(context);
     }
 
 
@@ -70,7 +76,7 @@ class PDEEditText extends EditText {
     @SuppressWarnings("unused")
     public PDEEditText(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
 
@@ -80,22 +86,25 @@ class PDEEditText extends EditText {
     @SuppressWarnings("unused")
     public PDEEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
 
     /**
-     * @brief Init function to initialise start properties of the edittext.
+     * @brief Init function to initialise start properties of the editText.
      */
-    private void init() {
-        mIconToTextHeightRatio = 1.7f;
+    private void init(Context context) {
+        mIconToTextHeightRatio = PDEConstants.DefaultPDEEditTextIconToTextHeightRatio;
 
         // set default light blue colors for highlight
-        setHighlightColor(getContext().getResources().getColor(color.DTLightUITextHighlight));
+        if (context.getResources() != null) {
+            setHighlightColor(context.getResources().getColor(R.color.DTLightUITextHighlight));
+        }
         setTextCursorDrawable(R.drawable.cursor_drawable);
     }
 
-   /* @Override
+
+    /* @Override
     protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
 
         Parcelable state = super.onSaveInstanceState();
@@ -104,45 +113,50 @@ class PDEEditText extends EditText {
             container.put(getId(), state);
     }*/
 
+
     /**
      * @brief Set a drawable to use for the cursor.
-     *          This is no public function because for now this could only set on android in xml.
-     *          So we dont know the exact behaviour of TextView if the value is changed during lifecycle, so we only allow/set
-     *          this value in the init at first.
+     * This is no public function because for now this could only set on android in xml.
+     * So we don't know the exact behaviour of TextView if the value is changed during lifecycle, so we only
+     * allow/set this value in the init at first.
      *
-     *  In API Level 12 Android introduce the "android:textCursorDrawable" attribute to allow a change of the cursor color
-     *  Before this API Level the Cursor color should be always the text color.
-     *  But when there is no textCursorDrawable set, API >= 12 have a white cursor
-     *  !!!!!!!!!!!!!!!! WE CANT SEE THIS ON DEFAULT PDEINPUTFIELD WITH NEARLY WHITE BACKGROUND !!!!!!!!!!!!!!!!!!!!!!!!
+     * In API Level 12 Android introduce the "android:textCursorDrawable" attribute to allow a change of the cursor
+     * color before this API Level the Cursor color should be always the text color.
+     * But when there is no textCursorDrawable set, API >= 12 have a white cursor
+     * !!!!!!!!!!!!!!!! WE CANT SEE THIS ON DEFAULT PDEInputField WITH NEARLY WHITE BACKGROUND !!!!!!!!!!!!!!!!!!!!!!!!
      *
-     * Because there is no function to set this value, we have to set the variable itself using reflection to set a correct
-     * cursor color. We cant set this value via XML, because otherwise we cant compile with API Lever 11 or lower.
-     * TODO: When a function is introduces -> try this function at first to have the best practise!!
+     * Because there is no function to set this value, we have to set the variable itself using reflection to set a
+     * correct cursor color. We cant set this value via XML, because otherwise we cant compile with API Lever 11
+     * or lower.
+     * TODO: When a function is introduced -> try this function at first to have the best practise!!
      *
      * Behaviour seems to be like this:
-     *    App Target sdk < 12 on device with android < 12 (there is no mCursorDrawableRes variable) -> cursor color default or text color
-     *    App Target sdk < 12 on device with android >= 12 (without mCursorDrawableRes variable) -> cursor color default or text color
-     *    App Target sdk < 12 on device with android >= 12 (with mCursorDrawableRes variable) -> cursor color is set (magenta default)
-     *    App Target sdk >=12 -> use Android mCursorDrawableRes behaviour and set cursor to white by default
-     *                        -> but our cursor color is set (magenta default) when mCursorDrawableRes variable exists
+     * App Target sdk < 12 on device with android < 12 (there is no mCursorDrawableRes variable)
+     * -> cursor color default or text color
+     * App Target sdk < 12 on device with android >= 12 (without mCursorDrawableRes variable)
+     * -> cursor color default or text color
+     * App Target sdk < 12 on device with android >= 12 (with mCursorDrawableRes variable)
+     * -> cursor color is set (magenta default)
+     * App Target sdk >=12 -> use Android mCursorDrawableRes behaviour and set cursor to white by default
+     * -> but our cursor color is set (magenta default) when mCursorDrawableRes variable exists
      */
     private void setTextCursorDrawable(int drawableId) {
         // valid?
-        if(drawableId ==- 1)return;
+        if (drawableId == -1) return;
 
         Field field;
         Class<?> tmpClass = getClass();
 
-        while(tmpClass != null) {
-            if (tmpClass == TextView.class){
+        while (tmpClass != null) {
+            if (tmpClass == TextView.class) {
                 try {
                     field = tmpClass.getDeclaredField("mCursorDrawableRes");
-                    if (field != null){
+                    if (field != null) {
                         field.setAccessible(true);
                         field.setInt(this, drawableId);
                     }
                 } catch (Exception e) {
-                    Log.e(LOG_TAG,"Cant set cursor drawable for cursor color. Maybe the Android version is < 12 ??");
+                    Log.e(LOG_TAG, "Cant set cursor drawable for cursor color. Maybe the Android version is < 12 ??");
                     //e.printStackTrace();
                 }
                 // we finished trying to change cursor color
@@ -156,26 +170,26 @@ class PDEEditText extends EditText {
     /**
      * @brief Set the target listener, that listen to touches on this view.
      */
-    public void setTargetListener(PDEIEventSource targetListener) {
+    public void setTargetListener(PDEIEventSource targetListener, Object target) {
         // valid?
-        if(targetListener == null) return;
+        if (targetListener == null) return;
 
         // create agent controller
         mAgentController = new PDEAgentController();
 
         // link it via appropriate adapter
-        mAgentControllerAdapter = new PDEAgentControllerAdapterView();
-        mAgentControllerAdapter.linkAgent(mAgentController, this);
+        PDEAgentControllerAdapterView agentControllerAdapter = new PDEAgentControllerAdapterView();
+        agentControllerAdapter.linkAgent(mAgentController, this);
 
         // catch agent controller events for animation
-        mAgentControllerAdapter.getEventSource().addListener(targetListener, "cbAgentController",
-                PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION);
-        mAgentControllerAdapter.getEventSource().requestOneTimeInitialization(targetListener, "cbAgentControllerSingle",
-                PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION);
+        agentControllerAdapter.getEventSource().addListener(target, "cbAgentController",
+                                                            PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION);
+        agentControllerAdapter.getEventSource().requestOneTimeInitialization(target, "cbAgentControllerSingle",
+                                                                             PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION);
 
         // pass on agent adapter events to ourself, override the sender
-        targetListener.getEventSource().forwardEvents(mAgentControllerAdapter,
-                PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ACTION);
+        targetListener.getEventSource().forwardEvents(agentControllerAdapter,
+                                                      PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ACTION);
         targetListener.getEventSource().setEventDefaultSender(targetListener, true);
     }
 
@@ -205,8 +219,9 @@ class PDEEditText extends EditText {
 
     private void updateLeftIcon() {
         //valid?
-        if(mLeftIcon==null) return;
-        Point iconSize = new Point(0,0);
+        if (mLeftIcon == null) return;
+
+        Point iconSize = new Point(0, 0);
 
         // Is there a icon we need to adjust, normally there must be a icon if mLeftIcon is not null
         if (mLeftIcon.hasElementIcon()) {
@@ -214,9 +229,12 @@ class PDEEditText extends EditText {
             if (mLeftIcon.hasNativeSize()) {
                 iconSize = mLeftIcon.getNativeSize();
             } else {
-                //calculate icon font height
+                // calculate icon font height
                 iconSize.y = PDEBuildingUnits.roundToScreenCoordinates(PDEFontHelpers.getCapHeight(getTypeface(),
-                                                                       getTextSize()) * mIconToTextHeightRatio);
+                                                                                                   getTextSize())
+                                                                       * mIconToTextHeightRatio);
+                // the icon has the same width and height, so this assignment is correct
+                // noinspection SuspiciousNameCombination
                 iconSize.x = iconSize.y;
             }
         }
@@ -251,10 +269,9 @@ class PDEEditText extends EditText {
 
 
     /**
-     * @brief Set text size.
-     *
      * @param unit The desired dimension unit.
      * @param size The desired size in the given units.
+     * @brief Set text size.
      */
     @Override
     public void setTextSize(int unit, float size) {
@@ -265,7 +282,7 @@ class PDEEditText extends EditText {
 
 
     private void createLeftIcon(Object object) {
-        if (object != null){
+        if (object != null) {
             mLeftIcon = new PDEDrawableIcon();
             mLeftIcon.setElementIcon(object);
             // setCompoundDrawables must called when icon size changed because internal they work with the size the icon
@@ -279,11 +296,15 @@ class PDEEditText extends EditText {
 
 
     /**
-     * @brief Set the left drawable by id for the inputfield (e.g magnifier for searchfield)
+     * @brief Set the left drawable by id for the inputField (e.g magnifier for searchField)
      */
     public void setLeftIcon(int drawableID) {
         try {
-            createLeftIcon(getContext().getResources().getDrawable(drawableID));
+            if (getContext() != null && getContext().getResources() != null) {
+                createLeftIcon(getContext().getResources().getDrawable(drawableID));
+            } else {
+                createLeftIcon(null);
+            }
         } catch (Exception exception) {
             createLeftIcon(null);
         }
@@ -291,7 +312,7 @@ class PDEEditText extends EditText {
 
 
     /**
-     * @brief Set the left drawable for the inputfield (e.g magnifier for searchfield)
+     * @brief Set the left drawable for the inputField (e.g magnifier for searchField)
      */
     public void setLeftIcon(Drawable drawable) {
         createLeftIcon(drawable);
@@ -300,16 +321,16 @@ class PDEEditText extends EditText {
 
     /**
      * @brief Set the left icon string.
-     *  Icon string can either be a # plus char, signalising to take the iconfont, or a resource string
+     * Icon string can either be a # plus char, signalising to take the iconFont, or a resource string
      */
     public void setLeftIcon(String icon) {
         createLeftIcon(icon);
     }
 
+
     /**
-     * @brief Set new ratio of Icon height to text height.
-     *
      * @param ratio ratio of icon height to text height.
+     * @brief Set new ratio of Icon height to text height.
      */
     public void setIconToTextHeightRatio(float ratio) {
         // anything to do?
@@ -324,10 +345,10 @@ class PDEEditText extends EditText {
 
 
     /**
-     * @brief Get the left icon of this inputfield
+     * @brief Get the left icon of this inputField
      */
     public Object getLeftIcon() {
-        if (mLeftIcon != null){
+        if (mLeftIcon != null) {
             return mLeftIcon.getElementIcon();
         }
         return null;
@@ -335,10 +356,10 @@ class PDEEditText extends EditText {
 
 
     /**
-     * @brief Get the left icon drawable of this inputfield
+     * @brief Get the left icon drawable of this inputField
      */
     public Drawable getLeftIconDrawable() {
-        if (mLeftIcon != null){
+        if (mLeftIcon != null) {
             return mLeftIcon.getElementIconDrawable();
         }
         return null;
@@ -346,10 +367,10 @@ class PDEEditText extends EditText {
 
 
     /**
-     * @brief Get the left icon sting of this inputfield
+     * @brief Get the left icon sting of this inputField
      */
     public String getLeftIconString() {
-        if(mLeftIcon!=null){
+        if (mLeftIcon != null) {
             return mLeftIcon.getElementIconString();
         }
         return null;
@@ -371,14 +392,13 @@ class PDEEditText extends EditText {
         return mIconToTextHeightRatio;
     }
 
-
 //----- button state handling ------------------------------------------------------------------------------------------
 
-
     // !!!!!!!!!!!!!!! TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // WE ONLY HAVE TO USE 1 AGENTCONTROLLER, (AT THE MOMENT backgroundbutton and textfield both have one used)
+    // WE ONLY HAVE TO USE 1 AGENTCONTROLLER, (AT THE MOMENT backgroundbutton and textField both have one used)
     // IN THE FUTURE REPLACE ONE BY THE OTHER, AT THE MOMENT USE TEXFIELD CONTROLLER
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
     /**
      * @brief Get the button's current state.
@@ -388,7 +408,7 @@ class PDEEditText extends EditText {
      */
     public String getMainState() {
         // !!!!!!!!!!!!!!! TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // WE ONLY HAVE TO USE 1 AGENTCONTROLLER, (AT THE MOMENT backgroundbutton and textfield both have one used)
+        // WE ONLY HAVE TO USE 1 AGENTCONTROLLER, (AT THE MOMENT backgroundbutton and textField both have one used)
         // IN THE FUTURE REPLACE ONE BY THE OTHER, AT THE MOMENT USE TEXFIELD CONTROLLER
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // map to agent controller
@@ -404,7 +424,7 @@ class PDEEditText extends EditText {
      */
     public void setMainState(String state) {
         // !!!!!!!!!!!!!!! TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // WE ONLY HAVE TO USE 1 AGENTCONTROLLER, (AT THE MOMENT backgroundbutton and textfield both have one used)
+        // WE ONLY HAVE TO USE 1 AGENTCONTROLLER, (AT THE MOMENT backgroundButton and textField both have one used)
         // IN THE FUTURE REPLACE ONE BY THE OTHER, AT THE MOMENT USE TEXTFIELD CONTROLLER
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // map to agent controller
@@ -413,6 +433,5 @@ class PDEEditText extends EditText {
 
 
 }
-
 
 /// @endcond INTERNAL_CLASS

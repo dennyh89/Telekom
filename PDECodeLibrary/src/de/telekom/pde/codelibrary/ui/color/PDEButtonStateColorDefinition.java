@@ -20,9 +20,10 @@ public class PDEButtonStateColorDefinition {
 
     }
 
+
     @SuppressWarnings("unused")
     public PDEButtonStateColorDefinition(int mainColor, int gradientLighterColor, int gradientDarkerColor,
-                                         int borderColor, int textColor){
+                                         int borderColor, int textColor) {
         setMainColor(mainColor);
         setGradientLighterColor(gradientLighterColor);
         setGradientDarkerColor(gradientDarkerColor);
@@ -30,47 +31,57 @@ public class PDEButtonStateColorDefinition {
         setTextColor(textColor);
     }
 
-    public void setMainColor(int mainColor){
+
+    public void setMainColor(int mainColor) {
         mMainColor = mainColor;
     }
 
-    public void setGradientLighterColor(int gradientLighterColor){
+
+    public void setGradientLighterColor(int gradientLighterColor) {
         mGradientLighterColor = gradientLighterColor;
     }
 
-    public void setGradientDarkerColor(int gradientDarkerColor){
+
+    public void setGradientDarkerColor(int gradientDarkerColor) {
         mGradientDarkerColor = gradientDarkerColor;
     }
 
-    public void setBorderColor(int borderColor){
+
+    public void setBorderColor(int borderColor) {
         mBorderColor = borderColor;
     }
 
-    public void setTextColor(int textColor){
+
+    public void setTextColor(int textColor) {
         mTextColor = textColor;
     }
 
-    public int getMainColor(){
+
+    public int getMainColor() {
         return mMainColor;
     }
 
+
     @SuppressWarnings("unused")
-    public int getGradientLighterColor(){
+    public int getGradientLighterColor() {
         return mGradientLighterColor;
     }
 
+
     @SuppressWarnings("unused")
-    public int getGradientDarkerColor(){
+    public int getGradientDarkerColor() {
         return mGradientDarkerColor;
     }
 
+
     @SuppressWarnings("unused")
-    public int getBorderColor(){
+    public int getBorderColor() {
         return mBorderColor;
     }
 
+
     @SuppressWarnings("unused")
-    public int getmTextColorColor(){
+    public int getmTextColorColor() {
         return mTextColor;
     }
 }

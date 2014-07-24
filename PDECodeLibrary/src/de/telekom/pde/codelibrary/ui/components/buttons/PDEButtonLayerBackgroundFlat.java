@@ -8,6 +8,9 @@
 package de.telekom.pde.codelibrary.ui.components.buttons;
 
 import android.content.Context;
+import android.graphics.Path;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -19,6 +22,7 @@ import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
 import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameter;
 import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameterDictionary;
+import de.telekom.pde.codelibrary.ui.elements.common.PDECornerConfigurations;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBorderLine;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShape;
 import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEViewWrapper;
@@ -50,33 +54,30 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
     private final static boolean SHOW_DEBUG_LOGS = false;
 
     // local parameters needed
-    PDEParameterDictionary mParameters;
-    PDEParameter mParamColor;
-    PDEParameter mParamBorderColor;
+    private PDEParameterDictionary mParameters;
+    private PDEParameter mParamColor;
+    private PDEParameter mParamBorderColor;
 
 
     // configuration
-    PDEColor mDefaultColor;
+    private PDEColor mDefaultColor;
 
     // Drawables
-    PDEDrawableShape mMainDrawable;
-    PDEDrawableBorderLine mBorderLineDrawable;
+    private PDEDrawableShape mMainDrawable;
+    private PDEDrawableBorderLine mBorderLineDrawable;
 
     // additional helper variables
-    float mCornerRadius;
-    float mOutlineWidth;
+    private float mCornerRadius;
+    private float mOutlineWidth;
+    private int mCornerConfiguration;
 
     // agent helpers
-    PDEAgentHelper mAgentHelper;
-
-
-
-
+    private PDEAgentHelper mAgentHelper;
 
     // global variables
     //
-    public static PDEDictionary PDEButtonLayerBackgroundFlatGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_flat_color_defaults");
-    public static PDEDictionary PDEButtonLayerBackgroundFlatGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
+    public static PDEDictionary PDEButtonLayerBackgroundFlatGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_flat_color_defaults);
+    public static PDEDictionary PDEButtonLayerBackgroundFlatGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_border_color_defaults);
 
     @SuppressWarnings("unused")
     public PDEButtonLayerBackgroundFlat(Context context, AttributeSet attrs) {
@@ -125,6 +126,7 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
         // take over the default parameters from layer (iOS defaults of CALayer)
         mCornerRadius = 0.0f;
         mOutlineWidth = 0.0f;
+        mCornerConfiguration = PDECornerConfigurations.PDECornerConfigurationAllCorners;
 
         // apply currently nonparametrized default configuration
         setOutlineWidth(1.0f);
@@ -185,6 +187,7 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
 
         // non-animated parameters are simpler to handle: change management is in internal functions.
         prepareCornerRadius();
+        prepareCornerConfiguration();
     }
 
 
@@ -274,6 +277,27 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
         getMainDrawable().setElementCornerRadius(mCornerRadius);
         mBorderLineDrawable.setElementCornerRadius(mCornerRadius);
     }
+
+
+    /**
+     * @brief Prepare corner configuration
+     */
+    protected void prepareCornerConfiguration() {
+        int config;
+
+        // create a copy of the new corner radius
+        config = mParameters.parameterIntForName(PDEButton.PDEButtonParameterRoundedCornerConfiguration,
+                PDECornerConfigurations.PDECornerConfigurationAllCorners);
+
+        // check for changes
+        if (config == mCornerConfiguration) {
+            return;
+        }
+
+        // remember
+        mCornerConfiguration = config;
+    }
+
 
 
 //----- graphical properties -------------------------------------------------------------------------------------------
@@ -388,7 +412,13 @@ class PDEButtonLayerBackgroundFlat extends PDEAbsoluteLayout implements PDEButto
 
         PDEAbsoluteLayoutHelper.setViewRect(mMainDrawable.getWrapperView(),new Rect(0, 0, w, h));
         PDEAbsoluteLayoutHelper.setViewRect(mBorderLineDrawable.getWrapperView(),new Rect(0, 0, w, h));
-        mBorderLineDrawable.setElementShapeRoundedRect(mCornerRadius);
+
+        Path path = PDECornerConfigurations.createDrawingPath(mCornerConfiguration, new Point(w-1,h-1), mCornerRadius,
+                new PointF(0.5f, 0.5f));
+        mMainDrawable.setElementShapePath(path);
+        mBorderLineDrawable.setElementShapePath(path);
+
+
         mBorderLineDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
                                                      MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
         mMainDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),

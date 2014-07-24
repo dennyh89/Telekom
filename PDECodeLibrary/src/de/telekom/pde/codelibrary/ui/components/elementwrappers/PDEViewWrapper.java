@@ -25,42 +25,71 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
  */
 public class PDEViewWrapper extends View {
 
-    protected Drawable mDrawable;
+
+    /**
+     * @brief Global tag for log outputs.
+     */
+    @SuppressWarnings("unused")
     private final static String LOG_TAG = PDEViewWrapper.class.getName();
 
+    // class variables
+    private Drawable mDrawable = null;
 
-    public PDEViewWrapper(Context context, Drawable drawable){
+
+    @SuppressWarnings("unused")
+    public PDEViewWrapper(Context context) {
+        super(context);
+        init(null);
+    }
+
+
+    @SuppressWarnings("unused")
+    public PDEViewWrapper(Context context, Drawable drawable) {
         super(context);
         init(drawable);
     }
 
 
     @SuppressWarnings("unused")
-    public PDEViewWrapper(Context context, AttributeSet attrs, Drawable drawable){
-        super(context,attrs);
+    public PDEViewWrapper(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(null);
+    }
+
+
+    @SuppressWarnings("unused")
+    public PDEViewWrapper(Context context, AttributeSet attrs, Drawable drawable) {
+        super(context, attrs);
         init(drawable);
     }
 
 
     @SuppressWarnings("unused")
-    public PDEViewWrapper(Context context, AttributeSet attrs, int defStyle, Drawable drawable){
-        super(context,attrs,defStyle);
+    public PDEViewWrapper(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(null);
+    }
+
+
+    @SuppressWarnings("unused")
+    public PDEViewWrapper(Context context, AttributeSet attrs, int defStyle, Drawable drawable) {
+        super(context, attrs, defStyle);
         init(drawable);
     }
 
 
-    protected void init(Drawable drawable){
+    protected void init(Drawable drawable) {
         setDrawable(drawable);
     }
 
 
-    public Drawable getDrawable(){
+    public Drawable getDrawable() {
         return mDrawable;
     }
 
 
-    public void setDrawable(Drawable drawable){
-        if (drawable != null){
+    public void setDrawable(Drawable drawable) {
+        if (drawable != null) {
             mDrawable = drawable;
             PDEUtils.setViewBackgroundDrawable(this, mDrawable);
         }

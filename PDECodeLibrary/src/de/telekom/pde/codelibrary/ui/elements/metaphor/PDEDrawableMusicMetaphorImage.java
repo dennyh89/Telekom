@@ -29,7 +29,7 @@ public class PDEDrawableMusicMetaphorImage extends PDEDrawableBase {
 
     //-----  properties ------------------------------------------------------------------------------------------------
     private PDEConstants.PDEContentStyle mStyle;
-
+    public boolean mMiddleAligned;
 
     private Drawable mPicture;
 
@@ -77,7 +77,7 @@ public class PDEDrawableMusicMetaphorImage extends PDEDrawableBase {
         // init PDE defaults
         mStyle = PDEConstants.PDEContentStyle.PDEContentStyleFlat;
         mPicture = drawable;
-
+        mMiddleAligned = false;
 
         //define colors
         mOutlineFlatColor = new PDEColor();
@@ -279,10 +279,10 @@ public class PDEDrawableMusicMetaphorImage extends PDEDrawableBase {
      * changed).
      */
     private void performLayoutCalculationsFlat(Rect bounds){
-        Rect frame = new Rect(Math.round(mPixelShift),
+        Rect frame = elementCalculateAspectRatioBounds(new Rect(Math.round(mPixelShift),
                 Math.round(mPixelShift),
                 Math.round(bounds.width() - mPixelShift),
-                Math.round(bounds.height() - mPixelShift));
+                Math.round(bounds.height() - mPixelShift)));
 
         //size of the outline
         mOuterRect = new RectF(frame.left, frame.top, frame.right, frame.bottom);
@@ -300,8 +300,10 @@ public class PDEDrawableMusicMetaphorImage extends PDEDrawableBase {
      * changed).
      */
     private void performLayoutCalculationsHaptic(Rect bounds){
-        mFrame = new Rect(Math.round(mPixelShift), Math.round(mPixelShift), Math.round(bounds.width() - mPixelShift),
-                Math.round(bounds.height() - mPixelShift));
+        mFrame = elementCalculateAspectRatioBounds(new Rect(Math.round(mPixelShift),
+                Math.round(mPixelShift),
+                Math.round(bounds.width() - mPixelShift),
+                Math.round(bounds.height() - mPixelShift)));
 
         //calculate size unit
         mElementUnit = (1.0f / 40.0f) * mFrame.width();
@@ -507,6 +509,38 @@ public class PDEDrawableMusicMetaphorImage extends PDEDrawableBase {
         return shapePath;
     }
 
+    /**
+     * @brief Calculate the correct aspect ratio bounds.
+     *
+     * @param bounds Available space for the element
+     * @return Rect with correct aspect ratio, fitting in available space
+     */
+    public Rect elementCalculateAspectRatioBounds(Rect bounds) {
+        Rect newBounds;
+
+        //calculate bounds depending on aspect ratio
+        if ((float)bounds.width() / (float)bounds.height() > 1 ) {
+            newBounds = new Rect(bounds.left, bounds.top, bounds.right, bounds.bottom);
+            newBounds.right = newBounds.left + Math.round(((float)newBounds.height() * 1));
+
+            if (mMiddleAligned) {
+                int horizontalShift = (bounds.width()-newBounds.width())/2;
+                newBounds.left += horizontalShift;
+                newBounds.right += horizontalShift;
+            }
+        } else {
+            newBounds = new Rect(bounds.left, bounds.top, bounds.right, bounds.bottom);
+            newBounds.bottom = newBounds.top + Math.round((float)newBounds.width() / 1);
+
+            if (mMiddleAligned) {
+                int verticalShift = (bounds.height()-newBounds.height()) / 2;
+                newBounds.top += verticalShift;
+                newBounds.bottom += verticalShift;
+            }
+        }
+
+        return newBounds;
+    }
 
 
 //---------------------------------------------------------------------------------------------------------------------

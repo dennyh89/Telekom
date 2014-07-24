@@ -9,6 +9,11 @@
   -->
 
 
+<!--
+    This file is ignored by the "UnusedResource" check of lint, because it is only used in the sample.
+    If the usage is changed or the file is deleted, it could be removed from the lint.xml file "UnusedResources" issue.
+-->
+
 <!-- *** XML-Template for an activity that uses a PDE List *** -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"

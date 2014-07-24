@@ -12,6 +12,7 @@ package de.telekom.pde.codelibrary.ui.helpers;
 
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -259,4 +260,14 @@ public class PDEUtils {
 
         return result;
     }
+
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static void setLayerTypeSoftwareToView(View view) {
+        if (Build.VERSION.SDK_INT >= 11) {
+            view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+    }
+
+
 }

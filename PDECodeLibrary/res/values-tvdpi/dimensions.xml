@@ -22,7 +22,6 @@
     <dimen name="Telekom.BU9">144px</dimen>
     <dimen name="Telekom.BU10">160px</dimen>
 
-
     <dimen name="TeleGroteskDefaultSize">24px</dimen>
     <dimen name="OtherFontsDefaultSize">21.3px</dimen>
     <dimen name="StandardListItemHeight">@dimen/Telekom.BU4</dimen>

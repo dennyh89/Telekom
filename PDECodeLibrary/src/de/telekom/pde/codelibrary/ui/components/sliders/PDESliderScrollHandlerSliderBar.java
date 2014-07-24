@@ -169,8 +169,9 @@ public class PDESliderScrollHandlerSliderBar extends PDESliderScrollHandlerBase 
 
     /**
      * @brief Get the frame of the handle relative to the slider view.
-     *  Normally returns the real size of the handle frame.
-     *  If a bigger click frame is needed, just change the frame here.
+     *
+     * Normally returns the real size of the handle frame.
+     * If a bigger click frame is needed, just change the frame here.
      */
     @Override
     protected Rect getHandleClickFrame() {
@@ -183,8 +184,9 @@ public class PDESliderScrollHandlerSliderBar extends PDESliderScrollHandlerBase 
 
     /**
      * @brief Get the frame of the slider content relative to the slider view.
-     *  Normally returns the real size of the content frame.
-     *  If a bigger click frame is needed, just change the frame here.
+     *
+     * Normally returns the real size of the content frame.
+     * If a bigger click frame is needed, just change the frame here.
      */
     @Override
     protected Rect getContentClickFrame() {

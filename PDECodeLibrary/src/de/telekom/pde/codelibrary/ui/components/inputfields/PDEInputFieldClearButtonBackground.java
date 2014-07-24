@@ -11,6 +11,8 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.buttons.PDEButton;
 import de.telekom.pde.codelibrary.ui.components.buttons.PDEButtonLayerInterface;
@@ -49,14 +51,14 @@ class PDEInputFieldClearButtonBackground extends PDEAbsoluteLayout implements PD
     private final static boolean SHOW_DEBUG_LOGS = false;
 
     // local parameters needed
-    PDEParameterDictionary mParameters;
-    PDEParameter mParamColor;
+    private PDEParameterDictionary mParameters;
+    private PDEParameter mParamColor;
 
     // drawables
-    PDEDrawableShape mMainDrawable;
+    private PDEDrawableShape mMainDrawable;
 
     // agent helpers
-    PDEAgentHelper mAgentHelper;
+    private PDEAgentHelper mAgentHelper;
 
     // global variables
     //
@@ -94,7 +96,7 @@ class PDEInputFieldClearButtonBackground extends PDEAbsoluteLayout implements PD
     private void init(Context context) {
         // read default dictionaries
         PDEButtonLayerBackgroundRectGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary(
-                "dt_button_flat_color_defaults");
+                                                                                R.xml.dt_button_flat_color_defaults);
 
         // init
         mParameters = null;

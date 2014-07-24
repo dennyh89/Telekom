@@ -9,6 +9,7 @@
 
 package de.telekom.pde.codelibrary.ui.modules.login;
 
+import android.support.annotation.NonNull;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
@@ -22,21 +23,24 @@ import android.widget.TextView;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-class LinkTouchMovementMethod extends LinkMovementMethod
-{
+class LinkTouchMovementMethod extends LinkMovementMethod {
 
     boolean stateDown = false;
     TouchableURLSpan currentSpan;
+
+
     @Override
-    public boolean onTouchEvent(TextView widget, Spannable buffer,
-                                MotionEvent event) {
+    public boolean onTouchEvent(@NonNull TextView widget, @NonNull Spannable buffer,
+                                @NonNull MotionEvent event) {
         int action = event.getAction();
 
         if (action == MotionEvent.ACTION_UP ||
-                action == MotionEvent.ACTION_DOWN||
-                action == MotionEvent.ACTION_CANCEL) {
+            action == MotionEvent.ACTION_DOWN ||
+            action == MotionEvent.ACTION_CANCEL) {
             int x = (int) event.getX();
             int y = (int) event.getY();
+            int line;
+            int off = 0;
 
             x -= widget.getTotalPaddingLeft();
             y -= widget.getTotalPaddingTop();
@@ -45,8 +49,10 @@ class LinkTouchMovementMethod extends LinkMovementMethod
             y += widget.getScrollY();
 
             Layout layout = widget.getLayout();
-            int line = layout.getLineForVertical(y);
-            int off = layout.getOffsetForHorizontal(line, x);
+            if (layout != null) {
+                line = layout.getLineForVertical(y);
+                off = layout.getOffsetForHorizontal(line, x);
+            }
 
             TouchableURLSpan[] link = buffer.getSpans(off, off, TouchableURLSpan.class);
 
@@ -58,10 +64,10 @@ class LinkTouchMovementMethod extends LinkMovementMethod
                     }
                     stateDown = false;
                 } else if (action == MotionEvent.ACTION_CANCEL) {
-                    link[0].onTouch(widget,event);
+                    link[0].onTouch(widget, event);
                     stateDown = false;
                 } else if (action == MotionEvent.ACTION_DOWN) {
-                    link[0].onTouch(widget,event);
+                    link[0].onTouch(widget, event);
                     stateDown = true;
                     currentSpan = link[0];
                 }
@@ -70,9 +76,12 @@ class LinkTouchMovementMethod extends LinkMovementMethod
             } else {
                 if (stateDown) {
                     MotionEvent mo = MotionEvent.obtain(event);
-                    mo.setAction(MotionEvent.ACTION_CANCEL);
-                    currentSpan.onTouch(widget, mo);
-                    stateDown = false;
+                    if (mo != null) {
+                        mo.setAction(MotionEvent.ACTION_CANCEL);
+                        currentSpan.onTouch(widget, mo);
+                        stateDown = false;
+                        mo.recycle();
+                    }
                 }
             }
         }

@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.R;
@@ -12,10 +13,10 @@ import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.complex.PDEDrawableListHeader;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 
-
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEListHeaderView
 //----------------------------------------------------------------------------------------------------------------------
+
 
 /**
  * @brief Wrapper class hosting a PDEListHeaderView for usage in Layouts
@@ -25,37 +26,35 @@ public class PDEListHeaderView extends View {
     private PDEDrawableListHeader mHeader;
 
 
-    public PDEListHeaderView(Context context){
+    public PDEListHeaderView(Context context) {
         super(context);
-        init(null);
+        init(context, null);
     }
 
 
-    public PDEListHeaderView(Context context, AttributeSet attrs){
-        super(context,attrs);
-        init(attrs);
+    public PDEListHeaderView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs);
     }
 
 
-    public PDEListHeaderView(Context context, AttributeSet attrs, int defStyle){
-        super(context,attrs,defStyle);
-        init(attrs);
+    public PDEListHeaderView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context, attrs);
     }
 
 
     /**
      * @brief Initialize
-     *
-     *
      */
-    protected void init(AttributeSet attrs){
+    protected void init(Context context, AttributeSet attrs) {
 
         if (isInEditMode()) return;
 
         mHeader = new PDEDrawableListHeader();
 
         // adapt to light / dark style
-        if(PDECodeLibrary.getInstance().isDarkStyle()) {
+        if (PDECodeLibrary.getInstance().isDarkStyle()) {
             mHeader.setDelimiterBackgroundColor(PDEColor.valueOf("Black30Alpha"));
             mHeader.setElementBackgroundColor(PDEColor.valueOf("DTTransparentBlack"));
             mHeader.setElementTextColor(PDEColor.valueOf("DTDarkUIText"));
@@ -67,87 +66,88 @@ public class PDEListHeaderView extends View {
             mHeader.setElementSubTextColor(PDEColor.valueOf("DTLightUIIndicativeText"));
         }
 
-
-        PDEUtils.setViewBackgroundDrawable(this,mHeader);
-        setAttributes(attrs);
+        PDEUtils.setViewBackgroundDrawable(this, mHeader);
+        setAttributes(context, attrs);
     }
 
 
     /**
      * @brief Load XML attributes
      */
-    private void setAttributes(AttributeSet attrs) {
+    private void setAttributes(Context context, AttributeSet attrs) {
         // valid?
-        if(attrs==null) return;
+        if (attrs == null) return;
 
-        TypedArray sa = getContext().obtainStyledAttributes(attrs, R.styleable.PDEListHeaderView);
+        TypedArray sa = context.obtainStyledAttributes(attrs, R.styleable.PDEListHeaderView);
 
         // set text
-        if (sa.hasValue(R.styleable.PDEListHeaderView_text)) {
+        if (sa != null && sa.hasValue(R.styleable.PDEListHeaderView_text)) {
             setText(sa.getString(R.styleable.PDEListHeaderView_text));
         } else {
-            String text = attrs.getAttributeValue("http://schemas.android.com/apk/res/android","text");
+            String text = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "text");
             if (!TextUtils.isEmpty(text)) {
                 setText(text);
             }
         }
 
-        // set subtext
-        if (sa.hasValue(R.styleable.PDEListHeaderView_subText)) {
-            setSubText(sa.getString(R.styleable.PDEListHeaderView_subText));
-        }
-
-        //set horizontal alignment
-        if (sa.hasValue(R.styleable.PDEListHeaderView_horizontalAlignment)) {
-            setHorizontalAlignment(sa.getInteger(R.styleable.PDEListHeaderView_horizontalAlignment, 0));
-        }
-
-        // set text color
-        if (sa.hasValue(R.styleable.PDEListHeaderView_textColor)) {
-            //to have dark/light style use PDEColor with color id
-            int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_textColor,0);
-            if (resourceID != 0) {
-                setTextColor(PDEColor.valueOfColorID(resourceID));
-            } else {
-                setTextColor(sa.getColor(R.styleable.PDEListHeaderView_textColor, R.color.DTBlack));
+        if (sa != null) {
+            // set subtext
+            if (sa.hasValue(R.styleable.PDEListHeaderView_subText)) {
+                setSubText(sa.getString(R.styleable.PDEListHeaderView_subText));
             }
-        }
 
-        // set subtext color
-        if (sa.hasValue(R.styleable.PDEListHeaderView_subTextColor)) {
-            //to have dark/light style use PDEColor with color id
-            int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_subTextColor,0);
-            if (resourceID != 0) {
-                setSubTextColor(PDEColor.valueOfColorID(resourceID));
-            } else {
-                setSubTextColor(sa.getColor(R.styleable.PDEListHeaderView_subTextColor, R.color.DTBlack));
+            //set horizontal alignment
+            if (sa.hasValue(R.styleable.PDEListHeaderView_horizontalAlignment)) {
+                setHorizontalAlignment(sa.getInteger(R.styleable.PDEListHeaderView_horizontalAlignment, 0));
             }
-        }
 
-        // set background color
-        if (sa.hasValue(R.styleable.PDEListHeaderView_backgroundColor)) {
-            //to have dark/light style use PDEColor with color id
-            int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_backgroundColor,0);
-            if (resourceID != 0) {
-                setBackgroundColor(PDEColor.valueOfColorID(resourceID));
-            } else {
-                setBackgroundColor(sa.getColor(R.styleable.PDEListHeaderView_backgroundColor, R.color.DTBlack));
+            // set text color
+            if (sa.hasValue(R.styleable.PDEListHeaderView_textColor)) {
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_textColor, 0);
+                if (resourceID != 0) {
+                    setTextColor(PDEColor.valueOfColorID(resourceID));
+                } else {
+                    setTextColor(sa.getColor(R.styleable.PDEListHeaderView_textColor, R.color.DTBlack));
+                }
             }
-        }
 
-        // set delimiter background color
-        if (sa.hasValue(R.styleable.PDEListHeaderView_delimiterBackgroundColor)) {
-            //to have dark/light style use PDEColor with color id
-            int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_delimiterBackgroundColor,0);
-            if (resourceID!=0) {
-                setDelimiterBackgroundColor(PDEColor.valueOfColorID(resourceID));
-            } else {
-                setDelimiterBackgroundColor(sa.getColor(R.styleable.PDEListHeaderView_delimiterBackgroundColor,
-                                                        R.color.DTBlack));
+            // set subtext color
+            if (sa.hasValue(R.styleable.PDEListHeaderView_subTextColor)) {
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_subTextColor, 0);
+                if (resourceID != 0) {
+                    setSubTextColor(PDEColor.valueOfColorID(resourceID));
+                } else {
+                    setSubTextColor(sa.getColor(R.styleable.PDEListHeaderView_subTextColor, R.color.DTBlack));
+                }
             }
+
+            // set background color
+            if (sa.hasValue(R.styleable.PDEListHeaderView_backgroundColor)) {
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_backgroundColor, 0);
+                if (resourceID != 0) {
+                    setBackgroundColor(PDEColor.valueOfColorID(resourceID));
+                } else {
+                    setBackgroundColor(sa.getColor(R.styleable.PDEListHeaderView_backgroundColor, R.color.DTBlack));
+                }
+            }
+
+            // set delimiter background color
+            if (sa.hasValue(R.styleable.PDEListHeaderView_delimiterBackgroundColor)) {
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEListHeaderView_delimiterBackgroundColor, 0);
+                if (resourceID != 0) {
+                    setDelimiterBackgroundColor(PDEColor.valueOfColorID(resourceID));
+                } else {
+                    setDelimiterBackgroundColor(sa.getColor(R.styleable.PDEListHeaderView_delimiterBackgroundColor,
+                                                            R.color.DTBlack));
+                }
+            }
+
+            sa.recycle();
         }
-        
-        sa.recycle();
     }
 
 
@@ -172,7 +172,9 @@ public class PDEListHeaderView extends View {
      */
     @SuppressWarnings("unused")
     public void setTextFromID(int id) {
-        setText(getResources().getString(id));
+        if (getResources() != null) {
+            setText(getResources().getString(id));
+        }
     }
 
 
@@ -198,7 +200,9 @@ public class PDEListHeaderView extends View {
      */
     @SuppressWarnings("unused")
     public void setSubTextFromID(int id) {
-        setSubText(getResources().getString(id));
+        if (getResources() != null) {
+            setSubText(getResources().getString(id));
+        }
     }
 
 

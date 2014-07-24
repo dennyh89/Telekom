@@ -24,4 +24,5 @@ public class PDEAvailableShapes {
     protected static final int SHAPE_ROUNDED_RECT = 1;
     protected static final int SHAPE_OVAL = 2;
     protected static final int SHAPE_CUSTOM_PATH = 3;
+    protected static final int SHAPE_CUSTOM_CORNERS = 4;
 }

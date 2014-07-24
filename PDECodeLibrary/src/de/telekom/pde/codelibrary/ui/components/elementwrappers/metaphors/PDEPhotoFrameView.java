@@ -15,6 +15,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
+
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
@@ -25,6 +26,7 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEPhotoFrameView
 //----------------------------------------------------------------------------------------------------------------------
+
 
 /**
  * @brief Wrapper class hosting a PDEDrawablePhotoFrame for usage in Layouts
@@ -41,7 +43,7 @@ public class PDEPhotoFrameView extends View {
     /**
      * @brief Constructor.
      */
-    public PDEPhotoFrameView(Context context){
+    public PDEPhotoFrameView(Context context) {
         super(context);
         init(null);
     }
@@ -50,8 +52,8 @@ public class PDEPhotoFrameView extends View {
     /**
      * @brief Constructor.
      */
-    public PDEPhotoFrameView(Context context, AttributeSet attrs){
-        super(context,attrs);
+    public PDEPhotoFrameView(Context context, AttributeSet attrs) {
+        super(context, attrs);
         init(attrs);
     }
 
@@ -59,8 +61,8 @@ public class PDEPhotoFrameView extends View {
     /**
      * @brief Constructor.
      */
-    public PDEPhotoFrameView(Context context, AttributeSet attrs, int defStyle){
-        super(context,attrs,defStyle);
+    public PDEPhotoFrameView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         init(attrs);
     }
 
@@ -68,36 +70,36 @@ public class PDEPhotoFrameView extends View {
     /**
      * @brief Initialize.
      */
-    protected void init(AttributeSet attrs){
+    protected void init(AttributeSet attrs) {
         mPhoto = new PDEDrawablePhotoFrame(null);
         mPhoto.setElementMiddleAligned(true);
 
-        mInternalCalculateAspectRatioBounds = new Rect(0,0,0,0);
+        mInternalCalculateAspectRatioBounds = new Rect(0, 0, 0, 0);
 
         PDEUtils.setViewBackgroundDrawable(this, mPhoto);
 
         setAttributes(attrs);
     }
 
+
     /**
      * @brief Load XML attributes.
      */
     private void setAttributes(AttributeSet attrs) {
         // valid?
-        if(attrs == null) return;
+        if (attrs == null) return;
 
         TypedArray sa = getContext().obtainStyledAttributes(attrs, R.styleable.PDEPhotoFrameView);
 
         //check icon source or string
         if (sa.hasValue(R.styleable.PDEPhotoFrameView_src)) {
             //check if this is a resource value
-            int resourceID = sa.getResourceId(R.styleable.PDEPhotoFrameView_src,0);
-            if(resourceID != 0){
+            int resourceID = sa.getResourceId(R.styleable.PDEPhotoFrameView_src, 0);
+            if (resourceID != 0) {
                 setPictureDrawable(getContext().getResources().getDrawable(resourceID));
             }
-        }
-        else {
-            int res = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android","src",-1);
+        } else {
+            int res = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android", "src", -1);
             if (res != -1) {
                 setPictureDrawable(getContext().getResources().getDrawable(res));
             }
@@ -111,8 +113,8 @@ public class PDEPhotoFrameView extends View {
         //set picture string
         if (sa.hasValue(R.styleable.PDEPhotoFrameView_pictureString)) {
             //check if this is a resource value
-            int resourceID = sa.getResourceId(R.styleable.PDEPhotoFrameView_pictureString,0);
-            if(resourceID==0){
+            int resourceID = sa.getResourceId(R.styleable.PDEPhotoFrameView_pictureString, 0);
+            if (resourceID == 0) {
                 setPictureString(sa.getString(R.styleable.PDEPhotoFrameView_pictureString));
             } else {
                 setPictureDrawable(getContext().getResources().getDrawable(resourceID));
@@ -123,7 +125,10 @@ public class PDEPhotoFrameView extends View {
         if (sa.hasValue(R.styleable.PDEPhotoFrameView_shadowEnabled)) {
             setShadowEnabled(sa.getBoolean(R.styleable.PDEPhotoFrameView_shadowEnabled, false));
         }
+
+        sa.recycle();
     }
+
 
     /**
      * @brief Set visual style.
@@ -131,6 +136,7 @@ public class PDEPhotoFrameView extends View {
     public void setContentStyle(PDEConstants.PDEContentStyle style) {
         mPhoto.setElementContentStyle(style);
     }
+
 
     /**
      * @brief Set visual style.
@@ -145,12 +151,14 @@ public class PDEPhotoFrameView extends View {
         mPhoto.setElementContentStyle(contentStyle);
     }
 
+
     /**
      * @brief Get visual style.
      */
     public PDEConstants.PDEContentStyle getContentStyle() {
         return mPhoto.getElementContentStyle();
     }
+
 
     /**
      * @brief Set photo from int id.
@@ -187,7 +195,6 @@ public class PDEPhotoFrameView extends View {
     public Drawable getPictureDrawable() {
         return mPhoto.getElementPicture();
     }
-
 
 
     /**
@@ -276,15 +283,16 @@ public class PDEPhotoFrameView extends View {
         }
 
         if (mPhoto != null) {
-            mInternalCalculateAspectRatioBounds.set(0,0,width,height);
-            mInternalCalculateAspectRatioBounds = mPhoto.elementCalculateAspectRatioBounds(mInternalCalculateAspectRatioBounds);
+            mInternalCalculateAspectRatioBounds.set(0, 0, width, height);
+            mInternalCalculateAspectRatioBounds = mPhoto.elementCalculateAspectRatioBounds(
+                    mInternalCalculateAspectRatioBounds);
             width = mInternalCalculateAspectRatioBounds.width();
             height = mInternalCalculateAspectRatioBounds.height();
         }
 
         // return the values
         setMeasuredDimension(resolveSize(width, widthMeasureSpec),
-                resolveSize(height,heightMeasureSpec));
+                             resolveSize(height, heightMeasureSpec));
     }
 }
 

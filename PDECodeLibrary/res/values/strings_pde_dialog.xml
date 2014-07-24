@@ -7,7 +7,22 @@
   ~ Copyright (c) 2012. Neuland Multimedia GmbH.
   -->
 
-<resources>
+<!--
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    Lint ignores all "UnusedResource" (defined in lint.xml", because this are library defaults and use them in the
+    pde_dialog_buttons_identifier.xml and pde_dialog_identifier.xml files. They have a plist (ios) syntax to have same
+    key/value pairs like on ios
+    Be carefully when you edit/remov/add values here
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="de">
+    <!--
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    This is the default file for strings -> Set the correct language text here
+    !!!!!!!!!!!!!!!!!!!!!! At the moment this is german !!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    -->
+
     <!-- Dialog titles and texts -->
     <string name="NETWORK_ERROR_title">"Keine Internetverbindung"</string>
     <string name="NETWORK_ERROR_text">"Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es anschließend noch einmal."</string>

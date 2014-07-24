@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!--
+        Ignore the UnusedResources issue in the given files, because they (or maybe the class where they are used)
+        are not used in the library, but maybe in some other app
+     -->
+    <issue id="UnusedResources">
+        <ignore path="res/layout/pde_list_activity.xml" />
+        <ignore path="res/layout/pde_list_plain_graphic_multi_line_row.xml" />
+        <ignore path="res/layout/pde_list_plain_graphic_single_line_large_row.xml" />
+        <ignore path="res/layout/pde_list_plain_graphic_single_line_medium_row.xml" />
+        <ignore path="res/layout/pde_list_plain_graphic_single_line_small_row.xml" />
+        <ignore path="res/layout/pde_list_plain_graphic_two_line_large_row.xml" />
+        <ignore path="res/layout/pde_list_plain_icon_multi_line_row.xml" />
+        <ignore path="res/layout/pde_list_plain_icon_single_line_large_row.xml" />
+        <ignore path="res/layout/pde_list_plain_icon_single_line_medium_row.xml" />
+        <ignore path="res/layout/pde_list_plain_icon_single_line_small_row.xml" />
+        <ignore path="res/layout/pde_list_plain_icon_two_line_large_row.xml" />
+        <ignore path="res/layout/pde_list_plain_text_multi_line_row.xml" />
+        <ignore path="res/layout/pde_list_plain_text_single_line_large_row.xml" />
+        <ignore path="res/layout/pde_list_plain_text_single_line_medium_row.xml" />
+        <ignore path="res/layout/pde_list_plain_text_single_line_small_row.xml" />
+        <ignore path="res/layout/pde_list_plain_text_two_line_large_row.xml" />
+    </issue>
+    <!--
+        Ignore the UnusedResources issue in the given string files, because they are not used in the normal android way.
+        They where set in a "plist"-structured xml file to be able to use the ios file on android platform.
+        There is no resource reference possible, so it seems that the strings are unused.
+     -->
+    <issue id="UnusedResources">
+        <ignore regexp="res/values.*/strings_pde_dialog.xml"/>
+    </issue>
+    <!--
+        Ignore the UnusedResources issue in the given files, because they (or maybe the class where they are used)
+        are not used in the library, but maybe in some other app
+     -->
+    <issue id="UnusedResources">
+        <ignore regexp="res/values.*/dimensions.xml"/>
+    </issue>
+    <!--
+    Ignore the UnusedResources issue for the given drawables, because they (or maybe the class where they are used)
+    are not used in the library, but maybe in some other app
+ -->
+    <issue id="UnusedResources">
+        <ignore path="res/drawable-nodpi/leftmenu_background.png"/>
+    </issue>
+
+
+    <!-- used in the sample multiple select app -->
+    <issue id="UnusedResources">
+        <ignore path="res/drawable/multiple_select_listitem_selector.xml"/>
+        <ignore path="res/drawable/multiple_select_listitem_selector_selected.xml"/>
+    </issue>
+
+
+    <!--
+    Ignore overdraw (root element has background) in dialog
+    -->
+    <issue id="Overdraw">
+        <ignore path="res/layout/pde_dialog_full.xml" />
+        <ignore path="res/layout/pde_dialog_title_only.xml" />
+    </issue>
+</lint>

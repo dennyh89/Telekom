@@ -76,6 +76,7 @@ public class PDEAnimationRoot extends PDEAnimationGroup {
      *
      * @return singleton instance of PDEAnimationRoot.
      */
+    @SuppressWarnings("SameReturnValue")
     public static PDEAnimationRoot getRoot() {
         return SingletonHolder.INSTANCE;
     }

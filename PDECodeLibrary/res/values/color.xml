@@ -143,4 +143,14 @@
     <color name="KDTestHalf3">#8800ff00</color>
     <color name="KDGrey237Half">#88EDEDED</color>
 
+    <!-- data visualisation colors  -->
+    <color name="DTDVYellow">#FFD329</color>
+    <color name="DTDVOrange">#FF9A1E</color>
+    <color name="DTDVPurple">#992C99</color>
+    <color name="DTDVLightBlue">#53BAF2</color>
+    <color name="DTDVDarkBlue">#1063AD</color>
+    <color name="DTDVPetrol">#1BADA2</color>
+    <color name="DTDVGreen">#BFCB44</color>
+
+
 </resources>

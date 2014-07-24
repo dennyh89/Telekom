@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    This is the english file for strings -> Set the english text here
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    -->
+    <string name="app_name">PDECodeLibrary</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_screen_footer_content_description">Deutsche Telekom</string>
+    <string name="splash_screen_app_icon_content_description">PDECodeLibrary</string>
+</resources>

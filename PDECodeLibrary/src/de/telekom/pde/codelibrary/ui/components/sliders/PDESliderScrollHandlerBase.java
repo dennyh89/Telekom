@@ -95,7 +95,7 @@ public abstract class PDESliderScrollHandlerBase implements PDEIEventSource {
         mAgentController = new PDEAgentController();
 
         // catch agent controller events for animation
-        mAgentController.addListener(this,"cbAgentController",PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK);
+        mAgentController.addListener(this, "cbAgentController", PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK);
     }
 
 
@@ -181,7 +181,7 @@ public abstract class PDESliderScrollHandlerBase implements PDEIEventSource {
      *
      * Also a position of our range 0...1 is passed.
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void actionTouchUp(float position) {
         // do nothing in base class
     }
@@ -192,7 +192,7 @@ public abstract class PDESliderScrollHandlerBase implements PDEIEventSource {
      *
      * Also a position of our range 0...1 is passed.
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "EmptyMethod"})
     protected void actionTouchCancel(float position) {
         // do nothing in base class
     }
@@ -264,7 +264,6 @@ public abstract class PDESliderScrollHandlerBase implements PDEIEventSource {
 
         // has handle been hit?
         if (mDragActive) {
-
             // get Start handle
             handleFrame  = new Rect(mDragStartHandleFrame);
             handleWidth  = handleFrame.width();
@@ -272,15 +271,11 @@ public abstract class PDESliderScrollHandlerBase implements PDEIEventSource {
 
             // determine position relative to movement and content orientation
             if (mContentOrientation == PDESliderContentOrientation.PDESliderContentOrientationHorizontal) {
-
                 // horizontal
                 handleFrame.left  = location.left - mDragStartTouchLocation.left +mDragStartHandleFrame.left;
                 handleFrame.right = handleFrame.left + handleWidth;
 
-            }
-
-            else if(mContentOrientation == PDESliderContentOrientation.PDESliderContentOrientationVertical) {
-
+            } else if (mContentOrientation == PDESliderContentOrientation.PDESliderContentOrientationVertical) {
                 // vertical
                 handleFrame.top = location.top - mDragStartTouchLocation.top + mDragStartHandleFrame.top;
                 handleFrame.bottom = handleFrame.top + handleHeight;
@@ -356,6 +351,13 @@ public abstract class PDESliderScrollHandlerBase implements PDEIEventSource {
         }
     }
 
+    public void addHighlight(){
+        mAgentController.addHighlight();
+    }
+
+    public void removeHighlight(){
+        mAgentController.removeHighlight();
+    }
 
 // ----- Helper --------------------------------------------------------------------------------------------------------
 

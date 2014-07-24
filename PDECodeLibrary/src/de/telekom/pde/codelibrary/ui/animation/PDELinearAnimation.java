@@ -72,6 +72,7 @@ public class PDELinearAnimation extends PDEAnimation {
         mSpeed = 0.0;
     }
 
+
     /**
      * @brief Animate ourself.
      *
@@ -91,7 +92,7 @@ public class PDELinearAnimation extends PDEAnimation {
 
         // get current time for calculations
         time = getTime();
-        if(DEBUGPARAMS){
+        if (DEBUGPARAMS){
             Log.d(LOG_TAG, "Time: "+time+" "+this);
         }
 
@@ -117,7 +118,7 @@ public class PDELinearAnimation extends PDEAnimation {
         // calculate interpolated value
         value = mStartValue + (getTarget() - mStartValue) * (((double) time) / getDuration());
 
-        if(DEBUGPARAMS){
+        if (DEBUGPARAMS) {
             Log.d(LOG_TAG, "Start value: "+mStartValue+" End value: "+getTarget()+" "+this);
             Log.d(LOG_TAG, "Calculated value: "+value+" "+this);
         }
@@ -139,7 +140,7 @@ public class PDELinearAnimation extends PDEAnimation {
             }
         }
 
-        if(DEBUGPARAMS){
+        if (DEBUGPARAMS) {
             Log.d(LOG_TAG, "Value to be set: "+value+" "+this);
         }
 

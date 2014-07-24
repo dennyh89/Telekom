@@ -13,6 +13,7 @@ package de.telekom.pde.codelibrary.ui.agents;
 //----------------------------------------------------------------------------------------------------------------------
 
 
+import android.annotation.SuppressLint;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.util.Log;
@@ -158,9 +159,11 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
         // check if the delivered View is a item of our PDEListView
         mIsListItem = (view instanceof PDEListItem);
 
-        //mIsListItem = false;
+        // mIsListItem = false;
         // set touch listener
         getView().setOnTouchListener(new View.OnTouchListener() {
+            // try to ignore warning, because it is handled by ourself
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 int action = motionEvent.getAction();
@@ -348,7 +351,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
      * in a successful tap.
      */
     @SuppressWarnings("unused")
-    private void actionTouchUpInside(Object sender, InputEvent event) {
+    private void actionTouchUpInside(View sender, InputEvent event) {
         // are we really down? Otherwise we don't react
         if (!mDown) {
             return;
@@ -361,6 +364,10 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
         if (getAgentController() != null) {
             getAgentController().doPress();
         }
+
+        // lint claims we should do this - for accessibility reasons
+        // -> since we don't steal the touch everything should be fine even without performClick
+        // sender.performClick();
 
         // loose the highlight
         if (mHighlight) {
@@ -380,7 +387,7 @@ public class PDEAgentControllerAdapterView implements PDEIEventSource {
      * We are released while the finger is outside. The press is cancelled.
      */
     @SuppressWarnings("unused")
-    private void actionTouchUpOutside(Object sender, InputEvent event) {
+    private void actionTouchUpOutside(View sender, InputEvent event) {
         // are we really down? Otherwise we don't react
         if (!mDown) {
             return;

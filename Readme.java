@@ -533,11 +533,91 @@ Release notes
 =============
 
 __Current public version__<br />
-4.0.2
+4.5
  
 __Current non-public version__<br />
-4.0.2
- 
+4.5
+
+Major 4.5 (public)
+--------------------
+
+__Date__<br />
+24.07.2014
+
+__Server__<br />
+git.design.telekom.com
+
+__Repositories__<br />
+PDECodeLibrary_Android.git, PDECodeSamples_Android.git, PDECodeLibrary_Android_Docu.git
+
+__Branch__<br />
+master
+
+__Content__<br />
+
+The Code Library version 4.5 adds components for notification
+(infoflag and tooltip), sectioned buttons and data visualisation
+(usage bars and usage circles).
+
+Feature 4.4.0 (non-public)
+---------------------------
+
+Data visualisation components added: Usage bars
+and usage circles.
+
+Feature 4.3.0 (non-public)
+---------------------------
+
+Infoflags added.
+
+Feature 4.2.0 (non-public)
+---------------------------
+
+Tooltips added.
+
+Feature 4.1.0 (non-public)
+---------------------------
+
+Sectioned buttons added.
+
+Patch 4.0.4 (public)
+--------------------
+
+__Date__<br />
+18.06.2014
+
+__Server__<br />
+git.design.telekom.com
+
+__Repositories__<br />
+PDECodeLibrary_Android.git
+
+__Branch__<br />
+master
+
+__Content__<br />
+
+Save state of PDEButton fixed.
+
+Patch 4.0.3 (public)
+--------------------
+
+__Date__<br />
+10.06.2014
+
+__Server__<br />
+git.design.telekom.com
+
+__Repositories__<br />
+PDECodeLibrary_Android.git, PDECodeSamples_Android.git
+
+__Branch__<br />
+master
+
+__Content__<br />
+
+Use gradle version 19.1.0.
+
 Patch 4.0.2 (public)
 --------------------
 

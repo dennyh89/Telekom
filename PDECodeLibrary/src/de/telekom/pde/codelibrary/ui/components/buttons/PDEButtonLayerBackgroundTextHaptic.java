@@ -11,6 +11,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
@@ -26,7 +27,6 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 
 
-
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEButtonLayerBackgroundTextHaptic
 //----------------------------------------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ class PDEButtonLayerBackgroundTextHaptic extends PDEAbsoluteLayout implements PD
     /**
      * @brief Global tag for log outputs.
      */
-	@SuppressWarnings("unused")
+    @SuppressWarnings("unused")
     private final static String LOG_TAG = PDEButtonLayerBackgroundTextHaptic.class.getName();
     private final static boolean DEBUGPARAMS = false;
 
@@ -49,13 +49,17 @@ class PDEButtonLayerBackgroundTextHaptic extends PDEAbsoluteLayout implements PD
     private PDEParameter mParamFillColor;
 
     // agent helpers
-    PDEAgentHelper mAgentHelper;
-    PDEDrawableSunkenArea mSunkenDrawable;
+    private PDEAgentHelper mAgentHelper;
+    private PDEDrawableSunkenArea mSunkenDrawable;
 
     // global variables
     //
-    public static PDEDictionary PDEButtonLayerBackgroundTextHapticGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_gradient_color_defaults");
-    public static PDEDictionary PDEButtonLayerBackgroundTextHapticGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
+    public static PDEDictionary
+            PDEButtonLayerBackgroundTextHapticGlobalColorDefault
+            = PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_gradient_color_defaults);
+    public static PDEDictionary
+            PDEButtonLayerBackgroundTextHapticGlobalBorderDefault
+            = PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_border_color_defaults);
 
     // helper
     protected boolean mDarkStyle = false;
@@ -64,17 +68,20 @@ class PDEButtonLayerBackgroundTextHaptic extends PDEAbsoluteLayout implements PD
     /**
      * @brief Constructor.
      */
+    @SuppressWarnings("unused")
     public PDEButtonLayerBackgroundTextHaptic(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
+
     /**
      * @brief Constructor.
      */
+    @SuppressWarnings("unused")
     public PDEButtonLayerBackgroundTextHaptic(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init (context);
+        init(context);
     }
 
 
@@ -92,7 +99,7 @@ class PDEButtonLayerBackgroundTextHaptic extends PDEAbsoluteLayout implements PD
         mDarkStyle = PDECodeLibrary.getInstance().isDarkStyle();
 
         mSunkenDrawable = new PDEDrawableSunkenArea();
-        if (mDarkStyle){
+        if (mDarkStyle) {
             mSunkenDrawable.setElementInnerShadowColor(PDEColor.valueOf("Black75Alpha"));
         } else {
             mSunkenDrawable.setElementInnerShadowColor(PDEColor.valueOf("Black40Alpha"));
@@ -165,11 +172,14 @@ class PDEButtonLayerBackgroundTextHaptic extends PDEAbsoluteLayout implements PD
 
         // check for color or border changes (all in one go)
         if (force
-                || !PDEParameterDictionary.areParametersEqual(mParameters, oldParams, PDEButton.PDEButtonParameterColor)
-                || !PDEParameterDictionary.areParametersEqual(mParameters, oldParams, PDEButton.PDEButtonParameterBorderColor)) {
+            || !PDEParameterDictionary.areParametersEqual(mParameters, oldParams, PDEButton.PDEButtonParameterColor)
+            || !PDEParameterDictionary.areParametersEqual(mParameters,
+                                                          oldParams,
+                                                          PDEButton.PDEButtonParameterBorderColor)) {
             prepareColors();
         }
     }
+
 
     @Override
     public void collectHints(PDEDictionary hints) {
@@ -203,9 +213,9 @@ class PDEButtonLayerBackgroundTextHaptic extends PDEAbsoluteLayout implements PD
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         super.onSizeChanged(width, height, oldWidth, oldHeight);
-        PDEAbsoluteLayoutHelper.setViewRect(mSunkenDrawable.getWrapperView(),new Rect(0, 0, width, height));
+        PDEAbsoluteLayoutHelper.setViewRect(mSunkenDrawable.getWrapperView(), new Rect(0, 0, width, height));
         mSunkenDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+                                                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
         mSunkenDrawable.setElementShapeRoundedRect(PDEBuildingUnits.oneThirdBU());
     }
 
@@ -233,16 +243,20 @@ class PDEButtonLayerBackgroundTextHaptic extends PDEAbsoluteLayout implements PD
         //!!!!!!!!!!!!!!!!!!! CODE BELOW ONLY FOR 3.0 RELEASE - NEED BETTER SOLUTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         PDEColor color = mParameters.parameterColorForName(PDEButton.PDEButtonParameterColor);
-        if(color!=null && !PDEButtonLayerBackgroundTextHapticGlobalBorderDefault.containsKey(color.getHexColorString())) {
-            PDEDictionary dict = (PDEDictionary) PDEButtonLayerBackgroundTextHapticGlobalBorderDefault.get(PDEColor.valueOfColorID(R.color.DTGrey237).getHexColorString());
-            PDEButtonLayerBackgroundTextHapticGlobalBorderDefault.put(color.getHexColorString(),dict);
+        if (color != null
+            && !PDEButtonLayerBackgroundTextHapticGlobalBorderDefault.containsKey(color.getHexColorString())) {
+            PDEDictionary
+                    dict
+                    = (PDEDictionary) PDEButtonLayerBackgroundTextHapticGlobalBorderDefault.get(PDEColor.valueOfColorID(
+                    R.color.DTGrey237).getHexColorString());
+            PDEButtonLayerBackgroundTextHapticGlobalBorderDefault.put(color.getHexColorString(), dict);
         }
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //!!!!!!!!!!!!!!!!!!! CODE ABOVE ONLY FOR 3.0 RELEASE - NEED BETTER SOLUTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         // debug output
-        if(DEBUGPARAMS) {
+        if (DEBUGPARAMS) {
             mParamColor.debugOut("Color before building");
             mParamBorderColor.debugOut("Border before building");
             mParamFillColor.debugOut("Fill before building");
@@ -250,11 +264,11 @@ class PDEButtonLayerBackgroundTextHaptic extends PDEAbsoluteLayout implements PD
 
         // calculate color agent states
         PDEComponentHelpers.buildColors(mParamColor, PDEButtonLayerBackgroundTextHapticGlobalColorDefault,
-                "DTLightUIInteractive", PDEAgentHelper.PDEAgentHelperAnimationInteractive);
+                                        "DTLightUIInteractive", PDEAgentHelper.PDEAgentHelperAnimationInteractive);
 
         // calculate color border agent states
         PDEComponentHelpers.buildColors(mParamBorderColor, PDEButtonLayerBackgroundTextHapticGlobalBorderDefault,
-                mParamColor, null, PDEAgentHelper.PDEAgentHelperAnimationInteractive);
+                                        mParamColor, null, PDEAgentHelper.PDEAgentHelperAnimationInteractive);
 
         // if border color for a state is still not defined, calculate it from main agent colors (use gradient darker step)
         PDEComponentHelpers.fillBorderColors(mParamBorderColor, mParamColor);
@@ -266,10 +280,13 @@ class PDEButtonLayerBackgroundTextHaptic extends PDEAbsoluteLayout implements PD
         PDEComponentHelpers.brightenColors(mParamFillColor);
 
         // calculate fill color agent states (after brighten step). Default color when nothing set is white here
-        PDEComponentHelpers.buildColors(mParamFillColor, null, "DTWhite", PDEAgentHelper.PDEAgentHelperAnimationInteractive);
+        PDEComponentHelpers.buildColors(mParamFillColor,
+                                        null,
+                                        "DTWhite",
+                                        PDEAgentHelper.PDEAgentHelperAnimationInteractive);
 
         // debug output
-        if(DEBUGPARAMS) {
+        if (DEBUGPARAMS) {
             mParamColor.debugOut("Color after building");
             mParamBorderColor.debugOut("Border after building");
             mParamFillColor.debugOut("Fill after building");
@@ -284,13 +301,13 @@ class PDEButtonLayerBackgroundTextHaptic extends PDEAbsoluteLayout implements PD
      * @brief Update colors (fully animated).
      */
     private void updateColors() {
-        PDEColor mainColor,borderColor;
+        PDEColor mainColor, borderColor;
 
         // interpolate colors by calling complex logic color interpolation helper
         mainColor = PDEComponentHelpers.interpolateColor(mParamFillColor, mAgentHelper,
-                PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
+                                                         PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
         borderColor = PDEComponentHelpers.interpolateColor(mParamBorderColor, mAgentHelper,
-                PDEAgentHelper.PDEAgentHelperAnimationInteractive,null);
+                                                           PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
 
         // set the gradient and border colors
         mSunkenDrawable.setElementBackgroundColor(mainColor);

@@ -23,12 +23,12 @@ import android.graphics.Rect;
  * Contains some useful layouting rectangles. Layouts are sent to the button layers in order and may be modified
  * by them to constrain other layers.
  */
-public class PDEButtonLayoutHelper
-{
+public class PDEButtonLayoutHelper {
     // layouting rect
-    public Rect mButtonRect; //screenrect
-    public Rect mLayoutRect; //outlineRect
+    public Rect mButtonRect; //screen-rect
+    public Rect mLayoutRect; //outline-rect
     public Rect mClipRect;
+
 
     @SuppressWarnings("unused")
     public PDEButtonLayoutHelper() {
@@ -37,6 +37,7 @@ public class PDEButtonLayoutHelper
         mClipRect = new Rect(0, 0, 0, 0);
     }
 
+
     @SuppressWarnings("unused")
     public PDEButtonLayoutHelper(PDEButtonLayoutHelper helper) {
         mButtonRect = new Rect(helper.mButtonRect);
@@ -44,7 +45,8 @@ public class PDEButtonLayoutHelper
         mClipRect = new Rect(helper.mClipRect);
     }
 
-    public boolean equals(PDEButtonLayoutHelper helper){
+
+    public boolean equals(PDEButtonLayoutHelper helper) {
         return (mButtonRect.left == helper.mButtonRect.left &&
            mButtonRect.top == helper.mButtonRect.top &&
            mButtonRect.right == helper.mButtonRect.right &&

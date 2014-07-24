@@ -8,11 +8,15 @@
 package de.telekom.pde.codelibrary.ui.activity;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.inflater.PDEInflaterUtils;
 
+
+@SuppressWarnings("EmptyMethod")
+@SuppressLint("Registered")
 public class PDEActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

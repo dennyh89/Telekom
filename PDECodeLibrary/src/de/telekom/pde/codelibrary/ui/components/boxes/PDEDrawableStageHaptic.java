@@ -19,7 +19,10 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableMultilayer;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
 
 
-public class PDEDrawableStageHaptic extends PDEDrawableMultilayer {
+/**
+ * @brief Drawable for a stage area in haptic style.
+ */
+ public class PDEDrawableStageHaptic extends PDEDrawableMultilayer {
     protected PDEDrawableRoundedGradientBox mStageDrawable;
     protected PDEDrawableShapedShadow mShadow;
 

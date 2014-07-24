@@ -1147,9 +1147,7 @@ public class PDEParameter {
         Log.d(LOG_TAG, "Parameter '" + title +"' (" + mParameters.size() + " entries):" );
 
         // get keys and sort them for output
-        //TODO check if this really copies the Dictionary key set, objects are untouched so this should work
         keys.addAll(new HashSet<String>(mParameters.keySet()));
-
 
         Collections.sort(keys);
 

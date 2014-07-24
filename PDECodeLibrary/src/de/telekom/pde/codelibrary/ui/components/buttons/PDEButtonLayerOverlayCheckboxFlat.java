@@ -21,7 +21,7 @@ import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableArea;
 
 
 /**
- * @brief Background for a flat Checkbox button.
+ * @brief Background for a flat checkbox button.
  */
 class PDEButtonLayerOverlayCheckboxFlat extends PDEButtonLayerOverlayCheckboxBase {
 

@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -23,7 +24,7 @@ import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.components.dialog.PDEDialog;
 import de.telekom.pde.codelibrary.ui.components.inputfields.PDEInputField;
 import de.telekom.pde.codelibrary.ui.components.inputfields.PDEInputFieldEvent;
-import de.telekom.pde.codelibrary.ui.components.notification.PDEInfoFlagView;
+import de.telekom.pde.codelibrary.ui.components.notification.PDEInfoFlag;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
@@ -32,7 +33,6 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEOneIDMLoginScreenActivity
 //----------------------------------------------------------------------------------------------------------------------
-
 
 
 /**
@@ -52,9 +52,11 @@ public class PDEOneIDMLoginScreenActivity
     // because scope is unused in the current library version -> suppress warnings 
     @SuppressWarnings("unused")
     private String mScope;
-    
+
+
+    @SuppressWarnings("unused")
     private boolean mPersistentRequest;
-    private PDEInfoFlagView mUsernameInfoToolTip;
+    private PDEInfoFlag mUsernameInfoToolTip;
     private Runnable mUsernameShowInfoRunnable;
     private Handler mHandler;
     private ProgressIndicatorFragment mProgressIndicatorFragment;
@@ -94,6 +96,7 @@ public class PDEOneIDMLoginScreenActivity
     private final static boolean DEBUG_SHOW_IDM_VALUES = false;
     private final static boolean DEBUG_SHOW_FUNCTION_LOGS = false;
 
+
     public void onCreate(Bundle savedInstanceState) {
         Intent startIntent = getIntent();
         if (startIntent.hasExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CONTENTSTYLE)) {
@@ -105,7 +108,10 @@ public class PDEOneIDMLoginScreenActivity
 
         super.onCreate(savedInstanceState);
 
+        @SuppressWarnings("unused")
         String url = DEFAULT_AUTH_URL;
+
+        @SuppressWarnings("unused")
         String clientID = "";
 
         String email = "";
@@ -128,9 +134,10 @@ public class PDEOneIDMLoginScreenActivity
         }
         if (startIntent.hasExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_URL)) {
             url = startIntent.getStringExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_URL);
-        } else {
-            // no url might be ok, we use the default
         }
+//         else {
+//            // no url might be ok, we use the default
+//        }
         // if we read the service documents correctly there is no client secret ever in the OneIDM case.
 //        if (startIntent.hasExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CLIENT_SECRET)) {
 //            clientSecret = startIntent.getStringExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_CLIENT_SECRET);
@@ -148,7 +155,8 @@ public class PDEOneIDMLoginScreenActivity
         setTBrandLogoVisible(startIntent.getBooleanExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SHOW_T_BRAND_LOGO, false));
         // show or hide stay signed in checkbox
         setStaySignedInVisible(startIntent
-                .getBooleanExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SHOW_STAY_SIGNED_IN_CHECKBOX, true));
+                                       .getBooleanExtra(ONE_IDM_LOGIN_SCREEN_INTENT_EXTRA_SHOW_STAY_SIGNED_IN_CHECKBOX,
+                                                        true));
 
 
         // set the right content
@@ -158,7 +166,7 @@ public class PDEOneIDMLoginScreenActivity
         setRegisterAreaVisible(true);
 
         // get username info tooltip
-        mUsernameInfoToolTip = ((PDEInfoFlagView)findViewById(R.id.LoginScreenUsernameInfoToolTip));
+        mUsernameInfoToolTip = ((PDEInfoFlag) findViewById(R.id.LoginScreenUsernameInfoToolTip));
 
         // register listener to username input field in order to show info tooltip
         mUsernameInputField.addListener(this, "onUsernameInputFieldAction");
@@ -175,57 +183,32 @@ public class PDEOneIDMLoginScreenActivity
 
 
     /**
-     * @brief Login-Button was pressed by the user - fire the login to the server.
+     * @brief Login-Button was pressed by the user - check the login to the server.
      */
     @Override
     public void loginButtonClicked(final String email, final String password, final boolean staySignedIn) {
+        showProgressIndicator();
 
-
-        runOnUiThread(new Runnable() {
+        // since we don't check the credentials on the server we wait a bit...
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                showLoginFailNotification("Start validating the credentials with OneIDM!",
-                                          "email: %1$s\npassword: %2$s\nstaySignedIn: %3$s",
-                                           email,password,(staySignedIn ? "true" : "false"));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        hideProgressIndicator();
 
-//                showLoginFailNotification("Start validating the credentials with OneIDM!","email: " + email
-//                        + "\npassword: " + password
-//                        + "\nstaySignedIn: " + (staySignedIn ? "true" : "false"));
+                        showLoginFailNotification("Checking credentials!",
+                                                  "email: %1$s\npassword: %2$s\nstaySignedIn: %3$s",
+                                                  email, password, (staySignedIn ? "true" : "false"));
 
 
-//                Toast.makeText(PDEOneIDMLoginScreenActivity.this, "Start validating the credentials with OneIDM!"
-//                        + "\nemail: " + email
-//                        + "\npassword: " + password
-//                        + "\nstaySignedIn: " + (staySignedIn ? "true" : "false"),
-//                        Toast.LENGTH_SHORT)
-//                        .show();
+                    }
+                });
             }
-        });
+        }, 2000);
 
-        // since the OneIDMModule is not approved by the Group for Internet Security (GIS) we cannot show it!!
-//        String scope = mScope;
-//        if (staySignedIn) {
-//            scope += " persistent";
-//            mPersistentRequest = true;
-//        }
-//
-//        boolean result = false;
-//        try {
-//            result = mOneIDM.requestAccessToken(email, password, scope);
-//            if (!result) {
-//                showLoginFailNotification("", getResources().getString(R.string.login_screen_oneidm_activity_token_request_active_msg));
-//            }
-//        } catch (NetworkErrorException e) {
-//            showLoginFailNotification(getResources().getString(R.string.login_screen_oneidm_activity_error_no_network_title), getResources().getString(R.string.login_screen_oneidm_activity_error_no_network_msg));
-//        }
-//
-//        if (result) {
-//            // disable user interaction components
-//            enableUserInteractionFields(false);
-//
-//            // show progress dialog
-//            showProgressIndicator();
-//        }
+
     }
 
 
@@ -233,7 +216,7 @@ public class PDEOneIDMLoginScreenActivity
      * @brief Callback from the OneIDMModule, evaluates the response.
      */
     @SuppressWarnings("unused")
-    public void oneIDMEvent (PDEEvent event) {
+    public void oneIDMEvent(PDEEvent event) {
         if (DEBUG_SHOW_FUNCTION_LOGS) {
             Log.d(LOG_TAG, "onIDMEvent received");
         }
@@ -243,18 +226,17 @@ public class PDEOneIDMLoginScreenActivity
 
         if (DEBUG_SHOW_IDM_VALUES) {
             PDEDictionary resultDict = new PDEDictionary();
-            if (event.getResult() instanceof PDEDictionary)
-            {
-                resultDict = (PDEDictionary)event.getResult();
+            if (event.getResult() instanceof PDEDictionary) {
+                resultDict = (PDEDictionary) event.getResult();
             }
 
             String resultString = "";
-            for(String key : resultDict.keySet()) {
+            for (String key : resultDict.keySet()) {
                 if (!TextUtils.isEmpty(resultString)) resultString += "\n";
-                resultString += key + ": "+resultDict.get(key);
+                resultString += key + ": " + resultDict.get(key);
             }
-            Log.d(LOG_TAG, "oneIDMEvent received event "+event.getType());
-            Log.d(LOG_TAG, "oneIDMEvent received values "+resultString);
+            Log.d(LOG_TAG, "oneIDMEvent received event " + event.getType());
+            Log.d(LOG_TAG, "oneIDMEvent received values " + resultString);
         }
 
         enableUserInteractionFields(true);
@@ -292,31 +274,6 @@ public class PDEOneIDMLoginScreenActivity
     }
 
 
-
-
-
-    /**
-     * @brief Create log output of a failed login, to provide information for the developer.
-     *
-     * @param event Event which was received from the PDEOneIDMModule
-     */
-    void logLoginFail(PDEEvent event) {
-        Log.d(LOG_TAG, "oneIDMEvent Error received: "+event.getType());
-
-        if (event.getResult() instanceof PDEDictionary)
-        {
-            PDEDictionary resultDict = (PDEDictionary) event.getResult();
-            String resultString = "";
-            for(String key : resultDict.keySet()) {
-                if (!TextUtils.isEmpty(resultString)) resultString += "\n";
-                resultString += key + ": "+resultDict.get(key);
-            }
-            // this log output is intended and needed by a developer - don't disable it.
-            Log.d(LOG_TAG, "oneIDMEvent received values:\n"+resultString);
-        }
-    }
-
-
     /**
      * @brief Handle back button on our own.
      */
@@ -328,11 +285,12 @@ public class PDEOneIDMLoginScreenActivity
         finish();
     }
 
+
     /**
      * @brief Hide tooltips if touch events come through.
      */
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
+    public boolean dispatchTouchEvent(@NonNull MotionEvent ev) {
         if (mUsernameInfoToolTip.getVisibility() == View.VISIBLE) {
             mUsernameInfoToolTip.hide();
         }
@@ -346,7 +304,7 @@ public class PDEOneIDMLoginScreenActivity
     /**
      * @brief Helper function to remove the runnable which should have shown the username info tooltip.
      */
-    private boolean removeUsernameShowInfoRunnable(){
+    private boolean removeUsernameShowInfoRunnable() {
         boolean found = false;
         if (mUsernameShowInfoRunnable != null) {
             mHandler.removeCallbacks(mUsernameShowInfoRunnable);
@@ -360,7 +318,7 @@ public class PDEOneIDMLoginScreenActivity
     /**
      * @brief Helper function to re-/start the runnable which shows the username info tooltip.
      */
-    private void reStartUsernameShowInfoRunnable(){
+    private void reStartUsernameShowInfoRunnable() {
         removeUsernameShowInfoRunnable();
         mUsernameShowInfoRunnable = new Runnable() {
             @Override
@@ -384,8 +342,11 @@ public class PDEOneIDMLoginScreenActivity
         if (TextUtils.isEmpty(title)) {
             title = getResources().getString(R.string.login_screen_oneidm_activity_error_login_failed_title);
         }
-        PDEDialog.constructDialog(title, message, getResources().getString(R.string.dialog_btn_close)).setStyleCustom(mStyle).
-                setMessageFormatParameters(msgVarargs).show(this);
+        PDEDialog.constructDialog(title, message, getResources().getString(R.string.dialog_btn_close))
+                 .setStyleCustom(mStyle)
+                 .
+                         setMessageFormatParameters(msgVarargs)
+                 .show(this);
     }
 
 
@@ -394,7 +355,7 @@ public class PDEOneIDMLoginScreenActivity
      */
     @SuppressWarnings("unused")
     public void onUsernameInputFieldAction(PDEEvent ev) {
-        PDEInputFieldEvent inputFieldEvent = (PDEInputFieldEvent)ev;
+        PDEInputFieldEvent inputFieldEvent = (PDEInputFieldEvent) ev;
         if (inputFieldEvent.getType().equals(PDEInputField.PDE_INPUTFIELD_EVENT_ACTION_GOT_FOCUS)) {
             if (mUsernameInputField.getText().length() == 0) {
                 //start timer
@@ -441,11 +402,13 @@ public class PDEOneIDMLoginScreenActivity
         Fragment prev = getSupportFragmentManager().findFragmentByTag("progressIndicator");
         if (prev != null) {
             ft.remove(prev);
+            ft.commit();
         }
         if (mProgressIndicatorFragment != null) {
             mProgressIndicatorFragment.dismiss();
             mProgressIndicatorFragment = null;
         }
+
     }
 
 

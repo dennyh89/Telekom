@@ -16,6 +16,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 
 
@@ -27,11 +28,10 @@ import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
  * This base class handles the correct wrapping process. It also creates PDEHolder objects to increase the
  * performance of the item recycling. It creates these holder objects automatically by default to increase your
  * comfort.
- *
  */
 public abstract class PDEListBaseAdapter extends BaseAdapter {
 
-//-----  properties ----------------------------------------------------------------------------------------------------
+    //-----  properties ------------------------------------------------------------------------------------------------
     // resource ID of the item layout
     protected int mItemTemplateResourceID;
     // number of items in the list
@@ -50,12 +50,12 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
     /**
      * @brief constructor
      *
-     * @param context activity context
+     * @param context                activity context
      * @param itemTemplateResourceID Resource ID for the layout of the list item.
-     * @param targetViewIDs Resource IDs of the subviews of the item view. Deliver all IDs of the subviews of which
-     *                      you want to change the content later on.
+     * @param targetViewIDs          Resource IDs of the subviews of the item view. Deliver all IDs of the subviews of
+     *                               which you want to change the content later on.
      */
-    public PDEListBaseAdapter(Context context, int itemTemplateResourceID, int[] targetViewIDs){
+    public PDEListBaseAdapter(Context context, int itemTemplateResourceID, int[] targetViewIDs) {
         mItemTemplateResourceID = itemTemplateResourceID;
         mItemCount = 0;
         mTargetViewIDs = targetViewIDs;
@@ -65,21 +65,21 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
 
 
     /**
-     * How many items are in the data set represented by this Adapter.
+     * @brief How many items are in the data set represented by this Adapter.
      *
      * @return Count of items.
      */
     @Override
-    public int getCount(){
+    public int getCount() {
         return mItemCount;
     }
 
 
     /**
-     * Get the data item associated with the specified position in the data set.
+     * @brief Get the data item associated with the specified position in the data set.
      *
      * @param position Position of the item whose data we want within the adapter's
-     * data set.
+     *                 data set.
      * @return The data at the specified position.
      */
     @Override
@@ -87,7 +87,7 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
 
 
     /**
-     * Get the row id associated with the specified position in the list.
+     * @brief Get the row id associated with the specified position in the list.
      *
      * @param position The position of the item within the adapter's data set whose row id we want.
      * @return The id of the item at the specified position.
@@ -99,7 +99,7 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
     /**
      * @brief Get a View that displays the data at the specified position in the data set.
      *
-     * In order to give our list items the styleguide agentstate highlight behaviour we have to wrap the xml-layouted
+     * In order to give our list items the styleguide agent-state highlight behaviour we have to wrap the xml-layout
      * list items into PDEListItems. This function does the needed work for you. It creates the PDEListItem object
      * and delivers this object the resource ID of the list item layout. The PDEListItem object inflates it
      * internally. This method also does the automatic creation of the holder elements which increase the list
@@ -108,26 +108,26 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      * fillListItem because we use list item recycling and so you always have to set the actual contents of the list
      * item. At the end the method delivers the PDEListItem View.
      *
-     * @param position The position of the item within the adapter's data set of the item whose view
-     *        we want.
+     * @param position    The position of the item within the adapter's data set of the item whose view
+     *                    we want.
      * @param convertView The old view to reuse, if possible.
-     * @param parent The parent that this view will eventually be attached to
+     * @param parent      The parent that this view will eventually be attached to
      * @return A View corresponding to the data at the specified position.
      */
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         PDEListItem listItem;
         PDEHolderInterface holder;
 
         // Is there a convertedView we can reuse to save performance?
-        if (convertView == null){
+        if (convertView == null) {
             // create list item
             listItem = new PDEListItem(PDECodeLibrary.getInstance().getApplicationContext());
             // remember list position
             listItem.setListPosition(position);
             // set layout template
             listItem.setTemplate(mItemTemplateResourceID);
-            if (mCreateHolderAutomatically){
+            if (mCreateHolderAutomatically) {
                 // create holder (factory)
                 holder = createHolder(mItemTemplateResourceID);
                 // init current holder
@@ -141,13 +141,13 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
             initListItem(listItem);
         } else {
             // we can recycle a former listitem
-            listItem = (PDEListItem)convertView;
+            listItem = (PDEListItem) convertView;
             // update list position
             listItem.setListPosition(position);
         }
 
-       // fill list item with actual data
-       fillListItem(listItem);
+        // fill list item with actual data
+        fillListItem(listItem);
 
         // return the list item
         return listItem;
@@ -159,19 +159,21 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      *
      * Override in derived class if needed.
      *
-     * @param listItem the listitem that should be initialized
+     * @param listItem the list item that should be initialized
      */
-    protected void initListItem(PDEListItem listItem){}
+    protected void initListItem(PDEListItem listItem) {
+    }
 
 
     /**
      * @brief Fill list item with actual data
      *
-     *  Override in derived class if needed.
+     * Override in derived class if needed.
      *
      * @param listItem the list item whose data should be updated.
      */
-    protected void fillListItem(PDEListItem listItem){}
+    protected void fillListItem(PDEListItem listItem) {
+    }
 
 
     /**
@@ -181,10 +183,9 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      *
      * @param type if you want to have other holders than the default one you can deliver information about which one
      *             you want to have by using this type parameter.
-     *
      * @return deliver a holder that was derived from PDEHolderInterface
      */
-    protected PDEHolderInterface createHolder(int type){
+    protected PDEHolderInterface createHolder(int type) {
         // default holder
         return new PDEHolder();
     }
@@ -200,7 +201,7 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      *
      * @param num set the number of list items you want to have.
      */
-    public void setItemCount(int num){
+    public void setItemCount(int num) {
         mItemCount = num;
     }
 
@@ -227,6 +228,6 @@ public abstract class PDEListBaseAdapter extends BaseAdapter {
      */
     @SuppressWarnings("unused")
     public boolean isHolderCreatedAutomatically() {
-        return  mCreateHolderAutomatically;
+        return mCreateHolderAutomatically;
     }
 }

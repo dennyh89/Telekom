@@ -16,25 +16,23 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
 
-/// @cond INTERNAL_CLASS
-
 //----------------------------------------------------------------------------------------------------------------------
-// PDEInfoFlagView
+// PDEInfoFlag
 //----------------------------------------------------------------------------------------------------------------------
 
 
 /**
  * @brief Info Flag Notification under the terms of the styleguide.
- *
  */
-public class PDEInfoFlagView extends PDENotificationBaseView {
+public class PDEInfoFlag extends PDENotificationBase {
 
     protected boolean mTitleEnabled;
+
 
     /**
      * @brief Constructor.
      */
-    public PDEInfoFlagView(Context context){
+    public PDEInfoFlag(Context context) {
         super(context);
     }
 
@@ -42,24 +40,23 @@ public class PDEInfoFlagView extends PDENotificationBaseView {
     /**
      * @brief Constructor.
      */
-    public PDEInfoFlagView(Context context, AttributeSet attrs){
+    public PDEInfoFlag(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
 
     /**
-     * @brief Special initialisation of Info Flag View
-     *
      * @param attrs xml attributes
+     * @brief Special initialisation of Info Flag View
      */
-    protected void init(AttributeSet attrs){
+    protected void init(Context context, AttributeSet attrs) {
         // if in developer tool (IDE) stop here
         if (isInEditMode()) return;
 
         mTitleEnabled = true;
 
         // base class init
-        super.init(attrs);
+        super.init(context, attrs);
 
         // InfoFlag View has different corner rounding than the base class
         mSpeechBubble.setElementCornerRadius(PDEBuildingUnits.twoThirdsBU());
@@ -71,36 +68,38 @@ public class PDEInfoFlagView extends PDENotificationBaseView {
 
     /**
      * @brief Load XML attributes.
-     *
-     *
      */
-    protected void setAttributes(AttributeSet attrs){
+    protected void setAttributes(Context context, AttributeSet attrs) {
         // security
         if (attrs == null) return;
 
         // base class call
-        super.setAttributes(attrs);
+        super.setAttributes(context, attrs);
 
-        TypedArray sa = getContext().obtainStyledAttributes(attrs, R.styleable.PDEInfoFlagView);
+        TypedArray sa = context.obtainStyledAttributes(attrs, R.styleable.PDEInfoFlag);
 
-        // enable / disable title
-        if (sa.hasValue(R.styleable.PDEInfoFlagView_titleEnabled)) {
-            setTitleEnabled(sa.getBoolean(R.styleable.PDEInfoFlagView_titleEnabled, true));
+        if (sa != null) {
+            // enable / disable title
+            if (sa.hasValue(R.styleable.PDEInfoFlag_titleEnabled)) {
+                setTitleEnabled(sa.getBoolean(R.styleable.PDEInfoFlag_titleEnabled, true));
+            }
+
+            sa.recycle();
         }
     }
 
 
     /**
-     * @brief Enable / Disable title.
-     *
-     * If the title is disabled we have a plain multiline notification left. This is NOT defined in styleguide visuals!!!
-     * However it was used this way in the login sample.
-     *
      * @param enable enable/disable title
+     * @brief Enable / Disable title.
+     * <p/>
+     * If the title is disabled we have a plain multiline notification left. This is NOT defined in styleguide visuals!
+     * However it was used this way in the login sample.
      */
-    public void setTitleEnabled(boolean enable){
+    public void setTitleEnabled(boolean enable) {
         // anything to do?
         if (mTitleEnabled == enable) return;
+
         // remember
         mTitleEnabled = enable;
 
@@ -118,7 +117,7 @@ public class PDEInfoFlagView extends PDENotificationBaseView {
      * @brief Check if title is enabled / disabled.
      */
     @SuppressWarnings("unused")
-    public boolean isTitleEnabled(){
+    public boolean isTitleEnabled() {
         return mTitleEnabled;
     }
 
@@ -126,7 +125,7 @@ public class PDEInfoFlagView extends PDENotificationBaseView {
     /**
      * @brief Update helper.
      */
-    protected void updateMessagePadding(){
+    protected void updateMessagePadding() {
         if (mTitleEnabled) {
             mMessage.setPaddingTop(PDEBuildingUnits.oneHalfBU());
         } else {
@@ -134,6 +133,3 @@ public class PDEInfoFlagView extends PDENotificationBaseView {
         }
     }
 }
-
-
-/// @endcond INTERNAL_CLASS

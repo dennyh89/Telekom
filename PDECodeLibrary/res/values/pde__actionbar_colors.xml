@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<!--
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    Ignore all "UnusedResource" here, because this are library defaults and we don't know if someone use this values
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+           tools:ignore="UnusedResources">
 	<!-- ActionBar -->
     <color name="pde_actionbar_background_start_color">@color/DTLightUIBackground</color>
     <color name="pde_actionbar_background_end_color">@color/DTGrey4</color>
@@ -10,6 +16,8 @@
 	
     <color name="list_item_normal">@color/DTLightUIBackground</color>
     <color name="list_item_selected">@color/DTGrey237_TakingInput</color>
+    <color name="list_item_selected_focus">@color/DTGrey237_TakingInput_GradientDarker</color>
+    <color name="list_item_focused">@color/DTGrey237_Focus</color>
     <color name="list_item_pressed">@color/DTGrey237_TakingInput</color>
     
 </resources>

@@ -1,4 +1,11 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<!--
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    Ignore all "UnusedResource" here, because this are library defaults and we don't know if someone use this values
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+           xmlns:tools="http://schemas.android.com/tools"
+           tools:ignore="UnusedResources">
 
     <style name="ActionBar.Solid.Pde" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
         <item name="background">@drawable/action_mode_background</item>

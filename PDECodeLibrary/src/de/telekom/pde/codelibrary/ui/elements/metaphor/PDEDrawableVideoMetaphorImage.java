@@ -33,6 +33,7 @@ public class PDEDrawableVideoMetaphorImage extends PDEDrawableBase {
     private String mTimeString;
     private PDEDrawableShapedShadow mElementShadowDrawable;
     private boolean  m169Format;
+    public boolean mMiddleAligned;
 
     private Rect mOutlineRect;
     private Rect mBackgroundRect;
@@ -70,6 +71,7 @@ public class PDEDrawableVideoMetaphorImage extends PDEDrawableBase {
         mTimeString = timeString;
         mBarHeight = 0;
         m169Format = true;
+        mMiddleAligned = false;
 
         // shadow is created on demand
         mElementShadowDrawable = null;
@@ -501,6 +503,49 @@ public class PDEDrawableVideoMetaphorImage extends PDEDrawableBase {
         mScene.setColorFilter(mColorFilter);
     }
 
+
+    /**
+     * @brief Calculate the correct aspect ratio bounds.
+     *
+     * @param bounds Available space
+     * @return Rect with correct aspect ratio, fitting in available space
+     */
+    public Rect elementCalculateAspectRatioBounds(Rect bounds) {
+        Rect newBounds;
+
+        if ((float)bounds.width() / (float)bounds.height() > getElementAspectRatio() ) {
+            newBounds = new Rect(bounds.left, bounds.top, 0, bounds.bottom);
+            newBounds.right = newBounds.left + Math.round(newBounds.height() * getElementAspectRatio());
+
+            if (mMiddleAligned) {
+                int horizontalShift = (bounds.width() - newBounds.width()) / 2;
+                newBounds.left += horizontalShift;
+                newBounds.right += horizontalShift;
+            }
+        } else {
+            newBounds = new Rect(bounds.left, bounds.top, bounds.right, 0);
+            newBounds.bottom = newBounds.top + Math.round(newBounds.width() / getElementAspectRatio());
+
+            if (mMiddleAligned) {
+                int verticalShift = (bounds.height() - newBounds.height()) / 2;
+                newBounds.top += verticalShift;
+                newBounds.bottom += verticalShift;
+            }
+        }
+
+        return newBounds;
+    }
+
+    /**
+     * @brief helper function to get aspect ratio
+     */
+    private float getElementAspectRatio() {
+        if (m169Format) {
+            return 16.0f / 9.0f;
+        } else {
+            return 1.0f;
+        }
+    }
 
 //---------------------------------------------------------------------------------------------------------------------
 // ----- Drawing Bitmap ----------------------------------------------------------------------------

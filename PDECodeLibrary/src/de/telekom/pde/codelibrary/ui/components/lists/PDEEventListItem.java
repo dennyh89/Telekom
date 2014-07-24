@@ -11,7 +11,7 @@ package de.telekom.pde.codelibrary.ui.components.lists;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 
 //----------------------------------------------------------------------------------------------------------------------
-//  PDEListItem events
+//  PDEEventListItem, but should be PDEListItemEvent
 //----------------------------------------------------------------------------------------------------------------------
 
 

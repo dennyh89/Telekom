@@ -13,6 +13,9 @@ import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableRoundedBox;
 
 
+/**
+ * @brief Drawable for a stage area in flat style.
+ */
 public class PDEDrawableStageFlat extends PDEDrawableRoundedBox {
 
 

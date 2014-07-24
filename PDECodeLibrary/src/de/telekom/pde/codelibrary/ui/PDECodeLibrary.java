@@ -37,7 +37,7 @@ public final class PDECodeLibrary {
 
     private static Context mApplicationContext = null;
 
-    private static boolean DEBUG_SHOW_LOGS = true;
+    private final static boolean DEBUG_SHOW_LOGS = true;
 
     private static boolean mAssignmentOfDefaultFontToTextViewsEnabled = true;
 
@@ -72,6 +72,7 @@ public final class PDECodeLibrary {
      *
      * @return singleton instance of PDECodeLibrary.
      */
+    @SuppressWarnings("SameReturnValue")
     public static PDECodeLibrary getInstance() {
         return SingletonHolder.INSTANCE;
     }

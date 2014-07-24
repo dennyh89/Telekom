@@ -6,13 +6,15 @@
 
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="19" />
 
-    <application android:theme="@style/Theme.Pde" >
+    <application android:theme="@style/Theme.Pde"
+                 android:allowBackup="false">
         <activity
             android:name=".activity.PDEActivitySplash"
             android:label="@string/app_name"
-            android:theme="@style/Theme.PDE.NoActionBar" >
+            android:theme="@style/Theme.PDE.NoActionBar"
+            >
         </activity>
 
         <activity android:name="de.telekom.pde.codelibrary.ui.modules.login.PDEOneIDMLoginScreenActivity"/>

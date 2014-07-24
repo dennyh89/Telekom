@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    This is the german file for strings -> Set the german text here
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    -->
+    <string name="login_screen_header">Login</string>
+    <string name="login_screen_screen_description_idm">"Ein Benutzername und ein Passwort für alle &lt;a href=\"tooltip:Nutzen Sie nur einen Login, zum Beispiel für das Mediencenter, E-Mail Center, Entertain und vieles mehr.\"&gt;Telekom Dienste&lt;/a&gt;."</string>
+    <string name="login_screen_username_label">Benutzername</string>
+    <string name="login_screen_username_input_field_hint">Benutzername</string>
+    <string name="login_screen_password_label">Passwort</string>
+    <string name="login_screen_password_forgotten_link">"&lt;a href=\"http://www.t-online.de/service/kundencenter/index_passwortvergessen.html\"&gt;Passwort vergessen?&lt;/a&gt;"</string>
+    <string name="login_screen_password_input_field_hint">Passwort</string>
+    <string name="login_screen_checkbox_stay_signed_in">Eingeloggt bleiben</string>
+    <string name="login_screen_button_login">Login</string>
+    <string name="login_screen_not_registered_label"></string>
+    <string name="login_screen_register_now_link">"Noch nicht registriert?&lt;br/&gt;&lt;a href=\"https://meinkonto.telekom-dienste.de/konto/registrierung/mobile/extmail/index.xhtml\"&gt;Jetzt kostenlos registrieren&lt;/a&gt;"</string>
+    <string name="login_screen_brand_logo_content_description">T-Brand Logo</string>
+    <string name="login_screen_oneidm_activity_error_login_failed_title">"Login Fehler"</string>
+    <string name="login_screen_oneidm_activity_username_info_box">"Als Benutzernamen können Sie Ihre E-Mail-Adresse, Ihre Zugangsnummer oder Ihre Mobilfunk-Nummer verwenden."</string>
+</resources>

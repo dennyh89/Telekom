@@ -12,6 +12,8 @@ package de.telekom.pde.codelibrary.ui.components.buttons;
 
 
 import android.content.Context;
+import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -25,6 +27,7 @@ import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
 import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameter;
 import de.telekom.pde.codelibrary.ui.components.helpers.parameters.PDEParameterDictionary;
+import de.telekom.pde.codelibrary.ui.elements.common.PDECornerConfigurations;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBorderLine;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableGradientShape;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedInnerShadow;
@@ -57,35 +60,36 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
 
 
     // local parameters needed
-    PDEParameterDictionary mParameters;
-    PDEParameter mParamColor;
-    PDEParameter mParamBorderColor;
-    PDEParameter mParamInnerShadowStrength;
+    private PDEParameterDictionary mParameters;
+    private PDEParameter mParamColor;
+    private PDEParameter mParamBorderColor;
+    private PDEParameter mParamInnerShadowStrength;
 
     // configuration
-    PDEColor mDefaultColor;
-    float mInnerShadowOpacity;
+    private PDEColor mDefaultColor;
+    private float mInnerShadowOpacity;
 
     // drawables
-    PDEDrawableGradientShape mMainDrawable;
-    PDEDrawableBorderLine mBorderLineDrawable;
-    PDEDrawableShapedInnerShadow mInnerShadowDrawable;
+    private PDEDrawableGradientShape mMainDrawable;
+    private PDEDrawableBorderLine mBorderLineDrawable;
+    private PDEDrawableShapedInnerShadow mInnerShadowDrawable;
 
     // additional helper variables
-    float mCornerRadius;
-    float mOutlineWidth;
+    private float mCornerRadius;
+    private float mOutlineWidth;
+    private int mCornerConfiguration;
 
 
     // agent helpers
-    PDEAgentHelper mAgentHelper;
+    private PDEAgentHelper mAgentHelper;
 
 
 
 
     // global variables
     //
-    public static PDEDictionary PDEButtonLayerBackgroundHapticGlobalColorDefault =  PDEComponentHelpers.readDefaultColorDictionary("dt_button_gradient_color_defaults");
-    public static PDEDictionary PDEButtonLayerBackgroundHapticGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
+    public static PDEDictionary PDEButtonLayerBackgroundHapticGlobalColorDefault =  PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_gradient_color_defaults);
+    public static PDEDictionary PDEButtonLayerBackgroundHapticGlobalBorderDefault = PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_border_color_defaults);
 
 
     @SuppressWarnings("unused")
@@ -144,15 +148,14 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
         // take over the default parameters from layer (iOS defaults of CALayer)
         mCornerRadius = 0.0f;
         mOutlineWidth = 0.0f;
+        mCornerConfiguration = PDECornerConfigurations.PDECornerConfigurationAllCorners;
 
         // apply currently nonparametrized default configuration
         // border line
         setOutlineWidth(1.0f);
 
         // inner shadow
-        //mInnerShadowDrawable.setElementShapeColor(PDEColor.valueOf("DTBlack"));
         mInnerShadowDrawable.setElementShapeColor(PDEColor.valueOf("Black40Alpha"));
-//        mInnerShadowDrawable.setElementBlurRadius(PDEBuildingUnits.exactOneForthBU());
         mInnerShadowDrawable.setElementBlurRadius(PDEBuildingUnits.oneSixthBU());
         mInnerShadowDrawable.setElementLightIncidenceOffset(new PointF(0.0f,PDEBuildingUnits.oneTwelfthsBU()));
 
@@ -219,6 +222,7 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
 
         // non-animated parameters are simpler to handle: change management is in internal functions.
         prepareCornerRadius();
+        prepareCornerConfiguration();
     }
 
 
@@ -345,6 +349,27 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
     }
 
 
+    /**
+     * @brief Prepare corner configuration
+     */
+    protected void prepareCornerConfiguration() {
+        int config;
+
+        // create a copy of the new corner radius
+        config = mParameters.parameterIntForName(PDEButton.PDEButtonParameterRoundedCornerConfiguration,
+                PDECornerConfigurations.PDECornerConfigurationAllCorners);
+
+        // check for changes
+        if (config == mCornerConfiguration) {
+            return;
+        }
+
+        // remember
+        mCornerConfiguration = config;
+
+    }
+
+
 //----- graphical properties -------------------------------------------------------------------------------------------
 
 
@@ -428,28 +453,6 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
     }
 
 
-    /**
-     * @brief Update paths for shadow layers.
-     */
-    protected void updatePaths(int width, int height) {
-        Rect rect;
-
-        if (SHOW_DEBUG_LOGS) {
-            Log.d(LOG_TAG, "updatePaths getWidth: "+ width + " getHeight: "+height);
-        }
-
-        // inner shadow rect is main rect minus the border (bordersize is always 1)
-        //rect = new Rect(mLayout.mLayoutRect);
-        rect = new Rect(0, 0, width, height);
-
-        rect.set(rect.left, rect.top, rect.right - 2, rect.bottom - 2);
-        PDEAbsoluteLayoutHelper.setViewRect(mInnerShadowDrawable.getWrapperView(),rect);
-        mInnerShadowDrawable.setElementShapeRoundedRect(mCornerRadius - 1.0f);
-        // set the offset to 1,1 so the border completely surrounds the inner shadow
-        PDEAbsoluteLayoutHelper.setViewOffset(mInnerShadowDrawable.getWrapperView(),1.0f, 1.0f);
-        mInnerShadowDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(rect.width(), MeasureSpec.EXACTLY),
-                                                      MeasureSpec.makeMeasureSpec(rect.height(), MeasureSpec.EXACTLY));
-    }
 
 
 //----- layout ---------------------------------------------------------------------------------------------------------
@@ -564,19 +567,46 @@ class PDEButtonLayerBackgroundHaptic extends PDEAbsoluteLayout implements PDEBut
             Log.d(LOG_TAG, "onSizeChanged "+w+", "+h);
         }
 
-        //getMainDrawable().setBoundingRect(new Rect(0, 0, w, h));
+        // getMainDrawable().setBoundingRect(new Rect(0, 0, w, h));
         PDEAbsoluteLayoutHelper.setViewRect(getMainView(),new Rect(0, 0, w, h));
         getMainView().measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
 
         PDEAbsoluteLayoutHelper.setViewRect(mBorderLineDrawable.getWrapperView(),new Rect(0, 0, w, h));
-        //mBorderLineView.setElementBoundingRect(new Rect(0, 0, w, h));
-        mBorderLineDrawable.setElementShapeRoundedRect(mCornerRadius);
+        Path path = PDECornerConfigurations.createDrawingPath(mCornerConfiguration, new Point(w-1, h-1), mCornerRadius,
+                new PointF(0.5f, 0.5f));
+        mMainDrawable.setElementShapePath(path);
+        mBorderLineDrawable.setElementShapePath(path);
+
         mBorderLineDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
                                                      MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
 
         // update the shadow path and inner shadow path
         updatePaths(w, h);
     }
+
+
+    /**
+     * @brief Update paths for shadow layers.
+     */
+    protected void updatePaths(int width, int height) {
+        Rect rect;
+
+        if (SHOW_DEBUG_LOGS) {
+            Log.d(LOG_TAG, "updatePaths getWidth: "+ width + " getHeight: "+height);
+        }
+
+        // inner shadow rect is main rect minus the border (border size is always 1)
+        rect = new Rect(0, 0, width, height);
+        rect.set(rect.left, rect.top, rect.right - 2, rect.bottom - 2);
+        PDEAbsoluteLayoutHelper.setViewRect(mInnerShadowDrawable.getWrapperView(),rect);
+        mInnerShadowDrawable.setElementShapeCustomCorners(mCornerConfiguration, mCornerRadius - 1.0f);
+
+        // set the offset to 1,1 so the border completely surrounds the inner shadow
+        PDEAbsoluteLayoutHelper.setViewOffset(mInnerShadowDrawable.getWrapperView(),1, 1);
+        mInnerShadowDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(rect.width(), MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(rect.height(), MeasureSpec.EXACTLY));
+    }
+
 }
 
 

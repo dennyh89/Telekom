@@ -12,10 +12,12 @@ package de.telekom.pde.codelibrary.ui.elements.boxes;
 
 import android.graphics.*;
 import android.graphics.drawable.Drawable;
+
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
+import de.telekom.pde.codelibrary.ui.elements.common.PDECornerConfigurations;
 
 /**
  * @brief Graphics primitive - a box with solid background where you can configure which corners are rounded and which
@@ -23,19 +25,7 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
  */
 public class PDEDrawableCornerBox extends PDEDrawableBase {
 
-
-
-//----- corner box constants --------------------------------------------------------------------------------------
-
-    public static final int PDEDrawableCornerBoxCornerTopLeft = 1;
-    public static final int PDEDrawableCornerBoxCornerTopRight = 1 << 1;
-    public static final int PDEDrawableCornerBoxCornerBottomLeft = 1 << 2;
-    public static final int PDEDrawableCornerBoxCornerBottomRight = 1 << 3;
-    public static final int PDEDrawableCornerBoxAllCorners = ~0;
-    @SuppressWarnings("unused")
-    public static final int PDEDrawableCornerBoxNoCorners = 0;
-
-//-----  properties ---------------------------------------------------------------------------------------------------
+    //-----  properties ---------------------------------------------------------------------------------------------------
     // basic properties
     // colors
     protected PDEColor mElementBackgroundColor;
@@ -52,8 +42,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
 
 
     // initialization
-    public PDEDrawableCornerBox()
-    {
+    public PDEDrawableCornerBox() {
         // init to PDE defaults
         mElementBackgroundColor = PDEColor.valueOf("DTWhite");
         mElementBorderColor = PDEColor.valueOf("DTGrey237_Idle_Border");
@@ -71,6 +60,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
 // ----- optional shadow ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
 
+
     /**
      * @brief init shadow drawable.
      *
@@ -87,7 +77,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
         mElementShadowDrawable = new PDEDrawableShapedShadow();
         mElementShadowDrawable.setElementShapeOpacity(0.25f);
         setNeededPadding(PDEBuildingUnits.oneHalfBU());
-        updateElementShadowDrawable(new Point(getBounds().width(),getBounds().height()));
+        updateElementShadowDrawable(new Point(getBounds().width(), getBounds().height()));
         // return
         return mElementShadowDrawable;
     }
@@ -114,6 +104,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
         setNeededPadding(0);
     }
 
+
     /**
      * @brief Update the shadow drawable if we've got one.
      */
@@ -128,9 +119,9 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
 
             // set shadow bounds
             frame = new Rect(bounds.left,
-                    bounds.top,
-                    bounds.left + elementSize.x + (2 * (int)mElementShadowDrawable.getElementBlurRadius()),
-                    bounds.top + elementSize.y + (2 * (int)mElementShadowDrawable.getElementBlurRadius()));
+                             bounds.top,
+                             bounds.left + elementSize.x + (2 * (int) mElementShadowDrawable.getElementBlurRadius()),
+                             bounds.top + elementSize.y + (2 * (int) mElementShadowDrawable.getElementBlurRadius()));
             mElementShadowDrawable.setBounds(frame);
             // make a copy of the original element path for the shadow
             shadowPath = new Path(mElementPath);
@@ -142,10 +133,10 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
     }
 
 
-
 //---------------------------------------------------------------------------------------------------------------------
 // ----- general setters and getters ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
+
 
     /**
      * @brief Set fill (background) color.
@@ -242,6 +233,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Get corner radius.
      *
@@ -325,10 +317,11 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
         Path path;
 
         // get the rect we're using for layouting
-        elementSize = new Point(getBounds().width()-1, getBounds().height()-1);
+        elementSize = new Point(getBounds().width() - 1, getBounds().height() - 1);
 
         // create the drawing path
-        path = createDrawingPath(elementSize);
+        path = PDECornerConfigurations.createDrawingPath(mElementRoundedCornerConfiguration, elementSize,
+                                                         mElementCornerRadius, getStartPoint());
 
         // update
         setElementPath(path);
@@ -348,104 +341,15 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
      * @return start point of drawing
      */
     private PointF getStartPoint() {
-        if ((mElementRoundedCornerConfiguration & PDEDrawableCornerBoxCornerTopLeft) != 0 ) {
+        /*
+        if ((mElementRoundedCornerConfiguration & PDECornerConfigurations.PDECornerConfigurationTopLeft) != 0 ) {
             // TopLeftCorner
             return new PointF(mElementCornerRadius + mPixelShift,  mPixelShift);
         } else {
             // default
             return new PointF(mPixelShift, mPixelShift);
-        }
-    }
-
-
-    /**
-     * @brief Creates and delivers the path that should be drawn.
-     *
-     * @param elementSize The size of the whole element.
-     * @return the shape of the element as a drawing path.
-     */
-    private Path createDrawingPath(Point elementSize) {
-        Path path;
-        PointF destination, currentPoint;
-        PointF startPoint;
-
-        startPoint = getStartPoint();
-
-        // init
-        path = new Path();
-
-        // move to start point, which is the left end of top-line
-        path.moveTo(startPoint.x,startPoint.y);
-        if ((mElementRoundedCornerConfiguration & PDEDrawableCornerBoxCornerTopRight ) == 0) {
-            if ((mElementRoundedCornerConfiguration & PDEDrawableCornerBoxCornerTopLeft ) == 0) {
-                path.lineTo(startPoint.x+elementSize.x ,startPoint.y);
-                currentPoint = new PointF(startPoint.x+elementSize.x ,startPoint.y);
-            } else {
-                path.lineTo(startPoint.x+elementSize.x - mElementCornerRadius,startPoint.y);
-                currentPoint = new PointF(startPoint.x+elementSize.x - mElementCornerRadius,startPoint.y);
-            }
-            // calculate right end of top-line
-            destination = new PointF(currentPoint.x,currentPoint.y + elementSize.y);
-        } else {
-            if ((mElementRoundedCornerConfiguration & PDEDrawableCornerBoxCornerTopLeft ) == 0) {
-                path.lineTo(startPoint.x+elementSize.x - mElementCornerRadius,startPoint.y);
-                currentPoint = new PointF(startPoint.x+elementSize.x - mElementCornerRadius,startPoint.y);
-            } else {
-                path.lineTo(startPoint.x+elementSize.x - 2 * mElementCornerRadius,startPoint.y);
-                currentPoint = new PointF(startPoint.x+elementSize.x - 2 * mElementCornerRadius,startPoint.y);
-            }
-            // draw left upper corner
-            path.arcTo(new RectF(currentPoint.x - mElementCornerRadius, currentPoint.y,
-                    currentPoint.x + mElementCornerRadius, currentPoint.y + 2* mElementCornerRadius),
-                    270.0f, 90.0f);
-            currentPoint = new PointF(currentPoint.x+mElementCornerRadius,currentPoint.y+mElementCornerRadius);
-            destination = new PointF(currentPoint.x,currentPoint.y + elementSize.y-mElementCornerRadius);
-        }
-
-        if ((mElementRoundedCornerConfiguration & PDEDrawableCornerBoxCornerBottomRight ) == 0) {
-            path.lineTo(destination.x,destination.y );
-            currentPoint = new PointF(destination.x,destination.y);
-            destination = new PointF(currentPoint.x - elementSize.x  ,currentPoint.y );
-        } else {
-            path.lineTo(destination.x,destination.y -mElementCornerRadius);
-            currentPoint = new PointF(destination.x,destination.y -mElementCornerRadius);
-            // draw right upper corner
-            path.arcTo(new RectF(currentPoint.x - 2* mElementCornerRadius, currentPoint.y -mElementCornerRadius,
-                    currentPoint.x , currentPoint.y + mElementCornerRadius),
-                    0.0f, 90.0f);
-            currentPoint = new PointF(currentPoint.x - mElementCornerRadius,currentPoint.y + mElementCornerRadius);
-            destination = new PointF(currentPoint.x - elementSize.x + mElementCornerRadius,currentPoint.y );
-        }
-
-        if ((mElementRoundedCornerConfiguration & PDEDrawableCornerBoxCornerBottomLeft ) == 0) {
-            path.lineTo(destination.x ,destination.y);
-            currentPoint = new PointF(destination.x ,destination.y);
-            destination = new PointF(currentPoint.x  ,currentPoint.y - elementSize.y +mElementCornerRadius);
-        } else {
-            path.lineTo(destination.x + mElementCornerRadius,destination.y );
-            currentPoint = new PointF(destination.x + mElementCornerRadius,destination.y );
-            // draw right-lower corner
-            path.arcTo(new RectF(currentPoint.x - mElementCornerRadius, currentPoint.y - 2* mElementCornerRadius,
-                    currentPoint.x + mElementCornerRadius, currentPoint.y ),
-                    90.0f, 90.0f);
-            currentPoint = new PointF(currentPoint.x - mElementCornerRadius,currentPoint.y - mElementCornerRadius);
-            destination = new PointF(currentPoint.x ,currentPoint.y - elementSize.y + 2* mElementCornerRadius);
-        }
-
-        if(( mElementRoundedCornerConfiguration & PDEDrawableCornerBoxCornerTopLeft) == 0)
-        {
-        path.lineTo(destination.x ,destination.y);
-
-
-        } else {
-            path.lineTo(destination.x,destination.y + mElementCornerRadius);
-            // draw left-lower corner
-            path.arcTo(new RectF(destination.x , destination.y - mElementCornerRadius,
-                    destination.x + 2* mElementCornerRadius, destination.y +  mElementCornerRadius),
-                    180.0f, 90.0f);
-        }
-        path.close();
-        return path;
+        }*/
+        return new PointF(mPixelShift, mPixelShift);
     }
 
 
@@ -494,6 +398,7 @@ public class PDEDrawableCornerBox extends PDEDrawableBase {
 //---------------------------------------------------------------------------------------------------------------------
 // ----- Drawing Bitmap ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
+
 
     /**
      * @brief Updates our drawing bitmap and triggers a redraw of this element.

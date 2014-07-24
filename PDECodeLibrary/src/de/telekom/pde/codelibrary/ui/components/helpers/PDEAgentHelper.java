@@ -34,9 +34,9 @@ public class PDEAgentHelper {
     private double mVisibilityState;
 
 
-    public static int PDEAgentHelperAnimationStateOnly = 0;
-    public static int PDEAgentHelperAnimationInteractive = 1;
-    public static int PDEAgentHelperAnimationDown = 2;
+    public final static int PDEAgentHelperAnimationStateOnly = 0;
+    public final static int PDEAgentHelperAnimationInteractive = 1;
+    public final static int PDEAgentHelperAnimationDown = 2;
 
 
     //
@@ -73,7 +73,7 @@ public class PDEAgentHelper {
     }
 
 
-    //----- event processing -----------------------------------------------------------------------------------------------
+    //----- event processing -------------------------------------------------------------------------------------------
 
 
     /**
@@ -83,8 +83,7 @@ public class PDEAgentHelper {
      *
      * @return YES if something changed and an update is required.
      */
-    public boolean processAgentEvent(PDEEvent event)
-    {
+    public boolean processAgentEvent(PDEEvent event) {
         boolean changed;
 
         // init
@@ -106,11 +105,11 @@ public class PDEAgentHelper {
         return changed;
     }
 
+
     /**
      * @brief Current state changed
      */
-    private boolean updateCurrentState(String currentState)
-    {
+    private boolean updateCurrentState(String currentState) {
         // any change?
         if (TextUtils.equals(mCurrentState, currentState)) {
             return false;
@@ -127,8 +126,7 @@ public class PDEAgentHelper {
     /**
      * @brief Current state changed
      */
-    private boolean updateNextState(String nextState)
-    {
+    private boolean updateNextState(String nextState) {
         // any change?
         if (TextUtils.equals(mNextState, nextState)) {
             return false;  //this should be the right check - but then it doesn't work
@@ -145,8 +143,7 @@ public class PDEAgentHelper {
     /**
      * @brief State animation phase changed.
      */
-    private boolean updateStateProgress(double stateProgress)
-    {
+    private boolean updateStateProgress(double stateProgress) {
         // any change?
         if (mStateProgress == stateProgress) return false;
 
@@ -157,11 +154,11 @@ public class PDEAgentHelper {
         return true;
     }
 
+
     /**
      * @brief Animation phase changed.
      */
-    private boolean updateInteractiveState(double state)
-    {
+    private boolean updateInteractiveState(double state) {
         // any change?
         if (mInteractiveState == state) return false;
 
@@ -176,8 +173,7 @@ public class PDEAgentHelper {
     /**
      * @brief Animation phase changed.
      */
-    private boolean updateDownState(double state)
-    {
+    private boolean updateDownState(double state) {
         // any change?
         if (mDownState == state) return false;
 
@@ -188,11 +184,11 @@ public class PDEAgentHelper {
         return true;
     }
 
+
     /**
      * @brief visibility changed
      */
-    private boolean updateVisibilityState(double state)
-    {
+    private boolean updateVisibilityState(double state) {
         // any change?
         if (state == mVisibilityState) return false;
 
@@ -203,14 +199,14 @@ public class PDEAgentHelper {
         return true;
     }
 
-    //----- information retrieval ------------------------------------------------------------------------------------------
+
+    //----- information retrieval --------------------------------------------------------------------------------------
 
 
     /**
      * @brief Determine parameters for interpolation from current stored agent state.
      */
-    public InterpolationStateHelper getInterpolationInformationForAnimation(int animation)
-    {
+    public InterpolationStateHelper getInterpolationInformationForAnimation(int animation) {
         InterpolationStateHelper iStateHelper = new InterpolationStateHelper();
 
         // state interpolation can be retrieved directly from values
@@ -221,7 +217,7 @@ public class PDEAgentHelper {
 
         // state interpolation depends on what animation we're listening to
         if (animation == PDEAgentHelperAnimationInteractive) {
-            // interpolation between idle,focus and takinginput
+            // interpolation between idle, focus and taking-input
             if (mInteractiveState <= 0.0) {
                 // base (idle) state
                 iStateHelper.mSubState1 = PDEButton.PDEButtonAgentStateIdle;
@@ -267,7 +263,7 @@ public class PDEAgentHelper {
                 iStateHelper.mSubStateBlend = 0.0f;
             }
         } else {
-            // either stateonly or unknown mode, no substates
+            // either stateOnly or unknown mode, no subStates
             iStateHelper.mSubState1 = null;
             iStateHelper.mSubState2 = null;
             iStateHelper.mSubStateBlend = 0.0f;
@@ -275,6 +271,7 @@ public class PDEAgentHelper {
 
         return iStateHelper;
     }
+
 
     public double getVisibilityState(){
         return mVisibilityState;

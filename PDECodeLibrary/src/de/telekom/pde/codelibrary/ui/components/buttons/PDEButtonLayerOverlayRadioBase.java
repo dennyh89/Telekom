@@ -7,9 +7,6 @@
 
 package de.telekom.pde.codelibrary.ui.components.buttons;
 
-
-
-
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEButtonLayerOverlayRadioBase
 //----------------------------------------------------------------------------------------------------------------------
@@ -20,6 +17,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.R;
@@ -48,7 +46,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
      */
     private final static String LOG_TAG = PDEButtonLayerOverlayRadioBase.class.getName();
     // debug messages switch
-    private final static boolean DEBUGPARAMS = false;
+    private final static boolean DEBUG_PARAMS = false;
 
 
     // size modes
@@ -65,7 +63,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
     protected PDEParameter mParamColor;
     protected PDEParameter mParamBorderColor;
     protected PDEParameter mParamState;
-    int mHorizontalPadding;
+    private int mHorizontalPadding;
 
     // content layers
     protected PDEDrawableArea mAreaDrawable;
@@ -91,9 +89,9 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
     // global variables
     //
     static PDEDictionary PDEButtonLayerOverlayRadioGlobalColorDefault
-            = PDEComponentHelpers.readDefaultColorDictionary("dt_button_check_radio_color_defaults");
+            = PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_check_radio_color_defaults);
     static PDEDictionary PDEButtonLayerOverlayRadioGlobalBorderDefault
-            = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
+            = PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_border_color_defaults);
 
 
     /**
@@ -118,7 +116,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
      * @brief Class initialization.
      */
     public PDEButtonLayerOverlayRadioBase(Context context) {
-        super (context);
+        super(context);
         init();
     }
 
@@ -162,7 +160,6 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         //setBackgroundColor(0xff0000ff);
     }
 
-
     //----- basic functions --------------------------------------------------------------------------------------------
 
 
@@ -192,7 +189,6 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
             updateState();
         }
     }
-
 
 //----- property handling ----------------------------------------------------------------------------------------------
 
@@ -224,7 +220,6 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         requestLayout();
     }
 
-
 //----- animated parameters: preparation -------------------------------------------------------------------------------
 
 
@@ -239,7 +234,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
      */
     protected void prepareColor() {
         // debug output
-        if (DEBUGPARAMS) {
+        if (DEBUG_PARAMS) {
             mParamColor.debugOut("Color before building");
             mParamBorderColor.debugOut("Border before building");
         }
@@ -262,7 +257,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         PDEComponentHelpers.fillBorderColors(mParamBorderColor, mParamColor);
 
         // debug output
-        if( DEBUGPARAMS ){
+        if (DEBUG_PARAMS) {
             mParamColor.debugOut("Color after building");
             mParamBorderColor.debugOut("Border after building");
         }
@@ -285,7 +280,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         mParamState.setWithDictionary(new PDEDictionary("default", "0.0", "selected", "1.0"));
 
         // debug output
-        if( DEBUGPARAMS ){
+        if (DEBUG_PARAMS) {
             mParamState.debugOut("State before building");
         }
 
@@ -296,14 +291,13 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         mParamState.convertToNumber();
 
         // debug output
-        if( DEBUGPARAMS ){
+        if (DEBUG_PARAMS) {
             mParamState.debugOut("State after building");
         }
 
         // apply once
         updateState();
     }
-
 
 //----- non-animated parameters: preparation and application -----------------------------------------------------------
 
@@ -319,7 +313,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
 
         // get the title from the parameters
         alignmentString = mParameters.parameterValueForNameWithDefault(PDEButton.PDEButtonParameterRadioAlignment,
-                                                                        PDEConstants.PDEAlignmentStringLeft);
+                                                                       PDEConstants.PDEAlignmentStringLeft);
 
         // parse value
         if (alignmentString.equals(PDEConstants.PDEAlignmentStringLeft)) {
@@ -361,13 +355,13 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         if (sizeObject instanceof Number) {
             // use given size directly
             radioMode = PDEButtonLayerOverlayRadioSizeMode.PDEButtonLayerOverlayRadioSizeModeFixed;
-            radioSize = ((Number)sizeObject).floatValue();
+            radioSize = ((Number) sizeObject).floatValue();
         } else if (sizeObject instanceof String) {
             // extract string
-            str = (String)sizeObject;
+            str = (String) sizeObject;
             // button specific mode / fixed size?
             if (str.equals(PDEButton.PDEButtonParameterValueSizeAuto)
-                    || str.equals(PDEButton.PDEButtonParameterValueSizeAutomatic) ) {
+                || str.equals(PDEButton.PDEButtonParameterValueSizeAutomatic)) {
                 // automatic sizing
                 radioMode = PDEButtonLayerOverlayRadioSizeMode.PDEButtonLayerOverlayRadioSizeModeAutomatic;
                 radioSize = 0.0f;
@@ -399,6 +393,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         relayout();
     }
 
+
     /**
      * @brief Prepare HorizontalPadding.
      */
@@ -406,7 +401,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         int distance;
 
         distance = mParameters.parameterIntForName(PDEButton.PDEButtonParameterHorizontalPadding,
-                PDEBuildingUnits.pixelFromBU(2.0f));
+                                                   PDEBuildingUnits.pixelFromBU(2.0f));
 
         // anything to do??
         if (distance == mHorizontalPadding) return;
@@ -418,9 +413,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         relayout();
     }
 
-
 //----- fixed parameters -----------------------------------------------------------------------------------------------
-
 
 //----- animated parameter updates -------------------------------------------------------------------------------------
 
@@ -431,13 +424,13 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
      * Title colors, shadow colors. All colors are pre-calculated and only animated.
      */
     protected void updateColors() {
-        PDEColor color,border;
+        PDEColor color, border;
 
         // interpolate colors by calling complex logic color interpolation helper
         color = PDEComponentHelpers.interpolateColor(mParamColor, mAgentHelper,
-                PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
+                                                     PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
         border = PDEComponentHelpers.interpolateColor(mParamBorderColor, mAgentHelper,
-                PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
+                                                      PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
 
         // set color
         mAreaDrawable.setElementBackgroundColor(color);
@@ -453,7 +446,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
 
         // interpolate colors by calling complex logic color interpolation helper
         alpha = PDEComponentHelpers.interpolateFloat(mParamState, mAgentHelper,
-                PDEAgentHelper.PDEAgentHelperAnimationStateOnly, null);
+                                                     PDEAgentHelper.PDEAgentHelperAnimationStateOnly, null);
 
         // show/hide marker
         mMarkerDrawable.setElementShapeOpacity(alpha);
@@ -466,15 +459,15 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
      * The layouting positions the graphical element; the sizing of red dot and sunken layer is done here.
      */
     protected void updateSize(float height) {
-        if (DEBUGPARAMS) {
+        if (DEBUG_PARAMS) {
             Log.d(LOG_TAG, "updateSize(" + height + ")");
         }
-        float radioSize,markerSize;
+        float radioSize, markerSize;
 
         // which mode?
         if (mRadioSizeMode == PDEButtonLayerOverlayRadioSizeMode.PDEButtonLayerOverlayRadioSizeModeAutomatic) {
             // marker height is 1 third of button height, rounded; outline height is double this size
-            markerSize = PDEBuildingUnits.roundToScreenCoordinates(height/3.0f);
+            markerSize = PDEBuildingUnits.roundToScreenCoordinates(height / 3.0f);
             radioSize = markerSize * 2.0f;
         } else if (mRadioSizeMode == PDEButtonLayerOverlayRadioSizeMode.PDEButtonLayerOverlayRadioSizeModeStyleguide) {
             // standardized heights: buttons defined are 4BU, 3BU and 2.5BU; use the nearest one to calculate
@@ -503,7 +496,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         // compare with last value, stop if not changed
         if (markerSize == mMarkerUsedSize && radioSize == mRadioUsedSize && height == mHeightUsedForUpdateSize) return;
 
-        if (DEBUGPARAMS) {
+        if (DEBUG_PARAMS) {
             Log.d(LOG_TAG, "updateSize(" + height + ") - with changes");
         }
 
@@ -512,7 +505,6 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         mMarkerUsedSize = markerSize;
         mHeightUsedForUpdateSize = height;
     }
-
 
 //----- layout ---------------------------------------------------------------------------------------------------------
 
@@ -529,7 +521,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
 
         overlaySlot = (ViewGroup) getParent();
 
-        if (overlaySlot != null) {
+        if (overlaySlot != null && overlaySlot.getParent() != null) {
             innerLayout = (ViewGroup) overlaySlot.getParent().getParent();
         }
 
@@ -541,7 +533,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
             }
 
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_left))
+                ((ViewGroup) innerLayout.findViewById(R.id.pdebutton_overlay_slot_left))
                         .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                                                                   ViewGroup.LayoutParams.MATCH_PARENT));
             }
@@ -552,7 +544,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
             }
 
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_center))
+                ((ViewGroup) innerLayout.findViewById(R.id.pdebutton_overlay_slot_center))
                         .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                                                                   ViewGroup.LayoutParams.MATCH_PARENT));
             }
@@ -564,7 +556,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
             }
 
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_right))
+                ((ViewGroup) innerLayout.findViewById(R.id.pdebutton_overlay_slot_right))
                         .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                                                                   ViewGroup.LayoutParams.MATCH_PARENT));
             }
@@ -589,7 +581,6 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         // no padding in this element
     }
 
-
     //----- view layout ------------------------------------------------------------------------------------------------
 
 
@@ -602,7 +593,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         int width;
 
         // measure the children (otherwise e.g. the sunken-layer will not be visible!)
-        measureChildren(widthMeasureSpec,heightMeasureSpec);
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
 
         // take the height from the parameter ...
         height = MeasureSpec.getSize(heightMeasureSpec);
@@ -620,22 +611,20 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
 
 
     /**
-     *  @brief Size changed.
-     *
-     * @param width New width.
-     * @param height New height.
-     * @param oldWidth Old width.
+     * @param width     New width.
+     * @param height    New height.
+     * @param oldWidth  Old width.
      * @param oldHeight Old height.
+     * @brief Size changed.
      */
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
-        float xOffset,yOffset,radioX,radioY,markerX,markerY;
-        if (DEBUGPARAMS) {
+        float xOffset, yOffset, radioX, radioY, markerX, markerY;
+        if (DEBUG_PARAMS) {
             Log.d(LOG_TAG, "onSizeChanged(" + width + "," + height + "," + oldWidth + "," + oldHeight + ")");
         }
 
         super.onSizeChanged(width, height, oldWidth, oldHeight);
-
 
         // commonly used data (adjusted for our special clipping logic)
         xOffset = 0;
@@ -665,7 +654,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
             }
 
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_left) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_left))
+                ((ViewGroup) innerLayout.findViewById(R.id.pdebutton_overlay_slot_left))
                         .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                                                                   ViewGroup.LayoutParams.MATCH_PARENT));
             }
@@ -676,18 +665,16 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
         } else if (mRadioAlignment == PDEConstants.PDEAlignment.PDEAlignmentCenter) {
             // centered, aligned to screen pixels
 
-
             if (overlaySlot != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
                 // remove from old slot
                 overlaySlot.removeView(this);
             }
 
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_center) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_center))
+                ((ViewGroup) innerLayout.findViewById(R.id.pdebutton_overlay_slot_center))
                         .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                                                                   ViewGroup.LayoutParams.MATCH_PARENT));
             }
-
 
             // centered, aligned to screen pixels
             radioX = xOffset + PDEBuildingUnits.roundToScreenCoordinates((width - mRadioUsedSize) / 2.0f);
@@ -700,7 +687,7 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
             }
 
             if (innerLayout != null && overlaySlot.getId() != R.id.pdebutton_overlay_slot_right) {
-                ((ViewGroup)innerLayout.findViewById(R.id.pdebutton_overlay_slot_right))
+                ((ViewGroup) innerLayout.findViewById(R.id.pdebutton_overlay_slot_right))
                         .addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                                                                   ViewGroup.LayoutParams.MATCH_PARENT));
             }
@@ -714,51 +701,60 @@ public abstract class PDEButtonLayerOverlayRadioBase extends PDEAbsoluteLayout i
 
         // directly apply to the layers
         PDEAbsoluteLayoutHelper.setViewRect(mAreaDrawable.getWrapperView(), new Rect(0,
-                0,
-                Math.round(mRadioUsedSize),
-                Math.round(mRadioUsedSize)));
+                                                                                     0,
+                                                                                     Math.round(mRadioUsedSize),
+                                                                                     Math.round(mRadioUsedSize)));
 
         mAreaDrawable.setElementShapeOval();
 
-        if (DEBUGPARAMS) {
-            Log.d(LOG_TAG, "onSizeChanged markerUsedSize: "+mMarkerUsedSize + " radioUsedSize: "+mRadioUsedSize);
+        if (DEBUG_PARAMS) {
+            Log.d(LOG_TAG, "onSizeChanged markerUsedSize: " + mMarkerUsedSize + " radioUsedSize: " + mRadioUsedSize);
         }
 
         // create new shape
         mMarkerDrawable.setElementShapeOval();
         PDEAbsoluteLayoutHelper.setViewRect(mMarkerDrawable.getWrapperView(), new Rect(0,
-                                                                                        0,
-                                                                                        Math.round(mMarkerUsedSize),
-                                                                                        Math.round(mMarkerUsedSize)));
+                                                                                       0,
+                                                                                       Math.round(mMarkerUsedSize),
+                                                                                       Math.round(mMarkerUsedSize)));
         mMarkerDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(Math.round(mMarkerUsedSize),
-                                                        MeasureSpec.EXACTLY),
+                                                                             MeasureSpec.EXACTLY),
                                                  MeasureSpec.makeMeasureSpec(Math.round(mMarkerUsedSize),
-                                                        MeasureSpec.EXACTLY));
+                                                                             MeasureSpec.EXACTLY));
 
         // set positions
-        PDEAbsoluteLayoutHelper.setViewOffset(mAreaDrawable.getWrapperView(), radioX, radioY);
-        mAreaDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(
-                    mAreaDrawable.getWrapperView().getLayoutParams().width, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(
-                    mAreaDrawable.getWrapperView().getLayoutParams().height, MeasureSpec.EXACTLY) );
+        PDEAbsoluteLayoutHelper.setViewOffset(mAreaDrawable.getWrapperView(),
+                                              PDEBuildingUnits.roundToScreenCoordinates(radioX),
+                                              PDEBuildingUnits.roundToScreenCoordinates(radioY));
+        if (mAreaDrawable != null
+            && mAreaDrawable.getWrapperView() != null
+            && mAreaDrawable.getWrapperView().getLayoutParams() != null) {
+            mAreaDrawable.getWrapperView().measure(MeasureSpec.makeMeasureSpec(
+                                                           mAreaDrawable.getWrapperView().getLayoutParams().width,
+                                                           MeasureSpec.EXACTLY),
+                                                   MeasureSpec.makeMeasureSpec(
+                                                           mAreaDrawable.getWrapperView().getLayoutParams().height,
+                                                           MeasureSpec.EXACTLY));
+        }
 
         PDEAbsoluteLayout.LayoutParams markerLayerParams =
                 (PDEAbsoluteLayout.LayoutParams) mMarkerDrawable.getWrapperView().getLayoutParams();
-        // center marker Y inside radio, round to screen
-        markerY = radioY + PDEBuildingUnits.roundToScreenCoordinates((mRadioUsedSize-mMarkerUsedSize) / 2.0f);
-        // marker X centered inside radio, round to screen
-        markerX = radioX + PDEBuildingUnits.roundToScreenCoordinates((mRadioUsedSize-mMarkerUsedSize) / 2.0f);
+        if (markerLayerParams != null) {
+            // center marker Y inside radio, round to screen
+            markerY = radioY + PDEBuildingUnits.roundToScreenCoordinates((mRadioUsedSize - mMarkerUsedSize) / 2.0f);
+            // marker X centered inside radio, round to screen
+            markerX = radioX + PDEBuildingUnits.roundToScreenCoordinates((mRadioUsedSize - mMarkerUsedSize) / 2.0f);
 
-        markerLayerParams.x = PDEBuildingUnits.roundToScreenCoordinates(markerX);
-        markerLayerParams.y = PDEBuildingUnits.roundToScreenCoordinates(markerY);
-        // also width & height???
-        mMarkerDrawable.getWrapperView().setLayoutParams(markerLayerParams);
+            markerLayerParams.x = PDEBuildingUnits.roundToScreenCoordinates(markerX);
+            markerLayerParams.y = PDEBuildingUnits.roundToScreenCoordinates(markerY);
+            // also width & height???
+            mMarkerDrawable.getWrapperView().setLayoutParams(markerLayerParams);
+        }
     }
 
 
     /**
      * @brief Factory function that decides which background we use.
-     *
      */
     protected abstract PDEDrawableArea createDrawableArea();
 

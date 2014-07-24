@@ -28,7 +28,7 @@ public class PDEDrawableFilmMetaphor extends PDEDrawableMultilayer {
 
     private PDEConstants.PDEContentStyle mStyle;
     private Drawable mPicture;
-    private boolean mMiddleAligned;
+
     private int mOriginalHeight;
     private int mOriginalWidth;
 
@@ -47,7 +47,6 @@ public class PDEDrawableFilmMetaphor extends PDEDrawableMultilayer {
         // init drawable basics
         super();
         mStyle = PDEConstants.PDEContentStyle.PDEContentStyleFlat;
-        mMiddleAligned = false;
         mPicture = drawable;
 
         mOriginalHeight = 0;
@@ -192,9 +191,10 @@ public class PDEDrawableFilmMetaphor extends PDEDrawableMultilayer {
      * Middle aligned is for use in View, when true the element is aligned in the middle of the border,
      * when false in the upper left
      */
+    @SuppressWarnings("unused")
     public void setElementMiddleAligned(boolean aligned) {
-        if (mMiddleAligned == aligned) return;
-        mMiddleAligned = aligned;
+        if (mFilmMetaphorImage.mMiddleAligned == aligned) return;
+        mFilmMetaphorImage.mMiddleAligned = aligned;
 
         doLayout();
     }
@@ -345,63 +345,6 @@ public class PDEDrawableFilmMetaphor extends PDEDrawableMultilayer {
     @Override
     public void setLayoutHeight(int height) {
         setLayoutSize(new Point(Math.round(height * CONST_ASPECT_RATIO), height));
-    }
-
-
-    /**
-     * @brief Called when bounds set via rect.
-     */
-    @Override
-    public void setBounds(Rect bounds) {
-        super.setBounds(elementCalculateAspectRatioBounds(bounds));
-    }
-
-
-    /**
-     * @brief Called when bounds set via left/top/right/bottom values.
-     */
-    @Override
-    public void setBounds(int left, int top, int right, int bottom) {
-        Rect aspectRatioBounds = elementCalculateAspectRatioBounds(new Rect(left, top, right, bottom));
-        super.setBounds(aspectRatioBounds.left,
-                aspectRatioBounds.top,
-                aspectRatioBounds.right,
-                aspectRatioBounds.bottom);
-    }
-
-    
-    /**
-     * @brief Calculate the correct aspect ratio bounds.
-     *
-     * @param bounds Available space
-     * @return  Rect with correct aspect ratio, fitting in available space
-     */
-    public Rect elementCalculateAspectRatioBounds(Rect bounds) {
-        Rect newBounds;
-
-        //calculate size, based on aspect ratio
-        if ((float)bounds.width() / (float)bounds.height() > CONST_ASPECT_RATIO) {
-            newBounds = new Rect(bounds.left, bounds.top, bounds.right, bounds.bottom);
-            newBounds.right = newBounds.left + Math.round(((float)newBounds.height() * CONST_ASPECT_RATIO));
-
-            if (mMiddleAligned) {
-                int horizontalShift = (bounds.width()-newBounds.width())/2;
-                newBounds.left += horizontalShift;
-                newBounds.right += horizontalShift;
-            }
-
-        } else {
-            newBounds = new Rect(bounds.left, bounds.top, bounds.right, bounds.bottom);
-            newBounds.bottom = newBounds.top + Math.round((float)newBounds.width() / CONST_ASPECT_RATIO);
-
-            if (mMiddleAligned) {
-                int verticalShift = (bounds.height()-newBounds.height())/2;
-                newBounds.top += verticalShift;
-                newBounds.bottom += verticalShift;
-            }
-        }
-
-        return newBounds;
     }
 
 
