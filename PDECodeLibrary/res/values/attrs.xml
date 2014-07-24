@@ -11,17 +11,37 @@
     <attr name="shadowOffsetX" format="float"/>
     <attr name="shadowOffsetY" format="float"/>
     <attr name="shadowEnabled" format="boolean"/>
-    <attr name="padding" format ="dimension"/>
-    <attr name="paddingLeft" format ="dimension"/>
-    <attr name="paddingTop" format="dimension"/>
-    <attr name="paddingRight" format="dimension"/>
-    <attr name="paddingBottom" format="dimension"/>
+    <attr name="padding" format ="dimension|string"/>
+    <attr name="paddingLeft" format ="dimension|string"/>
+    <attr name="paddingTop" format="dimension|string"/>
+    <attr name="paddingRight" format="dimension|string"/>
+    <attr name="paddingBottom" format="dimension|string"/>
     <attr name="src" format="reference|string"/>
     <attr name="pictureString" format="reference|string"/>
     <attr name="timeString" format="string"/>
     <attr name="format169" format="boolean"/>
     <attr name="iconToTextHeightRatio" format="float"/>
     <attr name="cornerRadius" format="dimension"/>
+    <attr name="buttonColor" format="color"/>
+    <attr name="buttonSelectedColor" format="color"/>
+    <attr name="textSelectedColor" format="color"/>
+    <attr name="minButtonPadding" format="dimension"/>
+    <attr name="minButtonPaddingLeft" format="dimension"/>
+    <attr name="minButtonPaddingTop" format="dimension"/>
+    <attr name="minButtonPaddingRight" format="dimension"/>
+    <attr name="minButtonPaddingBottom" format="dimension"/>
+    <attr name="horizontalPadding" format="dimension"/>
+    <attr name="textAlignment">
+        <enum name="left" value="0"/>
+        <enum name="center" value="1"/>
+        <enum name="right" value="2"/>
+    </attr>
+    <attr name="iconAlignment">
+        <enum name="left" value="0"/>
+        <enum name="right" value="1"/>
+        <enum name="leftAttached" value="2"/>
+        <enum name="rightAttached" value="3"/>
+    </attr>
     <attr name="backgroundType">
         <enum name="none" value="5"/>
         <enum name="flat" value="7"/>
@@ -40,6 +60,21 @@
         <enum name="flat" value="0"/>
         <enum name="haptic" value="1"/>
     </attr>
+    <attr name="currentFillValue" format="float"/>
+    <attr name="targetFillValue" format="float"/>
+    <attr name="totalFillValue" format="float"/>
+    <attr name="fillDuration" format="integer"/>
+    <attr name="color" format="color"/>
+    <attr name="unitText" format="string"/>
+    <attr name="numberOfDecimalPlaces" format="integer"/>
+    <attr name="unitTextEnabled" format="boolean"/>
+    <attr name="totalTextEnabled" format="boolean"/>
+    <attr name="startAnimationAtOnceEnabled" format="boolean"/>
+
+
+
+
+
 
     <declare-styleable name="PDEAbsoluteLayout_Layout">
         <attr name="layoutX" format="dimension" />
@@ -51,19 +86,12 @@
         <attr name="textSize"/>
         <attr name="titleColor"/>
         <attr name="textColor"/>
-        <attr name="buttonColor" format="color"/>
+        <attr name="buttonColor"/>
+        <attr name="buttonSelectedColor"/>
+        <attr name="textSelectedColor"/>
         <attr name="src"/>
-        <attr name="textAlignment">
-            <enum name="left" value="0"/>
-            <enum name="center" value="1"/>
-            <enum name="right" value="2"/>
-        </attr>
-        <attr name="iconAlignment">
-            <enum name="left" value="0"/>
-            <enum name="right" value="1"/>
-            <enum name="leftAttached" value="2"/>
-            <enum name="rightAttached" value="3"/>
-        </attr>
+        <attr name="textAlignment"/>
+        <attr name="iconAlignment"/>
         <attr name="checkboxAlignment">
             <enum name="left" value="0"/>
             <enum name="center" value="1"/>
@@ -87,11 +115,11 @@
         <attr name="iconColored" format="boolean"/>
         <attr name="cornerRadius"/>
         <attr name="borderColor"/>
-        <attr name="minButtonPadding" format="dimension"/>
-        <attr name="minButtonPaddingLeft" format="dimension"/>
-        <attr name="minButtonPaddingTop" format="dimension"/>
-        <attr name="minButtonPaddingRight" format="dimension"/>
-        <attr name="minButtonPaddingBottom" format="dimension"/>
+        <attr name="minButtonPadding"/>
+        <attr name="minButtonPaddingLeft"/>
+        <attr name="minButtonPaddingTop"/>
+        <attr name="minButtonPaddingRight"/>
+        <attr name="minButtonPaddingBottom"/>
         <attr name="selected" format="boolean"/>
         <attr name="roundedCornerConfiguration">
             <flag name="noCornersRounded" value="0x00000000" />
@@ -101,8 +129,8 @@
             <flag name="cornerBottomRightRounded" value="0x00000008" />
             <flag name="allCornersRounded" value="0x0000000f" />
         </attr>
-        <attr name="iconToTextHeightRatio" />
-        <attr name="horizontalPadding" format="dimension"/>
+        <attr name="iconToTextHeightRatio"/>
+        <attr name="horizontalPadding"/>
     </declare-styleable>
     <declare-styleable name="PDEInputField">
         <attr name="text"/>
@@ -300,7 +328,7 @@
          <attr name="subTextColor" format="color"/>
     </declare-styleable>
 
-    <declare-styleable name="PDENotificationBaseView">
+    <declare-styleable name="PDENotificationBase">
         <attr name="title"/>
         <attr name="message" format="string"/>
         <attr name="backgroundColor"/>
@@ -328,12 +356,81 @@
         <attr name="triangleTipDistance" format="dimension"/>
         <attr name="triangleMargin" format="dimension"/>
         <attr name="triangleEnabled" format="boolean"/>
+        <attr name="show" format="boolean"/>
     </declare-styleable>
 
-    <declare-styleable name="PDEInfoFlagView">
+    <declare-styleable name="PDEInfoFlag">
         <attr name="titleEnabled" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="PDESectionedButton">
+        <attr name="typeface"/>
+        <attr name="textSize"/>
+        <attr name="textColor"/>
+        <attr name="buttonColor"/>
+        <attr name="buttonSelectedColor"/>
+        <attr name="textSelectedColor"/>
+        <attr name="backgroundType"/>
+        <attr name="momentary" format="boolean"/>
+        <attr name="toggle" format="boolean"/>
+        <attr name="textAlignment"/>
+        <attr name="iconAlignment"/>
+        <attr name="cornerRadius"/>
+        <attr name="borderColor"/>
+        <attr name="sections" format="reference"/>
+        <attr name="numberOfSections" format="integer"/>
+        <attr name="selectedSection" format="integer"/>
+        <attr name="minButtonPadding"/>
+        <attr name="minButtonPaddingLeft"/>
+        <attr name="minButtonPaddingTop"/>
+        <attr name="minButtonPaddingRight"/>
+        <attr name="minButtonPaddingBottom"/>
+        <attr name="horizontalPadding"/>
+        <attr name="iconToTextHeightRatio"/>
+    </declare-styleable>
 
+    <declare-styleable name="PDEUsageCircle">
+        <attr name="currentFillValue"/>
+        <attr name="targetFillValue"/>
+        <attr name="totalFillValue"/>
+        <attr name="fillDuration"/>
+        <attr name="color"/>
+        <attr name="unitText"/>
+        <attr name="numberOfSegments" format="integer"/>
+        <attr name="numberOfDecimalPlaces"/>
+        <attr name="circleEnabled" format="boolean"/>
+        <attr name="textViewsEnabled" format="boolean"/>
+        <attr name="unitTextEnabled"/>
+        <attr name="totalTextEnabled"/>
+        <attr name="startAnimationAtOnceEnabled"/>
+        <attr name="circleStyle">
+            <enum name="defaultStyle" value="0"/>
+            <enum name="leadCircle" value="1"/>
+            <enum name="slimCircle" value="2"/>
+            <enum name="segmented" value="3"/>
+            <enum name="divided" value="4"/>
+        </attr>
+    </declare-styleable>
 
+    <declare-styleable name="PDEUsageBar">
+        <attr name="currentFillValue"/>
+        <attr name="targetFillValue"/>
+        <attr name="totalFillValue"/>
+        <attr name="fillDuration"/>
+        <attr name="textSize"/>
+        <attr name="color"/>
+        <attr name="textColorCustom" format="color"/>
+        <!--MULTICOLOR_LABEL_CODE_IS_NOT_RELEASED_YET -->
+        <!--<attr name="alternativeTextColorCustom" format="color"/>-->
+        <attr name="unitText"/>
+        <attr name="numberOfDecimalPlaces"/>
+        <attr name="labelEnabled" format="boolean"/>
+        <attr name="unitTextEnabled"/>
+        <attr name="totalTextEnabled"/>
+        <attr name="startAnimationAtOnceEnabled"/>
+        <attr name="barStyle">
+            <enum name="fullBar" value="0"/>
+            <enum name="smallBar" value="1"/>
+        </attr>
+    </declare-styleable>
 </resources>

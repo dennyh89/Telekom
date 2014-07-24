@@ -9,6 +9,19 @@
 package de.telekom.pde.codelibrary.ui.components.dialog;
 
 
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.R;
@@ -26,17 +39,6 @@ import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 import de.telekom.pde.codelibrary.ui.layout.PDEBoundedRelativeLayout;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.LinearLayout;
-
 
 //----------------------------------------------------------------------------------------------------------------------
 // PDEDialogActivity
@@ -48,6 +50,7 @@ import android.widget.LinearLayout;
  * @brief Activity that shows a PDE-Style-Dialog above the current Activity.
  *
  */
+@SuppressLint("Registered")
 public class PDEDialogActivity extends PDEActivity {
 
     // ID for log messages
@@ -156,8 +159,10 @@ public class PDEDialogActivity extends PDEActivity {
             if (intent.hasExtra(PDE_DIALOG_INTENT_EXTRA_CONFIGURATION)) {
                 mDialogConfig = intent.getParcelableExtra(PDE_DIALOG_INTENT_EXTRA_CONFIGURATION);
 
-                if (!PDEString.isEmpty(mDialogConfig.getButton2Text())) mMultipleButtons = true;
-                if (PDEString.isEmpty(mDialogConfig.getMessage())) mTitleOnly = true;
+                if (mDialogConfig != null) {
+                    if (!PDEString.isEmpty(mDialogConfig.getButton2Text())) mMultipleButtons = true;
+                    if (PDEString.isEmpty(mDialogConfig.getMessage())) mTitleOnly = true;
+                }
             }
         }
     }
@@ -192,10 +197,12 @@ public class PDEDialogActivity extends PDEActivity {
         PDEBoundedRelativeLayout dialogPane = (PDEBoundedRelativeLayout)findViewById(R.id.pde_dialog_plane);
         dialogPane.setMaxWidth(PDEBuildingUnits.pixelFromBU(CONFIG_MAXIMUM_WIDTH_IN_BU));
         PDEBoundedRelativeLayout.LayoutParams lp = (PDEBoundedRelativeLayout.LayoutParams)dialogPane.getLayoutParams();
-        // set margins
-        lp.leftMargin = PDEBuildingUnits.pixelFromBU(2.0f);
-        lp.rightMargin = PDEBuildingUnits.pixelFromBU(2.0f);
-        dialogPane.setLayoutParams(lp);
+        if (lp != null) {
+            // set margins
+            lp.leftMargin = PDEBuildingUnits.pixelFromBU(2.0f);
+            lp.rightMargin = PDEBuildingUnits.pixelFromBU(2.0f);
+            dialogPane.setLayoutParams(lp);
+        }
     }
 
 
@@ -206,7 +213,11 @@ public class PDEDialogActivity extends PDEActivity {
     protected void initDialogForeground(){
         // set title attributes
         mTitleTextView = (PDETextView)findViewById(R.id.pde_dialog_title);
-        mTitleTextView.setTypeface(DEFAULT_TYPEFACE);
+        if (TextUtils.equals(mDialogConfig.getTypefaceNameTitle(),PDEConstants.sPDEDefaultFontName)) {
+            mTitleTextView.setTypeface(DEFAULT_TYPEFACE);
+        } else {
+            mTitleTextView.setTypeface(PDETypeface.createByName(mDialogConfig.getTypefaceNameTitle()));
+        }
         if (mDialogConfig.getTitleFontSize() >= 0) {
             mTitleTextView.setTextSize(mDialogConfig.getTitleFontSize());
         } else {
@@ -221,7 +232,11 @@ public class PDEDialogActivity extends PDEActivity {
         if (!mTitleOnly){
             // set message attributes
             mMessageTextView = (PDETextView)findViewById(R.id.pde_dialog_message);
-            mMessageTextView.setTypeface(DEFAULT_TYPEFACE);
+            if (TextUtils.equals(mDialogConfig.getTypefaceNameMessage(),PDEConstants.sPDEDefaultFontName)) {
+                mMessageTextView.setTypeface(DEFAULT_TYPEFACE);
+            } else {
+                mMessageTextView.setTypeface(PDETypeface.createByName(mDialogConfig.getTypefaceNameMessage()));
+            }
             mMessageTextView.setTextSize(mDialogConfig.getMessageFontSize());
             if (mDialogConfig.getMessageFontSize() >= 0) {
                 mMessageTextView.setTextSize(mDialogConfig.getMessageFontSize());
@@ -263,6 +278,15 @@ public class PDEDialogActivity extends PDEActivity {
         if (mMultipleButtons && mButton2 != null) {
             mButton1.setHorizontalPadding(PDEBuildingUnits.pixelFromBU(1));
             mButton2.setHorizontalPadding(PDEBuildingUnits.pixelFromBU(1));
+        }
+
+
+        // probably set custom typeface
+        if (mButton1 != null && !TextUtils.equals(mDialogConfig.getTypefaceNameButton1(),PDEConstants.sPDEDefaultFontName)){
+            mButton1.setFont(PDETypeface.createByName(mDialogConfig.getTypefaceNameButton1()));
+        }
+        if (mButton2 != null && !TextUtils.equals(mDialogConfig.getTypefaceNameButton2(),PDEConstants.sPDEDefaultFontName)){
+            mButton2.setFont(PDETypeface.createByName(mDialogConfig.getTypefaceNameButton2()));
         }
 
         // add button1

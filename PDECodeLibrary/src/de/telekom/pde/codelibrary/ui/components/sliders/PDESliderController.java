@@ -81,29 +81,44 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
     /**
      * @brief   Initialization Event type
      */
-    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_INITIALIZE
-                                                                            = "PDESliderController.action.initialize*";
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_ACTION_INITIALIZE
+                                                                            = "PDESliderController.action.initialize";
 
     /**
      * @brief   Event is send to set the parameters finally.
      */
-    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_DID_CHANGE
-                                                                            = "PDESliderController.action.didChange*";
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_ACTION_DID_CHANGE
+                                                                            = "PDESliderController.action.didChange";
 
     /**
      * @brief   Event is send to inform when the controller wants to change parameters.
      *          This gives an user the possibility to manually customize the data
      *          before the slider will set values.
      */
-    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_WILL_CHANGE
-                                                                            = "PDESliderController.data.willChange*";
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_DATA_WILL_CHANGE
+                                                                            = "PDESliderController.data.willChange";
 
     /**
      * @brief   This Event is send to inform, that parameters finally have been set.
      */
-    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_HAS_CHANGED
-                                                                            = "PDESliderController.data.hasChanged*";
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_DATA_HAS_CHANGED
+                                                                            = "PDESliderController.data.hasChanged";
 
+    @Deprecated
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_INITIALIZE
+                                                                        = PDE_SLIDER_CONTROLLER_EVENT_ACTION_INITIALIZE;
+
+    @Deprecated
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_DID_CHANGE
+                                                                        = PDE_SLIDER_CONTROLLER_EVENT_ACTION_DID_CHANGE;
+
+    @Deprecated
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_WILL_CHANGE
+                                                                        = PDE_SLIDER_CONTROLLER_EVENT_DATA_WILL_CHANGE;
+
+    @Deprecated
+    public static final String PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_HAS_CHANGED
+                                                                        = PDE_SLIDER_CONTROLLER_EVENT_DATA_HAS_CHANGED;
 
     /**
      * @brief Tell Event which changes where made on Controller.
@@ -580,7 +595,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
         // send first event to listeners
         willChangeEvent = createStateEvent();
-        willChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_WILL_CHANGE);
+        willChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_DATA_WILL_CHANGE);
         willChangeEvent.setSliderControllerChanges(
                                         EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
         willChangeEvent.setSliderChangeFromUser(fromUser);
@@ -617,7 +632,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
         // send event to change parameters
         didChangeEvent = createStateEvent();
-        didChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_DID_CHANGE);
+        didChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_ACTION_DID_CHANGE);
         didChangeEvent.setSliderControllerChanges(
                                         EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
         didChangeEvent.setSliderChangeFromUser(fromUser);
@@ -625,7 +640,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
         // send final event to inform listeners
         hasChangedEvent = createStateEvent();
-        hasChangedEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_HAS_CHANGED);
+        hasChangedEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_DATA_HAS_CHANGED);
         hasChangedEvent.setSliderControllerChanges(
                                         EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_Position));
         hasChangedEvent.setSliderChangeFromUser(fromUser);
@@ -652,7 +667,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
         // send first event to listeners
         willChangeEvent = createStateEvent();
-        willChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_WILL_CHANGE);
+        willChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_DATA_WILL_CHANGE);
         willChangeEvent.setSliderControllerChanges(
                                     EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_StartPosition));
         mEventSource.sendEvent(willChangeEvent);
@@ -687,14 +702,14 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
         // send event to change parameters
         didChangeEvent = createStateEvent();
-        didChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_DID_CHANGE);
+        didChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_ACTION_DID_CHANGE);
         didChangeEvent.setSliderControllerChanges(
                                     EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_StartPosition));
         mEventSource.sendEvent(didChangeEvent);
 
         // send final event to inform listeners
         hasChangedEvent = createStateEvent();
-        hasChangedEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_HAS_CHANGED);
+        hasChangedEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_DATA_HAS_CHANGED);
         hasChangedEvent.setSliderControllerChanges(
                                     EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_StartPosition));
         mEventSource.sendEvent(hasChangedEvent);
@@ -720,7 +735,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
         // send first event to listeners
         willChangeEvent = createStateEvent();
-        willChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_WILL_CHANGE);
+        willChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_DATA_WILL_CHANGE);
         willChangeEvent.setSliderControllerChanges(
                                             EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_PageSize));
         mEventSource.sendEvent(willChangeEvent);
@@ -756,14 +771,14 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
         // send event to change parameters
         didChangeEvent = createStateEvent();
-        didChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_DID_CHANGE);
+        didChangeEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_ACTION_DID_CHANGE);
         didChangeEvent.setSliderControllerChanges(
                                         EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_PageSize));
         mEventSource.sendEvent(didChangeEvent);
 
         // send final event to inform listeners
         hasChangedEvent = createStateEvent();
-        hasChangedEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_DATA_HAS_CHANGED);
+        hasChangedEvent.setType(PDE_SLIDER_CONTROLLER_EVENT_DATA_HAS_CHANGED);
         hasChangedEvent.setSliderControllerChanges(
                                         EnumSet.of(PDESliderControllerChanges.PDESliderControllerChanged_PageSize));
         mEventSource.sendEvent(hasChangedEvent);
@@ -967,7 +982,7 @@ public class PDESliderController implements PDEIEventSource, PDEIEventSourceDele
 
         // create and send initializing State Event
         event = createStateEvent();
-        event.setType(PDE_SLIDER_CONTROLLER_EVENT_MASK_ACTION_INITIALIZE);
+        event.setType(PDE_SLIDER_CONTROLLER_EVENT_ACTION_INITIALIZE);
         mEventSource.sendEvent(event,listener);
     }
 

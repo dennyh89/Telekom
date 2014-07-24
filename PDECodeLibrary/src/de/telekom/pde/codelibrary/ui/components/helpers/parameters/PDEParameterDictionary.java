@@ -18,7 +18,7 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 
 public class PDEParameterDictionary {
 
-    private PDEDictionary mParameters;
+    private final PDEDictionary mParameters;
 
 
     public PDEParameterDictionary() {

@@ -1,6 +1,7 @@
 package de.telekom.pde.codelibrary.ui.activity;
 
 
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Display;
@@ -11,6 +12,7 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 
 
+@SuppressLint("Registered")
 public class PDEActivitySplash extends PDEActionBarActivity
 {
 	private PDETextView splashAppName;

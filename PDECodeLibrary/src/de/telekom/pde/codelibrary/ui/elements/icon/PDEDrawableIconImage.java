@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.LightingColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 
@@ -19,9 +20,10 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 //  PDEDrawableIconImage
 //----------------------------------------------------------------------------------------------------------------------
 
+
 public class PDEDrawableIconImage extends PDEDrawableBase {
 
-//-----  properties ---------------------------------------------------------------------------------------------------
+    //-----  properties ---------------------------------------------------------------------------------------------------
     private Drawable mElementImage;
     private Drawable mShadowImage;
     private float mImageAspectRatio;
@@ -38,6 +40,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     private LightingColorFilter mShadowColorFilter;
     private LightingColorFilter mIconColorFilter;
 
+
     /**
      * @brief Constructor
      *
@@ -48,10 +51,10 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
         mElementImage = drawable;
         mAspectRatioEnabled = true;
 
-        float intrinsicwidth = (float)mElementImage.getIntrinsicWidth();
-        float intrinsicheight =   (float)mElementImage.getIntrinsicHeight();
-        if (intrinsicwidth != 0 && intrinsicheight != 0) {
-            mImageAspectRatio = intrinsicwidth/intrinsicheight;
+        float intrinsicWidth = (float) mElementImage.getIntrinsicWidth();
+        float intrinsicHeight = (float) mElementImage.getIntrinsicHeight();
+        if (intrinsicWidth != 0 && intrinsicHeight != 0) {
+            mImageAspectRatio = intrinsicWidth / intrinsicHeight;
         } else {
             mImageAspectRatio = 1;
         }
@@ -78,18 +81,23 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     public void setElementAspectRatio(float aspectRatio) {
         // any change?
         if (aspectRatio == mImageAspectRatio) return;
+
         // remember
         mImageAspectRatio = aspectRatio;
+
         // update
         update();
     }
+
 
     @SuppressWarnings("unused")
     public void enableAspectRatio(boolean enable) {
         // any change?
         if (mAspectRatioEnabled == enable) return;
+
         // remember
         mAspectRatioEnabled = enable;
+
         // update
         update();
     }
@@ -110,21 +118,24 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
      */
     @Override
     public void setBounds(int left, int top, int right, int bottom) {
-        Rect aspectRatioBounds = elementCalculateAspectRatioBounds(new Rect(left,top,right,bottom));
-        super.setBounds(aspectRatioBounds.left, aspectRatioBounds.top, aspectRatioBounds.right, aspectRatioBounds.bottom);
+        Rect aspectRatioBounds = elementCalculateAspectRatioBounds(new Rect(left, top, right, bottom));
+        super.setBounds(aspectRatioBounds.left,
+                        aspectRatioBounds.top,
+                        aspectRatioBounds.right,
+                        aspectRatioBounds.bottom);
     }
 
 
     /**
      * @brief Calculate the correct aspect ratio bounds.
      *
-     * @return  Rect with correct aspect ratio, fitting in available space
+     * @return Rect with correct aspect ratio, fitting in available space
      */
     private Rect elementCalculateAspectRatioBounds(Rect bounds) {
         Rect newBounds;
 
         if (!mAspectRatioEnabled) return bounds;
-        if ((float)bounds.width() / (float)bounds.height() > mImageAspectRatio ) {
+        if ((float) bounds.width() / (float) bounds.height() > mImageAspectRatio) {
             newBounds = new Rect(bounds.left, bounds.top, 0, bounds.bottom);
             newBounds.right = newBounds.left + Math.round(newBounds.height() * mImageAspectRatio);
         } else {
@@ -137,12 +148,12 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
 
 
     /**
-     * @brief Update all of my sublayers.
+     * @brief Update all of my sub-layers.
      */
     @Override
     protected void doLayout() {
         Rect bounds = getBounds();
-        mElementImage.setBounds(0,0,bounds.width(),bounds.height());
+        mElementImage.setBounds(0, 0, bounds.width(), bounds.height());
     }
 
 
@@ -150,18 +161,18 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
         // no further paints needed so apply paint changes directly on the image
         mElementImage.setAlpha(mAlpha);
         mElementImage.setDither(mDither);
-        if (mIconColorFilter == null) mElementImage.setColorFilter(mColorFilter);
-
+        if (mIconColorFilter == null) {
+            mElementImage.setColorFilter(mColorFilter);
+        }
     }
 
 
     /**
      * @brief Set Element Height
      */
-    public void setLayoutHeight(int height)
-    {
-        if(mAspectRatioEnabled){
-            setLayoutSize(Math.round(height*mImageAspectRatio), height);
+    public void setLayoutHeight(int height) {
+        if (mAspectRatioEnabled) {
+            setLayoutSize(Math.round(height * mImageAspectRatio), height);
         } else {
             setLayoutSize(getBounds().width(), height);
         }
@@ -171,12 +182,11 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     /**
      * @brief Set Element Width
      */
-    public void setLayoutWidth (int width)
-    {
+    public void setLayoutWidth(int width) {
         if (mAspectRatioEnabled) {
-            setLayoutSize(width, Math.round(width/mImageAspectRatio));
+            setLayoutSize(width, Math.round(width / mImageAspectRatio));
         } else {
-            setLayoutSize(width,getBounds().height());
+            setLayoutSize(width, getBounds().height());
         }
     }
 
@@ -184,18 +194,17 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     /**
      * @brief Set Image
      */
-    public void setElementImage(Drawable image)
-    {
+    public void setElementImage(Drawable image) {
         //any change?
         if (image == mElementImage) return;
 
         //remember
         mElementImage = image;
         //aspect ratio
-        float intrinsicwidth = (float)mElementImage.getIntrinsicWidth();
-        float intrinsicheight =   (float)mElementImage.getIntrinsicHeight();
-        if (intrinsicwidth != 0 && intrinsicheight != 0) {
-            mImageAspectRatio = intrinsicwidth/intrinsicheight;
+        float intrinsicWidth = (float) mElementImage.getIntrinsicWidth();
+        float intrinsicHeight = (float) mElementImage.getIntrinsicHeight();
+        if (intrinsicWidth != 0 && intrinsicHeight != 0) {
+            mImageAspectRatio = intrinsicWidth / intrinsicHeight;
         } else {
             mImageAspectRatio = 1;
         }
@@ -206,12 +215,12 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
 
 
     /**
-    * @brief Get Image
-    */
-    public Drawable getElementImage()
-    {
+     * @brief Get Image
+     */
+    public Drawable getElementImage() {
         return mElementImage;
     }
+
 
     /**
      * @brief Set Image Color
@@ -247,11 +256,14 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     public void setElementShadowEnabled(boolean enabled) {
         //any change?
         if (enabled == mShadowEnabled) return;
+
         //remember
         mShadowEnabled = enabled;
+
         //redraw
         update();
     }
+
 
     /**
      * @brief Get if shadow is enabled
@@ -260,6 +272,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     public boolean getElementShadowEnabled() {
         return mShadowEnabled;
     }
+
 
     /**
      * @brief Set shadow x offset
@@ -273,6 +286,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Get shadow x offset
      */
@@ -280,6 +294,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     public float getElementShadowXOffset() {
         return mShadowXOffset;
     }
+
 
     /**
      * @brief Set shadow y offset
@@ -293,6 +308,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Get shadow y offset
      */
@@ -300,6 +316,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
     public float getElementShadowYOffset() {
         return mShadowYOffset;
     }
+
 
     /**
      * @brief Set Shadow Color
@@ -343,6 +360,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Get padding
      */
@@ -351,6 +369,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
         return mPadding;
     }
 
+
     /**
      * @brief Updates image colors
      */
@@ -358,7 +377,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
         mShadowImage = mElementImage.getConstantState().newDrawable();
         mShadowImage.mutate().setColorFilter(mShadowColorFilter);
 
-        if (mIconColorFilter== null) {
+        if (mIconColorFilter == null) {
             mElementImage.mutate().setColorFilter(null);
         } else {
             mElementImage.setColorFilter(mIconColorFilter);
@@ -366,26 +385,31 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
 
     }
 
+
     /**
      * @brief Draw Icon and shadow if enabled
      *
      * @param c the Canvas of the DrawingBitmap we want to draw into.
      * @param bounds the current bounding rect of our Drawable.
      */
-    protected void updateDrawingBitmap (Canvas c, Rect bounds) {
+    protected void updateDrawingBitmap(Canvas c, Rect bounds) {
         //padding
-        bounds = new Rect(Math.round(mPixelShift+mPadding), Math.round(mPixelShift+mPadding),
-                Math.round(bounds.width()-mPixelShift-mPadding), Math.round(bounds.height()-mPixelShift-mPadding));
+        bounds = new Rect(Math.round(mPixelShift + mPadding),
+                          Math.round(mPixelShift + mPadding),
+                          Math.round(bounds.width() - mPixelShift - mPadding),
+                          Math.round(bounds.height() - mPixelShift - mPadding));
 
         // security
         if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
 
         //set shadow
         if (mShadowEnabled) {
-            Rect shadowbounds = new Rect(Math.round(bounds.left+mShadowXOffset), Math.round(bounds.top+mShadowYOffset),
-                    Math.round(bounds.right+mShadowXOffset), Math.round(bounds.bottom+mShadowYOffset));
+            Rect shadowBounds = new Rect(Math.round(bounds.left + mShadowXOffset),
+                                         Math.round(bounds.top + mShadowYOffset),
+                                         Math.round(bounds.right + mShadowXOffset),
+                                         Math.round(bounds.bottom + mShadowYOffset));
 
-            mShadowImage.setBounds(shadowbounds);
+            mShadowImage.setBounds(shadowBounds);
             mShadowImage.draw(c);
         }
 

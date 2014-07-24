@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PDE" parent="Theme.AppCompat.Light">
+        <item name="android:windowTitleBackgroundStyle">@style/actionBarStyle</item>
+        <item name="android:windowContentOverlay">@drawable/actionbar_bottom_line</item>
+        <item name="actionBarStyle">@style/actionBarStyle</item>
+        <item name="android:actionBarStyle">@style/actionBarStyle</item>
+        <item name="actionModeBackground">@drawable/action_mode_background</item>
+        <item name="android:actionModeBackground">@drawable/action_mode_background</item>
+        <item name="actionModeSplitBackground">@drawable/action_mode_split_background</item>
+    </style>
+    <style name="Theme.PDE.NoActionBar" parent="Theme.PDE">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+</resources>

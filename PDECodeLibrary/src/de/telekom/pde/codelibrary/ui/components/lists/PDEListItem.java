@@ -12,13 +12,16 @@ package de.telekom.pde.codelibrary.ui.components.lists;
 // PDEListItem
 //----------------------------------------------------------------------------------------------------------------------
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentControllerAdapterView;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
@@ -29,8 +32,11 @@ import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
-
 import java.util.ArrayList;
+
+
+
+
 
 /**
  * @brief List item wrapper that holds the styleguide agentstate highlight logic.
@@ -38,7 +44,7 @@ import java.util.ArrayList;
  * This wrapper is needed in order to give the list items the highlight/selection behaviour which is defined by
  * styleguide.
  */
-public class PDEListItem extends LinearLayout implements PDEIEventSource{
+public class PDEListItem extends LinearLayout implements PDEIEventSource {
 
     /**
      * @brief Global tag for log outputs.
@@ -71,7 +77,6 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
     protected ArrayList<Object> mStrongPDEEventListenerHolder;
 
 
-
     // Events
     /**
      * @brief Event is sent when a list item was successfully selected.
@@ -80,7 +85,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
      * you would use this event for all interaction, since it ensures that there's a proper visual
      * response to the user's action.
      */
-    public static final String PDE_LIST_ITEM_EVENT_ACTION_SELECTED ="PDEListItem.action.selected";
+    public static final String PDE_LIST_ITEM_EVENT_ACTION_SELECTED = "PDEListItem.action.selected";
 
     /**
      * @brief Event is sent immediately when user successfully selects the list item.
@@ -94,13 +99,13 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
 
 //----- init -----------------------------------------------------------------------------------------------------------
 
+
     /**
      * @brief Constructor
      */
-    PDEListItem (Context context){
+    PDEListItem(Context context) {
         super(context);
-        mLayoutInflater = LayoutInflater.from(context);
-        init();
+        init(context);
     }
 
 
@@ -108,34 +113,33 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
      * @brief Constructor
      */
     @SuppressWarnings("unused")
-    PDEListItem (Context context, AttributeSet attrs){
-        super(context,attrs);
-        mLayoutInflater = LayoutInflater.from(context);
-        init();
+    PDEListItem(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
     }
 
 
     /**
      * @brief Constructor
      */
-    @SuppressLint("NewApi")
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @SuppressWarnings("unused")
-    PDEListItem (Context context, AttributeSet attrs, int defStyle){
-        super(context,attrs,defStyle);
-        mLayoutInflater = LayoutInflater.from(context);
-        init();
+    PDEListItem(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context);
     }
 
 
     /**
      * @brief Initialize class properties.
      */
-    private void init() {
+    private void init(Context context) {
+        mLayoutInflater = LayoutInflater.from(context);
         // init colors
         PDEListItemGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary
-                ("dt_button_flat_color_defaults");
+                (R.xml.dt_button_flat_color_defaults);
         PDEListItemGlobalParamColor = new PDEParameter();
-        PDEComponentHelpers.buildColors(PDEListItemGlobalParamColor,PDEListItemGlobalColorDefault,
+        PDEComponentHelpers.buildColors(PDEListItemGlobalParamColor, PDEListItemGlobalColorDefault,
                                         "DTTransparentBlack", PDEAgentHelper.PDEAgentHelperAnimationInteractive);
         if (DEBUG) PDEListItemGlobalParamColor.debugOut(LOG_TAG);
 
@@ -185,7 +189,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
         if (event.isType(PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_MASK_ANIMATION)) {
             needsUpdate = mAgentHelper.processAgentEvent(event);
             if (needsUpdate) {
-                if (DEBUG) Log.d(LOG_TAG,"event "+event.getType());
+                if (DEBUG) Log.d(LOG_TAG, "event " + event.getType());
                 updateColors();
             }
         }
@@ -236,7 +240,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
      *
      * @return The already layouted row view.
      */
-    public View getLayoutedView(){
+    public View getLayoutedView() {
         return mLayoutedView;
     }
 
@@ -246,7 +250,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
      *
      * @param layoutResourceID ID that addresses the layout resource (xml).
      */
-    public void setTemplate(int layoutResourceID){
+    public void setTemplate(int layoutResourceID) {
         View layoutView;
 
         // inflate item layout
@@ -261,28 +265,26 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
      *
      * @param position current list position.
      */
-    public void setListPosition(int position){
+    public void setListPosition(int position) {
         mListPosition = position;
     }
 
 
     /**
-     * @brief Get current list position of this item.
-     *
      * @return current list position of this item.
+     * @brief Get current list position of this item.
      */
-    public int getListPosition(){
+    public int getListPosition() {
         return mListPosition;
     }
 
 
     /**
-     * @brief Addresses a subview of the item view and gives it a new content.
-     *
      * @param targetViewID the resource ID that addresses the desired subView.
-     * @param value the new string value for the addressed subview.
+     * @param value        the new string value for the addressed subview.
+     * @brief Addresses a subview of the item view and gives it a new content.
      */
-    public void setTargetViewContent(int targetViewID, String value){
+    public void setTargetViewContent(int targetViewID, String value) {
         if (mHolder == null) return;
         mHolder.setTargetViewContent(targetViewID, value);
     }
@@ -292,9 +294,9 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
      * @brief Addresses a subview of the item view and gives it a new content.
      *
      * @param targetViewID the resource ID that addresses the desired subView.
-     * @param value the new int value for the addressed subview. Mostly useful for resource IDs.
+     * @param value        the new int value for the addressed subview. Mostly useful for resource IDs.
      */
-    public void setTargetViewContent(int targetViewID, int value){
+    public void setTargetViewContent(int targetViewID, int value) {
         if (mHolder == null) return;
         mHolder.setTargetViewContent(targetViewID, value);
     }
@@ -324,9 +326,12 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
 
 //----- Event Handling -------------------------------------------------------------------------------------------------
 
+
     /**
      * @brief Get the eventSource which is responsible for sending PDEEvents events.
+     *
      * Most of the events are coming form the PDEAgentController.
+     *
      * @return PDEEventSource
      */
     @Override
@@ -334,16 +339,16 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
         return mEventSource;
     }
 
+
     /**
      * @brief Add event Listener - hold strong pointer to it.
      *
      * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
      *
-     * @param target    Object which will be called in case of an event.
+     * @param target     Object which will be called in case of an event.
      * @param methodName Function in the target object which will be called.
      *                   The method must accept one parameter of the type PDEEvent
      * @return Object which can be used to remove this listener
-     *
      * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
      */
     @Override
@@ -357,15 +362,13 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
      * @brief Add event Listener - hold strong pointer to it.
      *
      * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
-     *
-     * @param target    Object which will be called in case of an event.
+     * @param target     Object which will be called in case of an event.
      * @param methodName Function in the target object which will be called.
      *                   The method must accept one parameter of the type PDEEvent
-     * @param eventMask PDEAgentController event mask.
-     *                  Will be most of the time PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED or
-     *                  PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED
+     * @param eventMask  PDEAgentController event mask.
+     *                   Will be most of the time PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED or
+     *                   PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED
      * @return Object which can be used to remove this listener
-     *
      * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
      */
     @Override
@@ -379,7 +382,6 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource{
      * @brief Remove event listener that was added before.
      *
      * Also deletes local strong pointer.
-     *
      *
      * @param listener the event listener that should be removed
      * @return Returns whether we have found & removed the listener or not

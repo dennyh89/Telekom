@@ -12,13 +12,14 @@ import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 
 
 //----------------------------------------------------------------------------------------------------------------------
-//  PDEEventDialog
+//  PDEEventDialog, but should be PDEDialogEvent!
 //----------------------------------------------------------------------------------------------------------------------
 
 /**
  * @brief Special event vor constructDialog.
  */
 public class PDEEventDialog extends PDEEvent {
+
     // integer result value that shows the decision of the user (or how he closed the dialog)
     protected int mButtonResult;
     // contains the label ID of the pressed button if the the app programmer used a predefined dialog and not a customized one
@@ -55,6 +56,7 @@ public class PDEEventDialog extends PDEEvent {
     public void setButtonResultLabelID(String id){
         mButtonResultLabelID = id;
     }
+
 
     /**
      * @brief Get the button result.

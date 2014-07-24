@@ -16,10 +16,12 @@ public class PDEFrameTimingOrdinary extends PDEFrameTiming {
 
     protected boolean mPostiesRunning = false;
 
+
     protected PDEFrameTimingOrdinary() {
         super();
         mPostiesRunning = false;
     }
+
 
     public synchronized void setActive(boolean active) {
         if (active == mActive)
@@ -35,6 +37,7 @@ public class PDEFrameTimingOrdinary extends PDEFrameTiming {
         }
     }
 
+
     public long getFrameTime() {
         if (!isActive() && !mPostiesRunning) {
             //update the frametime to current time
@@ -47,6 +50,7 @@ public class PDEFrameTimingOrdinary extends PDEFrameTiming {
         return mFrameTime;
 
     }
+
 
     private void newPosty(long delay) {
         mPostiesRunning = true;
@@ -78,13 +82,12 @@ public class PDEFrameTimingOrdinary extends PDEFrameTiming {
         }
     }
 
+
     private void updateFrameTime() {
         mLastFrameTime = mFrameTime;
         mFrameTime = System.currentTimeMillis();
 
     }
-
-
 
 
 }

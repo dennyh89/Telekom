@@ -8,6 +8,10 @@
   ~ Copyright (c) 2012. Neuland Multimedia GmbH.
   -->
 
+<!--
+    This file is ignored by the "UnusedResource" check of lint, because it is only used in the sample.
+    If the usage is changed or the file is deleted, it could be removed from the lint.xml file "UnusedResources" issue.
+-->
 
 <!-- *** XML-Template for a large sized list item with multi line text. *** -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"

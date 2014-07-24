@@ -27,12 +27,14 @@ public class PDERuntimeException extends RuntimeException {
      */
     private static final long serialVersionUID = 4901389721055786463L;
 
+
     /**
      * @see RuntimeException#RuntimeException()
 	 */
 	public PDERuntimeException() {
 
 	}
+
 
 	/**
      * @see RuntimeException#RuntimeException(String)
@@ -42,6 +44,7 @@ public class PDERuntimeException extends RuntimeException {
 
 	}
 
+
 	/**
      * @see RuntimeException#RuntimeException(Throwable)
 	 */
@@ -49,6 +52,7 @@ public class PDERuntimeException extends RuntimeException {
 		super(throwable);
 
 	}
+
 
 	/**
      * @see RuntimeException#RuntimeException(String, Throwable)

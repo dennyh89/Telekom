@@ -276,7 +276,6 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
     @Override
     public void draw(Canvas canvas) {
         Rect bounds = getBounds();
-        int numLayers = mDrawableArray.size();
 
         // save canvas
         canvas.save();
@@ -290,10 +289,12 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
             canvas.drawRect(bounds, mBackgroundPaint);
         }
 
-        // translate canvas matrix to have relatiev positions in sub-drawables
+        // translate canvas matrix to have relative positions in sub-drawables
         canvas.translate(bounds.left,bounds.top);
-        for (int i = 0; i < numLayers; i++) {
-            mDrawableArray.get(i).draw(canvas);
+
+        // set for all sub-drawables
+        for (Drawable tmpDrawable : mDrawableArray) {
+            tmpDrawable.draw(canvas);
         }
 
         // reset canvas
@@ -307,10 +308,12 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
     @Override
     public boolean setVisible(boolean visible, boolean restart) {
         boolean changed = super.setVisible(visible, restart);
-        int numLayers = mDrawableArray.size();
-        for (int i = 0; i < numLayers; i++) {
-            mDrawableArray.get(i).setVisible(visible, restart);
+
+        // set for all sub-drawables
+        for (Drawable tmpDrawable : mDrawableArray) {
+            tmpDrawable.setVisible(visible, restart);
         }
+
         invalidateSelf();
         return changed;
     }
@@ -324,8 +327,9 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
         int numLayers = mDrawableArray.size();
         int op = numLayers > 0 ? mDrawableArray.get(0).getOpacity() : PixelFormat.TRANSPARENT;
 
-        for (int i = 1; i < numLayers; i++) {
-            op = Drawable.resolveOpacity(op, mDrawableArray.get(i).getOpacity());
+        // get opacity for all sub-drawables
+        for (Drawable tmpDrawable : mDrawableArray) {
+            op = Drawable.resolveOpacity(op, tmpDrawable.getOpacity());
         }
         return op;
     }
@@ -336,10 +340,10 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
      */
     @Override
     public void setDither(boolean dither) {
-        int numLayers = mDrawableArray.size();
 
-        for (int i=0; i<numLayers; i++) {
-            mDrawableArray.get(i).setDither(dither);
+        // set for all sub-drawables
+        for (Drawable tmpDrawable : mDrawableArray) {
+            tmpDrawable.setDither(dither);
         }
         invalidateSelf();
     }
@@ -350,10 +354,10 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
      */
     @Override
     public void setAlpha(int alpha) {
-        int numLayers = mDrawableArray.size();
 
-        for (int i=0; i<numLayers; i++) {
-            mDrawableArray.get(i).setAlpha(alpha);
+        // set for all sub-drawables
+        for (Drawable tmpDrawable : mDrawableArray) {
+            tmpDrawable.setAlpha(alpha);
         }
         invalidateSelf();
     }
@@ -364,9 +368,9 @@ public class PDEDrawableMultilayer extends Drawable implements Drawable.Callback
      */
     @Override
     public void setColorFilter(ColorFilter cf) {
-        int numLayers = mDrawableArray.size();
-        for (int i=0; i<numLayers; i++) {
-            mDrawableArray.get(i).setColorFilter(cf);
+        // set for all sub-drawables
+        for (Drawable tmpDrawable : mDrawableArray) {
+            tmpDrawable.setColorFilter(cf);
         }
         invalidateSelf();
     }

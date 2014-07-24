@@ -29,7 +29,7 @@ public class PDEDictionary implements Serializable {
 	 */
 	private static final long serialVersionUID = 4494615765124062014L;
 	
-	private HashMap<String,Object> mMap;
+	private final HashMap<String,Object> mMap;
 
     public PDEDictionary()
     {

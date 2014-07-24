@@ -12,9 +12,16 @@ package de.telekom.pde.codelibrary.ui.elements.boxes;
 // PDEDrawableNotificationFrame
 //----------------------------------------------------------------------------------------------------------------------
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
@@ -49,6 +56,11 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         Top,
         Bottom
     }
+
+    public static final int DEFAULT_TRIANGLE_WIDTH = PDEBuildingUnits.pixelFromBU(1.16666f);
+    public static final int DEFAULT_TRIANGLE_TIP_DISTANCE = PDEBuildingUnits.BU();
+    public static final int DEFAULT_TRIANGLE_MARGIN = PDEBuildingUnits.BU();
+    public static final int DEFAULT_CORNER_RADIUS = PDEBuildingUnits.twoThirdsBU();
 
 //-----  properties ----------------------------------------------------------------------------------------------------
 
@@ -94,18 +106,18 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         mElementBackgroundColor = PDEColor.valueOf("DTBlack");
         mElementBorderColor = PDEColor.valueOf("DTBlack");
         mElementBorderWidth = 1.0f;
-        mElementWantedCornerRadius = PDEBuildingUnits.twoThirdsBU();
+        mElementWantedCornerRadius = DEFAULT_CORNER_RADIUS;
         mElementCornerRadius = 0.0f;
-        mElementWantedTriangleWidth = PDEBuildingUnits.pixelFromBU(1.16666f);
+        mElementWantedTriangleWidth = DEFAULT_TRIANGLE_WIDTH;
         mElementTriangleWidth = 0;
-        mElementWantedTriangleTipDistance = PDEBuildingUnits.BU();
+        mElementWantedTriangleTipDistance = DEFAULT_TRIANGLE_TIP_DISTANCE;
         mElementTriangleTipDistance = 0;
         mElementWantedTriangleTipPosition = PDEBuildingUnits.pixelFromBU(1.3333f);
         mElementTriangleTipPosition = 0;
         mElementTriangleSide = TriangleSide.SideBottom;
         mElementPath = new Path();
         mElementTriangleEnabled = true;
-        mElementTriangleMargin = PDEBuildingUnits.BU();
+        mElementTriangleMargin = DEFAULT_TRIANGLE_MARGIN;
         mAlpha = Math.round(0.9f * 0xFF);
 
         // shadow is created on demand
@@ -751,8 +763,8 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
             return;
         }
 
-        if (elementSize.x < (2 * mElementWantedCornerRadius + 2 * mElementTriangleMargin)
-                || elementSize.y < (2 * mElementWantedCornerRadius + 2 * mElementTriangleMargin)) {
+        if (elementSize.x < (/*2 * mElementWantedCornerRadius + */2 * mElementTriangleMargin)
+                || elementSize.y < (/*2 * mElementWantedCornerRadius +*/ 2 * mElementTriangleMargin)) {
             return;
         }
 
@@ -974,9 +986,9 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
      * @param elementSize The size of the whole element.
      */
     private void measureTriangleValues(Point elementSize) {
+        calculateCornerRadius(elementSize);
         calculateTriangleWidth(elementSize);
         calculateTriangleTipDistance(elementSize);
-        calculateCornerRadius(elementSize);
         calculateTriangleTipPosition(elementSize);
     }
 
@@ -1027,24 +1039,29 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         // the following code depends on which side the triangle is drawn
         // so on top/bottom side 'position' is an x-value and 'edgeFirstPos' is the left end of the horizontal edge
         // on left/right side 'position' is an y-value and 'edgeFirstPos' is the upper end of the vertical edge
-        edgeFirstPos = mElementCornerRadius;
+//        edgeFirstPos = mElementCornerRadius;
+        edgeFirstPos = mElementTriangleMargin + mPixelShift;
 
         // depending on the drawing side we have to add width or height to get the right/lower end of the edge
         if (mElementTriangleSide == TriangleSide.SideTop
                 ||  mElementTriangleSide == TriangleSide.SideBottom) {
-            edgeLastPos = edgeFirstPos + getElementEdgeWidth(elementSize);
+//            edgeLastPos = edgeFirstPos + getElementEdgeWidth(elementSize);
+            edgeLastPos = 2 * mElementCornerRadius + getElementEdgeWidth(elementSize) - mElementTriangleMargin  + mPixelShift;
         } else {
-            edgeLastPos = edgeFirstPos + getElementEdgeHeight(elementSize);
+//            edgeLastPos = edgeFirstPos + getElementEdgeHeight(elementSize);
+            edgeLastPos = 2 * mElementCornerRadius + getElementEdgeHeight(elementSize) - mElementTriangleMargin +  + mPixelShift;
         }
 
         // check left / upper bounds
-        if ((distance = (edgeFirstPos + mElementTriangleMargin) - getTriangleFirstPosition(position)) > 0) {
+//        if ((distance = (edgeFirstPos + mElementTriangleMargin) - getTriangleFirstPosition(position)) > 0) {
+        if ((distance = edgeFirstPos  - getTriangleFirstPosition(position)) > 0) {
             // start triangle at left / upper bound of the edge
             position += distance;
         }
 
         // check right / lower bounds
-        if ((distance = getTriangleLastPosition(position) - (edgeLastPos - mElementTriangleMargin)) > 0) {
+//        if ((distance = getTriangleLastPosition(position) - (edgeLastPos - mElementTriangleMargin)) > 0) {
+        if ((distance = getTriangleLastPosition(position) - edgeLastPos ) > 0) {
             // start triangle at right / lower bound of the edge
             position -= distance;
         }
@@ -1071,7 +1088,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         if (mElementTriangleSide == TriangleSide.SideTop
                 || mElementTriangleSide == TriangleSide.SideBottom) {
             // calculate space that is left for the triangle
-            spaceForTriangle = Math.round(elementSize.y - (2 * mElementCornerRadius + 2 * mElementTriangleMargin));
+            spaceForTriangle = Math.round(elementSize.y - (/*2 * mElementCornerRadius +*/ 2 * mElementTriangleMargin));
 
             // is the wanted tip distance larger than the available space?
             if (mElementWantedTriangleTipDistance > spaceForTriangle) {
@@ -1085,7 +1102,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
             }
         } else {
             // calculate space that is left for the triangle
-            spaceForTriangle = Math.round(elementSize.x - (2 * mElementCornerRadius + 2 * mElementTriangleMargin));
+            spaceForTriangle = Math.round(elementSize.x - (/*2 * mElementCornerRadius +*/ 2 * mElementTriangleMargin));
 
             // is the wanted tip distance larger than the available space?
             if (mElementWantedTriangleTipDistance > spaceForTriangle) {
@@ -1116,7 +1133,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
                 ||  mElementTriangleSide == TriangleSide.SideBottom) {
             // is wanted width bigger than the allowed drawing area?
             if (mElementWantedTriangleWidth >
-                (allowedTriangleDrawingArea = Math.round(getElementEdgeWidth(elementSize) -
+                (allowedTriangleDrawingArea = Math.round(/*getElementEdgeWidth(elementSize)*/ elementSize.x -
                                                          2 * mElementTriangleMargin))) {
                 if (allowedTriangleDrawingArea > 0) {
                     mElementTriangleWidth = allowedTriangleDrawingArea;
@@ -1129,7 +1146,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
         } else {
             // is wanted width bigger than the allowed drawing area?
             if (mElementWantedTriangleWidth >
-                (allowedTriangleDrawingArea = Math.round(getElementEdgeHeight(elementSize) -
+                (allowedTriangleDrawingArea = Math.round(/*getElementEdgeHeight(elementSize)*/ elementSize.y -
                                                          2 * mElementTriangleMargin))) {
                 if (allowedTriangleDrawingArea > 0) {
                     mElementTriangleWidth = allowedTriangleDrawingArea;
@@ -1281,7 +1298,7 @@ public class PDEDrawableNotificationFrame extends PDEDrawableBase {
 
 
     protected void onBoundsChange(Rect bounds) {
-        Log.d(LOG_TAG,"PDEDrawableNotificationFrame new bounds: width: "+bounds.width()+" height: "+bounds.height());
+        //Log.d(LOG_TAG,"PDEDrawableNotificationFrame new bounds: width: "+bounds.width()+" height: "+bounds.height());
         super.onBoundsChange(bounds);
     }
 }

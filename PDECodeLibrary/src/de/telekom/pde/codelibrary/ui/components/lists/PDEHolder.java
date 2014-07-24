@@ -8,16 +8,20 @@
 
 package de.telekom.pde.codelibrary.ui.components.lists;
 
+
 //----------------------------------------------------------------------------------------------------------------------
 // PDEHolder
 //----------------------------------------------------------------------------------------------------------------------
 
+
+import android.util.SparseArray;
 import android.view.View;
 import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEIconView;
 import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView;
 import de.telekom.pde.codelibrary.ui.components.elementwrappers.metaphors.PDEPhotoFrameView;
 
-import java.util.HashMap;
+
+
 
 /**
  * @brief Holder class for List Item Elements.
@@ -28,15 +32,17 @@ import java.util.HashMap;
  */
 public class PDEHolder implements PDEHolderInterface {
 
-//-----  properties ---------------------------------------------------------------------------------------------------
-    // hashMap that maps given resource IDs to the stored target views.
-    HashMap<Integer,TargetViewHelper> mTargetViewMap;
+    //-----  properties ------------------------------------------------------------------------------------------------
+    // Array that maps given resource IDs to the stored target views.
+    private final SparseArray<TargetViewHelper> mTargetViewMap;
+
 
     // initialization
     public PDEHolder() {
         // create hash map
-        mTargetViewMap = new HashMap<Integer, TargetViewHelper>();
+        mTargetViewMap = new SparseArray<TargetViewHelper>();
     }
+
 
     /**
      * @brief Init the desired subViews of the row item layout.
@@ -45,10 +51,10 @@ public class PDEHolder implements PDEHolderInterface {
      * the IDs of some of the subViews of this view. We probably want to edit the content of these subviews later on.
      * So we extract these subviews from the main view and store them in this holder for faster access.
      *
-     * @param layoutView the (main) view of the current list item.
+     * @param layoutView    the (main) view of the current list item.
      * @param targetViewIDs the IDs of the subviews (of layoutView) which we want to easily access later on.
      */
-    public void initHolder(View layoutView, int[] targetViewIDs){
+    public void initHolder(View layoutView, int[] targetViewIDs) {
         View subView;
         TargetViewHelper target;
         int i;
@@ -57,17 +63,17 @@ public class PDEHolder implements PDEHolderInterface {
         if (targetViewIDs == null) return;
 
         // run through all given subview IDs
-        for (i=0;i<targetViewIDs.length;i++) {
+        for (i = 0; i < targetViewIDs.length; i++) {
             // extract the subview with the given ID from the main view.
             subView = layoutView.findViewById(targetViewIDs[i]);
             // does the view exist?
-            if (subView != null){
+            if (subView != null) {
                 // create a store helper
                 target = new TargetViewHelper();
                 // store extracted subview as targetView
                 target.targetView = subView;
                 // find out the type  of the targetView and remember it
-                if (target.targetView instanceof PDETextView){
+                if (target.targetView instanceof PDETextView) {
                     // text type
                     target.type = TargetViewHelper.TYPE_PDE_TEXT;
                 } else if (target.targetView instanceof PDEIconView) {
@@ -91,9 +97,9 @@ public class PDEHolder implements PDEHolderInterface {
      * @brief Set s content for our target view.
      *
      * @param targetViewID the ID of the view that should receive the content.
-     * @param value the string content for our target view.
+     * @param value        the string content for our target view.
      */
-    public void setTargetViewContent(int targetViewID, String value){
+    public void setTargetViewContent(int targetViewID, String value) {
         TargetViewHelper target;
 
         // get the object that holds the view addressed by the ID
@@ -101,41 +107,43 @@ public class PDEHolder implements PDEHolderInterface {
         // found a object for the given ID?
         if (target != null) {
             // fill in the content by using the setters of the respective type
-            if (target.type == TargetViewHelper.TYPE_PDE_TEXT && target.targetView != null){
+            if (target.type == TargetViewHelper.TYPE_PDE_TEXT && target.targetView != null) {
                 ((PDETextView) target.targetView).setText(value);
-            } else if (target.type == TargetViewHelper.TYPE_PDE_ICON && target.targetView != null){
+            } else if (target.type == TargetViewHelper.TYPE_PDE_ICON && target.targetView != null) {
                 ((PDEIconView) target.targetView).setIconString(value);
-            }  else if (target.type == TargetViewHelper.TYPE_PDE_PHOTO_FRAME && target.targetView != null){
+            } else if (target.type == TargetViewHelper.TYPE_PDE_PHOTO_FRAME && target.targetView != null) {
                 ((PDEPhotoFrameView) target.targetView).setPictureString(value);
             }
         }
     }
 
+
     /**
      * @brief Set s content for our target view.
      *
      * @param targetViewID the ID of the view that should receive the content.
-     * @param value the integer content for our target view. Most useful for resource IDs.
+     * @param value        the integer content for our target view. Most useful for resource IDs.
      */
-    public void setTargetViewContent(int targetViewID, int value){
+    public void setTargetViewContent(int targetViewID, int value) {
         TargetViewHelper target;
 
         // get the object that holds the view addressed by the ID
         target = mTargetViewMap.get(targetViewID);
         // found a object for the given ID?
         if (target != null) {
-            if (target.type == TargetViewHelper.TYPE_PDE_TEXT && target.targetView != null){
+            if (target.type == TargetViewHelper.TYPE_PDE_TEXT && target.targetView != null) {
                 // fill in the string addressed by a resource ID
                 ((PDETextView) target.targetView).setTextFromID(value);
-            } else if (target.type == TargetViewHelper.TYPE_PDE_ICON && target.targetView != null){
+            } else if (target.type == TargetViewHelper.TYPE_PDE_ICON && target.targetView != null) {
                 // fill in the drawable addressed by a resource ID
                 ((PDEIconView) target.targetView).setIconFromID(value);
-            } else if (target.type == TargetViewHelper.TYPE_PDE_PHOTO_FRAME && target.targetView != null){
+            } else if (target.type == TargetViewHelper.TYPE_PDE_PHOTO_FRAME && target.targetView != null) {
                 // fill in the drawable addressed by a resource ID
                 ((PDEPhotoFrameView) target.targetView).setPhotoFromID(value);
             }
         }
     }
+
 
     /**
      * @brief Helper for storing the target views and their types.

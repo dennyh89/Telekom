@@ -27,6 +27,7 @@ import android.os.Parcelable;
  * configuration data (encapsulated in an object) along by an intent.
  */
 public class PDEDialogConfig implements Parcelable{
+
     // style
     protected PDEConstants.PDEContentStyle mStyle;
 
@@ -55,6 +56,12 @@ public class PDEDialogConfig implements Parcelable{
     protected float mTitleFontSize;
     protected float mMessageFontSize;
 
+    // font names
+    protected String mTitleTypefaceName;
+    protected String mMessageTypefaceName;
+    protected String mButton1TypefaceName;
+    protected String mButton2TypefaceName;
+
 
 
 
@@ -79,6 +86,10 @@ public class PDEDialogConfig implements Parcelable{
         mDialogBackgroundColor = null;
         mDialogOutlineColor = null;
         mSeparatorColor = null;
+        mTitleTypefaceName = PDEConstants.sPDEDefaultFontName;
+        mMessageTypefaceName = PDEConstants.sPDEDefaultFontName;
+        mButton1TypefaceName = PDEConstants.sPDEDefaultFontName;
+        mButton2TypefaceName = PDEConstants.sPDEDefaultFontName;
     }
 
 
@@ -123,6 +134,10 @@ public class PDEDialogConfig implements Parcelable{
         pc.writeValue(mDialogBackgroundColor);
         pc.writeValue(mDialogOutlineColor);
         pc.writeValue(mSeparatorColor);
+        pc.writeString(mTitleTypefaceName);
+        pc.writeString(mMessageTypefaceName);
+        pc.writeString(mButton1TypefaceName);
+        pc.writeString(mButton2TypefaceName);
     }
 
 
@@ -178,6 +193,10 @@ public class PDEDialogConfig implements Parcelable{
         mDialogBackgroundColor = (Integer) pc.readValue(null);
         mDialogOutlineColor = (Integer) pc.readValue(null);
         mSeparatorColor = (Integer) pc.readValue(null);
+        mTitleTypefaceName = pc.readString();
+        mMessageTypefaceName = pc.readString();
+        mButton1TypefaceName = pc.readString();
+        mButton2TypefaceName = pc.readString();
     }
 
 
@@ -442,5 +461,68 @@ public class PDEDialogConfig implements Parcelable{
      */
     public float getMessageFontSize(){
         return mMessageFontSize;
+    }
+
+
+
+
+    /**
+     * @brief Set name of the typeface the title text should use.
+     */
+    public void setTitleTypefaceName(String typefaceName) {
+        mTitleTypefaceName = typefaceName;
+    }
+
+
+    /**
+     * @brief Get name of typeface used by title text.
+     */
+    public String getTypefaceNameTitle() {
+        return mTitleTypefaceName;
+    }
+
+    /**
+     * @brief Set name of the typeface the message text should use.
+     */
+    public void setMessageTypefaceName(String typefaceName) {
+        mMessageTypefaceName = typefaceName;
+    }
+
+
+    /**
+     * @brief Get name of typeface used by message text.
+     */
+    public String getTypefaceNameMessage() {
+        return mMessageTypefaceName;
+    }
+
+    /**
+     * @brief Set name of the typeface the button1 label should use.
+     */
+    public void setButton1TypefaceName(String typefaceName) {
+        mButton1TypefaceName = typefaceName;
+    }
+
+
+    /**
+     * @brief Get name of typeface used by button1 label.
+     */
+    public String getTypefaceNameButton1() {
+        return mButton1TypefaceName;
+    }
+
+    /**
+     * @brief Set name of the typeface the button2 label should use.
+     */
+    public void setButton2TypefaceName(String typefaceName) {
+        mButton2TypefaceName = typefaceName;
+    }
+
+
+    /**
+     * @brief Get name of typeface used by button2 label.
+     */
+    public String getTypefaceNameButton2() {
+        return mButton2TypefaceName;
     }
 }

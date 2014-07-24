@@ -14,6 +14,7 @@ package de.telekom.pde.codelibrary.ui.elements.boxes;
 
 import android.graphics.*;
 import android.graphics.drawable.Drawable;
+
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
@@ -26,7 +27,7 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
 @SuppressWarnings("unused")
 public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
 
-//-----  properties ---------------------------------------------------------------------------------------------------
+    //-----  properties ---------------------------------------------------------------------------------------------------
     // basic properties
     // colors
     protected PDEColor mElementBackgroundTopColor;
@@ -45,8 +46,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
 
 
     // initialization
-    public PDEDrawableRoundedGradientBox()
-    {
+    public PDEDrawableRoundedGradientBox() {
         // init drawable basics
         super();
         // init to PDE defaults
@@ -57,8 +57,8 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
         mElementBorderWidth = 1.0f;
         mElementCornerRadius = PDEBuildingUnits.twoThirdsBU();
         mColors = new int[]{mElementBackgroundTopColor.getIntegerColor(),
-                mElementBackgroundMainColor.getIntegerColor(),
-                mElementBackgroundBottomColor.getIntegerColor()};
+                            mElementBackgroundMainColor.getIntegerColor(),
+                            mElementBackgroundBottomColor.getIntegerColor()};
 
         mDistributionPositions = null;
         // shadow is created on demand
@@ -72,6 +72,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
 //---------------------------------------------------------------------------------------------------------------------
 // ----- optional shadow ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
+
 
     /**
      * @brief init shadow drawable.
@@ -87,7 +88,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
         mElementShadowDrawable = new PDEDrawableShapedShadow();
         mElementShadowDrawable.setElementShapeOpacity(0.25f);
         setNeededPadding(PDEBuildingUnits.oneHalfBU());
-        updateElementShadowDrawable(new Point(getBounds().width(),getBounds().height()));
+        updateElementShadowDrawable(new Point(getBounds().width(), getBounds().height()));
         // return
         return mElementShadowDrawable;
     }
@@ -112,6 +113,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
         setNeededPadding(0);
     }
 
+
     /**
      * @brief Update the shadow drawable if we've got one.
      */
@@ -124,9 +126,9 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
             Rect frame;
             Rect bounds = mElementShadowDrawable.getBounds();
             frame = new Rect(bounds.left,
-                    bounds.top,
-                    bounds.left + elementSize.x + ( 2 * (int)mElementShadowDrawable.getElementBlurRadius()),
-                    bounds.top + elementSize.y + (2 * (int)mElementShadowDrawable.getElementBlurRadius()));
+                             bounds.top,
+                             bounds.left + elementSize.x + (2 * (int) mElementShadowDrawable.getElementBlurRadius()),
+                             bounds.top + elementSize.y + (2 * (int) mElementShadowDrawable.getElementBlurRadius()));
             mElementShadowDrawable.setBounds(frame);
             mElementShadowDrawable.setElementShapeRoundedRect(mElementCornerRadius);
         }
@@ -136,6 +138,7 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
 //---------------------------------------------------------------------------------------------------------------------
 // ----- general setters and getters ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
+
 
     /**
      * @brief Set top color of gradient background.
@@ -248,9 +251,9 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
      */
     public void setElementBackgroundGradientColors(PDEColor top, PDEColor main, PDEColor bottom) {
         // any change?
-        if (top.getIntegerColor() == mElementBackgroundTopColor.getIntegerColor() &&
-                main.getIntegerColor() == mElementBackgroundMainColor.getIntegerColor() &&
-                bottom.getIntegerColor() == mElementBackgroundBottomColor.getIntegerColor()) return;
+        if (top.getIntegerColor() == mElementBackgroundTopColor.getIntegerColor()
+            && main.getIntegerColor() == mElementBackgroundMainColor.getIntegerColor()
+            && bottom.getIntegerColor() == mElementBackgroundBottomColor.getIntegerColor()) return;
 
         // remember
         mElementBackgroundTopColor = top;
@@ -279,8 +282,8 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
     private void updateColors() {
         // set colors
         mColors = new int[]{mElementBackgroundTopColor.newIntegerColorWithCombinedAlpha(mAlpha),
-                mElementBackgroundMainColor.newIntegerColorWithCombinedAlpha(mAlpha),
-                mElementBackgroundBottomColor.newIntegerColorWithCombinedAlpha(mAlpha)};
+                            mElementBackgroundMainColor.newIntegerColorWithCombinedAlpha(mAlpha),
+                            mElementBackgroundBottomColor.newIntegerColorWithCombinedAlpha(mAlpha)};
     }
 
 
@@ -295,11 +298,13 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
      */
     public void setElementGradientDistributionPositions(float top, float main, float bottom) {
         // any change?
-        if (mDistributionPositions != null && top == mDistributionPositions[0] &&
-            main == mDistributionPositions[1] && bottom == mDistributionPositions[2]) return;
+        if (mDistributionPositions != null
+            && top == mDistributionPositions[0]
+            && main == mDistributionPositions[1]
+            && bottom == mDistributionPositions[2]) return;
 
         // remember
-        mDistributionPositions = new float[] {top,main,bottom};
+        mDistributionPositions = new float[]{top, main, bottom};
 
         // update
         update();
@@ -309,7 +314,6 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
 //---------------------------------------------------------------------------------------------------------------------
 // ----- layout / sizing ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
-
 
 
     /**
@@ -364,25 +368,24 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
         mBorderPaint.setStrokeWidth(mElementBorderWidth);
 
         // update
-       update();
+        update();
     }
 
 
     /**
-     * @brief Update all of my sublayers.
+     * @brief Update all of my sub-layers.
      */
     @Override
     protected void doLayout() {
         Point elementSize;
 
-        // get the rect we're using for layouting
+        // get the rect we're using for layout
         elementSize = new Point(getBounds().width(), getBounds().height());
 
         // update shadow drawable
         updateElementShadowDrawable(elementSize);
 
     }
-
 
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -426,10 +429,10 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
     }
 
 
-
 //---------------------------------------------------------------------------------------------------------------------
 // ----- Drawing Bitmap ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
+
 
     /**
      * @brief Updates our drawing bitmap and triggers a redraw of this element.
@@ -441,8 +444,9 @@ public class PDEDrawableRoundedGradientBox extends PDEDrawableBase {
         RectF frame;
 
         // security
-        if (bounds.width()<=0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
-        // normalized and pixelshifted
+        if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
+
+        // normalized and pixel-shifted
         frame = new RectF(mPixelShift, mPixelShift, bounds.width() - mPixelShift, bounds.height() - mPixelShift);
         mBackgroundPaint.setShader(new LinearGradient((frame.right - frame.left) / 2, frame.top,
                                                       (frame.right - frame.left) / 2, frame.bottom,

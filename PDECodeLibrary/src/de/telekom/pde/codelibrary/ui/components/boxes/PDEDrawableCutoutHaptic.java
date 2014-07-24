@@ -14,6 +14,9 @@ import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableSunkenArea;
 
+/**
+ * @brief Drawable for a cut out area in haptic style.
+ */
 public class PDEDrawableCutoutHaptic extends PDEDrawableSunkenArea {
 
 

@@ -9,11 +9,13 @@
 
 package de.telekom.pde.codelibrary.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.app.ExpandableListActivity;
 import android.os.Bundle;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.inflater.PDEInflaterUtils;
 
+@SuppressLint("Registered")
 @SuppressWarnings("unused")
 public class PDEExpandableListActivity extends ExpandableListActivity {
     public void onCreate(Bundle savedInstanceState) {

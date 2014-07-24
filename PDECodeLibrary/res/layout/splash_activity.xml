@@ -29,7 +29,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:layout_below="@id/splash_activity_app_icon"
-        pdecodelibrary:paddingTop="@dimen/Telekom.BU"
+        pdecodelibrary:paddingTop="@dimen/pde_splash_activity_app_name_padding_top"
         pdecodelibrary:text="@string/app_name"
         pdecodelibrary:textSize="@dimen/pde_splash_activity_text_height"
         pdecodelibrary:textColor="@color/pde_full_grey_2"

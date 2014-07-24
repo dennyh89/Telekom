@@ -9,13 +9,21 @@ package de.telekom.pde.codelibrary.ui.buildingunits;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.R;
+
+
+
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEBuildingUnits
 //----------------------------------------------------------------------------------------------------------------------
+
 
 /**
  * @brief Helper class for handling Styleguide Building Units.
@@ -26,6 +34,12 @@ import de.telekom.pde.codelibrary.ui.R;
  */
 @SuppressWarnings("unused")
 public class PDEBuildingUnits {
+
+    // debug messages switch
+    private final static boolean DEBUG_PARAMS = false;
+
+
+    private final static String LOG_TAG = PDEBuildingUnits.class.getSimpleName();
 
     private static float BU;
     private static float BU_1_6;
@@ -50,8 +64,7 @@ public class PDEBuildingUnits {
      *
      * Convert BUs to pixel.
      */
-    public static float exactPixelFromBU (float bu)
-    {
+    public static float exactPixelFromBU (float bu) {
         // exact conversion
         return bu * BU;
     }
@@ -62,17 +75,16 @@ public class PDEBuildingUnits {
      *
      * Convert BUs to pixel.
      */
-    public static int pixelFromBU (float bu)
-    {
+    public static int pixelFromBU (float bu) {
         // calculate exact and then round
         return (int) Math.floor(exactPixelFromBU(bu) + 0.5f);
     }
 
+
     /**
      * @brief Convert pixels to BuildingUnits (BU)
      */
-    public static float buildingUnitsFromPixel(float px)
-    {
+    public static float buildingUnitsFromPixel(float px) {
         return px / BU;
     }
 
@@ -82,28 +94,27 @@ public class PDEBuildingUnits {
      *
      * @return pixels for 1-BU
      */
-    public static int BU ()
-    {
+    public static int BU () {
         return Math.round(BU);
     }
+
 
     /**
      * @brief Convenience function to get the pixels for 1/3 BU.
      *
      * @return pixels for 1/3-BU
      */
-    public static int oneThirdBU ()
-    {
+    public static int oneThirdBU () {
         return Math.round(BU_1_3);
     }
+
 
     /**
      * @brief Convenience function to get the pixels for 1/2 BU.
      *
      * @return pixels for 1/2-BU
      */
-    public static int oneHalfBU ()
-    {
+    public static int oneHalfBU () {
         return Math.round(BU_1_2);
     }
 
@@ -113,8 +124,7 @@ public class PDEBuildingUnits {
      *
      * @return pixels for 2/3-BU
      */
-    public static int twoThirdsBU ()
-    {
+    public static int twoThirdsBU () {
         return Math.round(BU_2_3);
     }
 
@@ -124,8 +134,7 @@ public class PDEBuildingUnits {
      *
      * @return pixels for 1/4-BU
      */
-    public static int oneFourthBU ()
-    {
+    public static int oneFourthBU () {
         return Math.round(BU_1_4);
     }
 
@@ -134,8 +143,7 @@ public class PDEBuildingUnits {
      *
      * @return pixels for 1/6-BU
      */
-    public static int oneSixthBU ()
-    {
+    public static int oneSixthBU () {
         return Math.round(BU_1_6);
     }
 
@@ -145,8 +153,7 @@ public class PDEBuildingUnits {
      *
      * @return pixels for 1/12-BU
      */
-    public static int oneTwelfthsBU()
-    {
+    public static int oneTwelfthsBU() {
         return Math.round(BU_1_12);
     }
 
@@ -156,28 +163,27 @@ public class PDEBuildingUnits {
      *
      * @return pixels for 1-BU
      */
-    public static float exactBU ()
-    {
+    public static float exactBU () {
         return BU;
     }
+
 
     /**
      * @brief Convenience function to get the pixels for 1/3 BU.
      *
      * @return pixels for 1/3-BU
      */
-    public static float exactOneThirdBU ()
-    {
+    public static float exactOneThirdBU () {
         return BU_1_3;
     }
+
 
     /**
      * @brief Convenience function to get the pixels for 1/2 BU.
      *
      * @return pixels for 1/2-BU
      */
-    public static float exactOneHalfBU ()
-    {
+    public static float exactOneHalfBU () {
         return BU_1_2;
     }
 
@@ -187,8 +193,7 @@ public class PDEBuildingUnits {
      *
      * @return pixels for 2/3-BU
      */
-    public static float exactTwoThirdsBU ()
-    {
+    public static float exactTwoThirdsBU () {
         return BU_2_3;
     }
 
@@ -198,28 +203,27 @@ public class PDEBuildingUnits {
      *
      * @return pixels for 1/4-BU
      */
-    public static float exactOneForthBU ()
-    {
+    public static float exactOneForthBU () {
         return BU_1_4;
     }
+
 
     /**
      * @brief Convenience function to get the pixels for 1/6 BU.
      *
      * @return pixels for 1/6-BU
      */
-    public static float exactOneSixthBU ()
-    {
+    public static float exactOneSixthBU () {
         return BU_1_6;
     }
+
 
     /**
      * @brief Convenience function to get the pixels for 1/12 BU.
      *
      * @return pixels for 1/12-BU
      */
-    public static float exactOneTwelfthsBU()
-    {
+    public static float exactOneTwelfthsBU() {
         return BU_1_12;
     }
 
@@ -262,8 +266,9 @@ public class PDEBuildingUnits {
     
 
     //function is just dummy on android, always returns 1 !!! -> Don't use it!
+    @SuppressWarnings("SameReturnValue")
     @Deprecated
-    public static int nativePixel(){
+    public static int nativePixel() {
         return 1;
 
     }
@@ -304,37 +309,51 @@ public class PDEBuildingUnits {
 
     /**
      * @brief Parse a string, may optionally contain a unit.
-     *
-     * Recognized units are BU; they are converted to pixel-sides BUs
      */
-    public static float parseSize(String sizeString)
-    {
-        String unit;
-        float size;
+    public static float parseSize(String sizeString) {
+        float size = Float.NaN;
+        int endOfFloatIndex;
 
-        // init defaults
-        size = 0.0f;
+        DisplayMetrics metrics = PDECodeLibrary.getInstance().getApplicationContext().getResources().getDisplayMetrics();
+        Pattern p = Pattern.compile("[-+]?[0-9]*\\.?[0-9]+");
+        Matcher m = p.matcher(sizeString);
 
-        // security
-        if (TextUtils.isEmpty(sizeString)) return size;
-
-        unit = sizeString.trim();
-
-        try {
-            // check if we have a BU value or normal float value
-            if (unit.endsWith("BU")) {
-                unit = unit.substring(0, unit.indexOf("BU"));
-                unit = unit.trim();
-                size = Float.parseFloat(unit);
-                size = PDEBuildingUnits.pixelFromBU(size);
-            } else {
-                size = Float.parseFloat(unit);
+        if (m.find()) {
+            if (DEBUG_PARAMS){
+                Log.d(LOG_TAG,
+                      "start " + m.start(0) + " " + m.end(0) + " " + sizeString.substring(m.start(0), m.end(0)));
             }
-        } catch (NumberFormatException exception){
-           exception.printStackTrace();
+            if (m.start() == 0) {
+                // float only at the beginning
+                size = Float.valueOf(sizeString.substring(m.start(), m.end()));
+                endOfFloatIndex = m.end();
+
+                if (!Float.isNaN(size) && endOfFloatIndex > -1 && endOfFloatIndex < sizeString.length()) {
+                    String unitPart = sizeString.substring(endOfFloatIndex);
+                    if (unitPart.compareToIgnoreCase("BU") == 0) {
+                        // convert caps height (defined in BU) in real font size
+                        size = PDEBuildingUnits.exactPixelFromBU(size);
+                    } else if (unitPart.compareToIgnoreCase("px") == 0) {
+                        size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, size, metrics);
+                    } else if (unitPart.compareToIgnoreCase("dp") == 0 || unitPart.compareToIgnoreCase("dip") == 0) {
+                        size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, metrics);
+                    } else if (unitPart.compareToIgnoreCase("sp") == 0) {
+                        size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, metrics);
+                    } else if (unitPart.compareToIgnoreCase("dt") == 0) {
+                        size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PT, size, metrics);
+                    } else if (unitPart.compareToIgnoreCase("in") == 0) {
+                        size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_IN, size, metrics);
+                    } else if (unitPart.compareToIgnoreCase("mm") == 0) {
+                        size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_MM, size, metrics);
+                    }
+                }
+            } else if (m.start() == 1 && sizeString.startsWith("@")) {
+                // a resource
+                size = PDECodeLibrary.getInstance().getApplicationContext().getResources()
+                                     .getDimensionPixelSize(Integer.parseInt(sizeString.substring(m.start(), m.end())));
+            }
         }
 
-        // done
         return size;
     }
 }

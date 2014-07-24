@@ -34,17 +34,15 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
     private final static float CONST_ASPECT_RATIO = 1.5f;
     private int mOriginalWidth;
     private int mOriginalHeight;
-    private Rect mOriginalBounds;
 
-    private int mPaddingTop;
-    private int mPaddingLeft;
-    private int mPaddingRight;
-    private int mPaddingBottom;
+    public int mPaddingTop;
+    public int mPaddingLeft;
+    public int mPaddingRight;
+    public int mPaddingBottom;
 
     private boolean mShadowEnabled;
 
     // drawing helpers
-    private boolean mMiddleAligned;
     private PDEDrawableShapedShadow mElementShadowDrawable;
 
 
@@ -59,7 +57,6 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
         // init drawable basics
         super();
         mStyle = PDEConstants.PDEContentStyle.PDEContentStyleFlat;
-        mMiddleAligned = false;
         // init PDE defaults
         mPicture = drawable;
 
@@ -177,7 +174,7 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
             mOriginalWidth = mPicture.getIntrinsicWidth();
         }
 
-        correctBounds();
+
 
         //redraw
         mPhotoFrameImage.setElementPicture(picture);
@@ -233,8 +230,8 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
      * when false in the upper left
      */
     public void setElementMiddleAligned(boolean aligned) {
-        if (mMiddleAligned == aligned) return;
-        mMiddleAligned = aligned;
+        if (mPhotoFrameImage.mMiddleAligned == aligned) return;
+        mPhotoFrameImage.mMiddleAligned = aligned;
 
         doLayout();
     }
@@ -254,10 +251,10 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
         }
 
         //remember
-        mPaddingLeft = padding;
-        mPaddingTop = padding;
-        mPaddingRight = padding;
-        mPaddingBottom = padding;
+        setElementPaddingLeft(padding);
+        setElementPaddingTop(padding);
+        setElementPaddingRight(padding);
+        setElementPaddingBottom(padding);
         //redraw
         doLayout();
     }
@@ -287,6 +284,7 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
 
         //remember
         mPaddingLeft = padding;
+        mPhotoFrameImage.mPaddingLeft = padding;
 
         //redraw
         doLayout();
@@ -302,6 +300,7 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
 
         //remember
         mPaddingTop = padding;
+        mPhotoFrameImage.mPaddingTop = padding;
 
         //redraw
         doLayout();
@@ -317,6 +316,7 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
 
         //remember
         mPaddingRight = padding;
+        mPhotoFrameImage.mPaddingRight = padding;
 
         //redraw
         doLayout();
@@ -331,6 +331,7 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
         if (padding == mPaddingBottom) return;
         //remember
         mPaddingBottom = padding;
+        mPhotoFrameImage.mPaddingBottom = padding;
         //redraw
         doLayout();
     }
@@ -531,37 +532,13 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
 
 
     /**
-     * @brief Called when bounds set via rect.
-     */
-    @Override
-    public void setBounds(Rect bounds) {
-        super.setBounds(elementCalculateAspectRatioBounds(bounds));
-    }
-
-
-    /**
-     * @brief Called when bounds set via left/top/right/bottom values.
-     */
-    @Override
-    public void setBounds(int left, int top, int right, int bottom) {
-        Rect aspectRatioBounds = elementCalculateAspectRatioBounds(new Rect(left, top, right, bottom));
-        super.setBounds(aspectRatioBounds.left,
-                aspectRatioBounds.top,
-                aspectRatioBounds.right,
-                aspectRatioBounds.bottom);
-    }
-
-
-    /**
      * @brief Calculate the correct aspect ratio bounds.
      *
      * @param  bounds Available Space for the element
      * @return Rect with the correct aspect ratio, fitting in available space
-     *
-     * When mMiddleAligned is set to true, resulting bounds are shifted to the middle of the available space
      */
     public Rect elementCalculateAspectRatioBounds(Rect bounds) {
-        mOriginalBounds = new Rect(bounds.left, bounds.top, bounds.right, bounds.bottom);
+        int horizontalShift, verticalShift;
 
         //subtract padding
         Rect boundsWithPadding = new Rect(bounds.left + mPaddingLeft, bounds.top + mPaddingTop,
@@ -576,38 +553,21 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
             newBounds.right = newBounds.left + Math.round(newBounds.height() * getElementAspectRatio());
             //shifts bounds to center
 
-            if (mMiddleAligned) {
-                int horizontalShift = (boundsWithPadding.width() - newBounds.width()) / 2;
-                newBounds.left += horizontalShift;
-                newBounds.right += horizontalShift;
-            }
+            horizontalShift = (boundsWithPadding.width() - newBounds.width()) / 2;
+            newBounds.left += horizontalShift;
+            newBounds.right += horizontalShift;
         } else {
             newBounds = new Rect(boundsWithPadding.left, boundsWithPadding.top, boundsWithPadding.right, 0);
             newBounds.bottom = newBounds.top + Math.round(newBounds.width() / getElementAspectRatio());
             //shifts bounds to center
-            if (mMiddleAligned) {
-                int verticalShift = (boundsWithPadding.height()-newBounds.height())/2;
-                newBounds.top += verticalShift;
-                newBounds.bottom += verticalShift;
-            }
+            verticalShift = (boundsWithPadding.height()-newBounds.height())/2;
+            newBounds.top += verticalShift;
+            newBounds.bottom += verticalShift;
         }
 
         return newBounds;
     }
 
-
-    /**
-     * @brief Corrects bounds when these are not properly updated, for example when view is used in lists
-     */
-    public void correctBounds() {
-        if ((mPicture.getIntrinsicWidth() > mPicture.getIntrinsicHeight()
-                    && getBounds().height() > getBounds().width())
-                ||  (mPicture.getIntrinsicHeight() > mPicture.getIntrinsicWidth()
-                    && getBounds().width() > getBounds().height())) {
-            setBounds(mOriginalBounds.left, mOriginalBounds.top, Math.max(mOriginalBounds.bottom,
-                            mOriginalBounds.right), Math.max(mOriginalBounds.bottom, mOriginalBounds.right));
-        }
-    }
 
 
     /**
@@ -649,8 +609,6 @@ public class PDEDrawablePhotoFrame extends PDEDrawableMultilayer {
     private void updateFilmImageDrawable(Rect bounds) {
         mPhotoFrameImage.setLayoutSize(bounds.width(), bounds.height());
         mPhotoFrameImage.setLayoutOffset(bounds.left, bounds.top);
-
-        //correctBounds();
     }
 
 }

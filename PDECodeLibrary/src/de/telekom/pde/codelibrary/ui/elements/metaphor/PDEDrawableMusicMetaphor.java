@@ -33,7 +33,6 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableMultilayer {
 
     private final static float CONST_ASPECT_RATIO = 20.0f / 18.0f;
     private Drawable mPicture;
-    private boolean mMiddleAligned;
     private int mOriginalHeight;
     private int mOriginalWidth;
 
@@ -51,7 +50,6 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableMultilayer {
         super();
         // init PDE defaults
         mStyle = PDEConstants.PDEContentStyle.PDEContentStyleFlat;
-        mMiddleAligned = false;
         mPicture = drawable;
 
         mOriginalWidth = 0;
@@ -196,8 +194,8 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableMultilayer {
      * when false in the upper left
      */
     public void setElementMiddleAligned(boolean aligned) {
-        if (mMiddleAligned == aligned) return;
-        mMiddleAligned = aligned;
+        if (mMusicMetaphorImage.mMiddleAligned == aligned) return;
+        mMusicMetaphorImage.mMiddleAligned = aligned;
 
         doLayout();
     }
@@ -314,65 +312,12 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableMultilayer {
     }
 
 
-    /**
-     * @brief Called when bounds set via rect.
-     */
-    @Override
-    public void setBounds(Rect bounds) {
-        super.setBounds(elementCalculateAspectRatioBounds(bounds));
-    }
-
-
-    /**
-     * @brief Called when bounds set via left/top/right/bottom values.
-     */
-    @Override
-    public void setBounds(int left, int top, int right, int bottom) {
-        Rect aspectRatioBounds = elementCalculateAspectRatioBounds(new Rect(left, top, right, bottom));
-        super.setBounds(aspectRatioBounds.left,
-                aspectRatioBounds.top,
-                aspectRatioBounds.right,
-                aspectRatioBounds.bottom);
-    }
-
-
 //---------------------------------------------------------------------------------------------------------------------
 // ----- layout / sizing ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
 
 
-    /**
-     * @brief Calculate the correct aspect ratio bounds.
-     *
-     * @param bounds Available space for the element
-     * @return Rect with correct aspect ratio, fitting in available space
-     */
-    public Rect elementCalculateAspectRatioBounds(Rect bounds) {
-        Rect newBounds;
 
-        //calculate bounds depending on aspect ratio
-        if ((float)bounds.width() / (float)bounds.height() > 1 ) {
-            newBounds = new Rect(bounds.left, bounds.top, bounds.right, bounds.bottom);
-            newBounds.right = newBounds.left + Math.round(((float)newBounds.height() * 1));
-
-            if (mMiddleAligned) {
-                int horizontalShift = (bounds.width()-newBounds.width())/2;
-                newBounds.left += horizontalShift;
-                newBounds.right += horizontalShift;
-            }
-        } else {
-            newBounds = new Rect(bounds.left, bounds.top, bounds.right, bounds.bottom);
-            newBounds.bottom = newBounds.top + Math.round((float)newBounds.width() / 1);
-
-            if (mMiddleAligned) {
-                int verticalShift = (bounds.height()-newBounds.height()) / 2;
-                newBounds.top += verticalShift;
-                newBounds.bottom += verticalShift;
-            }
-        }
-
-        return newBounds;
-    }
 
 
     /**
@@ -383,7 +328,8 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableMultilayer {
     @Override
     public void setLayoutWidth(int width) {
         if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleFlat) {
-            // height == width
+            // the metaphor has the same width and height, so this assignment is correct
+            // noinspection SuspiciousNameCombination
             setLayoutSize(new Point(width, width ));
         } else {
             setLayoutSize(new Point(width, Math.round((float) width / CONST_ASPECT_RATIO)));
@@ -400,7 +346,8 @@ public class PDEDrawableMusicMetaphor extends PDEDrawableMultilayer {
     @Override
     public void setLayoutHeight(int height) {
         if (mStyle == PDEConstants.PDEContentStyle.PDEContentStyleFlat) {
-            // width == height!!
+            // the metaphor has the same height and width, so this assignment is correct
+            // noinspection SuspiciousNameCombination
             setLayoutSize(new Point(height, height));
         } else {
             setLayoutSize(new Point(Math.round(height * CONST_ASPECT_RATIO), height));

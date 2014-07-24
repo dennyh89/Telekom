@@ -17,36 +17,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/LoginScreenScrollView" android:clickable="true">
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                          android:orientation="vertical"
+            <RelativeLayout android:orientation="vertical"
                           android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:id="@+id/LoginScreenInnerScrollView"
                           android:gravity="top"
                           android:layout_gravity="top"
                           >
-                <RelativeLayout
+                <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEListHeaderView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/Telekom.BU6"
                         android:id="@+id/LoginScreenHeaderArea"
                         android:layout_alignParentTop="true"
-                        >
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/login_screen_header"
-                            android:id="@+id/LoginScreenHeaderLabel"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginBottom="@dimen/Telekom.BU_1_2"
-                            />
-                    <View android:layout_width="match_parent"
-                          android:layout_height="1px"
-                          android:layout_centerInParent="true"
-                          android:layout_alignParentBottom="true"
-                          android:id="@+id/LoginScreenHeaderDelimiter"
-                            />
-                </RelativeLayout>
+                        android:layout_centerHorizontal="true"
+                        pdecodelibrary:text="@string/login_screen_header"
+                        pdecodelibrary:backgroundColor="@color/DTTransparentBlack"
+                        pdecodelibrary:horizontalAlignment="center"
+                        />
                 <!-- DESCRIPTION AREA -->
                 <RelativeLayout
                         android:layout_width="match_parent"
@@ -226,7 +213,7 @@
                 </RelativeLayout>
 
 
-                <de.telekom.pde.codelibrary.ui.components.notification.PDEInfoFlagView
+                <de.telekom.pde.codelibrary.ui.components.notification.PDEInfoFlag
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         pdecodelibrary:titleEnabled="false"
@@ -246,11 +233,10 @@
         android:layout_height="match_parent">
 
 
-        <de.telekom.pde.codelibrary.ui.components.notification.PDEInfoFlagView
+        <de.telekom.pde.codelibrary.ui.components.notification.PDEInfoFlag
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/LoginScreenPositionableInfoFlag"
-                android:text="pos"
                 android:layout_marginLeft="@dimen/Telekom.BU2"
                 android:layout_marginRight="@dimen/Telekom.BU2"
                 />

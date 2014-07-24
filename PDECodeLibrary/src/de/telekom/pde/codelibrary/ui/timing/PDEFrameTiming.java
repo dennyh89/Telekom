@@ -81,7 +81,7 @@ public abstract class PDEFrameTiming {
          * @brief Reference to the listener class.
          *
          *  A weak reference, which gets cleared automatically when the listener no longer exists.
-         *  Nonexisting listeners are completely removed from the EventSource the next time an event is sent.
+         *  Non-existing listeners are completely removed from the EventSource the next time an event is sent.
          *  Until then, the helper class still exists as leftover.
          */
         WeakReference<Object> mWeakTarget;
@@ -90,7 +90,7 @@ public abstract class PDEFrameTiming {
          * @brief Reference to the listener class.
          *
          *  A weak reference, which gets cleared automatically when the listener no longer exists.
-         *  Nonexisting listeners are completely removed from the EventSource the next time an event is sent.
+         *  Non-existing listeners are completely removed from the EventSource the next time an event is sent.
          *  Until then, the helper class still exists as leftover.
          */
         Object mStrongTarget;
@@ -125,6 +125,7 @@ public abstract class PDEFrameTiming {
             }
         }
 
+
         public Object getTarget() {
             if (mStrongTarget != null) {
                 return mStrongTarget;
@@ -138,7 +139,7 @@ public abstract class PDEFrameTiming {
 //----- Singleton ------------------------------------------------------------------------------------------------------
 
     /**
-     * @brief private function to instanciate thre right instance of dtframetiming.
+     * @brief private function to instantiate the right instance of PDEFrameTiming.
      *
      * All functions with android api level 16 (Android 4.1) and higher use the choreographer. All older operation
      * systems a not so optimal solution.
@@ -159,18 +160,36 @@ public abstract class PDEFrameTiming {
         }
 
         if (choreographerClassAvailable) {
-            return new PDEFrameTimingChoreographer();
+            // the following code does the same as:
+            // return new PDEFrameTimingChoreographer();
+            // but doesn't create a dalvik error (exception)
+
+            Class<?> frameTimeChoreographer;
+            try {
+                frameTimeChoreographer = Class.forName(
+                        "de.telekom.pde.codelibrary.ui.timing.PDEFrameTimingChoreographer");
+                if (frameTimeChoreographer != null) {
+                    // create and return PDEFrameTimingChoreographer
+                    return (PDEFrameTiming) frameTimeChoreographer.newInstance();
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
         }
 
         return new PDEFrameTimingOrdinary();
-
     }
 
 
     /**
      * #brief getInstance of frame timing - singleton pattern.
-     * @return static dtframetiming object
+     * @return static PDEFrameTiming object
      */
+    @SuppressWarnings("SameReturnValue")
     public static PDEFrameTiming getInstance() {
         return SingletonHolder.INSTANCE;
     }

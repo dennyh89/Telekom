@@ -14,6 +14,7 @@ package de.telekom.pde.codelibrary.ui.elements.boxes;
 
 import android.graphics.*;
 import android.graphics.drawable.Drawable;
+
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
@@ -26,7 +27,7 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableShapedShadow;
 @SuppressWarnings("unused")
 public class PDEDrawableRoundedBox extends PDEDrawableBase {
 
-//-----  properties ---------------------------------------------------------------------------------------------------
+    //-----  properties ---------------------------------------------------------------------------------------------------
     // basic properties
     // colors
     protected PDEColor mElementBackgroundColor;
@@ -41,8 +42,7 @@ public class PDEDrawableRoundedBox extends PDEDrawableBase {
 
 
     // initialization
-    public PDEDrawableRoundedBox()
-    {
+    public PDEDrawableRoundedBox() {
         // init drawable basics
         super();
         // init to PDE defaults
@@ -59,6 +59,7 @@ public class PDEDrawableRoundedBox extends PDEDrawableBase {
 // ----- optional shadow ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
 
+
     /**
      * @brief init shadow drawable.
      *
@@ -73,7 +74,7 @@ public class PDEDrawableRoundedBox extends PDEDrawableBase {
         mElementShadowDrawable = new PDEDrawableShapedShadow();
         mElementShadowDrawable.setElementShapeOpacity(0.25f);
         setNeededPadding(PDEBuildingUnits.oneHalfBU());
-        updateElementShadowDrawable(new Point(getBounds().width(),getBounds().height()));
+        updateElementShadowDrawable(new Point(getBounds().width(), getBounds().height()));
         // return
         return mElementShadowDrawable;
     }
@@ -111,9 +112,9 @@ public class PDEDrawableRoundedBox extends PDEDrawableBase {
             Rect frame;
             Rect bounds = mElementShadowDrawable.getBounds();
             frame = new Rect(bounds.left,
-                    bounds.top,
-                    bounds.left + elementSize.x + (2 * (int)mElementShadowDrawable.getElementBlurRadius()),
-                    bounds.top + elementSize.y + (2 *(int)mElementShadowDrawable.getElementBlurRadius()));
+                             bounds.top,
+                             bounds.left + elementSize.x + (2 * (int) mElementShadowDrawable.getElementBlurRadius()),
+                             bounds.top + elementSize.y + (2 * (int) mElementShadowDrawable.getElementBlurRadius()));
             //mElementShadowDrawable.setLayoutRect(frame);
             mElementShadowDrawable.setBounds(frame);
             mElementShadowDrawable.setElementShapeRoundedRect(mElementCornerRadius);
@@ -121,10 +122,10 @@ public class PDEDrawableRoundedBox extends PDEDrawableBase {
     }
 
 
-
 //---------------------------------------------------------------------------------------------------------------------
 // ----- general setters and getters ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
+
 
     /**
      * @brief Set fill (background) color.
@@ -316,8 +317,8 @@ public class PDEDrawableRoundedBox extends PDEDrawableBase {
         RectF frame;
 
         // security
-        if (bounds.width()<=0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
-        // normalized and pixelshifted
+        if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null) return;
+        // normalized and pixel-shifted
         frame = new RectF(mPixelShift, mPixelShift, bounds.width() - mPixelShift, bounds.height() - mPixelShift);
         c.drawRoundRect(frame, mElementCornerRadius, mElementCornerRadius, mBackgroundPaint);
         c.drawRoundRect(frame, mElementCornerRadius, mElementCornerRadius, mBorderPaint);

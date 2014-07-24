@@ -9,8 +9,10 @@
 
 package de.telekom.pde.codelibrary.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.view.View;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.inflater.PDEInflaterUtils;
 
+@SuppressLint("Registered")
 @SuppressWarnings("unused")
 public class PDEFragmentActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
@@ -34,7 +37,7 @@ public class PDEFragmentActivity extends FragmentActivity {
      * @brief Create TextViews already here, to be able to set telegrotesk font.
      */
     @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
+    public View onCreateView(String name, @NonNull Context context, @NonNull AttributeSet attrs) {
         View view = super.onCreateView(name, context, attrs);
 
         if (view == null) {

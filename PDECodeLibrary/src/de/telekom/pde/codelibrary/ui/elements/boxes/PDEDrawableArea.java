@@ -10,6 +10,7 @@ package de.telekom.pde.codelibrary.ui.elements.boxes;
 
 
 import android.graphics.Rect;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBorderLine;
@@ -34,13 +35,11 @@ public class PDEDrawableArea extends PDEDrawableMultilayer {
     protected PDEViewWrapper mWrapperView;
 
 
-
 //----- init -----------------------------------------------------------------------------------------------------------
+
 
     /**
      * @brief Constructor
-     *
-     *
      */
     public PDEDrawableArea() {
         mElementBackgroundColor = PDEColor.valueOf("DTWhite");
@@ -62,7 +61,6 @@ public class PDEDrawableArea extends PDEDrawableMultilayer {
     }
 
 
-
     // internal helpers
     protected void initLayers() {
         // initialize sublayers
@@ -75,17 +73,17 @@ public class PDEDrawableArea extends PDEDrawableMultilayer {
     }
 
 
-
 //---------------------------------------------------------------------------------------------------------------------
 // ----- general setters and getters ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
+
 
     /**
      * @brief Get the background color.
      *
      * @return background color
      */
-    public PDEColor getElementBackgroundColor(){
+    public PDEColor getElementBackgroundColor() {
         return mElementBackgroundColor;
     }
 
@@ -95,11 +93,13 @@ public class PDEDrawableArea extends PDEDrawableMultilayer {
      *
      * @param color new background color
      */
-    public void setElementBackgroundColor(PDEColor color){
+    public void setElementBackgroundColor(PDEColor color) {
         // anything to do?
         if (color.getIntegerColor() == mElementBackgroundColor.getIntegerColor()) return;
+
         // remember
         mElementBackgroundColor = color;
+
         // forward
         mElementBackground.setElementBackgroundColor(mElementBackgroundColor.getIntegerColor());
     }
@@ -110,7 +110,7 @@ public class PDEDrawableArea extends PDEDrawableMultilayer {
      *
      * @return border color
      */
-    public PDEColor getElementBorderColor(){
+    public PDEColor getElementBorderColor() {
         return mElementBorderColor;
     }
 
@@ -120,24 +120,21 @@ public class PDEDrawableArea extends PDEDrawableMultilayer {
      *
      * @param color new border color
      */
-    public void setElementBorderColor(PDEColor color){
+    public void setElementBorderColor(PDEColor color) {
         // anything to do?
         if (color.getIntegerColor() == mElementBorderColor.getIntegerColor()) return;
+
         // remember
         mElementBorderColor = color;
+
         // forward
         mElementBorderLine.setElementBorderColor(mElementBorderColor.getIntegerColor());
     }
 
 
-
-
-
-
 //---------------------------------------------------------------------------------------------------------------------
 // ----- layout / sizing ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
-
 
 
     /**
@@ -162,6 +159,7 @@ public class PDEDrawableArea extends PDEDrawableMultilayer {
         mElementBackground.setBounds(bounds);
     }
 
+
     /**
      * @brief update the border line when the bounds change.
      *
@@ -172,7 +170,6 @@ public class PDEDrawableArea extends PDEDrawableMultilayer {
     }
 
 
-
 //---------------------------------------------------------------------------------------------------------------------
 // ----- Layout ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
@@ -180,11 +177,12 @@ public class PDEDrawableArea extends PDEDrawableMultilayer {
 
     // ToDo: setElementShapePath
 
+
     /**
      * @brief Set the shape of the layer to a rectangle with the given size.
      *
      */
-    public void setElementShapeRect(){
+    public void setElementShapeRect() {
         // config background
         mElementBackground.setElementShapeRect();
         // config borderline
@@ -217,9 +215,6 @@ public class PDEDrawableArea extends PDEDrawableMultilayer {
     }
 
 
-
-
-
 //---------------------------------------------------------------------------------------------------------------------
 // ----- Wrapper View  ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
@@ -227,7 +222,7 @@ public class PDEDrawableArea extends PDEDrawableMultilayer {
 
     public PDEViewWrapper getWrapperView() {
         if (mWrapperView == null) {
-            mWrapperView = new PDEViewWrapper(PDECodeLibrary.getInstance().getApplicationContext(),this);
+            mWrapperView = new PDEViewWrapper(PDECodeLibrary.getInstance().getApplicationContext(), this);
         }
         return mWrapperView;
     }

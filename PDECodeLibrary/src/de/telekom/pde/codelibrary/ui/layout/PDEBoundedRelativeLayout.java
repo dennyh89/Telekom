@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+
 import de.telekom.pde.codelibrary.ui.R;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -37,7 +38,7 @@ public class PDEBoundedRelativeLayout extends RelativeLayout {
      */
     public PDEBoundedRelativeLayout(Context context) {
         super(context);
-        init (null);
+        init(context, null);
     }
 
     /**
@@ -45,7 +46,7 @@ public class PDEBoundedRelativeLayout extends RelativeLayout {
      */
     public PDEBoundedRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(attrs);
+        init(context, attrs);
 
     }
 
@@ -54,23 +55,25 @@ public class PDEBoundedRelativeLayout extends RelativeLayout {
      */
     public PDEBoundedRelativeLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(attrs);
+        init(context, attrs);
     }
 
     /**
      * @brief Common init function for all constructors.
      */
-    private void init(AttributeSet attrs) {
+    private void init(Context context, AttributeSet attrs) {
         // set default values
         mMaxWidth = -1;
         mMaxHeight = -1;
 
         // read xml attributes
         if (attrs != null) {
-            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.PDEBoundedRelativeLayout);
-            mMaxWidth = a.getDimensionPixelSize(R.styleable.PDEBoundedRelativeLayout_max_width, -1);
-            mMaxHeight = a.getDimensionPixelSize(R.styleable.PDEBoundedRelativeLayout_max_height, -1);
-            a.recycle();
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PDEBoundedRelativeLayout);
+            if (a != null) {
+                mMaxWidth = a.getDimensionPixelSize(R.styleable.PDEBoundedRelativeLayout_max_width, -1);
+                mMaxHeight = a.getDimensionPixelSize(R.styleable.PDEBoundedRelativeLayout_max_height, -1);
+                a.recycle();
+            }
         }
     }
 

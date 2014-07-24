@@ -14,7 +14,6 @@ import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.util.DisplayMetrics;
-import android.util.FloatMath;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
@@ -94,20 +93,16 @@ public class PDEFontHelpers {
         if (!Float.isNaN(size) && endOfFloatIndex > -1 && endOfFloatIndex < fontSizeString.length()) {
             String unitPart = fontSizeString.substring(endOfFloatIndex);
             if (unitPart.compareToIgnoreCase("%") == 0) {
-                // percent of default copy size (styleguide definition)
-                size = PDEFontHelpers.calculateFontSizeByPercent(font, size);
-                // convert caps height in real font size
-                size = PDEFontHelpers.calculateFontSize(font, size);
+                // convert caps height (calculated by percent of default copy size (styleguide definition))
+                // in real font size
+                size = PDEFontHelpers.calculateFontSize(font, PDEFontHelpers.calculateFontSizeByPercent(font, size));
             } else if (unitPart.compareToIgnoreCase("BU") == 0) {
-                // font size in BuildingUnits
-                // translate BUs to pixel
-                size = PDEBuildingUnits.exactPixelFromBU(size);
-                // convert caps height in real font size
-                size = PDEFontHelpers.calculateFontSize(font, size);
+                // convert caps height (defined in BU) in real font size
+                size = PDEFontHelpers.calculateFontSize(font, PDEBuildingUnits.exactPixelFromBU(size));
             } else if (unitPart.compareToIgnoreCase("Caps") == 0) {
                 // font size in CapsHeight
-                    // convert caps height in real font size
-                    size = PDEFontHelpers.calculateFontSize(font, size);
+                // convert caps height in real font size
+                size = PDEFontHelpers.calculateFontSize(font, size);
             } else if (unitPart.compareToIgnoreCase("px") == 0) {
                 size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, size, metrics);
             } else if (unitPart.compareToIgnoreCase("dp") == 0 || unitPart.compareToIgnoreCase("dip") == 0) {
@@ -157,7 +152,7 @@ public class PDEFontHelpers {
             return Float.NaN;
         }
 
-        return FloatMath.floor((fontSize * percent / 100.0f) + 0.5f);
+        return (float)Math.floor((fontSize * percent / 100.0f) + 0.5f);
     }
 
 
@@ -230,7 +225,7 @@ public class PDEFontHelpers {
      * background which add a border).
      * AntiAliasing is on.
      *
-     * It might be usefull to add some additional pixels, since the font calculation is not always trustworthy.
+     * It might be useful to add some additional pixels, since the font calculation is not always trustworthy.
      *
      * @param text title which is used for the bound
      * @param font the font / typeface
@@ -392,19 +387,24 @@ public class PDEFontHelpers {
         return PDETypeface.createFromAsset(context.getResources().getString(R.string.Tele_GroteskNor));
     }
 
-    /**
-     * @brief Get default typeface
-     */
-    public static PDETypeface getDefault() {
-        return PDETypeface.sDefaultFont;
-    }
 
     /**
      * @brief Get default typeface
      */
+    @SuppressWarnings("SameReturnValue")
+    public static PDETypeface getDefault() {
+        return PDETypeface.sDefaultFont;
+    }
+
+
+    /**
+     * @brief Get default typeface
+     */
+    @SuppressWarnings("SameReturnValue")
     public static PDETypeface getNormal() {
         return PDETypeface.sDefaultNormal;
     }
+
 
     /**
      * brief Helper function to get PDETypeface of fett(bold) telekom font
@@ -416,9 +416,11 @@ public class PDEFontHelpers {
         return PDETypeface.createFromAsset(context.getResources().getString(R.string.Tele_GroteskFet));
     }
 
+
     /**
      * @brief Get default Bold typeface
      */
+    @SuppressWarnings("SameReturnValue")
     public static PDETypeface getBold() {
         return PDETypeface.sDefaultBold;
     }
@@ -437,6 +439,7 @@ public class PDEFontHelpers {
     /**
      * @brief Get default Semi Bold typeface
      */
+    @SuppressWarnings("SameReturnValue")
     public static PDETypeface getSemiBold() {
         return PDETypeface.sDefaultSemiBold;
     }
@@ -455,12 +458,14 @@ public class PDEFontHelpers {
     /**
      * @brief Get default Ultra typeface
      */
+    @SuppressWarnings("SameReturnValue")
     public static PDETypeface getUltra() {
         return PDETypeface.sDefaultUltra;
     }
 
+
     /**
-     * @brief Helper function to get PDETypeface of telekom iconfont
+     * @brief Helper function to get PDETypeface of telekom iconFont
      */
     public static PDETypeface getTeleGroteskIconFont(final Context context) {
         // security

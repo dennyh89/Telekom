@@ -26,8 +26,10 @@ public class PDEDrawableFilmMetaphorImage extends PDEDrawableBase {
 
     //-----  properties ---------------------------------------------------------------------------------------------------
     private PDEConstants.PDEContentStyle mStyle;
+    private final static float CONST_ASPECT_RATIO = 20.0f / 29.0f;
 
     private Drawable mPicture;
+    public boolean mMiddleAligned;
 
     private PDEColor mOutlineFlatColor;
     private Paint mOutlineFlatPaint;
@@ -75,7 +77,7 @@ public class PDEDrawableFilmMetaphorImage extends PDEDrawableBase {
         // init PDE defaults
         mStyle = PDEConstants.PDEContentStyle.PDEContentStyleFlat;
 
-        //mMiddleAligned = false;
+        mMiddleAligned = false;
         mPicture = drawable;
 
         // shadow is created on demand
@@ -274,8 +276,10 @@ public class PDEDrawableFilmMetaphorImage extends PDEDrawableBase {
      * (because bounds have changed).
      */
     private void performLayoutCalculationsFlat(Rect bounds){
-        Rect frame = new Rect(Math.round(mPixelShift), Math.round(mPixelShift),
-                Math.round(bounds.width() - mPixelShift), Math.round(bounds.height() - mPixelShift));
+        Rect frame = elementCalculateAspectRatioBounds(new Rect(Math.round(mPixelShift),
+                Math.round(mPixelShift),
+                Math.round(bounds.width() - mPixelShift),
+                Math.round(bounds.height() - mPixelShift)));
         //outline size
         mOuterRect = new RectF(frame.left, frame.top, frame.right, frame.bottom);
         //picture size
@@ -291,8 +295,10 @@ public class PDEDrawableFilmMetaphorImage extends PDEDrawableBase {
      * (because bounds have changed).
      */
     private void performLayoutCalculationsHaptic(Rect bounds){
-        mFrame = new Rect(Math.round(mPixelShift), Math.round(mPixelShift), Math.round(bounds.width() - mPixelShift),
-                Math.round(bounds.height() - mPixelShift));
+        mFrame = elementCalculateAspectRatioBounds(new Rect(Math.round(mPixelShift),
+                Math.round(mPixelShift),
+                Math.round(bounds.width() - mPixelShift),
+                Math.round(bounds.height() - mPixelShift)));
 
         //outline size
         mOuterRect = new RectF(Math.round(mFrame.left - (0.5f / 20.0f) * mFrame.width()),
@@ -302,16 +308,18 @@ public class PDEDrawableFilmMetaphorImage extends PDEDrawableBase {
         mOuterCornerRadius = (0.5f / 20.0f) * mFrame.width();
         //picture size
         int borderWidth = Math.round((0.5f / 29.0f) * mFrame.height());
+        // no inspection because the border width is just the space on the sides
+        // noinspection SuspiciousNameCombination
         mPictureRect = new Rect(mFrame.left, borderWidth, mFrame.right - borderWidth, mFrame.bottom - borderWidth);
-        //handle size
+        // handle size
         mHandleCornerRadius = (0.3f / 20.0f) * mFrame.width();
         mHandleRect = new RectF(Math.round((19.0f / 20.0f) * mFrame.width()),
                 Math.round((12.5f / 29.0f) * mFrame.height()),
                 mFrame.right+Math.round((0.5f / 20.0f) * mFrame.width()),
                 mFrame.bottom-Math.round((12.5f / 29.0f) * mFrame.height()));
-        //shape size
+        // shape size
         mShapePath = elementCreateShapePath(mFrame);
-        //blur radius on the left
+        // blur radius on the left
         updateBlurColors();
         mGradient = new LinearGradient( mFrame.left,
                 (mFrame.top - mFrame.bottom) / 2, (0.75f / 20.0f) * mFrame.width() ,
@@ -488,19 +496,54 @@ public class PDEDrawableFilmMetaphorImage extends PDEDrawableBase {
      * @return Path of the overlay
      */
     private Path elementCreateShapePath(Rect bounds) {
-        Path shapepath = new Path();
+        Path shapePath = new Path();
         //start at top left
-        shapepath.moveTo(bounds.left, bounds.top);
+        shapePath.moveTo(bounds.left, bounds.top);
         //move down
-        shapepath.lineTo(bounds.left, (16.5f / 29.0f) * bounds.height());
+        shapePath.lineTo(bounds.left, (16.5f / 29.0f) * bounds.height());
         //move to upper right
-        shapepath.lineTo(bounds.right, (5.5f / 29.0f) * bounds.height());
+        shapePath.lineTo(bounds.right, (5.5f / 29.0f) * bounds.height());
         //move to top right
-        shapepath.lineTo(bounds.right, bounds.top);
+        shapePath.lineTo(bounds.right, bounds.top);
         //close path
-        shapepath.close();
+        shapePath.close();
 
-        return shapepath;
+        return shapePath;
+    }
+
+
+    /**
+     * @brief Calculate the correct aspect ratio bounds.
+     *
+     * @param bounds Available space
+     * @return  Rect with correct aspect ratio, fitting in available space
+     */
+    public Rect elementCalculateAspectRatioBounds(Rect bounds) {
+        Rect newBounds;
+
+        //calculate size, based on aspect ratio
+        if ((float)bounds.width() / (float)bounds.height() > CONST_ASPECT_RATIO) {
+            newBounds = new Rect(bounds.left, bounds.top, bounds.right, bounds.bottom);
+            newBounds.right = newBounds.left + Math.round(((float)newBounds.height() * CONST_ASPECT_RATIO));
+
+            if (mMiddleAligned) {
+                int horizontalShift = (bounds.width()-newBounds.width())/2;
+                newBounds.left += horizontalShift;
+                newBounds.right += horizontalShift;
+            }
+
+        } else {
+            newBounds = new Rect(bounds.left, bounds.top, bounds.right, bounds.bottom);
+            newBounds.bottom = newBounds.top + Math.round((float)newBounds.width() / CONST_ASPECT_RATIO);
+
+            if (mMiddleAligned) {
+                int verticalShift = (bounds.height()-newBounds.height())/2;
+                newBounds.top += verticalShift;
+                newBounds.bottom += verticalShift;
+            }
+        }
+
+        return newBounds;
     }
 
 

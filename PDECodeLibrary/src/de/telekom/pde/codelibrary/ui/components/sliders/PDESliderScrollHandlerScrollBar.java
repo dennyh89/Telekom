@@ -30,7 +30,7 @@ public class PDESliderScrollHandlerScrollBar extends PDESliderScrollHandlerBase 
     
     // debug messages switch
     @SuppressWarnings("unused")
-    private final static boolean DEBUGPARAMS = false;
+    private final static boolean DEBUG_PARAMS = false;
 
 
     // ----- properties -----
@@ -40,7 +40,7 @@ public class PDESliderScrollHandlerScrollBar extends PDESliderScrollHandlerBase 
 
 
     /**
-     * @brief Initialization
+     * @brief Initialization with vertical orientation by default
      */
     public PDESliderScrollHandlerScrollBar() {
         // base implementation with vertical orientation by default

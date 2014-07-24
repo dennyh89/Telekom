@@ -27,9 +27,9 @@ import de.telekom.pde.codelibrary.ui.color.PDEColor;
  */
 public class GridBackgroundDrawable extends Drawable {
 
-    private float mBoxSize;
-    private PDEColor mColor;
-    private Paint mPaint;
+    private final float mBoxSize;
+    private final PDEColor mColor;
+    private final Paint mPaint;
     private int mAlpha;
 
 
@@ -38,8 +38,8 @@ public class GridBackgroundDrawable extends Drawable {
      */
     public GridBackgroundDrawable(PDEColor color) {
         mBoxSize = PDEBuildingUnits.BU();
-        mColor = color;
         mPaint = new Paint();
+        mColor = color;
         mPaint.setColor(mColor.getIntegerColor());
         mAlpha = 255;
     }

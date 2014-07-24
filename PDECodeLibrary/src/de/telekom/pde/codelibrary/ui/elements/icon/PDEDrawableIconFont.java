@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
@@ -24,7 +25,7 @@ import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
  */
 public class PDEDrawableIconFont extends PDEDrawableBase {
 
-//-----  properties ---------------------------------------------------------------------------------------------------
+    //-----  properties ---------------------------------------------------------------------------------------------------
     private String mIconText;
     private float mIconAspectRatio;
     private boolean mElementStretchToSize;
@@ -43,8 +44,9 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
     private float mShadowYOffset;
     private float mPadding;
 
-
 //----- init -----------------------------------------------------------------------------------------------------------
+
+
     /**
      * @brief Constructor
      *
@@ -68,7 +70,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
         mShadowYOffset = 1.0f;
 
         mBoundsHeight = 0;
-        mBoundsWidth= 0;
+        mBoundsWidth = 0;
         mPadding = 1.0f;
 
         //set icon color and textstyle
@@ -79,8 +81,6 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
         calculateIconConstants();
         update(true);
     }
-
-
 
 //---------------------------------------------------------------------------------------------------------------------
 // ----- general setters and getters ----------------------------------------------------------------------------
@@ -132,6 +132,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
         return mIconColor;
     }
 
+
     /**
      * @brief Set Shadow Color
      */
@@ -177,6 +178,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
         return mElementStretchToSize;
     }
 
+
     /**
      * @brief Set if shadow is enabled
      */
@@ -189,6 +191,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Get if shadow is enabled
      */
@@ -196,6 +199,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
     public boolean getElementShadowEnabled() {
         return mShadowEnabled;
     }
+
 
     /**
      * @brief Set shadow x offset
@@ -209,6 +213,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Get shadow x offset
      */
@@ -216,6 +221,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
     public float getElementShadowXOffset() {
         return mShadowXOffset;
     }
+
 
     /**
      * @brief Set shadow y offset
@@ -229,6 +235,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
         update();
     }
 
+
     /**
      * @brief Get shadow y offset
      */
@@ -236,6 +243,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
     public float getElementShadowYOffset() {
         return mShadowYOffset;
     }
+
 
     /**
      * @brief Set padding
@@ -248,6 +256,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
         //redraw
         update();
     }
+
 
     /**
      * @brief Get padding
@@ -273,27 +282,25 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
      */
     @Override
     public void setBounds(int left, int top, int right, int bottom) {
-        Rect aspectRatioBounds = elementCalculateAspectRatioBounds(new Rect(left,top,right,bottom));
+        Rect aspectRatioBounds = elementCalculateAspectRatioBounds(new Rect(left, top, right, bottom));
         super.setBounds(aspectRatioBounds.left, aspectRatioBounds.top,
-                aspectRatioBounds.right, aspectRatioBounds.bottom);
+                        aspectRatioBounds.right, aspectRatioBounds.bottom);
     }
-
 
 //---------------------------------------------------------------------------------------------------------------------
 // ----- layout / sizing ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
 
 
-
     /**
      * @brief Calculate the correct aspect ratio bounds.
      *
-     * @return  Rect with correct aspect ratio, fitting in available space
+     * @return Rect with correct aspect ratio, fitting in available space
      */
     private Rect elementCalculateAspectRatioBounds(Rect bounds) {
         Rect newBounds;
 
-        if ((float)bounds.width() / (float)bounds.height() > getAspectRatio() ) {
+        if ((float) bounds.width() / (float) bounds.height() > getAspectRatio()) {
             newBounds = new Rect(bounds.left, bounds.top, 0, bounds.bottom);
             newBounds.right = newBounds.left + Math.round(newBounds.height() * getAspectRatio());
         } else {
@@ -303,7 +310,6 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
 
         return newBounds;
     }
-
 
 
     /**
@@ -328,8 +334,6 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
     public void setLayoutHeight(int height) {
         setLayoutSize(new Point(Math.round(height * getAspectRatio()), height));
     }
-
-
 
 //---------------------------------------------------------------------------------------------------------------------
 // ----- Helpers ------------------------------------------------------------------------------------------------------
@@ -357,6 +361,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
         mIconPaint.setTypeface(mTextStyle.getTypeface());
     }
 
+
     /**
      * @brief create shadow paint
      */
@@ -373,8 +378,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
     /**
      * @brief gets aspect ratio
      */
-    private float getAspectRatio()
-    {
+    private float getAspectRatio() {
         if (mElementStretchToSize) {
             return mIconAspectRatio;
         } else {
@@ -383,26 +387,22 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
     }
 
 
-
     /**
      * @brief calculates icon aspect ratio, used to make sure icon height takes all the available height
      */
-    private void calculateIconConstants()
-    {
+    private void calculateIconConstants() {
         Rect textbounds = new Rect();
-       
-        if(mIconText!=null){
-			mIconPaint.setTextSize(500);
-            mIconPaint.getTextBounds(mIconText,0,mIconText.length(),textbounds);
-        	mIconAspectRatio = (float)textbounds.width()/(float)textbounds.height();
+
+        if (mIconText != null) {
+            mIconPaint.setTextSize(500);
+            mIconPaint.getTextBounds(mIconText, 0, mIconText.length(), textbounds);
+            mIconAspectRatio = (float) textbounds.width() / (float) textbounds.height();
         }
     }
-
 
 //---------------------------------------------------------------------------------------------------------------------
 // ----- Drawing Bitmap ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
-
 
 
     /**
@@ -420,41 +420,39 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
         mBoundsHeight = bounds.height();
         mBoundsWidth = bounds.width();
 
-        bounds = new Rect(Math.round(mPixelShift)+Math.round(mPadding), Math.round(mPixelShift)+Math.round(mPadding),
-                bounds.width()-Math.round(mPixelShift)-Math.round(mPadding),
-                bounds.height()-Math.round(mPixelShift)- Math.round(mPadding));
-
+        bounds = new Rect(Math.round(mPixelShift) + Math.round(mPadding),
+                          Math.round(mPixelShift) + Math.round(mPadding),
+                          bounds.width() - Math.round(mPixelShift) - Math.round(mPadding),
+                          bounds.height() - Math.round(mPixelShift) - Math.round(mPadding));
 
         // security
-        if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null || mIconText==null) return;
+        if (bounds.width() <= 0 || bounds.height() <= 0 || mDrawingBitmap == null || mIconText == null) return;
         // set text size
         mIconPaint.setTextSize(bounds.height());
         mShadowPaint.setTextSize(bounds.height());
         //get text size
-        mIconPaint.getTextBounds(mIconText,0,mIconText.length(),textbounds);
+        mIconPaint.getTextBounds(mIconText, 0, mIconText.length(), textbounds);
 
         // if icon is stretched to size, text size relations to the bounds are calculated, to get text size from these
-        if (mElementStretchToSize)
-        {
-            yrelation = (float)bounds.height()/(float)textbounds.height();
-            xrelation = (float)bounds.width()/(float)textbounds.width();
+        if (mElementStretchToSize) {
+            yrelation = (float) bounds.height() / (float) textbounds.height();
+            xrelation = (float) bounds.width() / (float) textbounds.width();
 
-            if (xrelation < yrelation ) {
-                mIconPaint.setTextSize(((float)bounds.height()*xrelation));
-                mShadowPaint.setTextSize(((float)bounds.height()*xrelation));
+            if (xrelation < yrelation) {
+                mIconPaint.setTextSize(((float) bounds.height() * xrelation));
+                mShadowPaint.setTextSize(((float) bounds.height() * xrelation));
             } else {
-                mIconPaint.setTextSize(((float)bounds.height()*yrelation));
-                mShadowPaint.setTextSize(((float)bounds.height()*yrelation));
+                mIconPaint.setTextSize(((float) bounds.height() * yrelation));
+                mShadowPaint.setTextSize(((float) bounds.height() * yrelation));
             }
 
-            mIconPaint.getTextBounds(mIconText,0,mIconText.length(),textbounds);
+            mIconPaint.getTextBounds(mIconText, 0, mIconText.length(), textbounds);
         } else {
             //if icon is wider than high, textsize is reduced to prevent clipping on the right
-            if (mIconAspectRatio > 1 && textbounds.width() > bounds.width())
-            {
-                mIconPaint.setTextSize((bounds.height()/mIconAspectRatio)-1.0f);
-                mShadowPaint.setTextSize((bounds.height()/mIconAspectRatio)-1.0f);
-                mIconPaint.getTextBounds(mIconText,0,mIconText.length(),textbounds);
+            if (mIconAspectRatio > 1 && textbounds.width() > bounds.width()) {
+                mIconPaint.setTextSize((bounds.height() / mIconAspectRatio) - 1.0f);
+                mShadowPaint.setTextSize((bounds.height() / mIconAspectRatio) - 1.0f);
+                mIconPaint.getTextBounds(mIconText, 0, mIconText.length(), textbounds);
             }
         }
 
@@ -463,20 +461,20 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
         if (mElementStretchToSize) {
             leftposition = bounds.left - textbounds.left;
             topposition = bounds.top - textbounds.top;
-        } else if (mIconText.equals("ö"))  {
-            leftposition = bounds.left - textbounds.left + 0.5f*(bounds.width()- textbounds.width());
+        } else if (mIconText.equals("ö")) {
+            leftposition = bounds.left - textbounds.left + 0.5f * (bounds.width() - textbounds.width());
             topposition = bounds.top - textbounds.top;
         } else {
-            leftposition = bounds.left - textbounds.left + 0.5f*(bounds.width()- textbounds.width());
-            topposition  = bounds.top - textbounds.top + 0.5f*(bounds.height() - textbounds.height());
+            leftposition = bounds.left - textbounds.left + 0.5f * (bounds.width() - textbounds.width());
+            topposition = bounds.top - textbounds.top + 0.5f * (bounds.height() - textbounds.height());
         }
 
         // get canvas of the drawing-bitmap
         //draw shadow
         if (mShadowEnabled) c.drawText(mIconText, leftposition + mShadowXOffset,
-                topposition + mShadowYOffset, mShadowPaint);
+                                       topposition + mShadowYOffset, mShadowPaint);
         //draw icon
-        c.drawText(mIconText, leftposition, topposition , mIconPaint);
+        c.drawText(mIconText, leftposition, topposition, mIconPaint);
     }
 
 
@@ -486,6 +484,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
     public int getElementHeight() {
         return mBoundsHeight;
     }
+
 
     /**
      * @brief get width of the element

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.PDEConstants.PDEContentStyle;
+import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
@@ -54,7 +55,7 @@ public class PDESliderContentSliderBar extends View implements PDESliderContentI
     @SuppressWarnings("unused")
     private final static String LOG_TAG = PDESliderContentSliderBar.class.getName();
 
-    PDEDrawableMultilayer mBackgroundMultiLayer;
+    private PDEDrawableMultilayer mBackgroundMultiLayer;
     private PDEDrawableProgressBar mSliderBar;
     private PDEDrawableShapedOuterShadow mSliderBarShadow;
     private PDEDrawableRoundedGradientBox mSliderBarHandle;
@@ -222,9 +223,9 @@ public class PDESliderContentSliderBar extends View implements PDESliderContentI
 
         // get color table for background
         PDESliderBarHandleGlobalColorDefault =
-                PDEComponentHelpers.readDefaultColorDictionary("dt_button_gradient_color_defaults");
+                PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_gradient_color_defaults);
         PDESliderBarHandleGlobalBorderColorDefault =
-                PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
+                PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_border_color_defaults);
 
         // initialize global color to empty (default)
         PDESliderBarHandleGlobalParamColor = new PDEParameter();

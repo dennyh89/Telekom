@@ -100,7 +100,7 @@ public class PDECharacterSet {
     public static final PDECharacterSet PDECharacterSetGlobalLetterCharacterSet = new PDECharacterSet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
 
-    PDECharacterSet(String charSet){
+    public PDECharacterSet(String charSet){
         if (charSet == null) throw new NullPointerException();
         m_CharSet = charSet;
     }

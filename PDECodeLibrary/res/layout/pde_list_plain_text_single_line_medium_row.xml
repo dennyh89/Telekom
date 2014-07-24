@@ -8,14 +8,21 @@
   ~ Copyright (c) 2012. Neuland Multimedia GmbH.
   -->
 
+<!--
+This file is ignored by the "UnusedResource" check of lint, because it is only used in the sample.
+If the usage is changed or the file is deleted, it could be removed from the lint.xml file "UnusedResources" issue.
+-->
+
 <!-- *** XML-Template for a medium sized list item with single line text. *** -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:pdecodelibrary="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
         >
-    <!-- If you want to ensure a fixed height of the layout, you have to nest two layouts... -->
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:pdecodelibrary="http://schemas.android.com/apk/res-auto"
+    <!-- If you want to ensure a fixed height of the layout, you have to nest two layouts...
+     and ignore the UselessParent Warning !!! -->
+    <RelativeLayout tools:ignore="UselessParent"
                     android:layout_width="fill_parent"
                     android:layout_height="@dimen/Telekom.BU4"
             >

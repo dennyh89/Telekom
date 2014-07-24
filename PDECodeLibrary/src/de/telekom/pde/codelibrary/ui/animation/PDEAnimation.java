@@ -641,6 +641,8 @@ public class PDEAnimation {
         	// changed 10.10.2012 kd - no parameter for time this method is called from PDEAgentController:init()
         	mDidChangeMethod = target.getClass().getMethod(methodName);
         } catch (NoSuchMethodException e) {
+            // check if the method is public
+            Log.d(LOG_TAG, "setDidChangeTarget - NoSuchMethodException for method: "+methodName);
             e.printStackTrace();
         }
     }

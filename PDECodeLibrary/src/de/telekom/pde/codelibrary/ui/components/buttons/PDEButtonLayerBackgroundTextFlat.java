@@ -47,15 +47,15 @@ class PDEButtonLayerBackgroundTextFlat extends PDEAbsoluteLayout implements PDEB
     private PDEParameter mParamFillColor;
 
     // agent helpers
-    PDEAgentHelper mAgentHelper;
-    PDEDrawableArea mAreaDrawable;
+    private PDEAgentHelper mAgentHelper;
+    private PDEDrawableArea mAreaDrawable;
 
     // global variables
     //
     public static PDEDictionary PDEButtonLayerBackgroundTextFlatGlobalColorDefault
-            = PDEComponentHelpers.readDefaultColorDictionary("dt_button_flat_color_defaults");
+            = PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_flat_color_defaults);
     public static PDEDictionary PDEButtonLayerBackgroundTextFlatGlobalBorderDefault
-            = PDEComponentHelpers.readDefaultColorDictionary("dt_button_border_color_defaults");
+            = PDEComponentHelpers.readDefaultColorDictionary(R.xml.dt_button_border_color_defaults);
 
 
     /**

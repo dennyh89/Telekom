@@ -15,8 +15,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 
-import java.util.Arrays;
-
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEResourceAttributesHelper
@@ -54,7 +52,7 @@ public class PDEResourceAttributesHelper {
      */
     static private boolean isInIntArray(Context context, int arrayId, int toCheck) {
         int i;
-        int[] attributeValues = getIntArray(context,arrayId);
+        int[] attributeValues = getIntArray(context, arrayId);
 
         for (i = 0; i < attributeValues.length; i++) {
             if (attributeValues[i] == toCheck) return true;
@@ -76,7 +74,7 @@ public class PDEResourceAttributesHelper {
      */
     static public int[] getIntArray(Context context, int arrayId) {
         Resources res = context.getResources();
-        int[] attributeValues =res.getIntArray(arrayId);
+        int[] attributeValues = res.getIntArray(arrayId);
 
         // check if there are existing entries in the array
         // null -> no array with this id
@@ -86,6 +84,23 @@ public class PDEResourceAttributesHelper {
             Log.e(LOG_TAG, "Empty or not existing integer resource array:" + res.getResourceName(arrayId));
             return new int[0];
         }
-        return Arrays.copyOfRange(attributeValues, 1, attributeValues.length);
+        return copyOfRange(attributeValues, 1, attributeValues.length);
+    }
+
+
+    //copied for API levels < 9
+    private static int[] copyOfRange(int[] original, int start, int end) {
+        if (start > end) {
+            throw new IllegalArgumentException();
+        }
+        int originalLength = original.length;
+        if (start < 0 || start > originalLength) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        int resultLength = end - start;
+        int copyLength = Math.min(resultLength, originalLength - start);
+        int[] result = new int[resultLength];
+        System.arraycopy(original, start, result, 0, copyLength);
+        return result;
     }
 }

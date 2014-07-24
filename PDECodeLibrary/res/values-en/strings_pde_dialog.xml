@@ -7,7 +7,20 @@
   ~ Copyright (c) 2012. Neuland Multimedia GmbH.
   -->
 
+<!--
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Lint ignores all "UnusedResource" (defined in lint.xml", because this are library defaults and use them in the
+pde_dialog_buttons_identifier.xml and pde_dialog_identifier.xml files. They have a plist (ios) syntax to have same
+key/value pairs like on ios
+Be carefully when you edit/remov/add values here
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-->
 <resources>
+    <!--
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    This is the english file for strings -> Set the english text here
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    -->
     <!-- Dialog titles and texts -->
 	<string name="NETWORK_ERROR_title">"No Internet Connection"</string>
 	<string name="NETWORK_ERROR_text">"Please check your Internet connection, and try again."</string>

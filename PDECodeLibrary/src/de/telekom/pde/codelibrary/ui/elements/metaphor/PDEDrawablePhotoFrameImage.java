@@ -29,6 +29,8 @@ public class PDEDrawablePhotoFrameImage extends PDEDrawableBase {
 
     //-----  properties ---------------------------------------------------------------------------------------------------
     private PDEConstants.PDEContentStyle mStyle;
+    public boolean mMiddleAligned;
+    private final static float CONST_ASPECT_RATIO = 1.5f;
 
     private Drawable mPicture;
     private PDEDrawableShapedShadow mElementShadowDrawable;
@@ -47,7 +49,10 @@ public class PDEDrawablePhotoFrameImage extends PDEDrawableBase {
     private Paint mBorderPaint;
     private PDEColor mBorderColor;
 
-
+    public int mPaddingTop;
+    public int mPaddingLeft;
+    public int mPaddingRight;
+    public int mPaddingBottom;
 
 
 //----- init -----------------------------------------------------------------------------------------------------------
@@ -63,7 +68,12 @@ public class PDEDrawablePhotoFrameImage extends PDEDrawableBase {
 
         // init PDE defaults
         mPicture = drawable;
+        mMiddleAligned = false;
 
+        mPaddingLeft = 0;
+        mPaddingTop = 0;
+        mPaddingRight = 0;
+        mPaddingBottom = 0;
 
         // shadow is created on demand
         mElementShadowDrawable = null;
@@ -163,6 +173,7 @@ public class PDEDrawablePhotoFrameImage extends PDEDrawableBase {
 
         //remember
         mPicture = picture;
+        correctBounds();
 
         //redraw
         update();
@@ -287,8 +298,8 @@ public class PDEDrawablePhotoFrameImage extends PDEDrawableBase {
      */
     private void performLayoutCalculationsFlat(Rect bounds){
         //calculate sizes
-        mOutlineRect = new Rect(Math.round(mPixelShift), Math.round(mPixelShift),
-                Math.round(bounds.width() - mPixelShift), Math.round(bounds.height() - mPixelShift));
+        mOutlineRect = elementCalculateAspectRatioBounds(new Rect(Math.round(mPixelShift), Math.round(mPixelShift),
+                Math.round(bounds.width() - mPixelShift), Math.round(bounds.height() - mPixelShift)));
         mPictureRect = new Rect(mOutlineRect.left + 2, mOutlineRect.top + 2,
                 mOutlineRect.right - 2, mOutlineRect.bottom - 2);
 
@@ -306,10 +317,10 @@ public class PDEDrawablePhotoFrameImage extends PDEDrawableBase {
         int borderWidth;
 
         //calculate sizes
-        Rect frame = new Rect(Math.round(mPixelShift),
+        Rect frame = elementCalculateAspectRatioBounds(new Rect(Math.round(mPixelShift),
                 Math.round(mPixelShift),
                 Math.round(bounds.width() - mPixelShift),
-                Math.round(bounds.height() - mPixelShift));
+                Math.round(bounds.height() - mPixelShift)));
 
         mOutlineRect = new Rect(Math.round(frame.left), Math.round(frame.top),
                 Math.round(frame.right),Math.round(frame.bottom));
@@ -323,6 +334,20 @@ public class PDEDrawablePhotoFrameImage extends PDEDrawableBase {
 
         if (mPicture != null) {
             mPicture.setBounds(mPictureRect);
+        }
+    }
+
+    /**
+     * @brief Corrects bounds when these are not properly updated, for example when view is used in lists
+     */
+    public void correctBounds() {
+        if (mPicture == null || mOutlineRect == null) return;
+        if ((mPicture.getIntrinsicWidth() > mPicture.getIntrinsicHeight()
+                && mOutlineRect.height() > mOutlineRect.width())
+                ||  (mPicture.getIntrinsicHeight() > mPicture.getIntrinsicWidth()
+                && mOutlineRect.width() > mOutlineRect.height())) {
+
+            performLayoutCalculations(getBounds());
         }
     }
 
@@ -403,6 +428,59 @@ public class PDEDrawablePhotoFrameImage extends PDEDrawableBase {
 // ----- Helpers ------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
 
+    /**
+     * @brief Calculate the correct aspect ratio bounds.
+     *
+     * @param  bounds Available Space for the element
+     * @return Rect with the correct aspect ratio, fitting in available space
+     *
+     * When mMiddleAligned is set to true, resulting bounds are shifted to the middle of the available space
+     */
+    public Rect elementCalculateAspectRatioBounds(Rect bounds) {
+        int horizontalShift, verticalShift;
+
+        //subtract padding
+        Rect boundsWithPadding = new Rect(bounds.left + mPaddingLeft, bounds.top + mPaddingTop,
+                bounds.right - mPaddingRight, bounds.bottom - mPaddingBottom);
+        Rect newBounds  = new Rect(0,0,0,0);
+
+        //safety
+        if (boundsWithPadding.height() <= 0 || boundsWithPadding.width() <= 0) return newBounds;
+
+        if ((float)boundsWithPadding.width() / (float)boundsWithPadding.height() > getElementAspectRatio() ) {
+            newBounds = new Rect(boundsWithPadding.left, boundsWithPadding.top, 0, boundsWithPadding.bottom);
+            newBounds.right = newBounds.left + Math.round(newBounds.height() * getElementAspectRatio());
+            //shifts bounds to center
+
+            horizontalShift = (boundsWithPadding.width() - newBounds.width()) / 2;
+            newBounds.left += horizontalShift;
+            newBounds.right += horizontalShift;
+        } else {
+            newBounds = new Rect(boundsWithPadding.left, boundsWithPadding.top, boundsWithPadding.right, 0);
+            newBounds.bottom = newBounds.top + Math.round(newBounds.width() / getElementAspectRatio());
+            //shifts bounds to center
+            verticalShift = (boundsWithPadding.height()-newBounds.height())/2;
+            newBounds.top += verticalShift;
+            newBounds.bottom += verticalShift;
+        }
+
+        return newBounds;
+    }
+
+    /**
+     * @brief Helper function to get aspect ratio
+     *
+     * @return Current valid aspect ratio
+     */
+    private float getElementAspectRatio() {
+        if (mPicture == null) return CONST_ASPECT_RATIO;
+
+        if (mPicture.getIntrinsicWidth() >= mPicture.getIntrinsicHeight()){
+            return CONST_ASPECT_RATIO;
+        } else {
+            return 1 / CONST_ASPECT_RATIO;
+        }
+    }
 
     /**
      * @brief update all used paints

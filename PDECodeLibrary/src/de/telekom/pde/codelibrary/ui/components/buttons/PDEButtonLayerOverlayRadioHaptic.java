@@ -25,7 +25,6 @@ import de.telekom.pde.codelibrary.ui.elements.boxes.PDEDrawableSunkenArea;
 /**
  * @brief Background for a haptic radio button.
  */
-
 class PDEButtonLayerOverlayRadioHaptic extends PDEButtonLayerOverlayRadioBase {
 
 

@@ -20,6 +20,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.Log;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.R;
@@ -53,9 +54,10 @@ public class PDETypeface {
     public final static float sOtherFontsDefaultSize;
 
     /** An <code>LruCache</code> for previously loaded typefaces. */
-    private static LinkedHashMap<String, PDETypeface> mTypefaceCache;
+    private static final LinkedHashMap<String, PDETypeface> mTypefaceCache;
 
     private final static int TELE_GROTESK_STRINGRESOURCE_ID = R.array.tele_grotesk;
+
 
     // static initialize
     static {
@@ -67,7 +69,7 @@ public class PDETypeface {
         try {
             // load default (TeleGrotesk) font from the assets
             // the font must be with the right name in the asset in the "font"-folder of the "user" project
-            tempTypeface = PDETypeface.createFromAsset(PDEConstants.sPDEDefaultFontName) ;
+            tempTypeface = PDETypeface.createFromAsset(PDEConstants.sPDEDefaultFontName);
         } catch (Exception e) {
             tempTypeface = null;
         }
@@ -84,7 +86,7 @@ public class PDETypeface {
         try {
             // load default (TeleGrotesk) font from the assets
             // the font must be with the right name in the asset in the "font"-folder of the "user" project
-            tempTypeface = PDETypeface.createFromAsset(c.getResources().getString(R.string.Tele_GroteskUlt)) ;
+            tempTypeface = PDETypeface.createFromAsset(c.getResources().getString(R.string.Tele_GroteskUlt));
         } catch (Exception e) {
             tempTypeface = null;
         }
@@ -98,14 +100,14 @@ public class PDETypeface {
 
         sTeleGroteskDefaultSize = PDECodeLibrary.getInstance().getApplicationContext().getResources().
                 getDimension(R.dimen.TeleGroteskDefaultSize);
-        sOtherFontsDefaultSize  = PDECodeLibrary.getInstance().getApplicationContext().getResources().
+        sOtherFontsDefaultSize = PDECodeLibrary.getInstance().getApplicationContext().getResources().
                 getDimension(R.dimen.OtherFontsDefaultSize);
 
 
         try {
             // load default (TeleGrotesk) font from the assets
             // the font must be with the right name in the asset in the "font"-folder of the "user" project
-            tempTypeface = PDETypeface.createFromAsset(c.getResources().getString(R.string.Tele_Iconfont)) ;
+            tempTypeface = PDETypeface.createFromAsset(c.getResources().getString(R.string.Tele_Iconfont));
         } catch (Exception e) {
             tempTypeface = null;
         }
@@ -136,7 +138,7 @@ public class PDETypeface {
      * @param filePath name of the font
      * @param typeface android typeface-object belongs to the filename
      */
-    private void init(String filePath, Typeface typeface) throws NullPointerException{
+    private void init(String filePath, Typeface typeface) throws NullPointerException {
         if (filePath == null || typeface == null) throw new NullPointerException();
         mFilename = getFilename(filePath);
         mTypeface = typeface;
@@ -148,9 +150,11 @@ public class PDETypeface {
         mTypefaceCache.put(name, typeface);
     }
 
+
     static private PDETypeface loadTypeface(String name) {
         return mTypefaceCache.get(name);
     }
+
 
     /**
      * @brief static function to create dttypeface object, from a file by the pathname
@@ -159,8 +163,8 @@ public class PDETypeface {
      * @return created PDETypeface object or null if there is no font at the path
      */
     @SuppressWarnings("unused")
-    static public PDETypeface createFromFile(String path){
-        return createFromFile(path,true);
+    static public PDETypeface createFromFile(String path) {
+        return createFromFile(path, true);
     }
 
 
@@ -171,17 +175,17 @@ public class PDETypeface {
      * @param showExceptionMessage show exception message to inform user
      * @return created PDETypeface object or null if there is no font at the path
      */
-    static private PDETypeface createFromFile(String filePath, boolean showExceptionMessage){
+    static private PDETypeface createFromFile(String filePath, boolean showExceptionMessage) {
         PDETypeface newFont;
         try {
             newFont = PDETypeface.loadTypeface(filePath);
             if (newFont == null) {
-                newFont = new PDETypeface(filePath,Typeface.createFromFile(filePath));
+                newFont = new PDETypeface(filePath, Typeface.createFromFile(filePath));
             }
             return newFont;
-        } catch(Exception exception){
+        } catch (Exception exception) {
             if (showExceptionMessage) {
-                Log.e(LOG_TAG,"Error in:createFromFile(String path)");
+                Log.e(LOG_TAG, "Error in:createFromFile(String path)");
                 exception.printStackTrace();
             }
             return null;
@@ -195,8 +199,8 @@ public class PDETypeface {
      * @param filename name of the font
      * @return created PDETypeface object or null if there is no font at the path
      */
-    static public PDETypeface createFromAsset(String filename){
-       return createFromAsset(filename, true);
+    static public PDETypeface createFromAsset(String filename) {
+        return createFromAsset(filename, true);
     }
 
 
@@ -207,22 +211,25 @@ public class PDETypeface {
      * @param showExceptionMessage show exception message to inform user
      * @return created PDETypeface object or null if there is no font at the path
      */
-    static private PDETypeface createFromAsset(String filename, boolean showExceptionMessage){
+    static private PDETypeface createFromAsset(String filename, boolean showExceptionMessage) {
         String filePath = sAssetFontFolderPath + filename;
         PDETypeface newFont;
         try {
             newFont = PDETypeface.loadTypeface(filePath);
             if (newFont == null) {
                 newFont = new PDETypeface(filePath,
-                        Typeface.createFromAsset(PDECodeLibrary.getInstance().getApplicationContext().getAssets(),
-                        filePath));
+                                          Typeface.createFromAsset(PDECodeLibrary.getInstance()
+                                                                                 .getApplicationContext()
+                                                                                 .getAssets(),
+                                                                   filePath)
+                );
             }
             return newFont;
-        } catch (Exception exception){
+        } catch (Exception exception) {
             if (showExceptionMessage) {
-                Log.e(LOG_TAG,"##########################################");
-                Log.e(LOG_TAG,"Error in:createFromAsset(" + filename + ")");
-                Log.e(LOG_TAG,"##########################################");
+                Log.e(LOG_TAG, "##########################################");
+                Log.e(LOG_TAG, "Error in:createFromAsset(" + filename + ")");
+                Log.e(LOG_TAG, "##########################################");
                 exception.printStackTrace();
             }
             return null;
@@ -237,7 +244,7 @@ public class PDETypeface {
      * @param typeface android typeface belongs to the name
      * @return created PDETypeface object or null if there is no font at the path
      */
-    static public PDETypeface createByNameAndTypeface(String name, Typeface typeface){
+    static public PDETypeface createByNameAndTypeface(String name, Typeface typeface) {
         PDETypeface newFont;
         try {
             newFont = PDETypeface.loadTypeface(name);
@@ -245,13 +252,12 @@ public class PDETypeface {
                 newFont = new PDETypeface(name, typeface);
             }
             return newFont;
-        } catch (Exception exception){
-            Log.e(LOG_TAG,"Error in:createByNameAndTypeface(String name, Typeface typeface)");
+        } catch (Exception exception) {
+            Log.e(LOG_TAG, "Error in:createByNameAndTypeface(String name, Typeface typeface)");
             exception.printStackTrace();
             return null;
         }
     }
-
 
 
     /**
@@ -261,11 +267,11 @@ public class PDETypeface {
      * @param name Font name
      * @return the created DTTypeface or null if there was no font in asses or the path
      */
-    static public PDETypeface createByName(String name){
+    static public PDETypeface createByName(String name) {
         PDETypeface newFont;
 
         // try to load font
-        newFont  = PDETypeface.createFromFile(name,false);
+        newFont = PDETypeface.createFromFile(name, false);
 
         // able to load
         if (newFont != null) {
@@ -273,14 +279,15 @@ public class PDETypeface {
         }
 
         // try to load from assets
-        newFont = PDETypeface.createFromAsset(name,false);
+        newFont = PDETypeface.createFromAsset(name, false);
 
         // able to load
         if (newFont != null) {
             return newFont;
         }
 
-        Log.e(LOG_TAG,"Error in:createByName(String name)\n can't create a font by name!!!! Normally the default font is now used!!!!!!");
+        Log.e(LOG_TAG,
+              "Error in:createByName(String name)\n can't create a font by name!!!! Normally the default font is now used!!!!!!");
 
         return null;
     }
@@ -312,7 +319,7 @@ public class PDETypeface {
         if (path == null) throw new NullPointerException();
 
         int folderIndex = path.lastIndexOf('/');
-        return path.substring(folderIndex+1);
+        return path.substring(folderIndex + 1);
     }
 
 
@@ -321,7 +328,7 @@ public class PDETypeface {
      * Caution: throws exception if there is no TeleGrotesk array resource!!!
      * @return true if its a TeleGrotesk font, else false
      */
-    public boolean isTeleGroteskFont() throws Resources.NotFoundException{
+    public boolean isTeleGroteskFont() throws Resources.NotFoundException {
         String[] telegroteskFonts;
         int i;
 
@@ -332,8 +339,8 @@ public class PDETypeface {
 
         if (telegroteskFonts != null) {
             // check if font is contained
-            for(i = 0; i < telegroteskFonts.length; i++){
-                if( TextUtils.equals(telegroteskFonts[i], getName()) ){
+            for (i = 0; i < telegroteskFonts.length; i++) {
+                if (TextUtils.equals(telegroteskFonts[i], getName())) {
                     //part of the TeleGrotesk family
                     return true;
                 }
@@ -350,7 +357,7 @@ public class PDETypeface {
      * @return readable name if exists in array, else the filename
      */
     @SuppressWarnings("unused")
-    public String getReadableName() throws Resources.NotFoundException{
+    public String getReadableName() throws Resources.NotFoundException {
         return getReadableName(TELE_GROTESK_STRINGRESOURCE_ID);
     }
 
@@ -361,7 +368,7 @@ public class PDETypeface {
      * @param resourceArrayIdentifier the id of the array in the resource, where we have to look for the name
      * @return readable name if exists in array, else the filename
      */
-    private String getReadableName(int resourceArrayIdentifier ) throws Resources.NotFoundException{
+    private String getReadableName(int resourceArrayIdentifier) throws Resources.NotFoundException {
         TypedArray fontsArray;
         int i;
         int id;
@@ -371,12 +378,13 @@ public class PDETypeface {
         Resources res = context.getResources();
         fontsArray = res.obtainTypedArray(resourceArrayIdentifier);
 
-        if (fontsArray != null ){
+        if (fontsArray != null) {
             //check if font is contained
-            for (i = 0; i < fontsArray.length(); i++){
-                if (TextUtils.equals(fontsArray.getText(i), getName()) ){
+            for (i = 0; i < fontsArray.length(); i++) {
+                if (TextUtils.equals(fontsArray.getText(i), getName())) {
                     id = fontsArray.getResourceId(i, 0);
-                    if (id != 0){
+                    if (id != 0) {
+                        fontsArray.recycle();
                         return res.getResourceEntryName(id);
                     } else {
                         //break and return normal filename
@@ -384,6 +392,7 @@ public class PDETypeface {
                     }
                 }
             }
+            fontsArray.recycle();
         }
         return getName();
     }

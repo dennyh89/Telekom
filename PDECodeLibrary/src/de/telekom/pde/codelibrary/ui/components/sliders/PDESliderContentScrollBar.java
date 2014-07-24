@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
+
+import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
@@ -26,8 +28,6 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 
 
-
-
 //----------------------------------------------------------------------------------------------------------------------
 //  PDESliderContentScrollBar
 //----------------------------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 /**
  * @brief Scrollbar Content for a Slider
  *
- * This is a scrollbar in horizontal direction. It is controled by Slider Events.
+ * This is a scrollbar in horizontal direction. It is controlled by Slider Events.
  * Use ID 0 to set the position and the page size.
  *
  */
@@ -65,12 +65,11 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
     private float mLastPageSize;
 
     // layout
-    private static int mScrollBarThickness = PDEBuildingUnits.pixelFromBU(0.5f);
+    private static final int mScrollBarThickness = PDEBuildingUnits.pixelFromBU(0.5f);
 
     // color animation
     private PDEAgentHelper mAgentHelper;
     private static PDEParameter PDEScrollBarHandleGlobalParamColor;
-
 
 
     /**
@@ -81,7 +80,7 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
      */
     @SuppressWarnings("unused")
     public PDESliderContentScrollBar(Context context, AttributeSet attributeSet) {
-        super(context,attributeSet);
+        super(context, attributeSet);
         init(PDESliderContentOrientation.PDESliderContentOrientationVertical);
     }
 
@@ -137,7 +136,7 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
         setHandleOnly(false);
 
         // check scrollBar type and set layout params
-        if (mContentOrientation ==PDESliderContentOrientation.PDESliderContentOrientationVertical) {
+        if (mContentOrientation == PDESliderContentOrientation.PDESliderContentOrientationVertical) {
             // set Layout Params
             setLayoutParams(new LinearLayout.LayoutParams(mScrollBarThickness, LayoutParams.MATCH_PARENT));
         } else if (mContentOrientation == PDESliderContentOrientation.PDESliderContentOrientationHorizontal) {
@@ -146,12 +145,12 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
         }
 
         // check scrollbar type and set element type
-        if (mContentOrientation ==PDESliderContentOrientation.PDESliderContentOrientationVertical) {
+        if (mContentOrientation == PDESliderContentOrientation.PDESliderContentOrientationVertical) {
             mScrollBarLayer.setElementScrollbarType(PDEDrawableScrollBarIndicative.PDEDrawableScrollbarIndicativeType.
-                    PDEDrawableScrollbarIndicativeTypeVertical);
-        } else if (mContentOrientation ==PDESliderContentOrientation.PDESliderContentOrientationHorizontal) {
+                                                            PDEDrawableScrollbarIndicativeTypeVertical);
+        } else if (mContentOrientation == PDESliderContentOrientation.PDESliderContentOrientationHorizontal) {
             mScrollBarLayer.setElementScrollbarType(PDEDrawableScrollBarIndicative.PDEDrawableScrollbarIndicativeType.
-                    PDEDrawableScrollbarIndicativeTypeHorizontal);
+                                                            PDEDrawableScrollbarIndicativeTypeHorizontal);
         }
 
         PDEUtils.setViewBackgroundDrawable(this, mScrollBarLayer);
@@ -163,14 +162,15 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
         mAgentHelper = new PDEAgentHelper();
 
         // get color table for background
-        PDEScrollBarHandleGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary("PDEButtonFlatColorDefaults");
+        PDEScrollBarHandleGlobalColorDefault = PDEComponentHelpers.readDefaultColorDictionary(
+                R.xml.dt_button_flat_color_defaults);
 
         // initialize global color to empty (default)
         PDEScrollBarHandleGlobalParamColor = new PDEParameter();
 
         // calculate color agent states
-        PDEComponentHelpers.buildColors(PDEScrollBarHandleGlobalParamColor,PDEScrollBarHandleGlobalColorDefault,
-                "DTGrey1",PDEAgentHelper.PDEAgentHelperAnimationInteractive);
+        PDEComponentHelpers.buildColors(PDEScrollBarHandleGlobalParamColor, PDEScrollBarHandleGlobalColorDefault,
+                                        "DTGrey1", PDEAgentHelper.PDEAgentHelperAnimationInteractive);
 
         // update colors once
         updateColors();
@@ -185,7 +185,7 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
      */
     public void setHandleOnly(boolean handleOnly) {
         // change?
-        if(mHandleOnly==handleOnly) return;
+        if (mHandleOnly == handleOnly) return;
 
         // remember
         mHandleOnly = handleOnly;
@@ -214,7 +214,7 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
      */
     public Rect getHandleFrame() {
         Rect handleRect = new Rect(mScrollBarLayer.getIndicatorFrame());
-        handleRect.offset(getLeft(),getTop());
+        handleRect.offset(getLeft(), getTop());
         return handleRect;
     }
 
@@ -224,9 +224,10 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
      */
     public Rect getContentFrame() {
         Rect contentRect = new Rect(mScrollBarLayer.getLayoutRect());
-        contentRect.offset(getLeft(),getTop());
+        contentRect.offset(getLeft(), getTop());
         return contentRect;
     }
+
 
     /**
      * @brief Get information about the orientation of the content.
@@ -274,7 +275,7 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
     @Override
     public Rect getSliderContentPadding() {
         // return zero rect
-        return new Rect(0,0,0,0);
+        return new Rect(0, 0, 0, 0);
     }
 
 
@@ -321,25 +322,23 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
         float minSize, tmpWidthOrHeight;
 
         // check scrollbar type and initialize the min size
-        if (mContentOrientation ==PDESliderContentOrientation.PDESliderContentOrientationVertical) {
+        if (mContentOrientation == PDESliderContentOrientation.PDESliderContentOrientationVertical) {
             // get height
             tmpWidthOrHeight = this.getHeight();
             // initialize the min size
             if (tmpWidthOrHeight <= PDEBuildingUnits.BU()) {
                 minSize = 0.0f;
+            } else {
+                minSize = PDEBuildingUnits.BU() / tmpWidthOrHeight;
             }
-            else {
-                minSize = PDEBuildingUnits.BU()/ tmpWidthOrHeight;
-            }
-        } else if(mContentOrientation ==PDESliderContentOrientation.PDESliderContentOrientationHorizontal) {
+        } else if (mContentOrientation == PDESliderContentOrientation.PDESliderContentOrientationHorizontal) {
             // get Width
             tmpWidthOrHeight = this.getWidth();
             // initialize the min size
             if (tmpWidthOrHeight <= PDEBuildingUnits.BU()) {
                 minSize = 0.0f;
-            }
-            else {
-                minSize = PDEBuildingUnits.BU()/ tmpWidthOrHeight;
+            } else {
+                minSize = PDEBuildingUnits.BU() / tmpWidthOrHeight;
             }
         } else {
             minSize = 0.0f;
@@ -376,9 +375,9 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
         if (position < 0) position = 0;
 
         // check scrollbar type and setup a scroll size factor to turn our 0..1 range back into pixel values
-        if (mContentOrientation ==PDESliderContentOrientation.PDESliderContentOrientationVertical) {
+        if (mContentOrientation == PDESliderContentOrientation.PDESliderContentOrientationVertical) {
             scrollerSizeFactor = this.getHeight() - mLastPageSize;
-        } else if (mContentOrientation ==PDESliderContentOrientation.PDESliderContentOrientationHorizontal) {
+        } else if (mContentOrientation == PDESliderContentOrientation.PDESliderContentOrientationHorizontal) {
             scrollerSizeFactor = this.getWidth() - mLastPageSize;
         } else {
             // should not happen
@@ -427,8 +426,8 @@ public class PDESliderContentScrollBar extends View implements PDESliderContentI
         PDEColor mainColor;
 
         // interpolate colors by calling complex logic color interpolation helper
-        mainColor = PDEComponentHelpers.interpolateColor(PDEScrollBarHandleGlobalParamColor,mAgentHelper,
-                PDEAgentHelper.PDEAgentHelperAnimationInteractive,null);
+        mainColor = PDEComponentHelpers.interpolateColor(PDEScrollBarHandleGlobalParamColor, mAgentHelper,
+                                                         PDEAgentHelper.PDEAgentHelperAnimationInteractive, null);
 
         // set handle color
         mScrollBarLayer.setElementScrollValueIndicatorColor(mainColor);

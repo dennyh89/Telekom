@@ -14,24 +14,18 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
+
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.icon.PDEDrawableIcon;
-import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
-import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEIconView
 //----------------------------------------------------------------------------------------------------------------------
+
 
 /**
  * @brief Wrapper class hosting a PDEDrawableIcon for usage in Layouts
@@ -39,133 +33,133 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 public class PDEIconView extends View {
 
-   private PDEDrawableIcon mIcon;
+    private PDEDrawableIcon mIcon;
+
 
     /**
      * @brief Constructor.
      */
-    public PDEIconView(Context context){
+    public PDEIconView(Context context) {
         super(context);
-        init(null);
+        init(context, null);
     }
 
 
     /**
      * @brief Constructor.
      */
-    public PDEIconView(Context context, AttributeSet attrs){
+    public PDEIconView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(attrs);
+        init(context, attrs);
     }
 
 
     /**
      * @brief Constructor.
      */
-    public PDEIconView(Context context, AttributeSet attrs, int defStyle){
-        super(context,attrs,defStyle);
-        init(attrs);
+    public PDEIconView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context, attrs);
     }
 
 
     /**
      * @brief Initialize.
-     *
-     *
      */
-    protected void init(AttributeSet attrs){
+    protected void init(Context context, AttributeSet attrs) {
         mIcon = new PDEDrawableIcon("");
 
         PDEUtils.setViewBackgroundDrawable(this, mIcon);
 
-
-        setAttributes(attrs);
+        setAttributes(context, attrs);
     }
 
 
     /**
      * @brief Load XML attributes
-     *
-     *
      */
-    private void setAttributes(AttributeSet attrs) {
+    private void setAttributes(Context context, AttributeSet attrs) {
         // valid?
         if (attrs == null) return;
 
-        TypedArray sa = getContext().obtainStyledAttributes(attrs, R.styleable.PDEIconView);
+        TypedArray sa = context.obtainStyledAttributes(attrs, R.styleable.PDEIconView);
 
         //check icon source or string
-        if (sa.hasValue(R.styleable.PDEIconView_src)) {
+        if (sa != null && sa.hasValue(R.styleable.PDEIconView_src)) {
             //check if this is a resource value
-            int resourceID = sa.getResourceId(R.styleable.PDEIconView_src,0);
-            if (resourceID == 0){
+            int resourceID = sa.getResourceId(R.styleable.PDEIconView_src, 0);
+            if (resourceID == 0) {
                 setIconString(sa.getString(R.styleable.PDEIconView_src));
             } else {
-                setIconDrawable(getContext().getResources().getDrawable(resourceID));
+                if (getResources() != null) {
+                    setIconDrawable(getResources().getDrawable(resourceID));
+                }
             }
         } else {
             int res = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android", "src", -1);
-            if (res != -1) {
-                setIconDrawable(getContext().getResources().getDrawable(res));
+            if (res != -1 && getResources() != null) {
+                setIconDrawable(getResources().getDrawable(res));
             }
         }
 
-        //set icon string
-        if (sa.hasValue(R.styleable.PDEIconView_iconString)) {
-            //check if this is a resource value
-            int resourceID = sa.getResourceId(R.styleable.PDEIconView_iconString,0);
-            if (resourceID == 0){
-                setIconString(sa.getString(R.styleable.PDEIconView_iconString));
+        if (sa != null) {
+
+            //set icon string
+            if (sa.hasValue(R.styleable.PDEIconView_iconString)) {
+                //check if this is a resource value
+                int resourceID = sa.getResourceId(R.styleable.PDEIconView_iconString, 0);
+                if (resourceID == 0) {
+                    setIconString(sa.getString(R.styleable.PDEIconView_iconString));
+                } else {
+                    setIconDrawable(getContext().getResources().getDrawable(resourceID));
+                }
+            }
+
+            // set icon color
+            if (sa.hasValue(R.styleable.PDEIconView_iconColor)) {
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEIconView_iconColor, 0);
+                if (resourceID != 0) {
+                    setIconColor(PDEColor.valueOfColorID(resourceID));
+                } else {
+                    setIconColor(sa.getColor(R.styleable.PDEIconView_iconColor, R.color.DTBlack));
+                }
+            }
+
+            // set shadow color
+            if (sa.hasValue(R.styleable.PDEIconView_shadowColor)) {
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEIconView_shadowColor, 0);
+                if (resourceID != 0) {
+                    setShadowColor(PDEColor.valueOfColorID(resourceID));
+                } else {
+                    setShadowColor(sa.getColor(R.styleable.PDEIconView_shadowColor, R.color.DTWhite));
+                }
+            }
+
+            // set shadow enabled
+            if (sa.hasValue(R.styleable.PDEIconView_shadowEnabled)) {
+                setShadowEnabled(sa.getBoolean(R.styleable.PDEIconView_shadowEnabled, false));
+            }
+
+            // set shadow offset x
+            if (sa.hasValue(R.styleable.PDEIconView_shadowOffsetX)) {
+                setShadowOffsetX(sa.getFloat(R.styleable.PDEIconView_shadowOffsetX, 0.0f));
+            }
+
+            // set shadow offset y
+            if (sa.hasValue(R.styleable.PDEIconView_shadowOffsetY)) {
+                setShadowOffsetY(sa.getFloat(R.styleable.PDEIconView_shadowOffsetY, 1.0f));
+            }
+
+            // set padding
+            if (sa.hasValue(R.styleable.PDEIconView_padding)) {
+                setPaddingAll(sa.getString(R.styleable.PDEIconView_padding));
             } else {
-                setIconDrawable(getContext().getResources().getDrawable(resourceID));
+                setPaddingAll(attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "paddingLeft"));
             }
-        }
 
-        // set icon color
-        if (sa.hasValue(R.styleable.PDEIconView_iconColor)) {
-            //to have dark/light style use PDEColor with color id
-            int resourceID = sa.getResourceId(R.styleable.PDEIconView_iconColor, 0);
-            if (resourceID!=0) {
-                setIconColor(PDEColor.valueOfColorID(resourceID));
-            } else {
-                setIconColor(sa.getColor(R.styleable.PDEIconView_iconColor, R.color.DTBlack));
-            }
-        }
-
-        // set shadow color
-        if (sa.hasValue(R.styleable.PDEIconView_shadowColor)) {
-            //to have dark/light style use PDEColor with color id
-            int resourceID = sa.getResourceId(R.styleable.PDEIconView_shadowColor,0);
-            if (resourceID!=0) {
-                setShadowColor(PDEColor.valueOfColorID(resourceID));
-            } else {
-                setShadowColor(sa.getColor(R.styleable.PDEIconView_shadowColor, R.color.DTWhite));
-            }
-        }
-
-        // set shadow enabled
-        if (sa.hasValue(R.styleable.PDEIconView_shadowEnabled)) {
-            setShadowEnabled(sa.getBoolean(R.styleable.PDEIconView_shadowEnabled,false));
-        }
-
-        // set shadow offset x
-        if (sa.hasValue(R.styleable.PDEIconView_shadowOffsetX)) {
-            setShadowOffsetX(sa.getFloat(R.styleable.PDEIconView_shadowOffsetX,0.0f));
-        }
-
-        // set shadow offset y
-        if (sa.hasValue(R.styleable.PDEIconView_shadowOffsetY)) {
-            setShadowOffsetY(sa.getFloat(R.styleable.PDEIconView_shadowOffsetY,1.0f));
-        }
-
-        // set padding
-        if (sa.hasValue(R.styleable.PDEIconView_padding)) {
-            setPaddingAll(sa.getDimensionPixelSize(R.styleable.PDEIconView_padding,0));
-        }  else {
-            String dim = attrs.getAttributeValue("http://schemas.android.com/apk/res/android","padding");
-            if (!TextUtils.isEmpty(dim)) {
-                setPaddingAll(parseDimension(dim));
-            }
+            sa.recycle();
         }
     }
 
@@ -216,8 +210,7 @@ public class PDEIconView extends View {
     /**
      * @brief Set Icon.
      */
-    public void setIcon(Object icon)
-    {
+    public void setIcon(Object icon) {
         mIcon.setElementIcon(icon);
         requestLayout();
     }
@@ -254,6 +247,16 @@ public class PDEIconView extends View {
      */
     public PDEColor getIconColor() {
         return mIcon.getElementIconColor();
+    }
+
+
+    /**
+     * @brief Private helper to set same padding on all sides with dimension string (could be 0.7BU etc...)
+     */
+    private void setPaddingAll(String paddingAll) {
+        if (!TextUtils.isEmpty(paddingAll)) {
+            setPaddingAll((int) PDEBuildingUnits.parseSize(paddingAll));
+        }
     }
 
 
@@ -341,6 +344,7 @@ public class PDEIconView extends View {
         mIcon.setElementShadowEnabled(enabled);
     }
 
+
     /**
      * @brief Get if shadow is enabled.
      */
@@ -377,7 +381,9 @@ public class PDEIconView extends View {
      * @brief Gets element width.
      */
     public int getElementWidth() {
-        if (mIcon != null) mIcon.getElementWidth();
+        if (mIcon != null) {
+            return mIcon.getElementWidth();
+        }
         return 0;
     }
 
@@ -386,7 +392,9 @@ public class PDEIconView extends View {
      * @brief Gets element height.
      */
     public int getElementHeight() {
-        if (mIcon != null) mIcon.getElementHeight();
+        if (mIcon != null) {
+            return mIcon.getElementHeight();
+        }
         return 0;
     }
 
@@ -435,52 +443,6 @@ public class PDEIconView extends View {
 
         // return the values
         setMeasuredDimension(resolveSize(width, widthMeasureSpec),
-                resolveSize(height,heightMeasureSpec));
-    }
-
-
-
-    /**
-     * Takes dimension string from resources and transforms it in pixel value.
-     */
-    public int parseDimension(String dimensionString  )
-    {
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        float size = Float.NaN;
-        int endOfFloatIndex = -1;
-
-        Pattern p = Pattern.compile("[-+]?[0-9]*\\.?[0-9]+");
-        Matcher m = p.matcher(dimensionString);
-
-        if (m.find()) {
-            if (m.start() == 0) {
-                // float only at the beginning
-                size = Float.valueOf(dimensionString.substring(m.start(),
-                        m.end()));
-                endOfFloatIndex = m.end();
-            }
-        }
-
-        if (!Float.isNaN(size) && endOfFloatIndex > -1 &&
-                endOfFloatIndex < dimensionString.length()) {
-            String unitPart = dimensionString.substring(endOfFloatIndex);
-            if (unitPart.compareToIgnoreCase("BU") == 0) {
-                size = PDEFontHelpers.calculateFontSize(PDETypeface.sDefaultFont, PDEBuildingUnits.exactPixelFromBU(size));
-            } else if (unitPart.compareToIgnoreCase("px") == 0) {
-                size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, size, metrics);
-            } else if (unitPart.compareToIgnoreCase("dp") == 0 ||
-                    unitPart.compareToIgnoreCase("dip") == 0) {
-                size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, metrics);
-            } else if (unitPart.compareToIgnoreCase("sp") == 0) {
-                size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, metrics);
-            } else if (unitPart.compareToIgnoreCase("dt") == 0) {
-                size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PT, size, metrics);
-            } else if (unitPart.compareToIgnoreCase("in") == 0) {
-                size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_IN, size, metrics);
-            } else if (unitPart.compareToIgnoreCase("mm") == 0) {
-                size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_MM, size, metrics);
-            }
-        }
-        return Math.round(size);
+                             resolveSize(height, heightMeasureSpec));
     }
 }

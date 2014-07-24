@@ -14,24 +14,21 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 
-/// @cond INTERNAL_CLASS
-
 //----------------------------------------------------------------------------------------------------------------------
-// PDEToolTipView
+// PDEToolTip
 //----------------------------------------------------------------------------------------------------------------------
 
 
 /**
  * @brief Tool Tip Notification under the terms of the styleguide.
- *
  */
-public class PDEToolTipView extends PDENotificationBaseView {
+public class PDEToolTip extends PDENotificationBase {
 
 
     /**
      * @brief Constructor.
      */
-    public PDEToolTipView(Context context){
+    public PDEToolTip(Context context) {
         super(context);
     }
 
@@ -39,22 +36,22 @@ public class PDEToolTipView extends PDENotificationBaseView {
     /**
      * @brief Constructor.
      */
-    public PDEToolTipView(Context context, AttributeSet attrs){
+    @SuppressWarnings("unused")
+    public PDEToolTip(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
 
     /**
-     * @brief Special initialisation of Tool Tip View
-     *
      * @param attrs xml attributes
+     * @brief Special initialisation of Tool Tip View
      */
-    protected void init(AttributeSet attrs){
+    protected void init(Context context, AttributeSet attrs) {
         // if in developer tool (IDE) stop here
         if (isInEditMode()) return;
 
         // base class init
-        super.init(attrs);
+        super.init(context, attrs);
 
         // Tool Tip has different corner rounding than the base class
         mSpeechBubble.setElementCornerRadius(PDEBuildingUnits.oneThirdBU());
@@ -68,4 +65,3 @@ public class PDEToolTipView extends PDENotificationBaseView {
     }
 }
 
-/// @endcond INTERNAL_CLASS

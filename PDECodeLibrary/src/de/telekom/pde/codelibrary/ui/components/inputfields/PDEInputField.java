@@ -7,6 +7,7 @@
 
 package de.telekom.pde.codelibrary.ui.components.inputfields;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -26,6 +27,9 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
@@ -43,16 +47,14 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEResourceAttributesHelper;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 import de.telekom.pde.codelibrary.ui.layout.PDESquareRelativeLayout;
 
-import java.util.ArrayList;
-
-
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEInputField
 //----------------------------------------------------------------------------------------------------------------------
 
+
 @SuppressWarnings("unused")
 public class PDEInputField extends RelativeLayout implements PDEIEventSource, TextWatcher, View.OnFocusChangeListener,
-        TextView.OnEditorActionListener {
+                                                             TextView.OnEditorActionListener {
 
     /**
      * @brief Global tag for log outputs.
@@ -75,24 +77,27 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
     public static final String PDEInputFieldParameterValueSizeAutomatic = "automatic";
     public static final String PDEInputFieldParameterValueSizeStyleguide = "styleguide";
 
-
-
     // Events
     //
     /**
      * @brief Event mask for all PDEAgentController events.
      */
-    public static final String PDE_INPUTFIELD_EVENT_MASK_ACTION ="PDEInputField.action.*";
+    public static final String PDE_INPUTFIELD_EVENT_MASK_ACTION = "PDEInputField.action.*";
     public static final String PDE_INPUTFIELD_EVENT_ACTION_GOT_FOCUS = "PDEInputField.action.gotFocus";
     public static final String PDE_INPUTFIELD_EVENT_ACTION_LOST_FOCUS = "PDEInputField.action.lostFocus";
-    public static final String PDE_INPUTFIELD_EVENT_ACTION_BEFORE_TEXT_CHANGED = "PDEInputField.action.beforeTextChanged";
+    public static final String
+            PDE_INPUTFIELD_EVENT_ACTION_BEFORE_TEXT_CHANGED
+            = "PDEInputField.action.beforeTextChanged";
     public static final String PDE_INPUTFIELD_EVENT_ACTION_ON_TEXT_CHANGED = "PDEInputField.action.onTextChanged";
     public static final String PDE_INPUTFIELD_EVENT_ACTION_AFTER_TEXT_CHANGED = "PDEInputField.action.afterTextChanged";
-    public static final String PDE_INPUTFIELD_EVENT_ACTION_SHOULD_DO_EDITOR_ACTION = "PDEInputField.action.shouldDoEditorAction";
+    public static final String
+            PDE_INPUTFIELD_EVENT_ACTION_SHOULD_DO_EDITOR_ACTION
+            = "PDEInputField.action.shouldDoEditorAction";
     public static final String PDE_INPUTFIELD_EVENT_ACTION_SHOULD_CLEAR_TEXT = "PDEInputField.action.shouldClearText";
     public static final String PDE_INPUTFIELD_EVENT_ACTION_DID_CLEAR_TEXT = "PDEInputField.action.didClearText";
 
     //----- properties -----
+
 
     // font modes
     enum PDEInputFieldFontMode {
@@ -101,6 +106,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         Styleguide,
         Fixed
     }
+
 
     // private variables
     float mWidth;
@@ -129,6 +135,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
     // supported input type mask
     private static int mSupportedInputTypesMask;
+
 
     // static initialize
     static {
@@ -189,16 +196,15 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         mFontUsesCaps = false;
 
         // remember some variables
-        mEditTextView = (PDEEditText)findViewById(R.id.editTextView);
+        mEditTextView = (PDEEditText) findViewById(R.id.editTextView);
         //!!!!!!!!!!!IMPORTANT: disable saving of state !!!!!!!!!!!!!!!!! more information at the bottom of this file
         // at the onSaveInstanceState and onRestoreInstanceState(Parcelable state) functions
         mEditTextView.setSaveEnabled(false);
         mEditTextView.addTextChangedListener(this);
 
-        mBackgroundButton = (PDEButton)findViewById(R.id.pdeBackgroundButton);
-        mClearButton = (PDEButton)findViewById(R.id.clearButtonView);
-        mClearButtonContainer = (PDESquareRelativeLayout)findViewById(R.id.clearButtonContainer);
-
+        mBackgroundButton = (PDEButton) findViewById(R.id.pdeBackgroundButton);
+        mClearButton = (PDEButton) findViewById(R.id.clearButtonView);
+        mClearButtonContainer = (PDESquareRelativeLayout) findViewById(R.id.clearButtonContainer);
 
         // if this is called from developer tool (IDE) stop here
         if (isInEditMode()) return;
@@ -207,22 +213,22 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         setInputFieldBackgroundLayerWithLayerType(PDEButton.PDEButtonLayerType.BackgroundTextFlat);
         mBackgroundButton.setButtonForegroundLayerWithLayerType(PDEButtonLayerType.ForegroundNone);
 
-       // !!!!!!!!!!!!!!! TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!! TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // WE ONLY HAVE TO USE 1 AGENT-CONTROLLER, (AT THE MOMENT backgroundButton and TextField both have one used)
         // IN THE FUTURE REPLACE ONE BY THE OTHER, AT THE MOMENT USE TEXTFIELD CONTROLLER
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         mBackgroundButton.getAgentController().setInputEnabled(false);
         mBackgroundButton.addListener(this, "onBackgroundButtonClicked",
-                PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED);
+                                      PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED);
 
         // set clear button and add listener to clear the text
         mClearButton.setButtonBackgroundLayer(new PDEInputFieldClearButtonBackground(context));
         mClearButton.setIconColored(true);
         mClearButton.addListener(this, "onClearButtonClicked",
-                PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED);
+                                 PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED);
 
         // forward editText touch events to background button
-        mEditTextView.setTargetListener(mBackgroundButton);
+        mEditTextView.setTargetListener(mBackgroundButton, mBackgroundButton.getEventReceiver());
         // listen to text changes of editText
         mEditTextView.addTextChangedListener(this);
 
@@ -248,138 +254,143 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         updateHintTextColor();
 
         //set the xml attributes
-        setAttributes(attrs);
+        setAttributes(context, attrs);
     }
 
 
-    private void setAttributes(AttributeSet attrs) {
+    private void setAttributes(Context context, AttributeSet attrs) {
         // valid?
         if (attrs == null) return;
 
-        String text;
-        TypedArray sa = getContext().obtainStyledAttributes(attrs, R.styleable.PDEInputField);
+        String text = null;
+        TypedArray sa = context.obtainStyledAttributes(attrs, R.styleable.PDEInputField);
 
         // set text
-        text = sa.getString(R.styleable.PDEInputField_text);
+        if (sa != null) {
+            text = sa.getString(R.styleable.PDEInputField_text);
+        }
+
         if (TextUtils.isEmpty(text)) {
             // try to get "android:text" attribute instead
             text = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "text");
         }
         setText(text);
 
-        // set typeface (font)
-        if (sa.hasValue(R.styleable.PDEInputField_typeface)) {
-            setFont(PDETypeface.createByName(sa.getString(R.styleable.PDEInputField_typeface)));
-        }
-
-        // set the text size
-        if (sa.hasValue(R.styleable.PDEInputField_textSize)) {
-            String text_size = sa.getString(R.styleable.PDEInputField_textSize);
-            setFontSize(text_size);
-        }
-
-        if (sa.hasValue(R.styleable.PDEInputField_backgroundType)) {
-            setInputFieldBackgroundLayerWithLayerType(sa.getInt(R.styleable.PDEInputField_backgroundType, 0));
-        }
-
-        // set color of text
-        if (sa.hasValue(R.styleable.PDEInputField_textColor)) {
-            //to have dark/light style use PDEColor with color id
-            int resourceID = sa.getResourceId(R.styleable.PDEInputField_textColor, 0);
-            if (resourceID!=0) {
-                setTextColor(PDEColor.valueOfColorID(resourceID));
-            } else {
-                setTextColor(sa.getColor(R.styleable.PDEInputField_textColor, R.color.DTBlack));
+        if (sa != null) {
+            // set typeface (font)
+            if (sa.hasValue(R.styleable.PDEInputField_typeface)) {
+                setFont(PDETypeface.createByName(sa.getString(R.styleable.PDEInputField_typeface)));
             }
-        }
 
-        // set cursor visibility
-        if (sa.hasValue(R.styleable.PDEInputField_cursorVisible)) {
-            setCursorVisible(sa.getBoolean(R.styleable.PDEInputField_cursorVisible, true));
-        }
-
-        //check icon source or string
-        if (sa.hasValue(R.styleable.PDEInputField_leftIcon)) {
-            //check if this is a resource value
-            int resourceID = sa.getResourceId(R.styleable.PDEInputField_leftIcon,0);
-            if(resourceID==0){
-                setLeftIcon(sa.getString(R.styleable.PDEInputField_leftIcon));
-            } else {
-                setLeftIcon(getContext().getResources().getDrawable(resourceID));
+            // set the text size
+            if (sa.hasValue(R.styleable.PDEInputField_textSize)) {
+                String text_size = sa.getString(R.styleable.PDEInputField_textSize);
+                setFontSize(text_size);
             }
-        }
 
-        // set hint text
-        if (sa.hasValue(R.styleable.PDEInputField_hint)) {
-            setHint(sa.getText(R.styleable.PDEInputField_hint));
-        }
-
-        // set hint color
-        if (sa.hasValue(R.styleable.PDEInputField_hintColor)) {
-            //to have dark/light style use PDEColor with color id
-            int resourceID = sa.getResourceId(R.styleable.PDEInputField_hintColor, 0);
-            if (resourceID != 0) {
-                setHintTextColor(PDEColor.valueOfColorID(resourceID));
-            } else {
-                setHintTextColor(sa.getColor(R.styleable.PDEInputField_hintColor, R.color.DTBlack));
+            if (sa.hasValue(R.styleable.PDEInputField_backgroundType)) {
+                setInputFieldBackgroundLayerWithLayerType(sa.getInt(R.styleable.PDEInputField_backgroundType, 0));
             }
-        }
 
-        // set on focus selection
-        if (sa.hasValue(R.styleable.PDEInputField_selectAllOnFocus)) {
-            setSelectAllOnFocus(sa.getBoolean(R.styleable.PDEInputField_selectAllOnFocus, false));
-        }
-
-        // set highlight text color
-        if (sa.hasValue(R.styleable.PDEInputField_textColorHighlight)) {
-            //to have dark/light style use PDEColor with color id
-            int resourceID = sa.getResourceId(R.styleable.PDEInputField_textColorHighlight, 0);
-            if (resourceID != 0) {
-                setHighlightColor(PDEColor.valueOfColorID(resourceID));
-            } else {
-                setHighlightColor(sa.getColor(R.styleable.PDEInputField_textColorHighlight, R.color.DTMagenta));
+            // set color of text
+            if (sa.hasValue(R.styleable.PDEInputField_textColor)) {
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEInputField_textColor, 0);
+                if (resourceID != 0) {
+                    setTextColor(PDEColor.valueOfColorID(resourceID));
+                } else {
+                    setTextColor(sa.getColor(R.styleable.PDEInputField_textColor, R.color.DTBlack));
+                }
             }
-        }
 
-        // set password mode
-        if (sa.hasValue(R.styleable.PDEInputField_password)) {
-            if(sa.getBoolean(R.styleable.PDEInputField_password,false)) {
-                setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            // set cursor visibility
+            if (sa.hasValue(R.styleable.PDEInputField_cursorVisible)) {
+                setCursorVisible(sa.getBoolean(R.styleable.PDEInputField_cursorVisible, true));
             }
-        }
 
-        // set ellipsize mode
-        if (sa.hasValue(R.styleable.PDEInputField_ellipsize)) {
-            setEllipsize(sa.getInt(R.styleable.PDEInputField_ellipsize, 0));
-        }
+            //check icon source or string
+            if (sa.hasValue(R.styleable.PDEInputField_leftIcon)) {
+                //check if this is a resource value
+                int resourceID = sa.getResourceId(R.styleable.PDEInputField_leftIcon, 0);
+                if (resourceID == 0) {
+                    setLeftIcon(sa.getString(R.styleable.PDEInputField_leftIcon));
+                } else {
+                    setLeftIcon(getContext().getResources().getDrawable(resourceID));
+                }
+            }
 
-        // set input type mode
-        if (sa.hasValue(R.styleable.PDEInputField_inputType)) {
-            setInputType(sa.getInt(R.styleable.PDEInputField_inputType,InputType.TYPE_NULL));
-        }
+            // set hint text
+            if (sa.hasValue(R.styleable.PDEInputField_hint)) {
+                setHint(sa.getText(R.styleable.PDEInputField_hint));
+            }
 
-        // set ime options
-        if (sa.hasValue(R.styleable.PDEInputField_imeOptions)) {
-            setImeOptions(sa.getInt(R.styleable.PDEInputField_imeOptions, EditorInfo.IME_ACTION_DONE));
-        }
+            // set hint color
+            if (sa.hasValue(R.styleable.PDEInputField_hintColor)) {
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEInputField_hintColor, 0);
+                if (resourceID != 0) {
+                    setHintTextColor(PDEColor.valueOfColorID(resourceID));
+                } else {
+                    setHintTextColor(sa.getColor(R.styleable.PDEInputField_hintColor, R.color.DTBlack));
+                }
+            }
 
-        //check if clear button is disabled or enabled
-        if(sa.hasValue(R.styleable.PDEInputField_clearButtonEnabled)) {
-            setClearButtonEnabled(sa.getBoolean(R.styleable.PDEInputField_clearButtonEnabled,true));
-        }
+            // set on focus selection
+            if (sa.hasValue(R.styleable.PDEInputField_selectAllOnFocus)) {
+                setSelectAllOnFocus(sa.getBoolean(R.styleable.PDEInputField_selectAllOnFocus, false));
+            }
 
-        // icon to text height
-        if (sa.hasValue(R.styleable.PDEInputField_iconToTextHeightRatio)) {
-            setIconToTextHeightRatio(sa.getFloat(R.styleable.PDEInputField_iconToTextHeightRatio, 2.0f));
+            // set highlight text color
+            if (sa.hasValue(R.styleable.PDEInputField_textColorHighlight)) {
+                //to have dark/light style use PDEColor with color id
+                int resourceID = sa.getResourceId(R.styleable.PDEInputField_textColorHighlight, 0);
+                if (resourceID != 0) {
+                    setHighlightColor(PDEColor.valueOfColorID(resourceID));
+                } else {
+                    setHighlightColor(sa.getColor(R.styleable.PDEInputField_textColorHighlight, R.color.DTMagenta));
+                }
+            }
+
+            // set password mode
+            if (sa.hasValue(R.styleable.PDEInputField_password)) {
+                if (sa.getBoolean(R.styleable.PDEInputField_password, false)) {
+                    setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+            }
+
+            // set ellipsize mode
+            if (sa.hasValue(R.styleable.PDEInputField_ellipsize)) {
+                setEllipsize(sa.getInt(R.styleable.PDEInputField_ellipsize, 0));
+            }
+
+            // set input type mode
+            if (sa.hasValue(R.styleable.PDEInputField_inputType)) {
+                setInputType(sa.getInt(R.styleable.PDEInputField_inputType, InputType.TYPE_NULL));
+            }
+
+            // set ime options
+            if (sa.hasValue(R.styleable.PDEInputField_imeOptions)) {
+                setImeOptions(sa.getInt(R.styleable.PDEInputField_imeOptions, EditorInfo.IME_ACTION_DONE));
+            }
+
+            //check if clear button is disabled or enabled
+            if (sa.hasValue(R.styleable.PDEInputField_clearButtonEnabled)) {
+                setClearButtonEnabled(sa.getBoolean(R.styleable.PDEInputField_clearButtonEnabled, true));
+            }
+
+            // icon to text height
+            if (sa.hasValue(R.styleable.PDEInputField_iconToTextHeightRatio)) {
+                setIconToTextHeightRatio(sa.getFloat(R.styleable.PDEInputField_iconToTextHeightRatio, 2.0f));
+            }
+
+            sa.recycle();
         }
-        
-        sa.recycle();
     }
 
 
     /**
      * @brief Set the background layer.
-    */
+     */
     public void setInputFieldBackgroundLayer(PDEButtonLayerInterface layer) {
         mBackgroundButton.setButtonBackgroundLayer(layer);
     }
@@ -387,7 +398,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
     /**
      * @brief Set the background layer.
-    */
+     */
     private void setInputFieldBackgroundLayerWithLayerType(int layerType) {
         mBackgroundButton.setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.values()[layerType]);
     }
@@ -395,7 +406,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
     /**
      * @brief Select one of the default backgrounds
-    */
+     */
     public void setInputFieldBackgroundLayerWithLayerType(PDEButtonLayerType layerType) {
         mBackgroundButton.setButtonBackgroundLayerWithLayerType(layerType);
     }
@@ -403,7 +414,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
     /**
      * @brief Set one of default backgrounds by string
-    */
+     */
     public void setInputFieldBackgroundLayerWithLayerTypeString(String layerType) {
         mBackgroundButton.setButtonBackgroundLayerWithLayerTypeString(layerType);
     }
@@ -423,7 +434,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         shouldClearTextEvent.setSender(this);
         getEventSource().sendEvent(shouldClearTextEvent);
 
-        if (shouldClearTextEvent.getShouldDoAction()){
+        if (shouldClearTextEvent.getShouldDoAction()) {
             clearEditTextField();
             didClearTextEvent = new PDEInputFieldEvent();
             didClearTextEvent.setType(PDE_INPUTFIELD_EVENT_ACTION_DID_CLEAR_TEXT);
@@ -510,13 +521,13 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         //
         // if we dont reset the hint color, android lost the hinttext color after we have a setText("") or else somewhere after the code above
         // it seems that the editText lost the hint when the color is set for the first time, but after an setText -> change the order -> correct hint and text colors
-        if(TextUtils.isEmpty(editable)) {
+        if (TextUtils.isEmpty(editable)) {
             updateTextColor();
             updateHintTextColor();
         }
 
         // send event
-        event =new PDEInputFieldEvent();
+        event = new PDEInputFieldEvent();
         event.setType(PDE_INPUTFIELD_EVENT_ACTION_AFTER_TEXT_CHANGED);
         event.setSender(this);
         event.setCurrentText(editable);
@@ -594,6 +605,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         mEditTextView.setLeftIcon(drawableID);
     }
 
+
     /**
      * @brief Set the left drawable for the inputfield (e.g magnifier for searchfield)
      */
@@ -604,7 +616,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
     /**
      * @brief Set the left icon string.
-     *  Icon string can either be a # plus char, signalising to take the iconfont, or a resource string
+     * Icon string can either be a # plus char, signalising to take the iconfont, or a resource string
      */
     public void setLeftIcon(String icon) {
         mEditTextView.setLeftIcon(icon);
@@ -655,6 +667,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
     /**
      * Get information about clear button status.
+     *
      * @return true if the clear button is enabled, false if not
      */
     public boolean isClearButtonEnabled() {
@@ -669,7 +682,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         // because the parent of the clear button is a square layout we have to set the clear button container
         // visibility
         if (mEditTextView.hasFocus() && mClearButtonEnabled
-                && !TextUtils.isEmpty(mEditTextView.getText())){
+            && !TextUtils.isEmpty(mEditTextView.getText())) {
             mClearButtonContainer.setVisibility(VISIBLE);
         } else {
             mClearButtonContainer.setVisibility(GONE);
@@ -700,7 +713,6 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         return mEditTextView.getImeOptions();
     }
 
-
 //----- EditTextView functions -----------------------------------------------------------------------------------------
 
 
@@ -718,16 +730,16 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         // determine font
         if (colorObject instanceof String) {
-            newTextColor = PDEColor.valueOf((String)colorObject);
+            newTextColor = PDEColor.valueOf((String) colorObject);
         } else if (colorObject instanceof PDEColor) {
-            newTextColor = (PDEColor)colorObject;
+            newTextColor = (PDEColor) colorObject;
         } else {
             // use default
-            newTextColor = PDEColor.valueOf(getContext().getResources().getColor(R.color.DTLightUIText));
+            newTextColor = PDEColor.valueOfColorID(R.color.DTLightUIText);
         }
 
         // check color change
-        if( newTextColor.equals(PDEColor.valueOf(mEditTextView.getCurrentTextColor())) ) return;
+        if (newTextColor.equals(PDEColor.valueOf(mEditTextView.getCurrentTextColor()))) return;
 
         // simply set the color
         mEditTextView.setTextColor(newTextColor.getIntegerColor());
@@ -749,12 +761,12 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         // determine font
         if (colorObject instanceof String) {
-            newHintTextColor = PDEColor.valueOf((String)colorObject);
+            newHintTextColor = PDEColor.valueOf((String) colorObject);
         } else if (colorObject instanceof PDEColor) {
-            newHintTextColor = (PDEColor)colorObject;
+            newHintTextColor = (PDEColor) colorObject;
         } else {
             // use default
-            newHintTextColor = PDEColor.valueOf(getContext().getResources().getColor(R.color.DTLightUIIndicativeText));
+            newHintTextColor = PDEColor.valueOfColorID(R.color.DTLightUIIndicativeText);
         }
 
         // check color change
@@ -773,7 +785,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
     private void prepareFont() {
         Object fontObject, fontSizeObject;
         PDEInputFieldFontMode fontMode;
-        float fontSize;
+        float fontSize = Float.NaN;
         String str;
         PDETypeface lFont = null;
 
@@ -783,19 +795,19 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         // determine font
         if (fontObject instanceof PDETypeface) {
-            lFont = (PDETypeface)(fontObject);
+            lFont = (PDETypeface) (fontObject);
         }
 
         // determine font size
         if (fontSizeObject instanceof Number) {
-            fontSize = ((Number)fontSizeObject).floatValue();
+            fontSize = ((Number) fontSizeObject).floatValue();
             fontMode = PDEInputFieldFontMode.Fixed;
         } else if (fontSizeObject instanceof String) {
             // extract string
             str = (String) fontSizeObject;
             // button specific mode / fixed size?
             if (str.compareToIgnoreCase(PDEInputField.PDEInputFieldParameterValueSizeAuto) == 0
-                    || str.compareToIgnoreCase(PDEInputField.PDEInputFieldParameterValueSizeAutomatic) == 0) {
+                || str.compareToIgnoreCase(PDEInputField.PDEInputFieldParameterValueSizeAutomatic) == 0) {
                 // automatic sizing
                 fontMode = PDEInputFieldFontMode.Automatic;
                 fontSize = 0.0f;
@@ -805,9 +817,13 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
                 fontSize = 0.0f;
             } else {
                 //not a button specific value -> parse string
-                fontSize = PDEFontHelpers.parseFontSize(str, lFont, getContext().getResources().getDisplayMetrics());
+                if (getResources() != null) {
+                    fontSize = PDEFontHelpers.parseFontSize(str,
+                                                            lFont,
+                                                            getResources().getDisplayMetrics());
+                }
                 if (Float.isNaN(fontSize)) {
-                    Log.e(LOG_TAG,"could not parse font string correctly: " + str);
+                    Log.e(LOG_TAG, "could not parse font string correctly: " + str);
                     fontSize = 24.0f;
                 }
                 fontMode = PDEInputFieldFontMode.Fixed;
@@ -822,7 +838,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         mFontMode = fontMode;
         mFontSize = fontSize;
         //create font independent from size, so do it once here, or take parameter font
-        if (lFont == null ) {
+        if (lFont == null) {
             //use default font if we don't have a correct one !!!!!!!!!!
             mFont = PDETypeface.sDefaultFont;
         } else {
@@ -830,7 +846,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
             mFont = lFont;
         }
 
-        // update font size, and relayout
+        // update font size, and do layout
         updateFontSize(false);
     }
 
@@ -838,7 +854,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
     /**
      * @brief Calculate the new font size and apply it.
      *
-     * Also calculate helper values necessary later in layouting. Important note: This function
+     * Also calculate helper values necessary later in layout process. Important note: This function
      * does not issue a relayout on font changes - ensure a relayout is done properly outside of this function.
      * This avoids recursive calls of updateFontSize and updateLayout.
      */
@@ -893,7 +909,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         mEditTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
 
         //the x on clear button should be 75% of the button text height so calculate this new size
-       mClearButton.setFontSize(fontSize*mClearButtonFontHeightToTextHeightRatio);
+        mClearButton.setFontSize(fontSize * mClearButtonFontHeightToTextHeightRatio);
     }
 
 
@@ -932,7 +948,6 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
     /**
      * @brief Get text color.
      * Only returns values the user sets before. Default values are not received.
-     *
      */
     public PDEColor getTextColor() {
         return mParameters.parameterColorForName(PDEInputField.PDEInputFieldParameterTextColor);
@@ -983,24 +998,21 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
-     * @brief Set ratio of icon height to text height.
-     *
      * @param ratio ratio of icon height to text height.
+     * @brief Set ratio of icon height to text height.
      */
-    public void setIconToTextHeightRatio(float ratio){
+    public void setIconToTextHeightRatio(float ratio) {
         mEditTextView.setIconToTextHeightRatio(ratio);
     }
 
 
     /**
-     * @brief Get ratio of icon heiht to text height.
-     * @return ratio of icon heiht to text height.
+     * @return ratio of icon height to text height.
+     * @brief Get ratio of icon height to text height.
      */
     public float getIconToTextHeightRatio() {
         return mEditTextView.getIconToTextHeightRatio();
     }
-
-
 
 //----- EditTextView functions without parameters ----------------------------------------------------------------------
 
@@ -1017,12 +1029,14 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
-     * @brief Set the text value of the edittextview.
+     * @brief Set the text value of the editTextView.
      *
-     * Pass the text value through the edittextview, input field doesn't holds value itself.
+     * Pass the text value through the editTextView, input field doesn't holds value itself.
      */
     public void setText(int resId) {
-        setText(getContext().getResources().getText(resId));
+        if (getContext() != null && getContext().getResources() != null) {
+            setText(getContext().getResources().getText(resId));
+        }
     }
 
 
@@ -1033,21 +1047,20 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      */
     public Editable getText() {
         //TODO: Check if there is the same problem like on ios -> text below
-        // we don't use parameters here to avoid bugs when textcolor is changed while editing
-        // the text variable of textfield is changed while editing, but we dont notice this so we don't have information
+        // we don't use parameters here to avoid bugs when text color is changed while editing
+        // the text variable of textfield is changed while editing, but we don't notice this so we don't have information
         // in the parameter
-        // we can always update parameter when textchange is finished, but this maybe don't have good performance
+        // we can always update parameter when text change is finished, but this maybe don't have good performance
         return mEditTextView.getText();
     }
 
 
     /**
+     * @param font for the inputField
      * @brief Set font.
      *
      * If nothing else is set the size of the font will be calculated fitting to the size of the button.
      * For fixed size (from the font you set with this function) call setFontSizeFromFont
-     *
-     * @param font for the inputfield
      */
     public void setFont(PDETypeface font) {
         // set the parameters
@@ -1067,7 +1080,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         // get the object
         object = mParameters.parameterObjectForName(PDEInputField.PDEInputFieldParameterFont);
 
-        // typecheck
+        // type check
         if (object == null || !(object instanceof PDETypeface)) return null;
 
         // done
@@ -1076,9 +1089,8 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
-     * @brief Set the font size directly.
-     *
      * @param fontSize of the font (in point)
+     * @brief Set the font size directly.
      */
     public void setFontSize(float fontSize) {
         // set directly as number
@@ -1090,10 +1102,11 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
     /**
      * @brief Set the font size bei size String.
      *
-     * The string must follow the format float[unit]. Unit is optional but if present valid values are "BU", "%" and "Caps".
+     * The string must follow the format float[unit]. Unit is optional but if present valid values are
+     * "BU", "%" and "Caps".
      * It is also possible to set the strings "auto" or "automatic", and to "styleguide"
      */
-    public void  setFontSize(String sizeString) {
+    public void setFontSize(String sizeString) {
         // set the string
         mParameters.setParameter(PDEInputField.PDEInputFieldParameterFontSize, sizeString);
         prepareFont();
@@ -1101,14 +1114,14 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
+     * @return the set font size in float or 0.0f if the parameter was not set or was set as a string.
      * @brief Get font size (float).
      *
      * Only retrieves basic parameters, and only if a float was directly set.
      * If you used setFontSizeWithString use fontSizeString to get the font size.
-     * @return the set font size in float or 0.0f if the parameter was not set or was set as a string.
      */
     public float getFontSize() {
-        if(mParameters.parameterObjectForName(PDEInputField.PDEInputFieldParameterFontSize) instanceof Float) {
+        if (mParameters.parameterObjectForName(PDEInputField.PDEInputFieldParameterFontSize) instanceof Float) {
             return mParameters.parameterFloatForName(PDEInputField.PDEInputFieldParameterFontSize);
         }
 
@@ -1234,7 +1247,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         if (PDEResourceAttributesHelper.isInEnum(getContext(), R.attr.ellipsize, ellipsis.ordinal())) {
             mEditTextView.setEllipsize(ellipsis);
         } else {
-            Log.e(LOG_TAG,"NOT SUPPORTED TRUNCATE TYPE:" + ellipsis.name());
+            Log.e(LOG_TAG, "NOT SUPPORTED TRUNCATE TYPE:" + ellipsis.name());
         }
     }
 
@@ -1246,9 +1259,9 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         try {
             TruncateAt truncateAtType = TruncateAt.values()[ellipsis];
             setEllipsize(truncateAtType);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            Log.e(LOG_TAG,"NOT SUPPORTED ENUM VALUE OF TRUNCATE TYPE:" + ellipsis + " --> check attr.xml!!");
+            Log.e(LOG_TAG, "NOT SUPPORTED ENUM VALUE OF TRUNCATE TYPE:" + ellipsis + " --> check attr.xml!!");
         }
     }
 
@@ -1279,12 +1292,12 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      * Interface only defined when SDK version >= 16 - before it will always return false;
      * Get the  value of the edittextview, input field doesn't holds value itself.
      */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public boolean isCursorVisible() {
-        if (Build.VERSION.SDK_INT >= 16) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             return mEditTextView.isCursorVisible();
-        } else {
-            return false;
         }
+        return false;
     }
 
 
@@ -1364,12 +1377,12 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      *
      * Get the  value of the edittextview, input field doesn't holds value itself.
      */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public PDEColor getHighlightColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             return PDEColor.valueOf(mEditTextView.getHighlightColor());
-        } else {
-            return null;
         }
+        return null;
     }
 
 
@@ -1390,7 +1403,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         int validType = type & mSupportedInputTypesMask;
         if (validType != type) {
             Log.e(LOG_TAG,
-                    "Try to set one or more inputType flags, not supported -> unsupported types are ignored!!!!!");
+                  "Try to set one or more inputType flags, not supported -> unsupported types are ignored!!!!!");
         }
         //set correct flags (remove not supported flags from type)
         mEditTextView.setInputType(validType);
@@ -1417,14 +1430,13 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         mClearButton.setTextColor(PDEColor.valueOf(mEditTextView.getCurrentTextColor()));
     }
 
-
 //----- Event Handling -------------------------------------------------------------------------------------------------
 
 
     /**
+     * @return PDEEventSource
      * @brief Get the eventSource which is responsible for sending PDEEvents events.
      * Most of the events are coming form the PDEAgentController.
-     * @return PDEEventSource
      */
     @Override
     public PDEEventSource getEventSource() {
@@ -1433,15 +1445,13 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
-     * @brief Add event Listener - hold strong pointer to it.
-     *
-     * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
-     *
-     * @param target    Object which will be called in case of an event.
+     * @param target     Object which will be called in case of an event.
      * @param methodName Function in the target object which will be called.
      *                   The method must accept one parameter of the type PDEEvent
      * @return Object which can be used to remove this listener
+     * @brief Add event Listener - hold strong pointer to it.
      *
+     * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
      * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
      */
     @Override
@@ -1452,18 +1462,16 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
+     * @param target     Object which will be called in case of an event.
+     * @param methodName Function in the target object which will be called.
+     *                   The method must accept one parameter of the type PDEEvent
+     * @param eventMask  PDEAgentController event mask.
+     *                   Will be most of the time PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED or
+     *                   PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED
+     * @return Object which can be used to remove this listener
      * @brief Add event Listener - hold strong pointer to it.
      *
      * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
-     *
-     * @param target    Object which will be called in case of an event.
-     * @param methodName Function in the target object which will be called.
-     *                   The method must accept one parameter of the type PDEEvent
-     * @param eventMask PDEAgentController event mask.
-     *                  Will be most of the time PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED or
-     *                  PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED
-     * @return Object which can be used to remove this listener
-     *
      * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
      */
     @Override
@@ -1474,33 +1482,29 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
+     * @param listener the event listener that should be removed
+     * @return Returns whether we have found & removed the listener or not
      * @brief Remove event listener that was added before.
      *
      * Also deletes local strong pointer.
-     *
-     * @param listener the event listener that should be removed
-     * @return Returns whether we have found & removed the listener or not
      */
     public boolean removeListener(Object listener) {
         mStrongPDEEventListenerHolder.remove(listener);
         return mEventSource.removeListener(listener);
     }
 
-
-
     //----- free parameter setting -----------------------------------------------------------------------------------------
 
 
     /**
      * @brief Set parameter, distribute changes.
-     *      This is only used for PDEButton.PDEButtonParameterColor at the moment
+     * This is only used for PDEButton.PDEButtonParameterColor at the moment
      */
     public void mergeParameter(String name, String value, String subKey) {
-        if( PDEButton.PDEButtonParameterColor.equalsIgnoreCase(name)) {
+        if (PDEButton.PDEButtonParameterColor.equalsIgnoreCase(name)) {
             mBackgroundButton.mergeParameter(name, value, subKey);
         }
     }
-
 
 //----- button state handling ------------------------------------------------------------------------------------------
 
@@ -1536,8 +1540,8 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         mEditTextView.setMainState(state);
     }
 
-
 //----- helper functions -----------------------------------------------------------------------------------------------
+
 
     /**
      * @brief Import all supported input types from the inputType attribute of attr.xml to create a bitmask.
@@ -1560,27 +1564,25 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         int[] attributeValues = PDEResourceAttributesHelper.getIntArray(context, R.attr.inputType);
 
-        for(i = 0; i<attributeValues.length; i++){
+        for (i = 0; i < attributeValues.length; i++) {
             mSupportedInputTypesMask |= attributeValues[i];
         }
 
     }
 
-
 //----- layout/sizing information --------------------------------------------------------------------------------------
 
 
     /**
-     *  @brief Size changed.
-     *
-     * @param width New width.
-     * @param height New height.
-     * @param oldWidth Old width.
+     * @param width     New width.
+     * @param height    New height.
+     * @param oldWidth  Old width.
      * @param oldHeight Old height.
+     * @brief Size changed.
      */
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
-        doLayout(width,height);
+        doLayout(width, height);
         super.onSizeChanged(width, height, oldWidth, oldHeight);
     }
 
@@ -1596,8 +1598,6 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
         updateFontSize(false);
     }
 
-
-
 //----- remember/restore state functions -------------------------------------------------------------------------------
 //
 // Because every edittext in our inputfield has the same id, the  default state restore fails
@@ -1610,8 +1610,8 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
-     * Save the current state.
      * @return Parcelable
+     * @brief Save the current state.
      */
     @Override
     protected Parcelable onSaveInstanceState() {
@@ -1623,8 +1623,8 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
 
     /**
-     * Restore the saved state.
      * @param state Parcelable state.
+     * @brief Restore the saved state.
      */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {

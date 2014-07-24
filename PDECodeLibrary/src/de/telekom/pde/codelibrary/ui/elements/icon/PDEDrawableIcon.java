@@ -14,12 +14,14 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
+
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEDrawableIconImage
 //----------------------------------------------------------------------------------------------------------------------
+
 
 /**
  * @brief Icon Class.
@@ -30,7 +32,7 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
 public class PDEDrawableIcon extends PDEDrawableBase {
     private final static String LOG_TAG = PDEDrawableIcon.class.getName();
 
-//-----  properties ---------------------------------------------------------------------------------------------------
+    //-----  properties ---------------------------------------------------------------------------------------------------
     private Drawable mImage;
     private String mIconString;
     private PDEColor mIconColor;
@@ -133,13 +135,14 @@ public class PDEDrawableIcon extends PDEDrawableBase {
             }
         }
 
-
         if (mIconImage == null) {
             mIconImage = new PDEDrawableIconImage(mImage);
         } else {
             mIconImage.setElementImage(mImage);
         }
-        if (mIconColor != null) mIconImage.setElementIconColor(mIconColor);
+        if (mIconColor != null) {
+            mIconImage.setElementIconColor(mIconColor);
+        }
         mIconImage.setElementShadowEnabled(mShadowEnabled);
         mIconImage.setElementShadowColor(mShadowColor);
         mIconImage.setElementShadowXOffset(mShadowXOffset);
@@ -161,8 +164,10 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Returns the native size of the icon (e.g. from a resource image).
      */
     public Point getNativeSize() {
-        if (mImage != null) return new Point(mImage.getIntrinsicWidth(),mImage.getIntrinsicHeight());
-        return new Point(0,0);
+        if (mImage != null) {
+            return new Point(mImage.getIntrinsicWidth(), mImage.getIntrinsicHeight());
+        }
+        return new Point(0, 0);
     }
 
 
@@ -194,7 +199,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Returns whether element has an icon drawable or icon string set.
      */
     public boolean hasElementIcon() {
-        return !(mIconImage == null && TextUtils.isEmpty(mIconString));
+        return !(mImage == null && TextUtils.isEmpty(mIconString));
     }
 
 
@@ -209,8 +214,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     /**
      * @brief Set icon image.
      */
-    public void setElementIconDrawable(Drawable image)
-    {
+    public void setElementIconDrawable(Drawable image) {
         //any change?
         if (image == mImage) return;
 
@@ -225,8 +229,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     /**
      * @brief Get icon by drawable.
      */
-    public Drawable getElementIconDrawable()
-    {
+    public Drawable getElementIconDrawable() {
         if (mImage != null) return mImage;
         return null;
     }
@@ -235,13 +238,12 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     /**
      * @brief Set icon by string.
      */
-    public void setElementIconString(String iconstring)
-    {
+    public void setElementIconString(String iconString) {
         //any change?
-        if (TextUtils.equals(iconstring,mIconString)) return;
+        if (TextUtils.equals(iconString, mIconString)) return;
 
         //remember
-        mIconString = iconstring;
+        mIconString = iconString;
         mImage = null;
         updateIconDrawable();
         update(true);
@@ -251,8 +253,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     /**
      * @brief Get icon string.
      */
-    public String getElementIconString()
-    {
+    public String getElementIconString() {
         if (mIconString != null) return mIconString;
         return null;
     }
@@ -262,13 +263,16 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Set Icon by drawable or string.
      *
      * Based on type of object either setElementIconDrawable of set ElementIconString is called.
+     * If icon is not a String or Drawable, the parameter is set to null.
      */
-    public void setElementIcon(Object icon)
-    {
+    public void setElementIcon(Object icon) {
         if (icon instanceof String) {
-            setElementIconString((String)icon);
+            setElementIconString((String) icon);
         } else if (icon instanceof Drawable) {
             setElementIconDrawable((Drawable) icon);
+        } else {
+            //unknown type of no icon
+            setElementIconDrawable(null);
         }
     }
 
@@ -276,8 +280,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     /**
      * @brief Returns icon image if set, else icon string, else null.
      */
-    public Object getElementIcon()
-    {
+    public Object getElementIcon() {
         if (mImage != null) {
             return mImage;
         } else if (!TextUtils.isEmpty(mIconString)) {
@@ -357,7 +360,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     /**
      * @brief Set shadow x offset.
      */
-    public  void setElementShadowXOffset(float offset) {
+    public void setElementShadowXOffset(float offset) {
         //any change?
         if (offset == mShadowXOffset) return;
 
@@ -421,24 +424,6 @@ public class PDEDrawableIcon extends PDEDrawableBase {
 
 
     /**
-     * @brief Called when bounds set via rect.
-     */
-    @Override
-    public void setBounds(Rect bounds) {
-        super.setBounds(bounds);
-    }
-
-
-    /**
-     * @brief Called when bounds set via left/top/right/bottom values.
-     */
-    @Override
-    public void setBounds(int left, int top, int right, int bottom) {
-        super.setBounds(left, top, right, bottom);
-    }
-
-
-    /**
      * @brief Called when the bounds changed.
      *
      * Gets bounds of the child drawable after bounds have changed and sets these bounds. While doing this
@@ -449,7 +434,9 @@ public class PDEDrawableIcon extends PDEDrawableBase {
         if (mDoBoundsChange) {
             mDoBoundsChange = false;
             super.onBoundsChange(bounds);
-            if (mIconDrawable != null) setBounds(mIconDrawable.getBounds());
+            if (mIconDrawable != null) {
+                setBounds(mIconDrawable.getBounds());
+            }
             mDoBoundsChange = true;
         }
     }
@@ -461,7 +448,9 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     @Override
     protected void doLayout() {
         Rect bounds = getBounds();
-        if (mIconDrawable != null) mIconDrawable.setBounds(0,0,bounds.width(),bounds.height());
+        if (mIconDrawable != null) {
+            mIconDrawable.setBounds(0, 0, bounds.width(), bounds.height());
+        }
     }
 
 
@@ -481,8 +470,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     /**
      * @brief Set element Height.
      */
-    public void setLayoutHeight(int height)
-    {
+    public void setLayoutHeight(int height) {
         setLayoutSize(getBounds().width(), height);
     }
 
@@ -490,9 +478,8 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     /**
      * @brief Set element Width.
      */
-    public void setLayoutWidth (int width)
-    {
-        setLayoutSize(width,getBounds().height());
+    public void setLayoutWidth(int width) {
+        setLayoutSize(width, getBounds().height());
     }
 
 
@@ -502,9 +489,9 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @param c the Canvas of the DrawingBitmap we want to draw into.
      * @param bounds the current bounding rect of our Drawable.
      */
-    protected void updateDrawingBitmap (Canvas c, Rect bounds) {
+    protected void updateDrawingBitmap(Canvas c, Rect bounds) {
         // security
-        if (mIconDrawable==null || bounds.width() <= 0 || bounds.height() <= 0) return;
+        if (mIconDrawable == null || bounds.width() <= 0 || bounds.height() <= 0) return;
 
         mIconDrawable.draw(c);
     }

@@ -9,8 +9,11 @@
 package de.telekom.pde.codelibrary.ui.components.dialog;
 
 
+import android.os.Build;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
+import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
@@ -37,6 +40,7 @@ import java.util.ArrayList;
 //----------------------------------------------------------------------------------------------------------------------
 // PDEDialog
 //----------------------------------------------------------------------------------------------------------------------
+
 
 /**
  * Management class for Dialogs in PDE style.
@@ -65,9 +69,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
     // defaults
     public final static float FONTSIZE_LARGE = PDEFontHelpers.calculateFontSize(PDETypeface.sDefaultFont,
-            PDEBuildingUnits.pixelFromBU(8.0f / 6.0f));
+                                                                                PDEBuildingUnits.pixelFromBU(
+                                                                                        8.0f / 6.0f)
+    );
     public final static float FONTSIZE_DEFAULT = PDEFontHelpers.calculateFontSize(PDETypeface.sDefaultFont,
-            PDEBuildingUnits.BU());
+                                                                                  PDEBuildingUnits.BU());
     public final static int PDE_DIALOG_TITLE_TEXT_DEFAULT_COLOR = PDEColor.valueOf("DTLightUIText").getIntegerColor();
     public final static int PDE_DIALOG_MESSAGE_TEXT_DEFAULT_COLOR = PDEColor.valueOf("DTLightUIText").getIntegerColor();
 
@@ -122,8 +128,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
     private DialogInterface.OnShowListener mOnShowListener;
 
 
-
 //-------------------------- Constructors ------------------------------------------------------------------------------
+
 
     /**
      * @brief Standard constructor
@@ -135,21 +141,20 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param dialogType id of a predefined constructDialog type
      * @brief Constructor for a predefined dialog.
-     *
+     * <p/>
      * There is a bunch of predefined PDE Dialogs. By delivering the correct dialog type you get them pre-configured
      * out of the box.
-     *
-     * @param dialogType id of a predefined constructDialog type
      */
-    public PDEDialog (String dialogType) {
+    public PDEDialog(String dialogType) {
         // init members
         init();
 
         // remember
         mType = dialogType;
         // security
-        if (!PDEString.isEmpty(mType)){
+        if (!PDEString.isEmpty(mType)) {
             // load predefined dialog
             loadDialogType(mType);
         }
@@ -157,13 +162,12 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Constructor for custom dialog with one button.
-     *
-     * @param title custom title
-     * @param message custom message
+     * @param title       custom title
+     * @param message     custom message
      * @param button1Text custom text for the button.
+     * @brief Constructor for custom dialog with one button.
      */
-    public PDEDialog (String title, String message, String button1Text) {
+    public PDEDialog(String title, String message, String button1Text) {
         init();
         setTitleCustom(title);
         setMessageCustom(message);
@@ -172,14 +176,13 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Constructor for custom dialog with two buttons.
-     *
-     * @param title custom title
-     * @param message custom message
+     * @param title       custom title
+     * @param message     custom message
      * @param button1Text custom text for the first button.
      * @param button2Text custom text for the second button.
+     * @brief Constructor for custom dialog with two buttons.
      */
-    public PDEDialog (String title, String message, String button1Text, String button2Text) {
+    public PDEDialog(String title, String message, String button1Text, String button2Text) {
         init();
         setTitleCustom(title);
         setMessageCustom(message);
@@ -189,8 +192,9 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
     //------------------------ static construction helpers -------------------------------------------------------------
 
+
     /**
-     *  @brief static helper for standard constructor.
+     * @brief static helper for standard constructor.
      */
     @SuppressWarnings("unused")
     public static PDEDialog constructDialog() {
@@ -199,9 +203,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief static helper for constructor that returns a predefined dialog.
-     *
      * @param dialogType id of a predefined constructDialog type
+     * @brief static helper for constructor that returns a predefined dialog.
      */
     public static PDEDialog constructDialog(String dialogType) {
         return new PDEDialog(dialogType);
@@ -209,29 +212,27 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief  static helper for constructor for custom dialog
-     *
-     * @param title custom title
-     * @param message custom message
+     * @param title       custom title
+     * @param message     custom message
      * @param button1Text custom text for the button.
+     * @brief static helper for constructor for custom dialog
      */
     @SuppressWarnings("unused")
     public static PDEDialog constructDialog(String title, String message, String button1Text) {
-        return new PDEDialog (title, message, button1Text);
+        return new PDEDialog(title, message, button1Text);
     }
 
 
     /**
-     * @brief static helper for constructor for custom dialogs
-     *
-     * @param title custom title
-     * @param message custom message
+     * @param title       custom title
+     * @param message     custom message
      * @param button1Text custom text for the first button.
      * @param button2Text custom text for the second button.
+     * @brief static helper for constructor for custom dialogs
      */
     @SuppressWarnings("unused")
     public static PDEDialog constructDialog(String title, String message, String button1Text, String button2Text) {
-        return new PDEDialog (title, message, button1Text, button2Text);
+        return new PDEDialog(title, message, button1Text, button2Text);
     }
 
 
@@ -250,30 +251,28 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
         mEventSource.setEventDefaultSender(this, true);
         mStrongPDEEventListenerHolder = new ArrayList<Object>();
 
-        // create broadcast receivers for interprocess communication
+        // create broadcast receivers for inter-process communication
         createResultBroadcastReceiver();
         createRunningBroadcastReceiver();
     }
-
 
 
 //------------------------ lifecycle controls --------------------------------------------------------------------------
 
 
     /**
-     * @brief Shows the dialog on screen with the current configuration.
-     *
-     * After all configurations of the dialog are finished, call this method to bring the dialog activity on screen.
-     *
      * @param activity the activity that started the dialog. (just needed to start a new activity)
+     * @brief Shows the dialog on screen with the current configuration.
+     * <p/>
+     * After all configurations of the dialog are finished, call this method to bring the dialog activity on screen.
      */
-    public PDEDialog show(Activity activity){
+    public PDEDialog show(Activity activity) {
         // security
         // we don't want to start a dialog twice
-        if (isShowing()){
+        if (isShowing()) {
             // if we already started a dialog that is currently showing and running, dismiss it first before we start
             // showing a new one.
-            if (isRunning()){
+            if (isRunning()) {
                 // dismiss first dialog before starting it again
                 dismiss();
             } else {
@@ -286,7 +285,9 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
         // notify listeners that we're about to show the dialog now
         if (mOnShowListener != null) {
-            mOnShowListener.onShow(this);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+                mOnShowListener.onShow(this);
+            }
         }
 
         // create unique ID for inter-process communication. We want to be able to communicate with the activity we're
@@ -295,7 +296,7 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
         // constructDialog/PDEDialogActivity objects alive and they all listen to the broadcasts, we have to make sure
         // that the objects only react on the messages of their dedicated partners. So we use a shared unique ID to
         // identify the messages of the partner object.
-        mDialogConfig.setBroadcastID(String.format("PDEDialog_%d", ((Object)this).hashCode()));
+        mDialogConfig.setBroadcastID(String.format("PDEDialog_%d", ((Object) this).hashCode()));
 
         // register receiver for the results of the dialog
         registerResultBroadcastReceiver();
@@ -305,12 +306,12 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
         // replace wildcards within title text and set it
         if (!PDEString.isEmpty(mDialogConfig.getTitle()) && mTitleFormatParameters != null) {
             mDialogConfig.setTitle(replaceWildcardsByFormatParameters(mDialogConfig.getTitle(),
-                    mTitleFormatParameters));
+                                                                      mTitleFormatParameters));
         }
         // replace wildcards within message text and set it
         if (!PDEString.isEmpty(mDialogConfig.getMessage()) && mMessageFormatParameters != null) {
             mDialogConfig.setMessage(replaceWildcardsByFormatParameters(mDialogConfig.getMessage(),
-                    mMessageFormatParameters));
+                                                                        mMessageFormatParameters));
         }
 
         // serialize configuration object and start up Dialog activity
@@ -326,7 +327,7 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
     /**
      * @brief Cancels a shown dialog.
-     *
+     * <p/>
      * Nearly the same as dismiss, but additionally sends a cancel message.
      */
     @Override
@@ -346,7 +347,7 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
     @Override
     public void dismiss() {
         // send Android event (DialogInterface implementation)
-        if (mOnDismissListener!=null){
+        if (mOnDismissListener != null) {
             mOnDismissListener.onDismiss(this);
         }
         // send the dismiss command to the dialog activity by broadcast
@@ -359,12 +360,12 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 //---------------------------- Format-Helper ---------------------------------------------------------------------------
 
+
     /**
-     * @brief Takes a string with wildcards and replaces them by the delivered arguments.
-     *
      * @param formatStr String that contains wildcards like %s %d %f etc.
-     * @param varargs The arguments that will be filled into the string.
+     * @param varargs   The arguments that will be filled into the string.
      * @return the complete string
+     * @brief Takes a string with wildcards and replaces them by the delivered arguments.
      */
     protected String replaceWildcardsByFormatParameters(String formatStr, Object... varargs) {
         String workStr;
@@ -377,7 +378,7 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
         } catch (NullPointerException e) {
             Log.e(LOG_TAG, "Error: Source String was empty!");
             return formatStr;
-        } catch (java.util.IllegalFormatException e){
+        } catch (java.util.IllegalFormatException e) {
             Log.e(LOG_TAG, "Error: Format of the Source String was wrong: " + e.toString());
             return formatStr;
         }
@@ -387,13 +388,13 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
     }
 
 
-
 //----------------------------- PDE Events ------------------------------------------------------------_----------------
 
+
     /**
+     * @return PDEEventSource
      * @brief Get the eventSource which is responsible for sending PDEEvents events.
      * Most of the events are coming form the PDEAgentController.
-     * @return PDEEventSource
      */
     @Override
     public PDEEventSource getEventSource() {
@@ -402,15 +403,13 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Add event Listener - hold strong pointer to it.
-     *
-     * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
-     *
-     * @param target    Object which will be called in case of an event.
+     * @param target     Object which will be called in case of an event.
      * @param methodName Function in the target object which will be called.
      *                   The method must accept one parameter of the type PDEEvent
      * @return Object which can be used to remove this listener
-     *
+     * @brief Add event Listener - hold strong pointer to it.
+     * <p/>
+     * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
      * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
      */
     @Override
@@ -421,18 +420,16 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Add event Listener - hold strong pointer to it.
-     *
-     * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
-     *
-     * @param target    Object which will be called in case of an event.
+     * @param target     Object which will be called in case of an event.
      * @param methodName Function in the target object which will be called.
      *                   The method must accept one parameter of the type PDEEvent
-     * @param eventMask PDEAgentController event mask.
-     *                  Will be most of the time PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED or
-     *                  PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED
+     * @param eventMask  PDEAgentController event mask.
+     *                   Will be most of the time PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_SELECTED or
+     *                   PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED
      * @return Object which can be used to remove this listener
-     *
+     * @brief Add event Listener - hold strong pointer to it.
+     * <p/>
+     * PDEIEventSource Interface implementation, with additional local storage of (strong) pointer to it.
      * @see de.telekom.pde.codelibrary.ui.events.PDEEventSource#addListener
      */
     @Override
@@ -443,12 +440,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Remove event listener that was added before.
-     *
-     * Also deletes local strong pointer.
-     *
      * @param listener the event listener that should be removed
      * @return Returns whether we have found & removed the listener or not
+     * @brief Remove event listener that was added before.
+     * <p/>
+     * Also deletes local strong pointer.
      */
     @SuppressWarnings("unused")
     public boolean removeListener(Object listener) {
@@ -459,15 +455,14 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
     /**
      * @brief Sends an event with the dialog result (which button was pressed)
-     *
      */
     public void sendResult(int result) {
         PDEEventDialog event = new PDEEventDialog();
         // set the result information
         event.setButtonResult(result);
         event.setType(PDE_DIALOG_EVENT_RESULT);
-        if (result == PDE_DIALOG_RESULT_BUTTON1){
-           event.setButtonResultLabelID(mButton1LabelID);
+        if (result == PDE_DIALOG_RESULT_BUTTON1) {
+            event.setButtonResultLabelID(mButton1LabelID);
         } else if (result == PDE_DIALOG_RESULT_BUTTON2) {
             event.setButtonResultLabelID(mButton2LabelID);
         } else if (result == PDE_DIALOG_RESULT_ANDROID_HARDWARE_BACK_BUTTON) {
@@ -479,16 +474,16 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
         // if there are listeners for the standard android onClick Event registered, also inform them about the result.
         // button 1 pressed
-        if (mOnClickListenerButton1 != null && result == PDE_DIALOG_RESULT_BUTTON1){
-            mOnClickListenerButton1.onClick(this,result);
+        if (mOnClickListenerButton1 != null && result == PDE_DIALOG_RESULT_BUTTON1) {
+            mOnClickListenerButton1.onClick(this, result);
         }
         // button 2 pressed
-        if (mOnClickListenerButton2 != null && result == PDE_DIALOG_RESULT_BUTTON2){
-            mOnClickListenerButton2.onClick(this,result);
+        if (mOnClickListenerButton2 != null && result == PDE_DIALOG_RESULT_BUTTON2) {
+            mOnClickListenerButton2.onClick(this, result);
         }
         // hardware back-button pressed
         if (mOnClickListenerAndroidHardwareBackButton != null
-                && result == PDE_DIALOG_RESULT_ANDROID_HARDWARE_BACK_BUTTON){
+            && result == PDE_DIALOG_RESULT_ANDROID_HARDWARE_BACK_BUTTON) {
             mOnClickListenerAndroidHardwareBackButton.onClick(this, result);
         }
 
@@ -499,11 +494,12 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 //---------------------------- Android Listeners -----------------------------------------------------------------------
 
+
     /**
+     * @param l the OnClickListener
      * @brief Register an Android-style onClick listener for button1.
-     * @param l the listener
      */
-    public PDEDialog setOnClickListenerButton1 (DialogInterface.OnClickListener l) {
+    public PDEDialog setOnClickListenerButton1(DialogInterface.OnClickListener l) {
         // remember
         mOnClickListenerButton1 = l;
         return this;
@@ -511,18 +507,19 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Register an Android-style onClick listener for button2.
      * @param l the listener
+     * @brief Register an Android-style onClick listener for button2.
      */
-    public PDEDialog setOnClickListenerButton2 (DialogInterface.OnClickListener l) {
+    public PDEDialog setOnClickListenerButton2(DialogInterface.OnClickListener l) {
         // remember
         mOnClickListenerButton2 = l;
         return this;
     }
 
+
     /**
+     * @param l the OnClickListener
      * @brief Register an Android-style onClick listener for the Android hardware Back-Button.
-     * @param l the listener
      */
     public PDEDialog setOnClickListenerAndroidHardwareBackButton(DialogInterface.OnClickListener l) {
         // remember
@@ -532,8 +529,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param listener the OnCancelListener
      * @brief Register an Android-style listener for cancel-events.
-     * @param listener the listener
      */
     @SuppressWarnings("unused")
     public PDEDialog setOnCancelListener(final OnCancelListener listener) {
@@ -543,8 +540,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param listener the OnShowListener
      * @brief Register an Android-style listener for dismiss-events.
-     * @param listener the listener
      */
     @SuppressWarnings("unused")
     public PDEDialog setOnDismissListener(final OnDismissListener listener) {
@@ -554,8 +551,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param listener the OnShowListener
      * @brief Register an Android-style listener for show-events.
-     * @param listener the listener
      */
     @SuppressWarnings("unused")
     public PDEDialog setOnShowListener(final OnShowListener listener) {
@@ -566,21 +563,22 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 //------------------- IPC Messaging ------------------------------------------------------------------------------------
 
+
     /**
      * @brief Create a broadcast receiver for the results of the dialog.
      */
-    protected void createResultBroadcastReceiver(){
+    protected void createResultBroadcastReceiver() {
         mResultReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // read result from intent
                 int result = intent.getIntExtra(PDEDialogActivity.PDE_DIALOG_INTENT_EXTRA_RESULT,
-                        PDE_DIALOG_RESULT_BUTTON1);
+                                                PDE_DIALOG_RESULT_BUTTON1);
 
                 // debug
                 if (DEBUG_OUTPUT) {
                     Log.d(LOG_TAG, "RECEIVE " + mDialogConfig.getBroadcastID()
-                            + PDEDialogActivity.PDE_DIALOG_BROADCAST_POSTFIX_RESULT);
+                                   + PDEDialogActivity.PDE_DIALOG_BROADCAST_POSTFIX_RESULT);
                 }
 
                 // we don't need the receiver anymore after we retrieved the result, so unregister it
@@ -589,7 +587,7 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
                 PDEDialog.this.sendResult(result);
 
                 // if the hardware back button was pressed the dialog gets canceled, otherwise it will just be dismissed
-                if (result == PDE_DIALOG_RESULT_ANDROID_HARDWARE_BACK_BUTTON){
+                if (result == PDE_DIALOG_RESULT_ANDROID_HARDWARE_BACK_BUTTON) {
                     // cancel dialog
                     cancel();
                 } else {
@@ -607,37 +605,38 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
     protected void registerResultBroadcastReceiver() {
         LocalBroadcastManager.getInstance(PDECodeLibrary.getInstance().getApplicationContext()).
                 registerReceiver(mResultReceiver,
-                        new IntentFilter(mDialogConfig.getBroadcastID()
-                                + PDEDialogActivity.PDE_DIALOG_BROADCAST_POSTFIX_RESULT));
+                                 new IntentFilter(mDialogConfig.getBroadcastID()
+                                                  + PDEDialogActivity.PDE_DIALOG_BROADCAST_POSTFIX_RESULT)
+                );
     }
 
 
     /**
      * @brief Unregister result broadcast receiver as soon as it's not needed any more.
-     *
+     * <p/>
      * Don't forget to unregister, otherwise the broadcast receiver stays alive for quite a long time.
      */
-    protected void unregisterResultBroadcastReceiver(){
+    protected void unregisterResultBroadcastReceiver() {
         LocalBroadcastManager.getInstance(PDECodeLibrary.getInstance().getApplicationContext())
-                .unregisterReceiver(mResultReceiver);
+                             .unregisterReceiver(mResultReceiver);
     }
 
 
     /**
      * @brief Create a broadcast receiver that determines if the dialog activity is already up and running.
-     *
+     * <p/>
      * After the start command for the dialog activity it might take a short while until this activity is completely up
      * and running and ready to receive intent-messages. We need to know when the activity is ready to communicate with
      * this object via intent, so the first thing the activity does is to send us an intent that tells us that the
      * activity is now ready to go. The broadcast receiver that is created with this function listens on this event.
      */
-    protected void createRunningBroadcastReceiver(){
+    protected void createRunningBroadcastReceiver() {
         mRunningReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (DEBUG_OUTPUT) {
-                    Log.d(LOG_TAG, "RECEIVE "+mDialogConfig.getBroadcastID()
-                            + PDEDialogActivity.PDE_DIALOG_BROADCAST_POSTFIX_RUNNING);
+                    Log.d(LOG_TAG, "RECEIVE " + mDialogConfig.getBroadcastID()
+                                   + PDEDialogActivity.PDE_DIALOG_BROADCAST_POSTFIX_RUNNING);
                 }
                 setRunning(true);
             }
@@ -648,40 +647,39 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
     /**
      * @brief Register the broadcast receiver that listens on the "up & running"-intent of the dialog.
      */
-    protected void registerRunningBroadcastReceiver(){
+    protected void registerRunningBroadcastReceiver() {
         LocalBroadcastManager.getInstance(PDECodeLibrary.getInstance().getApplicationContext()).
                 registerReceiver(mRunningReceiver, new IntentFilter(mDialogConfig.getBroadcastID()
-                        + PDEDialogActivity.PDE_DIALOG_BROADCAST_POSTFIX_RUNNING));
+                                                                    + PDEDialogActivity.PDE_DIALOG_BROADCAST_POSTFIX_RUNNING));
     }
 
 
     /**
      * @brief Unregister broadcast receiver as soon as it's not needed any more.
-     *
+     * <p/>
      * Don't forget to unregister, otherwise the broadcast receiver stays alive for quite a long time.
      */
-    protected void unregisterRunningBroadcastReceiver(){
+    protected void unregisterRunningBroadcastReceiver() {
         LocalBroadcastManager.getInstance(PDECodeLibrary.getInstance().getApplicationContext())
-                .unregisterReceiver(mRunningReceiver);
+                             .unregisterReceiver(mRunningReceiver);
     }
 
 
     /**
      * @brief Sends broadcast message with the dismiss-command to the dialog activity.
      */
-    protected void sendDialogDismissBroadcast(){
+    protected void sendDialogDismissBroadcast() {
         Intent intent = new Intent(mDialogConfig.getBroadcastID()
-                + PDEDialogActivity.PDE_DIALOG_BROADCAST_POSTFIX_DISMISS);
+                                   + PDEDialogActivity.PDE_DIALOG_BROADCAST_POSTFIX_DISMISS);
         sendBroadcastMessage(intent);
     }
 
 
     /**
-     * @brief General Helper for sending broadcast messages.
-     *
      * @param intent intent that contains the message that should be sent by broadcast.
+     * @brief General Helper for sending broadcast messages.
      */
-    protected void sendBroadcastMessage(Intent intent){
+    protected void sendBroadcastMessage(Intent intent) {
         // debug
         if (DEBUG_OUTPUT) {
             Log.d(LOG_TAG, " SEND " + intent.getAction());
@@ -691,17 +689,15 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
     }
 
 
-
 //------------------------------------- Parsing ------------------------------------------------------------------------
 
 
     /**
+     * @param dialogType type of predefined dialogs
      * @brief Loads all needed text data for one of the predefined dialog types.
-     *
+     * <p/>
      * For the predefined dialog types all texts (title, message, button labels) are stored in a XML-Structure. This
      * function parses the XML-Structure and fills the class members with the texts.
-     *
-     * @param dialogType type of predefined dialogs
      */
     protected void loadDialogType(String dialogType) {
         PDEDictionary dialogTypeDict;
@@ -717,7 +713,7 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
         title = (String) dialogTypeDict.get(PDEDialogTitle);
         message = (String) dialogTypeDict.get(PDEDialogText);
         // set title and message
-        if (!PDEString.isEmpty(title)){
+        if (!PDEString.isEmpty(title)) {
             setTitleCustom(PDEUtils.loadStringFromResources(title));
         }
         if (!PDEString.isEmpty(message)) {
@@ -726,22 +722,21 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
         // get type of button(s) and load them
         buttons = (String) dialogTypeDict.get(PDEDialogButtons);
-        if (!PDEString.isEmpty(buttons)){
+        if (!PDEString.isEmpty(buttons)) {
             loadButtons(buttons);
         }
     }
 
 
     /**
+     * @param buttonIdentifier ID for the button(s)
      * @brief Loads config of predefined buttons.
-     *
+     * <p/>
      * There are several dialog buttons predefined in a XML-Structure. A button ID can define one or more buttons and
      * the text labels of the buttons. This function parses the XML-Structure and fetches the texts for the button
      * labels.
-     *
-     * @param buttonIdentifier ID for the button(s)
      */
-    protected void loadButtons(String buttonIdentifier){
+    protected void loadButtons(String buttonIdentifier) {
         PDEDictionary buttonsTypeDict;
 
         // security
@@ -750,17 +745,17 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
         // seek the string in our dictionary
         buttonsTypeDict = (PDEDictionary) getPDEDialogButtonsIdentifiers().get(buttonIdentifier);
         // iterate through all defined buttons for the given button ID.
-        for (String key: buttonsTypeDict.keySet()) {
+        for (String key : buttonsTypeDict.keySet()) {
             String buttonTitle;
 
             // get title of the button
-            buttonTitle = (String)buttonsTypeDict.get(key);
+            buttonTitle = (String) buttonsTypeDict.get(key);
             // assign title to correct button
-            if (PDEString.isEqual(key,PDEDialogButton1)){
-                if (!PDEString.isEmpty(buttonTitle)){
+            if (PDEString.isEqual(key, PDEDialogButton1)) {
+                if (!PDEString.isEmpty(buttonTitle)) {
                     setButton1DefaultButton(buttonTitle);
                 }
-            } else if (PDEString.isEqual(key,PDEDialogButton2)) {
+            } else if (PDEString.isEqual(key, PDEDialogButton2)) {
                 if (!PDEString.isEmpty(buttonTitle)) {
                     setButton2DefaultButton(buttonTitle);
                 }
@@ -769,16 +764,12 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
     }
 
 
-
-
-
-//-------------- Setter / Getter -------------------------------------------------
+//-------------- Setter / Getter ---------------------------------------------------------------------------------------
 
 
     /**
-     * @brief Set custom dialog title.
-     *
      * @param title The string that should be shown in the title.
+     * @brief Set custom dialog title.
      */
     public PDEDialog setTitleCustom(String title) {
         mDialogConfig.setTitle(title);
@@ -787,9 +778,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Get custom dialog title.
-     *
      * @return custom String which will be shown in the title.
+     * @brief Get custom dialog title.
      */
     @SuppressWarnings("unused")
     public String getTitleCustom() {
@@ -798,9 +788,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief  Set custom dialog message.
-     *
      * @param msg String that should be shown as dialog message.
+     * @brief Set custom dialog message.
      */
     public PDEDialog setMessageCustom(String msg) {
         mDialogConfig.setMessage(msg);
@@ -809,9 +798,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief  Get custom dialog message.
-     *
      * @return String which will be shown as dialog message.
+     * @brief Get custom dialog message.
      */
     @SuppressWarnings("unused")
     public String getMessageCustom() {
@@ -820,9 +808,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets the visual style of the dialog.
-     *
      * @param style the visual style of the dialog (e.g. flat, haptic, etc.)
+     * @brief Sets the visual style of the dialog.
      */
     public PDEDialog setStyleCustom(PDEConstants.PDEContentStyle style) {
         mDialogConfig.setStyle(style);
@@ -831,9 +818,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Gets the visual style of the dialog.
-     *
      * @return the visual style of the dialog (e.g. flat, haptic, etc.)
+     * @brief Gets the visual style of the dialog.
      */
     @SuppressWarnings("unused")
     public PDEConstants.PDEContentStyle getStyleCustom() {
@@ -842,9 +828,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets the label text of button1 (leftmost).
-     *
      * @param text label text of button1 (leftmost)
+     * @brief Sets the label text of button1 (leftmost).
      */
     public PDEDialog setButton1TextCustom(String text) {
         setButton1Text(text);
@@ -854,11 +839,10 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets the label text of button1 (leftmost).
-     *
-     * internal function
-     *
      * @param text label text of button1 (leftmost)
+     * @brief Sets the label text of button1 (leftmost).
+     * <p/>
+     * internal function
      */
     protected PDEDialog setButton1Text(String text) {
         mDialogConfig.setButton1Text(text);
@@ -867,16 +851,15 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param defaultButtonLabelID label ID of one of the predefined default buttons
      * @brief Set one of the predefined default buttons for button1.
-     *
+     * <p/>
      * There are several default buttons predefined for the default dialogs. When the user wants to use one of these
      * buttons within a custom dialog he can do so by delivering the button label ID of the button he wants to use.
      * In this way the internal button label ID is set to this value and the label text is localized. When the
      * user relies on PDEEvents he can also check after the click for this concrete ID.
-     *
-     * @param defaultButtonLabelID label ID of one of the predefined default buttons
      */
-    public PDEDialog setButton1DefaultButton(String defaultButtonLabelID){
+    public PDEDialog setButton1DefaultButton(String defaultButtonLabelID) {
         mButton1LabelID = defaultButtonLabelID;
         setButton1Text(PDEUtils.loadStringFromResources(mButton1LabelID));
         return this;
@@ -884,9 +867,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Gets the label text of button1 (leftmost).
-     *
      * @return label text of button1 (leftmost)
+     * @brief Gets the label text of button1 (leftmost).
      */
     @SuppressWarnings("unused")
     public String getButton1TextCustom() {
@@ -895,12 +877,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param color the custom color for the title text
      * @brief Sets a custom color for the title text.
-     *
+     * <p/>
      * If the user sets no custom color, the default title color is used.
      * Convenience function.
-     *
-     * @param color the custom color for the title text
      */
     @SuppressWarnings("unused")
     public PDEDialog setTitleTextColorCustom(PDEColor color) {
@@ -909,11 +890,10 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets a custom color of the title text.
-     *
-     * If the user sets no custom color, the default title color is used.
-     *
      * @param color a custom color of the title text
+     * @brief Sets a custom color of the title text.
+     * <p/>
+     * If the user sets no custom color, the default title color is used.
      */
     public PDEDialog setTitleTextColorCustom(int color) {
         mDialogConfig.setTitleTextColor(color);
@@ -922,27 +902,25 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Gets the custom color of the title text.
-     *
-     * If the user hasn't explicitly set his own custom title text color, the default color will be used.
-     * In case of the default color, this getter delivers null.
-     *
      * @return the custom color of the title text if the user has explicitly set one,
      * otherwise null (== default color is used)
+     * @brief Gets the custom color of the title text.
+     * <p/>
+     * If the user hasn't explicitly set his own custom title text color, the default color will be used.
+     * In case of the default color, this getter delivers null.
      */
     @SuppressWarnings("unused")
-    public Integer getTitleTextColorCustom(){
+    public Integer getTitleTextColorCustom() {
         return mDialogConfig.getTitleTextColor();
     }
 
 
     /**
+     * @param color a custom color for the message text
      * @brief Sets a custom color for the message text.
-     *
+     * <p/>
      * If the user sets no custom color, the default message color is used.
      * Convenience function.
-     *
-     * @param color a custom color for the message text
      */
     @SuppressWarnings("unused")
     public PDEDialog setMessageTextColorCustom(PDEColor color) {
@@ -951,11 +929,10 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets a custom color for the message text.
-     *
-     * If the user sets no custom color, the default message color is used.
-     *
      * @param color a custom color for the message text
+     * @brief Sets a custom color for the message text.
+     * <p/>
+     * If the user sets no custom color, the default message color is used.
      */
     public PDEDialog setMessageTextColorCustom(int color) {
         mDialogConfig.setMessageTextColor(color);
@@ -964,12 +941,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @return the custom color of the message text
      * @brief Gets the custom color of the message text.
-     *
+     * <p/>
      * If the user hasn't explicitly set his own custom message text color, the default color will be used.
      * In case of the default color, this getter delivers null.
-     *
-     * @return the custom color of the message text
      */
     @SuppressWarnings("unused")
     public Integer getMessageTextColorCustom() {
@@ -978,9 +954,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets the label text of button2.
-     *
      * @param text label text of button2
+     * @brief Sets the label text of button2.
      */
     public PDEDialog setButton2TextCustom(String text) {
         setButton2Text(text);
@@ -990,11 +965,10 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets the label text of button2.
-     *
-     * internal function
-     *
      * @param text label text of button2
+     * @brief Sets the label text of button2.
+     * <p/>
+     * internal function
      */
     protected PDEDialog setButton2Text(String text) {
         mDialogConfig.setButton2Text(text);
@@ -1003,16 +977,15 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param defaultButtonLabelID label ID of one of the predefined default buttons
      * @brief Set one of the predefined default buttons for button2.
-     *
+     * <p/>
      * There are several default buttons predefined for the default dialogs. When the user wants to use one of these
      * buttons within a custom dialog he can do so by delivering the button label ID of the button he wants to use.
      * In this way the internal button label ID is set to this value and the label text is localized. When the
      * user relies on PDEEvents he can also check after the click for this concrete ID.
-     *
-     * @param defaultButtonLabelID label ID of one of the predefined default buttons
      */
-    public PDEDialog setButton2DefaultButton(String defaultButtonLabelID){
+    public PDEDialog setButton2DefaultButton(String defaultButtonLabelID) {
         mButton2LabelID = defaultButtonLabelID;
         setButton2Text(PDEUtils.loadStringFromResources(mButton2LabelID));
         return this;
@@ -1020,9 +993,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Gets the label text of button1 (leftmost).
-     *
      * @return label text of button1 (leftmost)
+     * @brief Gets the label text of button1 (leftmost).
      */
     @SuppressWarnings("unused")
     public String getButton2TextCustom() {
@@ -1031,12 +1003,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param varargs Variable arguments that replace the wildcards within the message text.
      * @brief Set the parameters that should be put in for the wildcards in the message text.
-     *
+     * <p/>
      * Some message texts contain wildcards in order to be able to dynamically place values into the text. With this
      * method you can deliver the values that should be shown instead of the wildcards.
-     *
-     * @param varargs Variable arguments that replace the wildcards within the message text.
      */
     public PDEDialog setMessageFormatParameters(Object... varargs) {
         mMessageFormatParameters = varargs;
@@ -1045,12 +1016,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param varargs Variable arguments that replace the wildcards within the title text.
      * @brief Set the parameters that should be put in for the wildcards in the title text.
-     *
+     * <p/>
      * Some title texts contain wildcards in order to be able to dynamically place values into the text. With this
      * method you can deliver the values that should be shown instead of the wildcards.
-     *
-     * @param varargs Variable arguments that replace the wildcards within the title text.
      */
     public PDEDialog setTitleFormatParameters(Object... varargs) {
         mTitleFormatParameters = varargs;
@@ -1059,12 +1029,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @return if the dialog is already shown
      * @brief Check if the dialog is already shown.
-     *
+     * <p/>
      * Internal state that remembers if the show-command was already successfully sent.
      * So the dialog activity was already told to start and nobody dismissed it since.
-     *
-     * @return if the dialog is already shown
      */
     public boolean isShowing() {
         return mShowing;
@@ -1072,9 +1041,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets the internal show state.
-     *
      * @param show new show state
+     * @brief Sets the internal show state.
      */
     protected void setShowing(boolean show) {
         mShowing = show;
@@ -1082,12 +1050,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @return if the back button is enabled
      * @brief Check if the hardware back button is enabled for the dialog.
-     *
+     * <p/>
      * If the hardware back button is enabled, the dialog gets canceled when the user pushes the back button. The back
      * button can be turned off. Then nothing happens when the user pushes it. The back button is enabled by default.
-     *
-     * @return if the back button is enabled
      */
     @SuppressWarnings("unused")
     public boolean isAndroidHardwareBackButtonEnabled() {
@@ -1096,9 +1063,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Enable/Disable hardware back button.
-     *
      * @param enabled the new state.
+     * @brief Enable/Disable hardware back button.
      */
     @SuppressWarnings("unused")
     public PDEDialog setAndroidHardwareBackButtonEnabled(boolean enabled) {
@@ -1108,9 +1074,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Check if the dialog activity is running and ready to receive broadcast messages.
-     *
      * @return if the dialog activity is running and ready to receive broadcast messages.
+     * @brief Check if the dialog activity is running and ready to receive broadcast messages.
      */
     public boolean isRunning() {
         return mRunning;
@@ -1118,9 +1083,8 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Change the internal running state.
-     *
      * @param run new running state.
+     * @brief Change the internal running state.
      */
     protected void setRunning(boolean run) {
         mRunning = run;
@@ -1128,12 +1092,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param color a custom background color of button1
      * @brief Sets a custom background color of button1.
-     *
+     * <p/>
      * If the user sets no custom color, the default color is used.
      * Convenience function.
-     *
-     * @param color a custom background color of button1
      */
     @SuppressWarnings("unused")
     public PDEDialog setButton1BackgroundColorCustom(PDEColor color) {
@@ -1142,11 +1105,10 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets a custom background color of button1.
-     *
-     * If the user sets no custom color, the default color is used.
-     *
      * @param color a custom background color of button1
+     * @brief Sets a custom background color of button1.
+     * <p/>
+     * If the user sets no custom color, the default color is used.
      */
     public PDEDialog setButton1BackgroundColorCustom(int color) {
         mDialogConfig.setButton1BackgroundColor(color);
@@ -1155,12 +1117,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @return the custom background color of button1 or null if no custom color was set
      * @brief Gets the custom background color of button1.
-     *
+     * <p/>
      * If the user hasn't explicitly set his own custom color, the default color will be used.
      * In case of the default color, this getter delivers null.
-     *
-     * @return the custom background color of button1 or null if no custom color was set
      */
     @SuppressWarnings("unused")
     public Integer getButton1BackgroundColorCustom() {
@@ -1169,12 +1130,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param color a custom background color of button2
      * @brief Sets a custom background color of button2.
-     *
+     * <p/>
      * If the user sets no custom color, the default color is used.
      * Convenience function.
-     *
-     * @param color a custom background color of button2
      */
     @SuppressWarnings("unused")
     public PDEDialog setButton2BackgroundColorCustom(PDEColor color) {
@@ -1183,11 +1143,10 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets a custom background color of button2.
-     *
-     * If the user sets no custom color, the default color is used.
-     *
      * @param color a custom background color of button2
+     * @brief Sets a custom background color of button2.
+     * <p/>
+     * If the user sets no custom color, the default color is used.
      */
     public PDEDialog setButton2BackgroundColorCustom(int color) {
         mDialogConfig.setButton2BackgroundColor(color);
@@ -1196,12 +1155,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @return the custom background color of button2 or null if no custom color was set
      * @brief Gets the custom background color of button2.
-     *
+     * <p/>
      * If the user hasn't explicitly set his own custom color, the default color will be used.
      * In case of the default color, this getter delivers null.
-     *
-     * @return the custom background color of button2 or null if no custom color was set
      */
     @SuppressWarnings("unused")
     public Integer getButton2BackgroundColorCustom() {
@@ -1210,11 +1168,110 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets a custom font size for the title.
-     *
-     * If the user sets no custom font size, the default size is used.
-     *
+     * @param typefaceName the name of the desired new typeface.
+     * @brief Sets a new typeface for all textual elements of the dialog.
+     * <p/>
+     * This function can be used to set a new typeface for all textual elements (title, message, buttons) of the dialog.
+     * The typeface has to be delivered by name.
+     */
+    @SuppressWarnings("unused")
+    public void setGlobalTypefaceByName(String typefaceName) {
+        setTitleTypefaceByName(typefaceName);
+        setMessageTypefaceByName(typefaceName);
+        setButton1TypefaceByName(typefaceName);
+        setButton2TypefaceByName(typefaceName);
+    }
+
+
+    /**
+     * @param typefaceName the name of the desired new typeface.
+     * @brief Sets a new typeface for the title of the dialog.
+     * <p/>
+     * This function can be used to set a new typeface for the title of the dialog.
+     * The typeface has to be delivered by name.
+     */
+    public void setTitleTypefaceByName(String typefaceName) {
+        mDialogConfig.setTitleTypefaceName(typefaceName);
+    }
+
+
+    /**
+     * @brief Delivers the name of the typeface that is currently used for the title of the dialog.
+     */
+    @SuppressWarnings("unused")
+    public String getTypefaceNameTitle() {
+        return mDialogConfig.getTypefaceNameTitle();
+    }
+
+
+    /**
+     * @param typefaceName the name of the desired new typeface.
+     * @brief Sets a new typeface for the message of the dialog.
+     * <p/>
+     * This function can be used to set a new typeface for the message of the dialog.
+     * The typeface has to be delivered by name.
+     */
+    public void setMessageTypefaceByName(String typefaceName) {
+        mDialogConfig.setMessageTypefaceName(typefaceName);
+    }
+
+
+    /**
+     * @brief Delivers the name of the typeface that is currently used for the message of the dialog.
+     */
+    @SuppressWarnings("unused")
+    public String getTypefaceNameMessage() {
+        return mDialogConfig.getTypefaceNameMessage();
+    }
+
+
+    /**
+     * @param typefaceName the name of the desired new typeface.
+     * @brief Sets a new typeface for the label of button1 of the dialog.
+     * <p/>
+     * This function can be used to set a new typeface for the label of button1 of the dialog.
+     * The typeface has to be delivered by name.
+     */
+    public void setButton1TypefaceByName(String typefaceName) {
+        mDialogConfig.setButton1TypefaceName(typefaceName);
+    }
+
+
+    /**
+     * @brief Delivers the name of the typeface that is currently used for the label of button1 of the dialog.
+     */
+    @SuppressWarnings("unused")
+    public String getTypefaceNameButton1() {
+        return mDialogConfig.getTypefaceNameButton1();
+    }
+
+
+    /**
+     * @param typefaceName the name of the desired new typeface.
+     * @brief Sets a new typeface for the label of button2 of the dialog.
+     * <p/>
+     * This function can be used to set a new typeface for the label of button2 of the dialog.
+     * The typeface has to be delivered by name.
+     */
+    public void setButton2TypefaceByName(String typefaceName) {
+        mDialogConfig.setButton2TypefaceName(typefaceName);
+    }
+
+
+    /**
+     * @brief Delivers the name of the typeface that is currently used for the label of button1 of the dialog.
+     */
+    @SuppressWarnings("unused")
+    public String getTypefaceNameButton2() {
+        return mDialogConfig.getTypefaceNameButton2();
+    }
+
+
+    /**
      * @param size a custom font size for the title.
+     * @brief Sets a custom font size for the title.
+     * <p/>
+     * If the user sets no custom font size, the default size is used.
      */
     @SuppressWarnings("unused")
     public PDEDialog setTitleFontSizeCustom(float size) {
@@ -1222,13 +1279,13 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
         return this;
     }
 
+
     /**
+     * @return the custom font size of the title or -1.0f if no custom font size was set
      * @brief Gets the custom font size of the title.
-     *
+     * <p/>
      * If the user hasn't explicitly set his own custom font size, the default size will be used.
      * In case of the default size, this getter delivers -1.0f.
-     *
-     * @return the custom font size of the title or -1.0f if no custom font size was set
      */
     @SuppressWarnings("unused")
     public float getTitleFontSizeCustom() {
@@ -1237,11 +1294,10 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets a custom font size for the message.
-     *
-     * If the user sets no custom font size, the default size is used.
-     *
      * @param size a custom font size for the message.
+     * @brief Sets a custom font size for the message.
+     * <p/>
+     * If the user sets no custom font size, the default size is used.
      */
     @SuppressWarnings("unused")
     public PDEDialog setMessageFontSizeCustom(float size) {
@@ -1251,12 +1307,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @return the custom font size of the message or -1.0f if no custom font size was set
      * @brief Gets the custom font size of the message.
-     *
+     * <p/>
      * If the user hasn't explicitly set his own custom font size, the default size will be used.
      * In case of the default size, this getter delivers -1.0f.
-     *
-     * @return the custom font size of the message or -1.0f if no custom font size was set
      */
     @SuppressWarnings("unused")
     public float getMessageFontSizeCustom() {
@@ -1265,12 +1320,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param color a custom color for the dialog background
      * @brief Sets a custom color for the dialog background.
-     *
+     * <p/>
      * If the user sets no custom color, the default color is used.
      * Convenience function.
-     *
-     * @param color a custom color for the dialog background
      */
     @SuppressWarnings("unused")
     public PDEDialog setDialogBackgroundColorCustom(PDEColor color) {
@@ -1279,11 +1333,10 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets a custom color for the dialog background.
-     *
-     * If the user sets no custom color, the default color is used.
-     *
      * @param color a custom color for the dialog background
+     * @brief Sets a custom color for the dialog background.
+     * <p/>
+     * If the user sets no custom color, the default color is used.
      */
     public PDEDialog setDialogBackgroundColorCustom(int color) {
         mDialogConfig.setDialogBackgroundColor(color);
@@ -1292,12 +1345,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @return the custom color of the dialog background or null if no custom color was set
      * @brief Gets the custom color of the dialog background.
-     *
+     * <p/>
      * If the user hasn't explicitly set his own custom color, the default color will be used.
      * In case of the default color, this getter delivers null.
-     *
-     * @return the custom color of the dialog background or null if no custom color was set
      */
     @SuppressWarnings("unused")
     public Integer getDialogBackgroundColorCustom() {
@@ -1306,12 +1358,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param color a custom color for the dialog outline
      * @brief Sets a custom color for the dialog outline.
-     *
+     * <p/>
      * If the user sets no custom color, the default color is used.
      * Convenience function.
-     *
-     * @param color a custom color for the dialog outline
      */
     @SuppressWarnings("unused")
     public PDEDialog setDialogOutlineColorCustom(PDEColor color) {
@@ -1320,11 +1371,10 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets a custom color for the dialog outline.
-     *
-     * If the user sets no custom color, the default color is used.
-     *
      * @param color a custom color for the dialog outline
+     * @brief Sets a custom color for the dialog outline.
+     * <p/>
+     * If the user sets no custom color, the default color is used.
      */
     public PDEDialog setDialogOutlineColorCustom(int color) {
         mDialogConfig.setDialogOutlineColor(color);
@@ -1333,12 +1383,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @return the custom color of the dialog outline or null if no custom color was set
      * @brief Gets the custom color of the dialog outline.
-     *
+     * <p/>
      * If the user hasn't explicitly set his own custom color, the default color will be used.
      * In case of the default color, this getter delivers null.
-     *
-     * @return the custom color of the dialog outline or null if no custom color was set
      */
     @SuppressWarnings("unused")
     public Integer getDialogOutlineColorCustom() {
@@ -1347,12 +1396,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @param color a custom color for separator
      * @brief Sets a custom color for separator.
-     *
+     * <p/>
      * If the user sets no custom color, the default color is used.
      * Convenience function.
-     *
-     * @param color a custom color for separator
      */
     @SuppressWarnings("unused")
     public PDEDialog setSeparatorColorCustom(PDEColor color) {
@@ -1361,11 +1409,10 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
-     * @brief Sets a custom color for separator.
-     *
-     * If the user sets no custom color, the default color is used.
-     *
      * @param color a custom color for separator
+     * @brief Sets a custom color for separator.
+     * <p/>
+     * If the user sets no custom color, the default color is used.
      */
     public PDEDialog setSeparatorColorCustom(int color) {
         mDialogConfig.setSeparatorColor(color);
@@ -1374,12 +1421,11 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @return the custom color of the separator or null if no custom color was set
      * @brief Gets the custom color of the separator.
-     *
+     * <p/>
      * If the user hasn't explicitly set his own custom color, the default color will be used.
      * In case of the default color, this getter delivers null.
-     *
-     * @return the custom color of the separator or null if no custom color was set
      */
     @SuppressWarnings("unused")
     public Integer getSeparatorColorCustom() {
@@ -1387,19 +1433,19 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
     }
 
 
-
 //-------------- static Dialog Dictionary handling -------------------------------------------------
 
+
     /**
-     * @brief Preloads the dictionaries for faster initialization of predefined default dialogs.
-     *
+     * @brief Pre-loads the dictionaries for faster initialization of predefined default dialogs.
+     * <p/>
      * Before one of the predefined default dialogs is shown for the first time, it's necessary to parse the content
      * data from two XMLs in two dictionaries. This might result in a short delay when one of these dialogs should be
      * shown for the first time. To speed up things, this static method can be called at the start of the application,
      * so the dictionaries will already be cached when they're needed for the first time.
      */
     @SuppressWarnings("unused")
-    public static void initializeDialogDictionary(){
+    public static void initializeDialogDictionary() {
         // check if the dictionaries are initialized
         if (!isDialogDictionaryInitialized()) {
             // if not call the getters to trigger the parsing of the XMLs in the dictionaries
@@ -1408,27 +1454,26 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
         }
     }
 
+
     /**
-     * @brief Check if the dictionaries of the predefined default dialogs and their buttons are initialized or not.
-     *
      * @return true -> dictionaries are initialized; false -> dictionaries are empty
+     * @brief Check if the dictionaries of the predefined default dialogs and their buttons are initialized or not.
      */
-    public static boolean isDialogDictionaryInitialized(){
+    public static boolean isDialogDictionaryInitialized() {
         return (PDEDialogIdentifiers != null && PDEDialogButtonsIdentifiers != null);
     }
 
 
     /**
-     * @brief Get the dictionary that contains data about the predefined default dialogs.
-     *
-     * The data which can be found in the dictionary is the title, the message and which types of buttons are used.
-     *
      * @return dictionary that contains data about the predefined default dialogs
+     * @brief Get the dictionary that contains data about the predefined default dialogs.
+     * <p/>
+     * The data which can be found in the dictionary is the title, the message and which types of buttons are used.
      */
     public static PDEDictionary getPDEDialogIdentifiers() {
         // if the dictionary is still empty parse the contents from the XML
         if (PDEDialogIdentifiers == null) {
-            PDEDialogIdentifiers = PDEComponentHelpers.readDictionaryXml("pde_dialog_identifier");
+            PDEDialogIdentifiers = PDEComponentHelpers.readDictionaryXml(R.xml.pde_dialog_identifier);
         }
         // return dictionary
         return PDEDialogIdentifiers;
@@ -1436,15 +1481,14 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
 
 
     /**
+     * @return dictionary that contains the labels of the buttons which are used in the predefined default dialogs.
      * @brief Get the dictionary that contains the labels of the buttons which are used in the predefined default
      * dialogs.
-     *
-     * @return dictionary that contains the labels of the buttons which are used in the predefined default dialogs.
      */
     public static PDEDictionary getPDEDialogButtonsIdentifiers() {
         // if the dictionary is still empty parse the contents from the XML
         if (PDEDialogButtonsIdentifiers == null) {
-            PDEDialogButtonsIdentifiers = PDEComponentHelpers.readDictionaryXml("pde_dialog_buttons_identifier");
+            PDEDialogButtonsIdentifiers = PDEComponentHelpers.readDictionaryXml(R.xml.pde_dialog_buttons_identifier);
         }
         // return dictionary
         return PDEDialogButtonsIdentifiers;

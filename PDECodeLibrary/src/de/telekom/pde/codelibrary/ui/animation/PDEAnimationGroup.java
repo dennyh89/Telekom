@@ -5,8 +5,6 @@
  * Copyright (c) 2012. Neuland Multimedia GmbH.
  */
 
-// ToDo Try to use dictionary instead of LinkedList for linked subanimations
-
 package de.telekom.pde.codelibrary.ui.animation;
 
 
@@ -483,13 +481,11 @@ public class PDEAnimationGroup extends PDEAnimation {
         setInTimePropagation(false);
 
         // we might have pending operations
-        for (Iterator<PDEAnimationGroupOperation> iterator = mRunningSubAnimationsPendingOperations.iterator();
-             iterator.hasNext();) {
-            PDEAnimationGroupOperation operation = iterator.next();
-            if (operation.getOperation() == OPERATION_ADD) {
-                registerSubAnimationForRunning((PDEAnimation)operation.getObject());
-            } else if (operation.getOperation() == OPERATION_REMOVE) {
-                unregisterSubAnimationForRunning((PDEAnimation)operation.getObject());
+        for (PDEAnimationGroupOperation tmpOperation : mRunningSubAnimationsPendingOperations) {
+            if (tmpOperation.getOperation() == OPERATION_ADD) {
+                registerSubAnimationForRunning((PDEAnimation)tmpOperation.getObject());
+            } else if (tmpOperation.getOperation() == OPERATION_REMOVE) {
+                unregisterSubAnimationForRunning((PDEAnimation)tmpOperation.getObject());
             }
         }
 
@@ -608,12 +604,10 @@ public class PDEAnimationGroup extends PDEAnimation {
         // mark as "currently sending changes"
         setInSendingChanges(true);
 
-        for (Iterator<WeakReference<PDEAnimation>> iterator = mChangedSubAnimations.iterator(); iterator.hasNext(); ) {
-            WeakReference<PDEAnimation> item = iterator.next();
-
+        for (WeakReference<PDEAnimation> tmpItem : mChangedSubAnimations) {
             // animation is probably not existing anymore
-            if (item != null){
-                animation = item.get();
+            if (tmpItem != null){
+                animation = tmpItem.get();
                 if(animation != null) {
                     animation.sendChanges();
                 }

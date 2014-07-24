@@ -7,10 +7,7 @@
 
 package de.telekom.pde.codelibrary.ui.events;
 
-import de.telekom.pde.codelibrary.ui.components.dialog.PDEDialog;
-
 import android.util.Log;
-
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -23,8 +20,6 @@ import java.util.LinkedList;
 //  PDEEventSource
 //----------------------------------------------------------------------------------------------------------------------
 
-
-// ToDo add more description here
 
 /**
  * @brief Event source.
@@ -44,8 +39,6 @@ public class PDEEventSource implements PDEIEventSource {
      * @brief Global tag for log outputs.
      */
     private final static String LOG_TAG = PDEEventSource.class.getName();
-
-    // ToDo check if Doxygen doku is needed here due to private class
 
     /**
      * @brief Helper class for holding a listener reference (weak), the callback-method and additional data.
@@ -133,6 +126,7 @@ public class PDEEventSource implements PDEIEventSource {
      */
     private LinkedList<Listener> mListeners = null;
 
+
     // @new
     /**
      * @brief The array of listeners.
@@ -141,10 +135,12 @@ public class PDEEventSource implements PDEIEventSource {
      */
     private LinkedList<Listener> mForwardEventSources = null;
 
+
     /**
      * @brief An optional delegate which gets notified when listeners are added.
      */
     private WeakReference<PDEIEventSourceDelegate> mEventSourceDelegate;
+
 
     /**
      * @brief Default event source. If an event is sent with no sender set, this sender is used.
@@ -154,6 +150,7 @@ public class PDEEventSource implements PDEIEventSource {
      *  setEventDefaultSender(this) during the constructor of the class that uses the event source.
      */
     private WeakReference<Object> mEventDefaultSender;
+
 
     // @new
     private boolean mEventOverrideSender;
@@ -173,10 +170,12 @@ public class PDEEventSource implements PDEIEventSource {
         mEventOverrideSender = false;
     }
 
+
     @Override
     public PDEEventSource getEventSource() {
         return this;
     }
+
 
     /**
      * @brief Add a listener to the list.
@@ -199,6 +198,7 @@ public class PDEEventSource implements PDEIEventSource {
         // add this listener as a listener for all events
         return addListener(target, methodName, "*");
     }
+
 
     /**
      * @brief Add a listener to the list, with a filter for the events that should be sent.
@@ -244,9 +244,7 @@ public class PDEEventSource implements PDEIEventSource {
             }
         }
 
-
         if (method != null) {
-
             // create listener helper structure & fill in data
             Listener newListener = new Listener(target, method, eventMask,this);
             if (mListeners.add(newListener)) {
@@ -301,7 +299,6 @@ public class PDEEventSource implements PDEIEventSource {
 
         return removed;
     }
-
 
 
     /**
@@ -366,11 +363,10 @@ public class PDEEventSource implements PDEIEventSource {
 
         // request from all event sources we're listening on
         needsCleanup = false;
-        for (Iterator<Listener> iterator = mForwardEventSources.iterator(); iterator.hasNext(); ) {
-            l = iterator.next();
+        for (Listener tmpListener : mForwardEventSources) {
             // still valid?
-            if(l.mSource != null){
-                source = l.mSource.get();
+            if (tmpListener.mSource != null){
+                source = tmpListener.mSource.get();
                 if (source != null){
                     // request initialization from forward source
                     source.requestInitializationForListener(listener);
@@ -382,9 +378,9 @@ public class PDEEventSource implements PDEIEventSource {
         }
 
         // do cleanup if necessary
-        if(needsCleanup){
+        if (needsCleanup){
             // go through all array elements backwards
-            for (i=mForwardEventSources.size()-1; i>=0; i--){
+            for (i = mForwardEventSources.size()-1; i >= 0; i--){
                 // get the listener
                 l = mForwardEventSources.get(i);
                 // we can forget it if the event source we're listening on no longer exists.
@@ -394,8 +390,8 @@ public class PDEEventSource implements PDEIEventSource {
                 }
             }
         }
-
     }
+
 
     // @new
     /**
@@ -417,11 +413,10 @@ public class PDEEventSource implements PDEIEventSource {
 
         // request from all event sources we're listening on
         needsCleanup = false;
-        for (Iterator<Listener> iterator = mForwardEventSources.iterator(); iterator.hasNext(); ) {
-            l = iterator.next();
+        for (Listener tmpListener : mForwardEventSources) {
             // still valid?
-            if (l.mSource != null){
-                source = l.mSource.get();
+            if (tmpListener.mSource != null){
+                source = tmpListener.mSource.get();
                 if (source != null){
                     // request initialization from forward source
                     source.requestDeinitializationForListener(listener);
@@ -433,7 +428,7 @@ public class PDEEventSource implements PDEIEventSource {
         }
 
         // do cleanup if necessary
-        if(needsCleanup){
+        if (needsCleanup){
             // go through all array elements backwards
             for (i = mForwardEventSources.size()-1; i >= 0; i--){
                 // get the listener
@@ -447,6 +442,7 @@ public class PDEEventSource implements PDEIEventSource {
         }
     }
 
+
     // @new
     /**
      * @brief Helper function, can be called if we need exactly one set of initialization events to a specified location.
@@ -458,6 +454,7 @@ public class PDEEventSource implements PDEIEventSource {
         // call extended function
         requestOneTimeInitialization(target, methodName,"*");
     }
+
 
     // @new
     /**
@@ -493,12 +490,14 @@ public class PDEEventSource implements PDEIEventSource {
         }
     }
 
+
     // @new
     @SuppressWarnings("unused")
     protected void requestOneTimeDeinitialization(Object target, String methodName){
         // call extended function
         requestOneTimeDeinitialization(target,methodName,"*");
     }
+
 
     // @new
     protected void requestOneTimeDeinitialization(Object target, String methodName, String eventMask){
@@ -579,6 +578,7 @@ public class PDEEventSource implements PDEIEventSource {
 
         return event.isProcessed();
     }
+
 
     /**
      * @brief Send the event to a specified listener.
@@ -668,6 +668,7 @@ public class PDEEventSource implements PDEIEventSource {
         return returnValue;
     }
 
+
     /**
      * @brief Convenience function for quick event sending.
      *
@@ -688,6 +689,7 @@ public class PDEEventSource implements PDEIEventSource {
         return sendEvent(event);
     }
 
+
     /**
      * @brief Convenience function for quick event sending.
      *
@@ -706,12 +708,8 @@ public class PDEEventSource implements PDEIEventSource {
     }
 
 
-
-
-    // ToDo check doku
-
     /**
-     * @brief Convenience function. Forward all events from another source to all listeners on this EventSource.
+     * @brief Forward all events from another source to all listeners on this EventSource. Convenience function.
      *
      * You can build event processing trees with this - just add our event source as forwarder to
      * another source and all events get routed to all our listeners. At the moment, the delegate functions
@@ -732,8 +730,9 @@ public class PDEEventSource implements PDEIEventSource {
         return listener;
     }
 
+
     /**
-     * @brief Convenience function. Forward events from another source through ourself.
+     * @brief Forward events from another source through ourself. Convenience function.
      *
      * You can build event processing trees with this - just add our event source as forwarder to
      * another source and all events get routed to all our listeners. With the EventMask you can specify which
@@ -773,7 +772,6 @@ public class PDEEventSource implements PDEIEventSource {
     }
 
 
-
     /**
      * @brief Setter for default sender.
      *
@@ -785,6 +783,7 @@ public class PDEEventSource implements PDEIEventSource {
         mEventDefaultSender = new WeakReference<Object>(eventDefaultSender);
         mEventOverrideSender = override;
     }
+
 
     /**
      * @brief Getter for default sender.
@@ -808,6 +807,7 @@ public class PDEEventSource implements PDEIEventSource {
         mEventOverrideSender = override;
     }
 
+
     // @new
     @SuppressWarnings("unused")
     public boolean getEventOverrideSender(){
@@ -821,6 +821,7 @@ public class PDEEventSource implements PDEIEventSource {
     public void setEventSourceDelegate(PDEIEventSourceDelegate delegate) {
         mEventSourceDelegate = new WeakReference<PDEIEventSourceDelegate>(delegate);
     }
+
 
     /**
      * @brief Getter for delegate.

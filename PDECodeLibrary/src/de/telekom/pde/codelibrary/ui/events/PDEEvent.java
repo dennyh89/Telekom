@@ -114,6 +114,7 @@ public class PDEEvent {
         mFlags = FLAG_NONE;
     }
 
+
     /**
      * @brief Check if the event type matches.
      *
@@ -125,7 +126,7 @@ public class PDEEvent {
      */
     public boolean isType(String type) {
         // wildcard?
-        if(type.charAt(type.length()-1)=='*'){
+        if (type.charAt(type.length() - 1) == '*'){
             // wildcard check
             return getType().startsWith(type.substring(0, type.length()-1));
         } else {
@@ -147,6 +148,7 @@ public class PDEEvent {
         mType = type;
     }
 
+
     /**
      * @brief Get the type of the event.
      *
@@ -155,6 +157,7 @@ public class PDEEvent {
     public String getType() {
         return mType;
     }
+
 
     /**
      * @brief Set object that sends the event.
@@ -169,6 +172,7 @@ public class PDEEvent {
         mSender = sender;
         //Log.d("setSender: ",(mSender!=null ? mSender.toString() : "null"));
     }
+
 
     /**
      * @brief Receive the object the event was originally sent from.
@@ -193,6 +197,7 @@ public class PDEEvent {
         mFlags |= FLAG_PROCESSED;
     }
 
+
     /**
      * @brief Check if event is marked as processed.
      *
@@ -206,6 +211,7 @@ public class PDEEvent {
         //check flags
         return ((mFlags & FLAG_PROCESSED) == FLAG_PROCESSED);
     }
+
 
     /**
      * @brief Force distribution of the event to all handlers.
@@ -222,6 +228,7 @@ public class PDEEvent {
         mFlags |= FLAG_DISTRIBUTE_TO_ALL;
     }
 
+
     /**
      * @brief Clear the distribute to all behaviour.
      *
@@ -236,6 +243,7 @@ public class PDEEvent {
         mFlags &= ~FLAG_DISTRIBUTE_TO_ALL;
     }
 
+
     /**
      * @brief Check if event is marked for distribution to all handlers.
      *
@@ -245,6 +253,7 @@ public class PDEEvent {
         // check flags
         return ((mFlags & FLAG_DISTRIBUTE_TO_ALL) == FLAG_DISTRIBUTE_TO_ALL) ;
     }
+
 
     /**
      * @brief Check if there is a result.
@@ -269,6 +278,7 @@ public class PDEEvent {
         mResult = resultObject;
     }
 
+
     /**
      * @brief Set int value as result.
      *
@@ -282,6 +292,7 @@ public class PDEEvent {
         // convert to Integer-Object
         mResult = value;
     }
+
 
     /**
      * @brief Set double value as result.
@@ -324,7 +335,7 @@ public class PDEEvent {
 
         // check class
         if (mResult instanceof Integer) {
-            return ((Integer) mResult).intValue();
+            return (Integer) mResult;
         } else if (mResult instanceof Double) {
             return (int) ((Double) mResult).doubleValue();
         } else {
@@ -348,9 +359,9 @@ public class PDEEvent {
 
         // check class
         if (mResult instanceof Double) {
-            return ((Double) mResult).doubleValue();
+            return (Double) mResult;
         } else if (mResult instanceof Integer) {
-            return (double) ((Integer) mResult).intValue();
+            return (double) (Integer) mResult;
         } else {
             return 0.0;
         }
