@@ -95,7 +95,7 @@ public class PDEFontHelpers {
             if (unitPart.compareToIgnoreCase("%") == 0) {
                 // convert caps height (calculated by percent of default copy size (styleguide definition))
                 // in real font size
-                size = PDEFontHelpers.calculateFontSize(font, PDEFontHelpers.calculateFontSizeByPercent(font, size));
+                size = PDEFontHelpers.calculateFontSizeByPercent(font, size);
             } else if (unitPart.compareToIgnoreCase("BU") == 0) {
                 // convert caps height (defined in BU) in real font size
                 size = PDEFontHelpers.calculateFontSize(font, PDEBuildingUnits.exactPixelFromBU(size));
