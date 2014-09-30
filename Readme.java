@@ -533,12 +533,12 @@ Release notes
 =============
 
 __Current public version__<br />
-4.5.1
+5.0.1
  
 __Current non-public version__<br />
-4.5.1
+5.0.1
 
-Patch 4.5.1 (public)
+Patch 5.0.1 (public)
 --------------------
 
 __Date__<br />
@@ -558,8 +558,10 @@ __Content__<br />
 Font size: The calculation of the font size from relative value (in %) was not
 correct. The calculation has been fixed.
 
-Major 4.5 (public)
+Major 5.0 (public)
 --------------------
+
+Update: The revision number has been changed from 4.5 to 5.0 because it is a major public release.
 
 __Date__<br />
 24.07.2014
@@ -575,7 +577,7 @@ master
 
 __Content__<br />
 
-The Code Library version 4.5 adds components for notification
+The Code Library version 5.0 adds components for notification
 (infoflag and tooltip), sectioned buttons and data visualisation
 (usage bars and usage circles).
 
