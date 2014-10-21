@@ -8,15 +8,16 @@
 
 package de.telekom.pde.codelibrary.ui.elements.icon;
 
-import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEIconView;
+import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableMultilayer;
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEDrawableIconImage
@@ -29,12 +30,10 @@ import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableBase;
  * Icon can be set by a drawable of by a string. The string can be the path to the resource, resource id or
  * a symbol from the IconFont, by using a string consisting of '#' and the corresponding letter.
  */
-public class PDEDrawableIcon extends PDEDrawableBase {
+public class PDEDrawableIcon extends PDEDrawableMultilayer {
     private final static String LOG_TAG = PDEDrawableIcon.class.getName();
 
     //-----  properties ---------------------------------------------------------------------------------------------------
-    private Drawable mImage;
-    private String mIconString;
     private PDEColor mIconColor;
     private PDEColor mShadowColor;
     private boolean mShadowEnabled;
@@ -44,7 +43,9 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     private PDEDrawableIconFont mIconFont;
     private PDEDrawableIconImage mIconImage;
     private boolean mDoBoundsChange;
-    private Drawable mIconDrawable;
+    //private Drawable mIconDrawable;
+
+    protected PDEIconView mWrapperView;
 
 
     /**
@@ -52,7 +53,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      */
     public PDEDrawableIcon() {
         super();
-        initialize();
+        init();
     }
 
 
@@ -63,7 +64,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      */
     public PDEDrawableIcon(Drawable drawable) {
         super();
-        initialize();
+        init();
         setElementIconDrawable(drawable);
 
     }
@@ -74,7 +75,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      */
     public PDEDrawableIcon(String iconstring) {
         super();
-        initialize();
+        init();
         setElementIconString(iconstring);
     }
 
@@ -82,9 +83,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     /**
      * @brief Initializes start values.
      */
-    private void initialize() {
-        mIconString = null;
-        mImage = null;
+    private void init() {
         mIconFont = null;
         mIconImage = null;
 
@@ -96,59 +95,9 @@ public class PDEDrawableIcon extends PDEDrawableBase {
         mShadowYOffset = 1.0f;
         mPadding = 0.0f;
 
+        mWrapperView = null;
+
         mDoBoundsChange = true;
-    }
-
-
-    /**
-     * @brief Updates icon with drawable or string.
-     */
-    private void updateIconDrawable() {
-        if (mImage == null) {
-            if (TextUtils.isEmpty(mIconString)) {
-                mIconDrawable = null;
-                return;
-            }
-
-            if (mIconString.charAt(0) == '#') {
-                if (mIconFont == null) {
-                    mIconFont = new PDEDrawableIconFont(mIconString.substring(1));
-                } else {
-                    mIconFont.setElementIconText(mIconString.substring(1));
-                }
-                if (mIconColor != null) mIconFont.setElementIconColor(mIconColor);
-                mIconFont.setElementShadowEnabled(mShadowEnabled);
-                mIconFont.setElementShadowColor(mShadowColor);
-                mIconFont.setElementShadowXOffset(mShadowXOffset);
-                mIconFont.setElementShadowYOffset(mShadowYOffset);
-                mIconFont.setElementPadding(mPadding);
-                mIconDrawable = mIconFont;
-                return;
-            } else {
-                mImage = Drawable.createFromPath(mIconString);
-
-                if (mImage == null) {
-                    Log.e(LOG_TAG, "Image could not be loaded");
-                    mIconDrawable = null;
-                    return;
-                }
-            }
-        }
-
-        if (mIconImage == null) {
-            mIconImage = new PDEDrawableIconImage(mImage);
-        } else {
-            mIconImage.setElementImage(mImage);
-        }
-        if (mIconColor != null) {
-            mIconImage.setElementIconColor(mIconColor);
-        }
-        mIconImage.setElementShadowEnabled(mShadowEnabled);
-        mIconImage.setElementShadowColor(mShadowColor);
-        mIconImage.setElementShadowXOffset(mShadowXOffset);
-        mIconImage.setElementShadowYOffset(mShadowYOffset);
-        mIconImage.setElementPadding(mPadding);
-        mIconDrawable = mIconImage;
     }
 
 
@@ -156,7 +105,10 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Returns whether this icon has a native size (e.g. from a resource image).
      */
     public boolean hasNativeSize() {
-        return (mImage != null);
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
+            return (((PDEDrawableIconImage)getLayerAtIndex(0)).getElementImage() != null);
+        }
+        return false;
     }
 
 
@@ -164,8 +116,12 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Returns the native size of the icon (e.g. from a resource image).
      */
     public Point getNativeSize() {
-        if (mImage != null) {
-            return new Point(mImage.getIntrinsicWidth(), mImage.getIntrinsicHeight());
+
+        if (getNumberOfLayers() == 0 || !hasNativeSize()) return new Point(0, 0);
+
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
+            return new Point(((PDEDrawableIconImage) getLayerAtIndex(0)).getElementImage().getIntrinsicWidth(),
+                             ((PDEDrawableIconImage) getLayerAtIndex(0)).getElementImage().getIntrinsicHeight());
         }
         return new Point(0, 0);
     }
@@ -199,7 +155,15 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Returns whether element has an icon drawable or icon string set.
      */
     public boolean hasElementIcon() {
-        return !(mImage == null && TextUtils.isEmpty(mIconString));
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
+             return !(((PDEDrawableIconImage) getLayerAtIndex(0)).getElementImage() == null);
+        }
+
+        if (getLayerAtIndex(0) instanceof  PDEDrawableIconFont) {
+            return !(TextUtils.isEmpty(((PDEDrawableIconFont) getLayerAtIndex(0)).getElementIconText()));
+        }
+
+        return false;
     }
 
 
@@ -207,7 +171,7 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Checks if icon drawable is PDEIconFont.
      */
     public boolean isIconfont() {
-        return (mIconDrawable instanceof PDEDrawableIconFont);
+        return (getLayerAtIndex(0) instanceof PDEDrawableIconFont);
     }
 
 
@@ -215,14 +179,22 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Set icon image.
      */
     public void setElementIconDrawable(Drawable image) {
-        //any change?
-        if (image == mImage) return;
+        if (image == null)
+        {
+            removeLayerAtIndex(0);
+            return;
+        }
 
-        //remember
-        mImage = image;
-        mIconString = null;
-        updateIconDrawable();
-        update(true);
+        mIconImage = new PDEDrawableIconImage(image);
+        if (mIconColor != null) mIconImage.setElementIconColor(mIconColor);
+        mIconImage.setElementShadowEnabled(mShadowEnabled);
+        mIconImage.setElementShadowColor(mShadowColor);
+        mIconImage.setElementShadowXOffset(mShadowXOffset);
+        mIconImage.setElementShadowYOffset(mShadowYOffset);
+        mIconImage.setElementPadding(mPadding);
+        addLayer(mIconImage);
+
+        //update(true);
     }
 
 
@@ -230,7 +202,10 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Get icon by drawable.
      */
     public Drawable getElementIconDrawable() {
-        if (mImage != null) return mImage;
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
+            return ((PDEDrawableIconImage) getLayerAtIndex(0)).getElementImage();
+        }
+
         return null;
     }
 
@@ -239,14 +214,38 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Set icon by string.
      */
     public void setElementIconString(String iconString) {
-        //any change?
-        if (TextUtils.equals(iconString, mIconString)) return;
+        Drawable imageFromString;
 
-        //remember
-        mIconString = iconString;
-        mImage = null;
-        updateIconDrawable();
-        update(true);
+        if (TextUtils.isEmpty(iconString)) {
+            removeLayerAtIndex(0);
+            return;
+        }
+
+        if (iconString.charAt(0) == '#') {
+            if (mIconFont == null) {
+                mIconFont = new PDEDrawableIconFont(iconString.substring(1));
+            } else {
+                mIconFont.setElementIconText(iconString.substring(1));
+            }
+
+            if (mIconColor != null) mIconFont.setElementIconColor(mIconColor);
+            mIconFont.setElementShadowEnabled(mShadowEnabled);
+            mIconFont.setElementShadowColor(mShadowColor);
+            mIconFont.setElementShadowXOffset(mShadowXOffset);
+            mIconFont.setElementShadowYOffset(mShadowYOffset);
+            mIconFont.setElementPadding(mPadding);
+            addLayer(mIconFont);
+            //update(true);
+        } else {
+            imageFromString = Drawable.createFromPath(iconString);
+
+            if (imageFromString == null) {
+                Log.e(LOG_TAG, "Image could not be loaded");
+                removeLayerAtIndex(0);
+            } else {
+                setElementIconDrawable(imageFromString);
+            }
+        }
     }
 
 
@@ -254,7 +253,10 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Get icon string.
      */
     public String getElementIconString() {
-        if (mIconString != null) return mIconString;
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconFont) {
+            return ((PDEDrawableIconFont) getLayerAtIndex(0)).getElementIconText();
+        }
+
         return null;
     }
 
@@ -281,10 +283,10 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      * @brief Returns icon image if set, else icon string, else null.
      */
     public Object getElementIcon() {
-        if (mImage != null) {
-            return mImage;
-        } else if (!TextUtils.isEmpty(mIconString)) {
-            return mIconString;
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
+            return ((PDEDrawableIconImage) getLayerAtIndex(0)).getElementImage();
+        } else if (getLayerAtIndex(0) instanceof PDEDrawableIconFont) {
+            return ((PDEDrawableIconFont) getLayerAtIndex(0)).getElementIconText();
         } else {
             return null;
         }
@@ -296,13 +298,20 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      */
     public void setElementIconColor(PDEColor color) {
         //any change?
-        if (color == mIconColor) return;
+        if (color.equals(mIconColor)) return;
+
         //remember
         mIconColor = color;
 
-        updateIconDrawable();
+
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconFont) {
+            ((PDEDrawableIconFont)getLayerAtIndex(0)).setElementIconColor(color);
+        } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
+            ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementIconColor(color);
+        }
+
         //redraw
-        update();
+        //update();
     }
 
 
@@ -323,8 +332,14 @@ public class PDEDrawableIcon extends PDEDrawableBase {
 
         //remember
         mShadowEnabled = enabled;
-        updateIconDrawable();
-        update(true);
+
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconFont) {
+            ((PDEDrawableIconFont)getLayerAtIndex(0)).setElementShadowEnabled(enabled);
+        } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
+            ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementShadowEnabled(enabled);
+        }
+
+        //update(true);
     }
 
 
@@ -341,11 +356,18 @@ public class PDEDrawableIcon extends PDEDrawableBase {
      */
     public void setElementShadowColor(PDEColor color) {
         //any change?
-        if (color == mShadowColor) return;
+        if (color.equals(mShadowColor)) return;
+
         //remember
         mShadowColor = color;
-        updateIconDrawable();
-        update();
+
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconFont) {
+            ((PDEDrawableIconFont)getLayerAtIndex(0)).setElementShadowColor(color);
+        } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
+            ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementShadowColor(color);
+        }
+
+        //update();
     }
 
 
@@ -366,8 +388,14 @@ public class PDEDrawableIcon extends PDEDrawableBase {
 
         //remember
         mShadowXOffset = offset;
-        updateIconDrawable();
-        update(true);
+
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconFont) {
+            ((PDEDrawableIconFont)getLayerAtIndex(0)).setElementShadowXOffset(offset);
+        } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
+            ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementShadowXOffset(offset);
+        }
+
+        //update(true);
     }
 
 
@@ -388,8 +416,14 @@ public class PDEDrawableIcon extends PDEDrawableBase {
 
         //remember
         mShadowYOffset = offset;
-        updateIconDrawable();
-        update(true);
+
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconFont) {
+            ((PDEDrawableIconFont)getLayerAtIndex(0)).setElementShadowYOffset(offset);
+        } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
+            ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementShadowYOffset(offset);
+        }
+
+        //update(true);
     }
 
 
@@ -410,8 +444,14 @@ public class PDEDrawableIcon extends PDEDrawableBase {
 
         //remember
         mPadding = padding;
-        updateIconDrawable();
-        update(true);
+
+        if (getLayerAtIndex(0) instanceof PDEDrawableIconFont) {
+            ((PDEDrawableIconFont)getLayerAtIndex(0)).setElementPadding(padding);
+        } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
+            ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementPadding(padding);
+        }
+
+        //update(true);
     }
 
 
@@ -434,8 +474,8 @@ public class PDEDrawableIcon extends PDEDrawableBase {
         if (mDoBoundsChange) {
             mDoBoundsChange = false;
             super.onBoundsChange(bounds);
-            if (mIconDrawable != null) {
-                setBounds(mIconDrawable.getBounds());
+            if (getLayerAtIndex(0) != null) {
+                setBounds(getLayerAtIndex(0).getBounds());
             }
             mDoBoundsChange = true;
         }
@@ -448,23 +488,25 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     @Override
     protected void doLayout() {
         Rect bounds = getBounds();
-        if (mIconDrawable != null) {
-            mIconDrawable.setBounds(0, 0, bounds.width(), bounds.height());
+        if (getLayerAtIndex(0) != null) {
+            getLayerAtIndex(0).setBounds(0, 0, bounds.width(), bounds.height());
         }
+
+
     }
 
 
-    /**
-     * @brief Updates image color.
-     */
-    protected void updateAllPaints() {
-        // no further paints needed so apply paint changes directly on the image
-        if (mIconDrawable != null) {
-            mIconDrawable.setAlpha(mAlpha);
-            mIconDrawable.setDither(mDither);
-            mIconDrawable.setColorFilter(mColorFilter);
-        }
-    }
+//    /**
+//     * @brief Updates image color.
+//     */
+//    protected void updateAllPaints() {
+//        // no further paints needed so apply paint changes directly on the image
+//        if (mIconDrawable != null) {
+//            mIconDrawable.setAlpha(mAlpha);
+//            mIconDrawable.setDither(mDither);
+//            mIconDrawable.setColorFilter(mColorFilter);
+//        }
+//    }
 
 
     /**
@@ -483,17 +525,42 @@ public class PDEDrawableIcon extends PDEDrawableBase {
     }
 
 
-    /**
-     * @brief Draws image.
-     *
-     * @param c the Canvas of the DrawingBitmap we want to draw into.
-     * @param bounds the current bounding rect of our Drawable.
-     */
-    protected void updateDrawingBitmap(Canvas c, Rect bounds) {
-        // security
-        if (mIconDrawable == null || bounds.width() <= 0 || bounds.height() <= 0) return;
+//    /**
+//     * @brief Draws image.
+//     *
+//     * @param c the Canvas of the DrawingBitmap we want to draw into.
+//     * @param bounds the current bounding rect of our Drawable.
+//     */
+//    protected void updateDrawingBitmap(Canvas c, Rect bounds) {
+//        // security
+//        if (getNumberOfLayers() == 0 || bounds.width() <= 0 || bounds.height() <= 0) return;
+//
+//        getLayerAtIndex(0).draw(c);
+//    }
 
-        mIconDrawable.draw(c);
+    //---------------------------------------------------------------------------------------------------------------------
+// ----- Wrapper View  ----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+    /**
+     * @brief Delivers its own Wrapper-View.
+     *
+     * If we want to use a Drawable within a ViewGroup/Layout we have to put it into some view first. We could write
+     * a lot of specialised Views that simply forward all functions we need to configure the underlying drawable or
+     * we can use one standardized View with only some basic functions to wrap all our custom Drawables within.
+     * Configuration is then done directly on the Drawable. In order to keep a better overview and spare a lot of
+     * maintenance-intensive View-Code we decided for the latter option. Every custom drawable carries its own
+     * Wrapper-View which is created on demand and places the drawable within.
+     *
+     * @return a simple view that wraps this Drawable.
+     */
+    public PDEIconView getWrapperView() {
+        if (mWrapperView == null) {
+            mWrapperView = new PDEIconView(PDECodeLibrary.getInstance().getApplicationContext(), this);
+        }
+        return mWrapperView;
     }
+
 
 }

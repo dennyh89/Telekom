@@ -21,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentControllerAdapterView;
@@ -32,10 +34,6 @@ import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
-import java.util.ArrayList;
-
-
-
 
 
 /**
@@ -59,8 +57,8 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource {
     protected PDEAgentControllerAdapterView mAgentAdapter;
     protected PDEAgentHelper mAgentHelper;
 
-    // the already layouted View of the list row
-    protected View mLayoutedView;
+    // the already inflated View of the list row
+    protected View mContentView;
 
     // colors
     protected PDEParameter PDEListItemGlobalParamColor;
@@ -70,8 +68,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource {
     private LayoutInflater mLayoutInflater;
     // position of the item within the list
     protected int mListPosition = -1;
-    // data holder object for this list item. For better performance item recycling.
-    protected PDEHolderInterface mHolder;
+
     // Source for sending events
     protected PDEEventSource mEventSource = null;
     protected ArrayList<Object> mStrongPDEEventListenerHolder;
@@ -103,7 +100,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource {
     /**
      * @brief Constructor
      */
-    PDEListItem(Context context) {
+    public PDEListItem(Context context) {
         super(context);
         init(context);
     }
@@ -113,7 +110,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource {
      * @brief Constructor
      */
     @SuppressWarnings("unused")
-    PDEListItem(Context context, AttributeSet attrs) {
+    public PDEListItem(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
@@ -124,7 +121,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @SuppressWarnings("unused")
-    PDEListItem(Context context, AttributeSet attrs, int defStyle) {
+    public PDEListItem(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }
@@ -147,7 +144,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource {
         mEventSource = new PDEEventSource();
         mStrongPDEEventListenerHolder = new ArrayList<Object>();
 
-        mLayoutedView = null;
+        mContentView = null;
         // this list items must be clickable to handle touch events.
         setClickable(true);
         // init the agent
@@ -212,36 +209,36 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource {
 
 
     /**
-     * @brief Set the already layouted row view.
+     * @brief Set the contained row view.
      *
-     * The adapter creates a view that holds the data of a list item and puts it into the desired design. The layouted
+     * The adapter creates a view that holds the data of a list item and puts it into the desired design. The content
      * view is handed over from the adapter and we wrap it into this PDEListItem in order to add the agentstate
      * behaviour.
      *
-     * @param view The already layouted row view.
+     * @param view The row view.
      */
-    public void setLayoutedView(View view) {
+    public void setContentView(View view) {
         // anything to do?
-        if (mLayoutedView == view) return;
+        if (mContentView == view) return;
 
         // if we already had a subview, remove it
-        if (mLayoutedView != null) removeView(mLayoutedView);
+        if (mContentView != null) removeView(mContentView);
 
         // remember new subview
-        mLayoutedView = view;
+        mContentView = view;
 
         // add new subview
-        addView(mLayoutedView);
+        addView(mContentView);
     }
 
 
     /**
-     * @brief Deliver the already layouted row view.
+     * @brief Deliver the row view.
      *
-     * @return The already layouted row view.
+     * @return The already contained row view.
      */
-    public View getLayoutedView() {
-        return mLayoutedView;
+    public View getContentView() {
+        return mContentView;
     }
 
 
@@ -256,7 +253,7 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource {
         // inflate item layout
         layoutView = mLayoutInflater.inflate(layoutResourceID, null);
         // remember inflated view
-        setLayoutedView(layoutView);
+        setContentView(layoutView);
     }
 
 
@@ -276,51 +273,6 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource {
      */
     public int getListPosition() {
         return mListPosition;
-    }
-
-
-    /**
-     * @param targetViewID the resource ID that addresses the desired subView.
-     * @param value        the new string value for the addressed subview.
-     * @brief Addresses a subview of the item view and gives it a new content.
-     */
-    public void setTargetViewContent(int targetViewID, String value) {
-        if (mHolder == null) return;
-        mHolder.setTargetViewContent(targetViewID, value);
-    }
-
-
-    /**
-     * @brief Addresses a subview of the item view and gives it a new content.
-     *
-     * @param targetViewID the resource ID that addresses the desired subView.
-     * @param value        the new int value for the addressed subview. Mostly useful for resource IDs.
-     */
-    public void setTargetViewContent(int targetViewID, int value) {
-        if (mHolder == null) return;
-        mHolder.setTargetViewContent(targetViewID, value);
-    }
-
-
-    /**
-     * @brief Store holder object for this list item.
-     *
-     * Holder objects help to realize a performance efficient way of list item recycling.
-     *
-     * @param holder holder object that implements the PDEHolderInterface.
-     */
-    public void setHolder(PDEHolderInterface holder) {
-        mHolder = holder;
-    }
-
-
-    /**
-     * @brief Get current holder object for this list item.
-     *
-     * @return holder object.
-     */
-    public PDEHolderInterface getHolder() {
-        return mHolder;
     }
 
 
@@ -391,5 +343,4 @@ public class PDEListItem extends LinearLayout implements PDEIEventSource {
         mStrongPDEEventListenerHolder.remove(listener);
         return mEventSource.removeListener(listener);
     }
-
 }

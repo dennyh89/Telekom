@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:pdecodelibrary="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+    >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/PDEListHeaderLayout_TextLayout"
+        android:layout_centerHorizontal="true"
+        >
+
+        <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
+            android:id = "@+id/PDEListHeaderLayout_HeaderText"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/Telekom.BU6"
+            pdecodelibrary:pde_alignmentMode="capHeight"
+            pdecodelibrary:pde_verticalAlignment="bottom"
+            pdecodelibrary:pde_maxLines="1"
+            pdecodelibrary:pde_ellipsizeText="true"
+            />
+
+        <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
+            android:id = "@+id/PDEListHeaderLayout_HeaderSubText"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/Telekom.BU6"
+            pdecodelibrary:pde_alignmentMode="capHeight"
+            pdecodelibrary:pde_verticalAlignment="bottom"
+            pdecodelibrary:pde_maxLines="1"
+            pdecodelibrary:pde_ellipsizeText="true"
+            />
+
+
+    </LinearLayout>
+
+
+    <View
+        android:id = "@+id/PDEListHeaderLayout_Delimiter"
+        android:layout_width="wrap_content"
+        android:layout_height="1px"
+        android:background="@color/Black30Alpha"
+        android:layout_alignBottom="@+id/PDEListHeaderLayout_TextLayout"
+        />
+
+
+
+</RelativeLayout>

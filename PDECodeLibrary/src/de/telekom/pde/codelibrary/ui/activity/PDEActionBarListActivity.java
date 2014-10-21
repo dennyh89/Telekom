@@ -18,20 +18,22 @@ import android.widget.AdapterView;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.R;
+import de.telekom.pde.codelibrary.ui.components.lists.PDEListView;
 import de.telekom.pde.codelibrary.ui.elements.common.PDEDrawableDelimiter;
 import de.telekom.pde.codelibrary.ui.inflater.PDEInflaterUtils;
 
 
 @SuppressLint("Registered")
 public class PDEActionBarListActivity extends ActionBarActivity {
-    private ListView mListView;
+    private PDEListView mListView;
 
 
-    protected ListView getListView() {
+    protected PDEListView getListView() {
         if (mListView == null) {
-            mListView = (ListView) findViewById(R.id.list);
+            mListView = (PDEListView) findViewById(R.id.list);
         }
         return mListView;
     }
@@ -45,7 +47,7 @@ public class PDEActionBarListActivity extends ActionBarActivity {
     protected ListAdapter getListAdapter() {
         ListAdapter adapter = getListView().getAdapter();
         if (adapter instanceof HeaderViewListAdapter) {
-            return ((HeaderViewListAdapter)adapter).getWrappedAdapter();
+            return ((HeaderViewListAdapter) adapter).getWrappedAdapter();
         } else {
             return adapter;
         }
@@ -53,9 +55,8 @@ public class PDEActionBarListActivity extends ActionBarActivity {
 
 
     private AdapterView.OnItemClickListener mOnClickListener = new AdapterView.OnItemClickListener() {
-        public void onItemClick(AdapterView<?> parent, View v, int position, long id)
-        {
-            onListItemClick((ListView)parent, v, position, id);
+        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+            onListItemClick((ListView) parent, v, position, id);
         }
     };
 
@@ -91,7 +92,7 @@ public class PDEActionBarListActivity extends ActionBarActivity {
         View view = super.onCreateView(name, context, attrs);
 
         if (view == null) {
-            view = PDEInflaterUtils.onCreateTextViewAndSetFont(name,context,attrs);
+            view = PDEInflaterUtils.onCreateTextViewAndSetFont(name, context, attrs);
         }
 
         return view;

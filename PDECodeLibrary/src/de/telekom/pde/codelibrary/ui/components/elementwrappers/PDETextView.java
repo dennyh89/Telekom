@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.ImageView;
 
 import de.telekom.pde.codelibrary.ui.PDEConstants;
@@ -112,7 +113,7 @@ public class PDETextView extends ImageView {
 
         if (sa != null) {
             // set text
-            text = sa.getString(R.styleable.PDETextView_text);
+            text = sa.getString(R.styleable.PDETextView_pde_text);
         }
 
         if (text == null || text.length() == 0) {
@@ -134,141 +135,157 @@ public class PDETextView extends ImageView {
 
         if (sa != null) {
             // set typeface (font)
-            if (sa.hasValue(R.styleable.PDETextView_typeface)) {
-                setTypeface(PDETypeface.createByName(sa.getString(R.styleable.PDETextView_typeface)));
+            if (sa.hasValue(R.styleable.PDETextView_pde_typeface)) {
+                setTypeface(PDETypeface.createByName(sa.getString(R.styleable.PDETextView_pde_typeface)));
             }
 
             // set the font size
             // we first try whether the inserted value is a dimension, if this fails we evaluate as string
-            if (sa.hasValue(R.styleable.PDETextView_textSize)) {
+            if (sa.hasValue(R.styleable.PDETextView_pde_textSize)) {
                 try {
-                    setTextSize(sa.getDimensionPixelSize(R.styleable.PDETextView_textSize, 50));
+                    setTextSize(sa.getDimensionPixelSize(R.styleable.PDETextView_pde_textSize, 50));
                 } catch (Exception e) {
-                    setTextSize(parseDimension(sa.getString(R.styleable.PDETextView_textSize)));
+                    setTextSize(parseDimension(sa.getString(R.styleable.PDETextView_pde_textSize)));
                 }
             }
 
             // set line distance factor
-            if (sa.hasValue(R.styleable.PDETextView_lineDistanceFactor)) {
-                setLineDistanceFactor(sa.getFloat(R.styleable.PDETextView_lineDistanceFactor, 1.0f));
+            if (sa.hasValue(R.styleable.PDETextView_pde_lineDistanceFactor)) {
+                setLineDistanceFactor(sa.getFloat(R.styleable.PDETextView_pde_lineDistanceFactor, 1.0f));
             }
 
             // set color of text
-            if (sa.hasValue(R.styleable.PDETextView_textColor)) {
+            if (sa.hasValue(R.styleable.PDETextView_pde_textColor)) {
                 //to have dark/light style use PDEColor with color id
-                int resourceID = sa.getResourceId(R.styleable.PDETextView_textColor, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDETextView_pde_textColor, 0);
                 if (resourceID != 0) {
                     setTextColor(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setTextColor(sa.getColor(R.styleable.PDETextView_textColor, R.color.DTBlack));
+                    setTextColor(sa.getColor(R.styleable.PDETextView_pde_textColor, R.color.DTBlack));
                 }
             }
 
             // set background color
-            if (sa.hasValue(R.styleable.PDETextView_backgroundColor)) {
+            if (sa.hasValue(R.styleable.PDETextView_pde_backgroundColor)) {
                 //to have dark/light style use PDEColor with color id
-                int resourceID = sa.getResourceId(R.styleable.PDETextView_backgroundColor, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDETextView_pde_backgroundColor, 0);
                 if (resourceID != 0) {
                     setBackgroundColor(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setBackgroundColor(sa.getColor(R.styleable.PDETextView_backgroundColor,
+                    setBackgroundColor(sa.getColor(R.styleable.PDETextView_pde_backgroundColor,
                                                    R.color.DTTransparentWhite));
                 }
             }
 
             // set shadow color
-            if (sa.hasValue(R.styleable.PDETextView_shadowColor)) {
+            if (sa.hasValue(R.styleable.PDETextView_pde_shadowColor)) {
                 //to have dark/light style use PDEColor with color id
-                int resourceID = sa.getResourceId(R.styleable.PDETextView_shadowColor, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDETextView_pde_shadowColor, 0);
                 if (resourceID != 0) {
                     setShadowColor(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setShadowColor(sa.getColor(R.styleable.PDETextView_shadowColor, R.color.DTWhite));
+                    setShadowColor(sa.getColor(R.styleable.PDETextView_pde_shadowColor, R.color.DTWhite));
                 }
             }
 
             // set shadow enabled
-            if (sa.hasValue(R.styleable.PDETextView_shadowEnabled)) {
-                setShadowEnabled(sa.getBoolean(R.styleable.PDETextView_shadowEnabled, false));
+            if (sa.hasValue(R.styleable.PDETextView_pde_shadowEnabled)) {
+                setShadowEnabled(sa.getBoolean(R.styleable.PDETextView_pde_shadowEnabled, false));
             }
 
             // set shadow offset x
-            if (sa.hasValue(R.styleable.PDETextView_shadowOffsetX)) {
-                setShadowOffsetX(sa.getFloat(R.styleable.PDETextView_shadowOffsetX, 0.0f));
+            if (sa.hasValue(R.styleable.PDETextView_pde_shadowOffsetX)) {
+                setShadowOffsetX(sa.getFloat(R.styleable.PDETextView_pde_shadowOffsetX, 0.0f));
             }
 
             // set shadow offset y
-            if (sa.hasValue(R.styleable.PDETextView_shadowOffsetY)) {
-                setShadowOffsetY(sa.getFloat(R.styleable.PDETextView_shadowOffsetY, 1.0f));
+            if (sa.hasValue(R.styleable.PDETextView_pde_shadowOffsetY)) {
+                setShadowOffsetY(sa.getFloat(R.styleable.PDETextView_pde_shadowOffsetY, 1.0f));
             }
 
             // set max lines
-            if (sa.hasValue(R.styleable.PDETextView_maxLines)) {
-                setMaxLines(sa.getInteger(R.styleable.PDETextView_maxLines, -1));
+            if (sa.hasValue(R.styleable.PDETextView_pde_maxLines)) {
+                setMaxLines(sa.getInteger(R.styleable.PDETextView_pde_maxLines, -1));
             }
 
             // set alignment mode
-            if (sa.hasValue(R.styleable.PDETextView_alignmentMode)) {
-                setAlignmentMode(sa.getInteger(R.styleable.PDETextView_alignmentMode, 0));
+            if (sa.hasValue(R.styleable.PDETextView_pde_alignmentMode)) {
+                setAlignmentMode(sa.getInteger(R.styleable.PDETextView_pde_alignmentMode, 0));
             }
 
             // set vertical alignment
-            if (sa.hasValue(R.styleable.PDETextView_verticalAlignment)) {
-                setVerticalAlignment(sa.getInteger(R.styleable.PDETextView_verticalAlignment, 0));
+            if (sa.hasValue(R.styleable.PDETextView_pde_verticalAlignment)) {
+                setVerticalAlignment(sa.getInteger(R.styleable.PDETextView_pde_verticalAlignment, 0));
             }
 
             // set horizontal alignment
-            if (sa.hasValue(R.styleable.PDETextView_horizontalAlignment)) {
-                setHorizontalAlignment(sa.getInteger(R.styleable.PDETextView_horizontalAlignment, 0));
+            if (sa.hasValue(R.styleable.PDETextView_pde_horizontalAlignment)) {
+                setHorizontalAlignment(sa.getInteger(R.styleable.PDETextView_pde_horizontalAlignment, 0));
             }
 
             // set baseline
-            if (sa.hasValue(R.styleable.PDETextView_baseline)) {
-                setBaseLine(sa.getDimensionPixelSize(R.styleable.PDETextView_baseline, 0));
+            if (sa.hasValue(R.styleable.PDETextView_pde_baseline)) {
+                setBaseLine(sa.getDimensionPixelSize(R.styleable.PDETextView_pde_baseline, 0));
             }
 
             // set ellipsize
-            if (sa.hasValue(R.styleable.PDETextView_ellipsizeText)) {
-                setEllipsize(sa.getBoolean(R.styleable.PDETextView_ellipsizeText, true));
+            if (sa.hasValue(R.styleable.PDETextView_pde_ellipsizeText)) {
+                setEllipsize(sa.getBoolean(R.styleable.PDETextView_pde_ellipsizeText, true));
             }
 
             // set line distance factor
-            if (sa.hasValue(R.styleable.PDETextView_lineDistanceFactor)) {
-                setLineDistanceFactor(sa.getFloat(R.styleable.PDETextView_lineDistanceFactor, 1.0f));
+            if (sa.hasValue(R.styleable.PDETextView_pde_lineDistanceFactor)) {
+                setLineDistanceFactor(sa.getFloat(R.styleable.PDETextView_pde_lineDistanceFactor, 1.0f));
             }
 
             // set left padding
-            if (sa.hasValue(R.styleable.PDETextView_paddingLeft)) {
-                setPaddingLeft(sa.getString(R.styleable.PDETextView_paddingLeft));
+            if (sa.hasValue(R.styleable.PDETextView_pde_paddingLeft)) {
+                if (sa.peekValue(R.styleable.PDETextView_pde_paddingLeft).type == TypedValue.TYPE_DIMENSION) {
+                    setPaddingLeft((int)sa.getDimension(R.styleable.PDETextView_pde_paddingLeft,0.0f));
+                } else {
+                    setPaddingLeft(sa.getString(R.styleable.PDETextView_pde_paddingLeft));
+                }
             } else {
                 setPaddingLeft(attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "paddingLeft"));
             }
 
             // set top padding
-            if (sa.hasValue(R.styleable.PDETextView_paddingTop)) {
-                setPaddingTop(sa.getString(R.styleable.PDETextView_paddingTop));
+            if (sa.hasValue(R.styleable.PDETextView_pde_paddingTop)) {
+                if (sa.peekValue(R.styleable.PDETextView_pde_paddingTop).type == TypedValue.TYPE_DIMENSION) {
+                    setPaddingTop((int)sa.getDimension(R.styleable.PDETextView_pde_paddingTop,0.0f));
+                } else {
+                    setPaddingTop(sa.getString(R.styleable.PDETextView_pde_paddingTop));
+                }
             } else {
                 setPaddingTop(attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "paddingTop"));
             }
 
             // set right padding
-            if (sa.hasValue(R.styleable.PDETextView_paddingRight)) {
-                setPaddingRight(sa.getString(R.styleable.PDETextView_paddingRight));
+            if (sa.hasValue(R.styleable.PDETextView_pde_paddingRight)) {
+                if (sa.peekValue(R.styleable.PDETextView_pde_paddingRight).type == TypedValue.TYPE_DIMENSION) {
+                    setPaddingRight((int)sa.getDimension(R.styleable.PDETextView_pde_paddingRight,0.0f));
+                } else {
+                    setPaddingRight(sa.getString(R.styleable.PDETextView_pde_paddingRight));
+                }
             } else {
                 setPaddingRight(attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "paddingRight"));
             }
 
             // set bottom padding
-            if (sa.hasValue(R.styleable.PDETextView_paddingBottom)) {
-                setPaddingBottom(sa.getString(R.styleable.PDETextView_paddingBottom));
+            if (sa.hasValue(R.styleable.PDETextView_pde_paddingBottom)) {
+                if (sa.peekValue(R.styleable.PDETextView_pde_paddingBottom).type == TypedValue.TYPE_DIMENSION) {
+                    setPaddingBottom((int)sa.getDimension(R.styleable.PDETextView_pde_paddingBottom,0.0f));
+                } else {
+                    setPaddingBottom(sa.getString(R.styleable.PDETextView_pde_paddingBottom));
+                }
             } else {
                 setPaddingBottom(attrs.getAttributeValue("http://schemas.android.com/apk/res/android",
                                                          "paddingBottom"));
             }
 
             // set the padding
-            if (sa.hasValue(R.styleable.PDETextView_padding)) {
-                setPaddingAll(sa.getString(R.styleable.PDETextView_padding));
+            if (sa.hasValue(R.styleable.PDETextView_pde_padding)) {
+                setPaddingAll(sa.getString(R.styleable.PDETextView_pde_padding));
             } else {
                 setPaddingAll(attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "padding"));
             }

@@ -1,48 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <attr name="text" format="string"/>
-    <attr name="typeface" format="string"/>
-    <attr name="textSize" format="string|dimension" />
-    <attr name="titleColor" format="color"/>
-    <attr name="textColor" format="color"/>
-    <attr name="backgroundColor" format="color"/>
-    <attr name="borderColor" format="color"/>
-    <attr name="shadowColor" format="color"/>
-    <attr name="shadowOffsetX" format="float"/>
-    <attr name="shadowOffsetY" format="float"/>
-    <attr name="shadowEnabled" format="boolean"/>
-    <attr name="padding" format ="dimension|string"/>
-    <attr name="paddingLeft" format ="dimension|string"/>
-    <attr name="paddingTop" format="dimension|string"/>
-    <attr name="paddingRight" format="dimension|string"/>
-    <attr name="paddingBottom" format="dimension|string"/>
-    <attr name="src" format="reference|string"/>
-    <attr name="pictureString" format="reference|string"/>
-    <attr name="timeString" format="string"/>
-    <attr name="format169" format="boolean"/>
-    <attr name="iconToTextHeightRatio" format="float"/>
-    <attr name="cornerRadius" format="dimension"/>
-    <attr name="buttonColor" format="color"/>
-    <attr name="buttonSelectedColor" format="color"/>
-    <attr name="textSelectedColor" format="color"/>
-    <attr name="minButtonPadding" format="dimension"/>
-    <attr name="minButtonPaddingLeft" format="dimension"/>
-    <attr name="minButtonPaddingTop" format="dimension"/>
-    <attr name="minButtonPaddingRight" format="dimension"/>
-    <attr name="minButtonPaddingBottom" format="dimension"/>
-    <attr name="horizontalPadding" format="dimension"/>
-    <attr name="textAlignment">
+    <attr name="pde_text" format="string"/>
+    <attr name="pde_subText" format="string"/>
+    <attr name="pde_typeface" format="string"/>
+    <attr name="pde_textSize" format="string|dimension" />
+    <attr name="pde_titleColor" format="color"/>
+    <attr name="pde_textColor" format="color"/>
+    <attr name="pde_backgroundColor" format="color"/>
+    <attr name="pde_borderColor" format="color"/>
+    <attr name="pde_shadowColor" format="color"/>
+    <attr name="pde_shadowOffsetX" format="float"/>
+    <attr name="pde_shadowOffsetY" format="float"/>
+    <attr name="pde_shadowEnabled" format="boolean"/>
+    <attr name="pde_padding" format ="dimension|string"/>
+    <attr name="pde_paddingLeft" format ="dimension|string"/>
+    <attr name="pde_paddingTop" format="dimension|string"/>
+    <attr name="pde_paddingRight" format="dimension|string"/>
+    <attr name="pde_paddingBottom" format="dimension|string"/>
+    <attr name="pde_src" format="reference|string"/>
+    <attr name="pde_pictureString" format="reference|string"/>
+    <attr name="pde_timeString" format="string"/>
+    <attr name="pde_format169" format="boolean"/>
+    <attr name="pde_iconToTextHeightRatio" format="float"/>
+    <attr name="pde_cornerRadius" format="dimension"/>
+    <attr name="pde_buttonColor" format="color"/>
+    <attr name="pde_buttonSelectedColor" format="color"/>
+    <attr name="pde_textSelectedColor" format="color"/>
+    <attr name="pde_minButtonPadding" format="dimension"/>
+    <attr name="pde_minButtonPaddingLeft" format="dimension"/>
+    <attr name="pde_minButtonPaddingTop" format="dimension"/>
+    <attr name="pde_minButtonPaddingRight" format="dimension"/>
+    <attr name="pde_minButtonPaddingBottom" format="dimension"/>
+    <attr name="pde_horizontalPadding" format="dimension"/>
+    <attr name="pde_textAlignment">
         <enum name="left" value="0"/>
         <enum name="center" value="1"/>
         <enum name="right" value="2"/>
     </attr>
-    <attr name="iconAlignment">
+    <attr name="pde_iconAlignment">
         <enum name="left" value="0"/>
         <enum name="right" value="1"/>
         <enum name="leftAttached" value="2"/>
         <enum name="rightAttached" value="3"/>
     </attr>
-    <attr name="backgroundType">
+    <attr name="pde_backgroundType">
         <enum name="none" value="5"/>
         <enum name="flat" value="7"/>
         <enum name="haptic" value="8"/>
@@ -51,59 +52,59 @@
         <enum name="textFlat" value="11"/>
         <enum name="textHaptic" value="12"/>
     </attr>
-    <attr name="horizontalAlignment">
+    <attr name="pde_horizontalAlignment">
         <enum name="left" value="0"/>
         <enum name="center" value="1"/>
         <enum name="right" value="2"/>
     </attr>
-    <attr name="contentStyle">
+    <attr name="pde_contentStyle">
         <enum name="flat" value="0"/>
         <enum name="haptic" value="1"/>
     </attr>
-    <attr name="currentFillValue" format="float"/>
-    <attr name="targetFillValue" format="float"/>
-    <attr name="totalFillValue" format="float"/>
-    <attr name="fillDuration" format="integer"/>
-    <attr name="color" format="color"/>
-    <attr name="unitText" format="string"/>
-    <attr name="numberOfDecimalPlaces" format="integer"/>
-    <attr name="unitTextEnabled" format="boolean"/>
-    <attr name="totalTextEnabled" format="boolean"/>
-    <attr name="startAnimationAtOnceEnabled" format="boolean"/>
-
+    <attr name="pde_currentFillValue" format="float"/>
+    <attr name="pde_targetFillValue" format="float"/>
+    <attr name="pde_totalFillValue" format="float"/>
+    <attr name="pde_fillDuration" format="integer"/>
+    <attr name="pde_color" format="color"/>
+    <attr name="pde_unitText" format="string"/>
+    <attr name="pde_numberOfDecimalPlaces" format="integer"/>
+    <attr name="pde_unitTextEnabled" format="boolean"/>
+    <attr name="pde_totalTextEnabled" format="boolean"/>
+    <attr name="pde_startAnimationAtOnceEnabled" format="boolean"/>
+    <attr name="pde_animationDuration" format="integer"/>
 
 
 
 
 
     <declare-styleable name="PDEAbsoluteLayout_Layout">
-        <attr name="layoutX" format="dimension" />
-        <attr name="layoutY" format="dimension" />
+        <attr name="pde_layoutX" format="dimension" />
+        <attr name="pde_layoutY" format="dimension" />
     </declare-styleable>
     <declare-styleable name="PDEButton">
-        <attr name="text"/>
-        <attr name="typeface"/>
-        <attr name="textSize"/>
-        <attr name="titleColor"/>
-        <attr name="textColor"/>
-        <attr name="buttonColor"/>
-        <attr name="buttonSelectedColor"/>
-        <attr name="textSelectedColor"/>
-        <attr name="src"/>
-        <attr name="textAlignment"/>
-        <attr name="iconAlignment"/>
-        <attr name="checkboxAlignment">
+        <attr name="pde_text"/>
+        <attr name="pde_typeface"/>
+        <attr name="pde_textSize"/>
+        <attr name="pde_titleColor"/>
+        <attr name="pde_textColor"/>
+        <attr name="pde_buttonColor"/>
+        <attr name="pde_buttonSelectedColor"/>
+        <attr name="pde_textSelectedColor"/>
+        <attr name="pde_src"/>
+        <attr name="pde_textAlignment"/>
+        <attr name="pde_iconAlignment"/>
+        <attr name="pde_checkboxAlignment">
             <enum name="left" value="0"/>
             <enum name="center" value="1"/>
             <enum name="right" value="2"/>
         </attr>
-        <attr name="radioAlignment">
+        <attr name="pde_radioAlignment">
             <enum name="left" value="0"/>
             <enum name="center" value="1"/>
             <enum name="right" value="2"/>
         </attr>
-        <attr name="backgroundType"/>
-        <attr name="overlay">
+        <attr name="pde_backgroundType"/>
+        <attr name="pde_overlay">
             <enum name="none" value="13"/>
             <enum name="checkbox" value="15"/>
             <enum name="radio" value="16"/>
@@ -112,16 +113,16 @@
             <enum name="radioHaptic" value="19"/>
             <enum name="radioFlat" value="20"/>
         </attr>
-        <attr name="iconColored" format="boolean"/>
-        <attr name="cornerRadius"/>
-        <attr name="borderColor"/>
-        <attr name="minButtonPadding"/>
-        <attr name="minButtonPaddingLeft"/>
-        <attr name="minButtonPaddingTop"/>
-        <attr name="minButtonPaddingRight"/>
-        <attr name="minButtonPaddingBottom"/>
-        <attr name="selected" format="boolean"/>
-        <attr name="roundedCornerConfiguration">
+        <attr name="pde_iconColored" format="boolean"/>
+        <attr name="pde_cornerRadius"/>
+        <attr name="pde_borderColor"/>
+        <attr name="pde_minButtonPadding"/>
+        <attr name="pde_minButtonPaddingLeft"/>
+        <attr name="pde_minButtonPaddingTop"/>
+        <attr name="pde_minButtonPaddingRight"/>
+        <attr name="pde_minButtonPaddingBottom"/>
+        <attr name="pde_selected" format="boolean"/>
+        <attr name="pde_roundedCornerConfiguration">
             <flag name="noCornersRounded" value="0x00000000" />
             <flag name="cornerTopLeftRounded" value="0x00000001" />
             <flag name="cornerTopRightRounded" value="0x00000002" />
@@ -129,23 +130,23 @@
             <flag name="cornerBottomRightRounded" value="0x00000008" />
             <flag name="allCornersRounded" value="0x0000000f" />
         </attr>
-        <attr name="iconToTextHeightRatio"/>
-        <attr name="horizontalPadding"/>
+        <attr name="pde_iconToTextHeightRatio"/>
+        <attr name="pde_horizontalPadding"/>
     </declare-styleable>
     <declare-styleable name="PDEInputField">
-        <attr name="text"/>
-        <attr name="typeface"/>
-        <attr name="textSize"/>
-        <attr name="textColor"/>
-        <attr name="hint" format="string"/>
-        <attr name="hintColor" format="color"/>
-        <attr name="textColorHighlight" format="color"/>
-        <attr name="cursorVisible" format="boolean"/>
-        <attr name="password" format="boolean"/>
-        <attr name="leftIcon" format="reference|string"/>
-        <attr name="selectAllOnFocus" format="boolean"/>
-        <attr name="clearButtonEnabled" format="boolean"/>
-        <attr name="ellipsize" format="enum">
+        <attr name="pde_text"/>
+        <attr name="pde_typeface"/>
+        <attr name="pde_textSize"/>
+        <attr name="pde_textColor"/>
+        <attr name="pde_hint" format="string"/>
+        <attr name="pde_hintColor" format="color"/>
+        <attr name="pde_textColorHighlight" format="color"/>
+        <attr name="pde_cursorVisible" format="boolean"/>
+        <attr name="pde_password" format="boolean"/>
+        <attr name="pde_leftIcon" format="reference|string"/>
+        <attr name="pde_selectAllOnFocus" format="boolean"/>
+        <attr name="pde_clearButtonEnabled" format="boolean"/>
+        <attr name="pde_ellipsize" format="enum">
             <!--VALUES MUST BE THE SAME LIKE THE ORIGINAL ELLIPSIZE ATTRIBUTE OF EDITTEXT, names could be different
                We check against xml attributes in code to avoid 2 different types (our and original),
                and to avoid double handling with an extra enumeration for our supported types.
@@ -157,7 +158,7 @@
             <enum name="middle" value="2"/>
             <enum name="end" value="3"/>
         </attr>
-        <attr name="imeOptions" >
+        <attr name="pde_imeOptions" >
             <!--VALUES MUST BE THE SAME LIKE THE ORIGINAL imeOptions ATTRIBUTE OF EditorInfo, names could be different
                We cant check against xml attributes in code to avoid 2 different types (our and original)
                and to avoid double handling with an extra enumeration for our supported types, because this isn`t really a
@@ -182,8 +183,8 @@
             <flag name="flagNoEnterAction" value="0x40000000" />
             <flag name="flagForceAscii" value="0x80000000" />
         </attr>
-        <attr name="iconToTextHeightRatio" />
-        <attr name="inputType" >
+        <attr name="pde_iconToTextHeightRatio" />
+        <attr name="pde_inputType" >
             <!--VALUES MUST BE THE SAME LIKE THE ORIGINAL inputType ATTRIBUTE OF EDITTEXT, names could be different
                We check against xml attributes in code to avoid 2 different types (our and original),
                and to avoid double handling with an extra enumeration for our supported types.
@@ -223,14 +224,14 @@
             <flag name="date" value="0x00000014"/>
             <flag name="time" value="0x00000024"/>
         </attr>
-        <attr name="backgroundType"/>
+        <attr name="pde_backgroundType"/>
     </declare-styleable>
     <declare-styleable name="PDEBoundedRelativeLayout">
-        <attr name="max_width" format="dimension" />
-        <attr name="max_height" format="dimension" />
+        <attr name="pde_max_width" format="dimension" />
+        <attr name="pde_max_height" format="dimension" />
     </declare-styleable>
     <declare-styleable name="PDESlider">
-        <attr name="contentType">
+        <attr name="pde_contentType">
             <enum name="progressBarFlat" value="0"/>
             <enum name="progressBarHaptic" value="1"/>
             <enum name="sliderBarFlat" value="2" />
@@ -242,168 +243,180 @@
         </attr>
     </declare-styleable>
     <declare-styleable name="PDETextView">
-        <attr name="text"/>
-        <attr name="textColor"/>
-        <attr name="backgroundColor"/>
-        <attr name="shadowColor"/>
-        <attr name="shadowOffsetX"/>
-        <attr name="shadowOffsetY"/>
-        <attr name="shadowEnabled"/>
-        <attr name="typeface"/>
-        <attr name="padding"/>
-        <attr name="paddingLeft"/>
-        <attr name="paddingTop"/>
-        <attr name="paddingRight"/>
-        <attr name="paddingBottom"/>
-        <attr name="textSize"/>
-        <attr name="maxLines" format="integer"/>
-        <attr name="ellipsizeText" format="boolean"/>
-        <attr name="alignmentMode">
+        <attr name="pde_text"/>
+        <attr name="pde_textColor"/>
+        <attr name="pde_backgroundColor"/>
+        <attr name="pde_shadowColor"/>
+        <attr name="pde_shadowOffsetX"/>
+        <attr name="pde_shadowOffsetY"/>
+        <attr name="pde_shadowEnabled"/>
+        <attr name="pde_typeface"/>
+        <attr name="pde_padding"/>
+        <attr name="pde_paddingLeft"/>
+        <attr name="pde_paddingTop"/>
+        <attr name="pde_paddingRight"/>
+        <attr name="pde_paddingBottom"/>
+        <attr name="pde_textSize"/>
+        <attr name="pde_maxLines" format="integer"/>
+        <attr name="pde_ellipsizeText" format="boolean"/>
+        <attr name="pde_alignmentMode">
             <enum name="standard" value="0"/>
             <enum name="baseline" value="1"/>
             <enum name="capHeight" value="2"/>
         </attr>
-        <attr name="horizontalAlignment"/>
-        <attr name="verticalAlignment">
+        <attr name="pde_horizontalAlignment"/>
+        <attr name="pde_verticalAlignment">
             <enum name="top" value="0"/>
             <enum name="center" value="1"/>
             <enum name="bottom" value="2"/>
         </attr>
-        <attr name="baseline" format="dimension"/>
-        <attr name="lineDistanceFactor" format="float"/>
+        <attr name="pde_baseline" format="dimension"/>
+        <attr name="pde_lineDistanceFactor" format="float"/>
     </declare-styleable>
 
     <declare-styleable name="PDEIconView">
-        <attr name="iconString" format="reference|string"/>
-        <attr name="iconColor" format="color"/>
-        <attr name="padding"/>
-        <attr name="shadowColor"/>
-        <attr name="shadowOffsetX"/>
-        <attr name="shadowOffsetY"/>
-        <attr name="shadowEnabled"/>
-        <attr name="src"/>
+        <attr name="pde_iconString" format="reference|string"/>
+        <attr name="pde_iconColor" format="color"/>
+        <attr name="pde_padding"/>
+        <attr name="pde_shadowColor"/>
+        <attr name="pde_shadowOffsetX"/>
+        <attr name="pde_shadowOffsetY"/>
+        <attr name="pde_shadowEnabled"/>
+        <attr name="pde_src"/>
     </declare-styleable>
 
     <declare-styleable name="PDEPhotoFrameView">
-        <attr name="src"/>
-        <attr name="pictureString"/>
-        <attr name="shadowEnabled"/>
-        <attr name="contentStyle"/>
+        <attr name="pde_src"/>
+        <attr name="pde_pictureString"/>
+        <attr name="pde_shadowEnabled"/>
+        <attr name="pde_contentStyle"/>
     </declare-styleable>
 
 
     <declare-styleable name="PDEMusicMetaphorView">
-        <attr name="src"/>
-        <attr name="pictureString"/>
-        <attr name="shadowEnabled"/>
-        <attr name="contentStyle"/>
+        <attr name="pde_src"/>
+        <attr name="pde_pictureString"/>
+        <attr name="pde_shadowEnabled"/>
+        <attr name="pde_contentStyle"/>
     </declare-styleable>
 
 
     <declare-styleable name="PDEFilmMetaphorView">
-        <attr name="src"/>
-        <attr name="pictureString"/>
-        <attr name="shadowEnabled"/>
-        <attr name="contentStyle"/>
+        <attr name="pde_src"/>
+        <attr name="pde_pictureString"/>
+        <attr name="pde_shadowEnabled"/>
+        <attr name="pde_contentStyle"/>
     </declare-styleable>
 
 
     <declare-styleable name="PDEVideoMetaphorView">
-        <attr name="src"/>
-        <attr name="pictureString"/>
-        <attr name="timeString"/>
-        <attr name="format169"/>
-        <attr name="shadowEnabled"/>
-        <attr name="contentStyle"/>
+        <attr name="pde_src"/>
+        <attr name="pde_pictureString"/>
+        <attr name="pde_timeString"/>
+        <attr name="pde_format169"/>
+        <attr name="pde_shadowEnabled"/>
+        <attr name="pde_contentStyle"/>
     </declare-styleable>
 
 
     <declare-styleable name="PDEListHeaderView">
-         <attr name="text"/>
-         <attr name="subText" format="string"/>
-         <attr name="backgroundColor"/>
-         <attr name="horizontalAlignment"/>
-         <attr name="delimiterBackgroundColor" format="color"/>
-         <attr name="textColor"/>
-         <attr name="subTextColor" format="color"/>
+         <attr name="pde_text"/>
+         <attr name="pde_subText"/>
+         <attr name="pde_backgroundColor"/>
+         <attr name="pde_horizontalAlignment"/>
+         <attr name="pde_delimiterBackgroundColor" format="color"/>
+         <attr name="pde_textColor"/>
+         <attr name="pde_subTextColor" format="color"/>
+         <attr name="pde_drawDelimiter" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="PDEListHeaderLayout">
+        <attr name="pde_text"/>
+        <attr name="pde_subText"/>
+        <attr name="pde_type">
+            <enum name="headline" value="0"/>
+            <enum name="clusterHeadline" value="1"/>
+        </attr>
+        <attr name="pde_template" format="integer"/>
+        <attr name="pde_showDelimiter" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="PDENotificationBase">
-        <attr name="title"/>
-        <attr name="message" format="string"/>
-        <attr name="backgroundColor"/>
-        <attr name="borderColor"/>
-        <attr name="borderWidth" format="dimension"/>
-        <attr name="titleTextColor" format="color"/>
-        <attr name="messageTextColor" format="color"/>
-        <attr name="triangleSide">
+        <attr name="pde_title" format="string"/>
+        <attr name="pde_message" format="string"/>
+        <attr name="pde_backgroundColor"/>
+        <attr name="pde_borderColor"/>
+        <attr name="pde_borderWidth" format="dimension"/>
+        <attr name="pde_titleTextColor" format="color"/>
+        <attr name="pde_messageTextColor" format="color"/>
+        <attr name="pde_triangleSide">
             <enum name="top" value="0"/>
             <enum name="right" value="1"/>
             <enum name="bottom" value="2"/>
             <enum name="left" value="3"/>
         </attr>
-        <attr name="trianglePredefinedPosition">
+        <attr name="pde_trianglePredefinedPosition">
             <enum name="left" value="0"/>
             <enum name="center" value="1"/>
             <enum name="right" value="2"/>
             <enum name="top" value="3"/>
             <enum name="bottom" value="4"/>
         </attr>
-        <attr name="triangleTipPositionAbsolute" format="float"/>
-        <attr name="triangleTipPositionRelative" format="float"/>
-        <attr name="cornerRadius"/>
-        <attr name="triangleWidth" format="dimension"/>
-        <attr name="triangleTipDistance" format="dimension"/>
-        <attr name="triangleMargin" format="dimension"/>
-        <attr name="triangleEnabled" format="boolean"/>
-        <attr name="show" format="boolean"/>
+        <attr name="pde_triangleTipPositionAbsolute" format="float"/>
+        <attr name="pde_triangleTipPositionRelative" format="float"/>
+        <attr name="pde_cornerRadius"/>
+        <attr name="pde_triangleWidth" format="dimension"/>
+        <attr name="pde_triangleTipDistance" format="dimension"/>
+        <attr name="pde_triangleMargin" format="dimension"/>
+        <attr name="pde_triangleEnabled" format="boolean"/>
+        <attr name="pde_show" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="PDEInfoFlag">
-        <attr name="titleEnabled" format="boolean"/>
+        <attr name="pde_titleEnabled" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="PDESectionedButton">
-        <attr name="typeface"/>
-        <attr name="textSize"/>
-        <attr name="textColor"/>
-        <attr name="buttonColor"/>
-        <attr name="buttonSelectedColor"/>
-        <attr name="textSelectedColor"/>
-        <attr name="backgroundType"/>
-        <attr name="momentary" format="boolean"/>
-        <attr name="toggle" format="boolean"/>
-        <attr name="textAlignment"/>
-        <attr name="iconAlignment"/>
-        <attr name="cornerRadius"/>
-        <attr name="borderColor"/>
-        <attr name="sections" format="reference"/>
-        <attr name="numberOfSections" format="integer"/>
-        <attr name="selectedSection" format="integer"/>
-        <attr name="minButtonPadding"/>
-        <attr name="minButtonPaddingLeft"/>
-        <attr name="minButtonPaddingTop"/>
-        <attr name="minButtonPaddingRight"/>
-        <attr name="minButtonPaddingBottom"/>
-        <attr name="horizontalPadding"/>
-        <attr name="iconToTextHeightRatio"/>
+        <attr name="pde_typeface"/>
+        <attr name="pde_textSize"/>
+        <attr name="pde_textColor"/>
+        <attr name="pde_buttonColor"/>
+        <attr name="pde_buttonSelectedColor"/>
+        <attr name="pde_textSelectedColor"/>
+        <attr name="pde_backgroundType"/>
+        <attr name="pde_momentary" format="boolean"/>
+        <attr name="pde_toggle" format="boolean"/>
+        <attr name="pde_textAlignment"/>
+        <attr name="pde_iconAlignment"/>
+        <attr name="pde_cornerRadius"/>
+        <attr name="pde_borderColor"/>
+        <attr name="pde_sections" format="reference"/>
+        <attr name="pde_numberOfSections" format="integer"/>
+        <attr name="pde_selectedSection" format="integer"/>
+        <attr name="pde_minButtonPadding"/>
+        <attr name="pde_minButtonPaddingLeft"/>
+        <attr name="pde_minButtonPaddingTop"/>
+        <attr name="pde_minButtonPaddingRight"/>
+        <attr name="pde_minButtonPaddingBottom"/>
+        <attr name="pde_horizontalPadding"/>
+        <attr name="pde_iconToTextHeightRatio"/>
     </declare-styleable>
 
     <declare-styleable name="PDEUsageCircle">
-        <attr name="currentFillValue"/>
-        <attr name="targetFillValue"/>
-        <attr name="totalFillValue"/>
-        <attr name="fillDuration"/>
-        <attr name="color"/>
-        <attr name="unitText"/>
-        <attr name="numberOfSegments" format="integer"/>
-        <attr name="numberOfDecimalPlaces"/>
-        <attr name="circleEnabled" format="boolean"/>
-        <attr name="textViewsEnabled" format="boolean"/>
-        <attr name="unitTextEnabled"/>
-        <attr name="totalTextEnabled"/>
-        <attr name="startAnimationAtOnceEnabled"/>
-        <attr name="circleStyle">
+        <attr name="pde_currentFillValue"/>
+        <attr name="pde_targetFillValue"/>
+        <attr name="pde_totalFillValue"/>
+        <attr name="pde_fillDuration"/>
+        <attr name="pde_color"/>
+        <attr name="pde_unitText"/>
+        <attr name="pde_numberOfSegments" format="integer"/>
+        <attr name="pde_numberOfDecimalPlaces"/>
+        <attr name="pde_circleEnabled" format="boolean"/>
+        <attr name="pde_textViewsEnabled" format="boolean"/>
+        <attr name="pde_unitTextEnabled"/>
+        <attr name="pde_totalTextEnabled"/>
+        <attr name="pde_startAnimationAtOnceEnabled"/>
+        <attr name="pde_circleStyle">
             <enum name="defaultStyle" value="0"/>
             <enum name="leadCircle" value="1"/>
             <enum name="slimCircle" value="2"/>
@@ -413,24 +426,42 @@
     </declare-styleable>
 
     <declare-styleable name="PDEUsageBar">
-        <attr name="currentFillValue"/>
-        <attr name="targetFillValue"/>
-        <attr name="totalFillValue"/>
-        <attr name="fillDuration"/>
-        <attr name="textSize"/>
-        <attr name="color"/>
-        <attr name="textColorCustom" format="color"/>
+        <attr name="pde_currentFillValue"/>
+        <attr name="pde_targetFillValue"/>
+        <attr name="pde_totalFillValue"/>
+        <attr name="pde_fillDuration"/>
+        <attr name="pde_textSize"/>
+        <attr name="pde_color"/>
+        <attr name="pde_textColorCustom" format="color"/>
         <!--MULTICOLOR_LABEL_CODE_IS_NOT_RELEASED_YET -->
-        <!--<attr name="alternativeTextColorCustom" format="color"/>-->
-        <attr name="unitText"/>
-        <attr name="numberOfDecimalPlaces"/>
-        <attr name="labelEnabled" format="boolean"/>
-        <attr name="unitTextEnabled"/>
-        <attr name="totalTextEnabled"/>
-        <attr name="startAnimationAtOnceEnabled"/>
-        <attr name="barStyle">
+        <!--<attr name="pde_alternativeTextColorCustom" format="color"/>-->
+        <attr name="pde_unitText"/>
+        <attr name="pde_numberOfDecimalPlaces"/>
+        <attr name="pde_labelEnabled" format="boolean"/>
+        <attr name="pde_unitTextEnabled"/>
+        <attr name="pde_totalTextEnabled"/>
+        <attr name="pde_startAnimationAtOnceEnabled"/>
+        <attr name="pde_barStyle">
             <enum name="fullBar" value="0"/>
             <enum name="smallBar" value="1"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="PDESwipeRefreshLayout">
+        <attr name="pde_animationDuration"/>
+        <attr name="pde_color"/>
+    </declare-styleable>
+
+    <declare-styleable name="PDEActivityIndicator">
+        <attr name="pde_animationDuration"/>
+        <attr name="pde_startAnimationAtOnceEnabled"/>
+        <attr name="pde_color"/>
+        <attr name="pde_triggerPercentage" format="float"/>
+        <attr name="pde_diameter" format="dimension"/>
+        <attr name="pde_mode">
+            <enum name="spinning" value="0"/>
+            <enum name="trigger" value="1"/>
+        </attr>
+    </declare-styleable>
+
 </resources>

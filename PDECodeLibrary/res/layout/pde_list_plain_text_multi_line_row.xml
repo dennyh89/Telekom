@@ -22,29 +22,29 @@
         >
 
     <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
-            android:id = "@+id/PDEList_ItemMainText"
+            android:id = "@+id/PDEList_ItemText"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/Telekom.BU2_1_2"
-            pdecodelibrary:paddingLeft="@dimen/Telekom.BU"
-            pdecodelibrary:textSize="@dimen/TeleGroteskDefaultSize"
-            pdecodelibrary:backgroundColor="@color/DTTransparentBlack"
-            pdecodelibrary:alignmentMode="capHeight"
-            pdecodelibrary:verticalAlignment="top"
-            pdecodelibrary:textColor="@color/DTUIText"
+            pdecodelibrary:pde_paddingLeft="@dimen/Telekom.BU"
+            pdecodelibrary:pde_textSize="@dimen/TeleGroteskDefaultSize"
+            pdecodelibrary:pde_backgroundColor="@color/DTTransparentBlack"
+            pdecodelibrary:pde_alignmentMode="capHeight"
+            pdecodelibrary:pde_verticalAlignment="top"
+            pdecodelibrary:pde_textColor="@color/DTUIText"
             />
 
     <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
             android:id = "@+id/PDEList_ItemSubText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            pdecodelibrary:paddingLeft="@dimen/Telekom.BU"
-            pdecodelibrary:paddingRight="@dimen/Telekom.BU"
-            pdecodelibrary:textSize="83%"
-            pdecodelibrary:backgroundColor="@color/DTTransparentBlack"
-            pdecodelibrary:alignmentMode="capHeight"
-            pdecodelibrary:verticalAlignment="bottom"
-            pdecodelibrary:textColor="@color/DTUIIndicativeText"
-            android:layout_below="@id/PDEList_ItemMainText"
+            pdecodelibrary:pde_paddingLeft="@dimen/Telekom.BU"
+            pdecodelibrary:pde_paddingRight="@dimen/Telekom.BU"
+            pdecodelibrary:pde_textSize="83%"
+            pdecodelibrary:pde_backgroundColor="@color/DTTransparentBlack"
+            pdecodelibrary:pde_alignmentMode="capHeight"
+            pdecodelibrary:pde_verticalAlignment="bottom"
+            pdecodelibrary:pde_textColor="@color/DTUIIndicativeText"
+            android:layout_below="@id/PDEList_ItemText"
             />
 
 </RelativeLayout>

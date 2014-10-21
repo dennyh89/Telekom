@@ -41,8 +41,8 @@
                         android:id="@+id/clearButtonView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        pdecodelibrary:src="#X"
-                        pdecodelibrary:roundedCornerConfiguration="cornerTopRightRounded|cornerBottomRightRounded"
+                        pdecodelibrary:pde_src="#X"
+                        pdecodelibrary:pde_roundedCornerConfiguration="cornerTopRightRounded|cornerBottomRightRounded"
                         />
             </de.telekom.pde.codelibrary.ui.layout.PDESquareRelativeLayout>
         </LinearLayout>

@@ -115,7 +115,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
      */
     public void setElementIconColor(PDEColor color) {
         //any change?
-        if (color == mIconColor) return;
+        if (color.equals(mIconColor)) return;
         //remember
         mIconColor = color;
         createIconPaint();
@@ -138,7 +138,7 @@ public class PDEDrawableIconFont extends PDEDrawableBase {
      */
     public void setElementShadowColor(PDEColor color) {
         //any change?
-        if (color == mShadowColor) return;
+        if (color.equals(mShadowColor)) return;
         //remember
         mShadowColor = color;
         createShadowPaint();

@@ -83,7 +83,7 @@ public class PDEUsageBar extends RelativeLayout implements PDEIEventSource {
     protected String mUnitText;
     // background view that shows the filling level
     protected PDEUsageBarBackground mBackgroundView;
-    // label view that shows the texts properly formated and layouted
+    // label view that shows the texts in the right format and layout
     protected PDEUsageBarLabel mLabel;
     // animation for the visual filling of the bar
     protected PDEParametricCurveAnimation mAnimation;
@@ -239,69 +239,69 @@ public class PDEUsageBar extends RelativeLayout implements PDEIEventSource {
 
         if (sa != null) {
             // set total fill value
-            if (sa.hasValue(R.styleable.PDEUsageBar_totalFillValue)) {
-                setTotalFillValue(sa.getFloat(R.styleable.PDEUsageBar_totalFillValue, 10.0f));
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_totalFillValue)) {
+                setTotalFillValue(sa.getFloat(R.styleable.PDEUsageBar_pde_totalFillValue, 10.0f));
             }
 
             // set current fill value
-            if (sa.hasValue(R.styleable.PDEUsageBar_currentFillValue)) {
-                setCurrentFillValue(sa.getFloat(R.styleable.PDEUsageBar_currentFillValue, 0.0f));
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_currentFillValue)) {
+                setCurrentFillValue(sa.getFloat(R.styleable.PDEUsageBar_pde_currentFillValue, 0.0f));
             }
 
             // set fill duration
-            if (sa.hasValue(R.styleable.PDEUsageBar_fillDuration)) {
-                setFillDurationToTotalFillValue(sa.getInteger(R.styleable.PDEUsageBar_fillDuration,
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_fillDuration)) {
+                setFillDurationToTotalFillValue(sa.getInteger(R.styleable.PDEUsageBar_pde_fillDuration,
                                                               CONFIGURATION_DEFAULT_DURATION));
             }
 
             // set number of decimal places
-            if (sa.hasValue(R.styleable.PDEUsageBar_numberOfDecimalPlaces)) {
-                setNumberOfDecimalPlaces(sa.getInteger(R.styleable.PDEUsageBar_numberOfDecimalPlaces, 0));
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_numberOfDecimalPlaces)) {
+                setNumberOfDecimalPlaces(sa.getInteger(R.styleable.PDEUsageBar_pde_numberOfDecimalPlaces, 0));
             }
 
             // set label enabled
-            if (sa.hasValue(R.styleable.PDEUsageBar_labelEnabled)) {
-                setLabelEnabled(sa.getBoolean(R.styleable.PDEUsageBar_labelEnabled, true));
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_labelEnabled)) {
+                setLabelEnabled(sa.getBoolean(R.styleable.PDEUsageBar_pde_labelEnabled, true));
             }
 
             // set unit text enabled
-            if (sa.hasValue(R.styleable.PDEUsageBar_unitTextEnabled)) {
-                setUnitTextEnabled(sa.getBoolean(R.styleable.PDEUsageBar_unitTextEnabled, true));
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_unitTextEnabled)) {
+                setUnitTextEnabled(sa.getBoolean(R.styleable.PDEUsageBar_pde_unitTextEnabled, true));
             }
 
             // set total text enabled
-            if (sa.hasValue(R.styleable.PDEUsageBar_totalTextEnabled)) {
-                setTotalTextEnabled(sa.getBoolean(R.styleable.PDEUsageBar_totalTextEnabled, true));
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_totalTextEnabled)) {
+                setTotalTextEnabled(sa.getBoolean(R.styleable.PDEUsageBar_pde_totalTextEnabled, true));
             }
 
             // set start animation at once
-            if (sa.hasValue(R.styleable.PDEUsageBar_startAnimationAtOnceEnabled)) {
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_startAnimationAtOnceEnabled)) {
                 setStartAnimationAtOnceEnabled(
-                        sa.getBoolean(R.styleable.PDEUsageBar_startAnimationAtOnceEnabled, false));
+                        sa.getBoolean(R.styleable.PDEUsageBar_pde_startAnimationAtOnceEnabled, false));
             }
 
             // set unit text
-            if (sa.hasValue(R.styleable.PDEUsageBar_unitText)) {
-                setUnitText(sa.getString(R.styleable.PDEUsageBar_unitText));
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_unitText)) {
+                setUnitText(sa.getString(R.styleable.PDEUsageBar_pde_unitText));
             }
 
             // set color
-            if (sa.hasValue(R.styleable.PDEUsageBar_color)) {
-                int resourceID = sa.getResourceId(R.styleable.PDEUsageBar_color, 0);
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_color)) {
+                int resourceID = sa.getResourceId(R.styleable.PDEUsageBar_pde_color, 0);
                 if (resourceID != 0) {
                     setColor(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setColor(sa.getColor(R.styleable.PDEUsageBar_color, R.color.DTDVLightBlue));
+                    setColor(sa.getColor(R.styleable.PDEUsageBar_pde_color, R.color.DTDVLightBlue));
                 }
             }
 
             // set text color custom
-            if (sa.hasValue(R.styleable.PDEUsageBar_textColorCustom)) {
-                int resourceID = sa.getResourceId(R.styleable.PDEUsageBar_textColorCustom, 0);
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_textColorCustom)) {
+                int resourceID = sa.getResourceId(R.styleable.PDEUsageBar_pde_textColorCustom, 0);
                 if (resourceID != 0) {
                     setTextColorCustom(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setTextColorCustom(sa.getColor(R.styleable.PDEUsageBar_textColorCustom, R.color.DTBlack));
+                    setTextColorCustom(sa.getColor(R.styleable.PDEUsageBar_pde_textColorCustom, R.color.DTBlack));
                 }
             }
 
@@ -309,34 +309,34 @@ public class PDEUsageBar extends RelativeLayout implements PDEIEventSource {
             // --- do NOT delete this out commented code ----
             /*
             // set alternative text color custom
-            if (sa.hasValue(R.styleable.PDEUsageBar_alternativeTextColorCustom)) {
-                int resourceID = sa.getResourceId(R.styleable.PDEUsageBar_alternativeTextColorCustom, 0);
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_alternativeTextColorCustom)) {
+                int resourceID = sa.getResourceId(R.styleable.PDEUsageBar_pde_alternativeTextColorCustom, 0);
                 if (resourceID != 0) {
                     setAlternativeTextColorCustom(PDEColor.valueOfColorID(resourceID));
                 } else {
                     setAlternativeTextColorCustom(
-                            sa.getColor(R.styleable.PDEUsageBar_alternativeTextColorCustom, R.color.DTBlack));
+                            sa.getColor(R.styleable.PDEUsageBar_pde_alternativeTextColorCustom, R.color.DTBlack));
                 }
             }
             */
 
             // set visual bar style
-            if (sa.hasValue(R.styleable.PDEUsageBar_barStyle)) {
-                setBarStyle(sa.getInteger(R.styleable.PDEUsageBar_barStyle, 0));
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_barStyle)) {
+                setBarStyle(sa.getInteger(R.styleable.PDEUsageBar_pde_barStyle, 0));
             }
 
             // set target fill value
-            if (sa.hasValue(R.styleable.PDEUsageBar_targetFillValue)) {
-                setTargetFillValue(sa.getFloat(R.styleable.PDEUsageBar_targetFillValue, 0.0f));
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_targetFillValue)) {
+                setTargetFillValue(sa.getFloat(R.styleable.PDEUsageBar_pde_targetFillValue, 0.0f));
             }
 
             // set the font size
             // we first try whether the inserted value is a dimension, if this fails we evaluate as string
-            if (sa.hasValue(R.styleable.PDEUsageBar_textSize)) {
+            if (sa.hasValue(R.styleable.PDEUsageBar_pde_textSize)) {
                 try {
-                    setFontSize(sa.getDimensionPixelSize(R.styleable.PDEUsageBar_textSize, 50));
+                    setFontSize(sa.getDimensionPixelSize(R.styleable.PDEUsageBar_pde_textSize, 50));
                 } catch (Exception e) {
-                    setFontSize(parseDimension(sa.getString(R.styleable.PDEUsageBar_textSize)));
+                    setFontSize(parseDimension(sa.getString(R.styleable.PDEUsageBar_pde_textSize)));
                 }
             }
 

@@ -94,9 +94,9 @@ public class PDEVideoMetaphorView extends View {
 
         if (sa != null) {
             //check icon source or string
-            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_src)) {
+            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_pde_src)) {
                 //check if this is a resource value
-                int resourceID = sa.getResourceId(R.styleable.PDEVideoMetaphorView_src, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDEVideoMetaphorView_pde_src, 0);
                 if (resourceID != 0) {
                     setPictureDrawable(context.getResources().getDrawable(resourceID));
                 }
@@ -110,11 +110,11 @@ public class PDEVideoMetaphorView extends View {
             }
 
             //set picture string
-            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_pictureString)) {
+            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_pde_pictureString)) {
                 //check if this is a resource value
-                int resourceID = sa.getResourceId(R.styleable.PDEVideoMetaphorView_pictureString, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDEVideoMetaphorView_pde_pictureString, 0);
                 if (resourceID == 0) {
-                    setPictureString(sa.getString(R.styleable.PDEVideoMetaphorView_pictureString));
+                    setPictureString(sa.getString(R.styleable.PDEVideoMetaphorView_pde_pictureString));
                 } else {
                     if (getResources() != null) {
                         setPictureDrawable(getResources().getDrawable(resourceID));
@@ -123,25 +123,25 @@ public class PDEVideoMetaphorView extends View {
             }
 
             // set content style
-            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_contentStyle)) {
-                setContentStyle(sa.getInteger(R.styleable.PDEVideoMetaphorView_contentStyle, 0));
+            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_pde_contentStyle)) {
+                setContentStyle(sa.getInteger(R.styleable.PDEVideoMetaphorView_pde_contentStyle, 0));
             }
 
             //set time string
             // set text
-            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_timeString)) {
-                setTimeString(sa.getString(R.styleable.PDEVideoMetaphorView_timeString));
+            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_pde_timeString)) {
+                setTimeString(sa.getString(R.styleable.PDEVideoMetaphorView_pde_timeString));
             }
 
             //set if 16/9 format
             // set shadow enabled
-            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_format169)) {
-                set169Format(sa.getBoolean(R.styleable.PDEVideoMetaphorView_format169, true));
+            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_pde_format169)) {
+                set169Format(sa.getBoolean(R.styleable.PDEVideoMetaphorView_pde_format169, true));
             }
 
             // set shadow enabled
-            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_shadowEnabled)) {
-                setShadowEnabled(sa.getBoolean(R.styleable.PDEVideoMetaphorView_shadowEnabled, false));
+            if (sa.hasValue(R.styleable.PDEVideoMetaphorView_pde_shadowEnabled)) {
+                setShadowEnabled(sa.getBoolean(R.styleable.PDEVideoMetaphorView_pde_shadowEnabled, false));
             }
 
             sa.recycle();

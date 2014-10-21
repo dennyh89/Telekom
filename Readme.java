@@ -533,10 +533,88 @@ Release notes
 =============
 
 __Current public version__<br />
-5.0.1
+6.0
  
 __Current non-public version__<br />
-5.0.1
+6.0
+
+Major 6.0 (public)
+--------------------
+  
+__Date__<br />
+21.10.2014
+ 
+__Server__<br />
+git.design.telekom.com
+ 
+__Repositories__<br />
+PDECodeLibrary_Android.git, PDECodeSamples_Android.git, 
+PDECodeLibrary_Android_Docu.git
+ 
+__Branch__<br />
+master
+ 
+__Content__<br />
+
+The Code Library version 6.0 adds a component for activity indication, adds
+clusters and headers to lists, implements swipe refresh behavior for lists
+and implements text modifications for standard diaolgs from language
+department.
+
+Because of the missing namespace for attributes, the prefix 'pde_' has been
+added to all items declared as XML-attributes.
+ 
+Patch 5.5.1 (non-public)
+------------------------
+
+XML-attributes: prefix added
+
+The use of some attribute-names conflicts with other libraries, for example
+the attribute-name "mode" is widely used. Unfortunately, Android does not
+support a namespace to distinguish between the attributes.
+
+In order to avoid conflicts and compile errors, the Code Library uses the
+prefix "pde_" for all strings useded as names of XML-attributes.
+
+Feature 5.5 (non-public)
+-------------------------
+
+Lists: Swipe refresh implemented
+
+The swipe refresh behavior has beeen implements for lists.
+It uses the PDEActrivityIndicator while the list is loaded.
+
+Feature 5.4 (non-public)
+-------------------------
+
+Components: Activity Indicator added
+
+A new component has been added for the activity indicato5r. It replaces
+the standard Android Activity Indicator.
+
+Feature 5.3 (non-public)
+-------------------------
+
+Dialogs: Text update from language department
+
+The language department released a major updtae for text messages of
+standard errors. The new string have been used for the licalised files.
+
+Feature 5.2 (non-public)
+-------------------------
+
+Lists: Behavior of list headers
+
+The cluster headers in sectioned lists are attached to the top of the screen
+all items of the current section have disappeared.
+
+The cluster headers in floating lists disappear directly when the content
+moves away.
+
+Feature 5.1 (non-public)
+-------------------------
+
+List: Clusters and headers added to structure lists.
 
 Patch 5.0.1 (public)
 --------------------

@@ -70,8 +70,8 @@ public class PDEBoundedRelativeLayout extends RelativeLayout {
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PDEBoundedRelativeLayout);
             if (a != null) {
-                mMaxWidth = a.getDimensionPixelSize(R.styleable.PDEBoundedRelativeLayout_max_width, -1);
-                mMaxHeight = a.getDimensionPixelSize(R.styleable.PDEBoundedRelativeLayout_max_height, -1);
+                mMaxWidth = a.getDimensionPixelSize(R.styleable.PDEBoundedRelativeLayout_pde_max_width, -1);
+                mMaxHeight = a.getDimensionPixelSize(R.styleable.PDEBoundedRelativeLayout_pde_max_height, -1);
                 a.recycle();
             }
         }

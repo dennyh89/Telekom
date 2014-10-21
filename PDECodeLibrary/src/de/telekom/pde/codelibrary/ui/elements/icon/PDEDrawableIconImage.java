@@ -196,7 +196,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
      */
     public void setElementImage(Drawable image) {
         //any change?
-        if (image == mElementImage) return;
+        //if (image == mElementImage) return;
 
         //remember
         mElementImage = image;
@@ -226,7 +226,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
      * @brief Set Image Color
      */
     public void setElementIconColor(PDEColor color) {
-        if (color == mIconColor) return;
+        if (color.equals(mIconColor)) return;
         mIconColor = color;
 
         if (mIconColor != null) {
@@ -323,7 +323,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
      */
     public void setElementShadowColor(PDEColor color) {
         //any change?
-        if (color == mShadowColor) return;
+        if (color.equals(mShadowColor)) return;
         //remember
         mShadowColor = color;
 
@@ -375,12 +375,12 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
      */
     private void updateImage() {
         mShadowImage = mElementImage.getConstantState().newDrawable();
-        mShadowImage.mutate().setColorFilter(mShadowColorFilter);
+        mShadowImage.setColorFilter(mShadowColorFilter);
 
         if (mIconColorFilter == null) {
-            mElementImage.mutate().setColorFilter(null);
+            mElementImage.setColorFilter(null);
         } else {
-            mElementImage.setColorFilter(mIconColorFilter);
+            mElementImage.mutate().setColorFilter(mIconColorFilter);
         }
 
     }

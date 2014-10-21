@@ -162,8 +162,8 @@ public class PDENotificationBase extends PDEBoundedRelativeLayout {
         TypedArray sa = context.obtainStyledAttributes(attrs, R.styleable.PDENotificationBase);
 
         if (sa != null) {
-            title = sa.getString(R.styleable.PDENotificationBase_title);
-            message = sa.getString(R.styleable.PDENotificationBase_message);
+            title = sa.getString(R.styleable.PDENotificationBase_pde_title);
+            message = sa.getString(R.styleable.PDENotificationBase_pde_message);
         }
         // set title
         if (!TextUtils.isEmpty(title)) setTitleText(title);
@@ -188,111 +188,111 @@ public class PDENotificationBase extends PDEBoundedRelativeLayout {
 
         if (sa != null) {
             // set the color of the bubble background
-            if (sa.hasValue(R.styleable.PDENotificationBase_backgroundColor)) {
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_backgroundColor)) {
                 //to have dark/light style use PDEColor with color id
-                int resourceID = sa.getResourceId(R.styleable.PDENotificationBase_backgroundColor, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDENotificationBase_pde_backgroundColor, 0);
                 if (resourceID != 0) {
                     setBackgroundColorNotification(PDEColor.valueOfColorID(resourceID));
                 } else {
                     setBackgroundColorNotification(
-                            sa.getColor(R.styleable.PDENotificationBase_backgroundColor, R.color.DTBlack));
+                            sa.getColor(R.styleable.PDENotificationBase_pde_backgroundColor, R.color.DTBlack));
                 }
             }
 
             // set the border color
-            if (sa.hasValue(R.styleable.PDENotificationBase_borderColor)) {
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_borderColor)) {
                 //to have dark/light style use PDEColor with color id
-                int resourceID = sa.getResourceId(R.styleable.PDENotificationBase_borderColor, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDENotificationBase_pde_borderColor, 0);
                 if (resourceID != 0) {
                     setBorderColor(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setBorderColor(sa.getColor(R.styleable.PDENotificationBase_borderColor, R.color.DTBlack));
+                    setBorderColor(sa.getColor(R.styleable.PDENotificationBase_pde_borderColor, R.color.DTBlack));
                 }
             }
 
             // set the border width
-            if (sa.hasValue(R.styleable.PDENotificationBase_borderWidth)) {
-                setBorderWidth(sa.getDimension(R.styleable.PDENotificationBase_borderWidth, 1.0f));
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_borderWidth)) {
+                setBorderWidth(sa.getDimension(R.styleable.PDENotificationBase_pde_borderWidth, 1.0f));
             }
 
             // set the color of the title text
-            if (sa.hasValue(R.styleable.PDENotificationBase_titleTextColor)) {
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_titleTextColor)) {
                 //to have dark/light style use PDEColor with color id
-                int resourceID = sa.getResourceId(R.styleable.PDENotificationBase_titleTextColor, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDENotificationBase_pde_titleTextColor, 0);
                 if (resourceID != 0) {
                     setTitleTextColor(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setTitleTextColor(sa.getColor(R.styleable.PDENotificationBase_titleTextColor, R.color.DTWhite));
+                    setTitleTextColor(sa.getColor(R.styleable.PDENotificationBase_pde_titleTextColor, R.color.DTWhite));
                 }
             }
 
             // set the color of the message text
-            if (sa.hasValue(R.styleable.PDENotificationBase_messageTextColor)) {
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_messageTextColor)) {
                 //to have dark/light style use PDEColor with color id
-                int resourceID = sa.getResourceId(R.styleable.PDENotificationBase_messageTextColor, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDENotificationBase_pde_messageTextColor, 0);
                 if (resourceID != 0) {
                     setMessageTextColor(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setMessageTextColor(sa.getColor(R.styleable.PDENotificationBase_messageTextColor, R.color.DTWhite));
+                    setMessageTextColor(sa.getColor(R.styleable.PDENotificationBase_pde_messageTextColor, R.color.DTWhite));
                 }
             }
 
             // set the side of the rounded box on which the triangle should be shown
-            if (sa.hasValue(R.styleable.PDENotificationBase_triangleSide)) {
-                setTriangleSide(sa.getInt(R.styleable.PDENotificationBase_triangleSide,
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_triangleSide)) {
+                setTriangleSide(sa.getInt(R.styleable.PDENotificationBase_pde_triangleSide,
                                           PDEDrawableNotificationFrame.TriangleSide.SideBottom.ordinal()));
             }
 
             // set triangle predefined position
-            if (sa.hasValue(R.styleable.PDENotificationBase_trianglePredefinedPosition)) {
-                setTrianglePredefinedPosition(sa.getInt(R.styleable.PDENotificationBase_trianglePredefinedPosition,
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_trianglePredefinedPosition)) {
+                setTrianglePredefinedPosition(sa.getInt(R.styleable.PDENotificationBase_pde_trianglePredefinedPosition,
                                                         TrianglePosition.Center.ordinal()));
             }
 
             // set triangle tip position (absolute pixel value)
-            if (sa.hasValue(R.styleable.PDENotificationBase_triangleTipPositionAbsolute)) {
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_triangleTipPositionAbsolute)) {
                 setTriangleTipPositionAbsolute(
-                        sa.getFloat(R.styleable.PDENotificationBase_triangleTipPositionAbsolute, 0.0f));
+                        sa.getFloat(R.styleable.PDENotificationBase_pde_triangleTipPositionAbsolute, 0.0f));
             }
 
             // set triangle tip position (relative value 0.0f - 1.0f)
-            if (sa.hasValue(R.styleable.PDENotificationBase_triangleTipPositionRelative)) {
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_triangleTipPositionRelative)) {
                 setTriangleTipPositionRelative(
-                        sa.getFloat(R.styleable.PDENotificationBase_triangleTipPositionRelative, 0.5f));
+                        sa.getFloat(R.styleable.PDENotificationBase_pde_triangleTipPositionRelative, 0.5f));
             }
 
             // set corner radius
-            if (sa.hasValue(R.styleable.PDENotificationBase_cornerRadius)) {
-                setCornerRadius(sa.getFloat(R.styleable.PDENotificationBase_cornerRadius,
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_cornerRadius)) {
+                setCornerRadius(sa.getFloat(R.styleable.PDENotificationBase_pde_cornerRadius,
                                             PDEDrawableNotificationFrame.DEFAULT_CORNER_RADIUS));
             }
 
             // set triangle tip width
-            if (sa.hasValue(R.styleable.PDENotificationBase_triangleWidth)) {
-                setTriangleWidth((int) sa.getDimension(R.styleable.PDENotificationBase_triangleWidth,
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_triangleWidth)) {
+                setTriangleWidth((int) sa.getDimension(R.styleable.PDENotificationBase_pde_triangleWidth,
                                                        PDEDrawableNotificationFrame.DEFAULT_TRIANGLE_WIDTH));
             }
 
             // set triangle tip distance
-            if (sa.hasValue(R.styleable.PDENotificationBase_triangleTipDistance)) {
-                setTriangleTipDistance((int) sa.getDimension(R.styleable.PDENotificationBase_triangleTipDistance,
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_triangleTipDistance)) {
+                setTriangleTipDistance((int) sa.getDimension(R.styleable.PDENotificationBase_pde_triangleTipDistance,
                                                              PDEDrawableNotificationFrame.DEFAULT_TRIANGLE_TIP_DISTANCE));
             }
 
             // set triangle margin
-            if (sa.hasValue(R.styleable.PDENotificationBase_triangleMargin)) {
-                setTriangleMargin((int) sa.getDimension(R.styleable.PDENotificationBase_triangleMargin,
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_triangleMargin)) {
+                setTriangleMargin((int) sa.getDimension(R.styleable.PDENotificationBase_pde_triangleMargin,
                                                         PDEDrawableNotificationFrame.DEFAULT_TRIANGLE_MARGIN));
             }
 
             // enable / disable triangle
-            if (sa.hasValue(R.styleable.PDENotificationBase_triangleEnabled)) {
-                setTriangleEnabled(sa.getBoolean(R.styleable.PDENotificationBase_triangleEnabled, true));
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_triangleEnabled)) {
+                setTriangleEnabled(sa.getBoolean(R.styleable.PDENotificationBase_pde_triangleEnabled, true));
             }
 
             // show/hide at startup
-            if (sa.hasValue(R.styleable.PDENotificationBase_show)) {
-                if (sa.getBoolean(R.styleable.PDENotificationBase_show, false)) {
+            if (sa.hasValue(R.styleable.PDENotificationBase_pde_show)) {
+                if (sa.getBoolean(R.styleable.PDENotificationBase_pde_show, false)) {
                     show(0);
                 }
             }

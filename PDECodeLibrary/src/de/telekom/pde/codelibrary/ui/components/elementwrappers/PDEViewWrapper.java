@@ -30,7 +30,7 @@ public class PDEViewWrapper extends View {
      * @brief Global tag for log outputs.
      */
     @SuppressWarnings("unused")
-    private final static String LOG_TAG = PDEViewWrapper.class.getName();
+    private final static String LOG_TAG = PDEViewWrapper.class.getSimpleName();
 
     // class variables
     private Drawable mDrawable = null;

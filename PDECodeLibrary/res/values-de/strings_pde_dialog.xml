@@ -23,8 +23,8 @@ Be carefully when you edit/remov/add values here
     -->
 
     <!-- Dialog titles and texts -->
-	<string name="NETWORK_ERROR_title">"Keine Internetverbindung"</string>
-	<string name="NETWORK_ERROR_text">"Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es anschließend noch einmal."</string>
+	<string name="NETWORK_ERROR_title">"Keine Internet-Verbindung"</string>
+	<string name="NETWORK_ERROR_text">"Bitte prüfen Sie Ihre Internet-Verbindung und versuchen Sie es anschließend noch einmal."</string>
 
 	<string name="LOGIN_FAILED_TARPIT_TIME_title">"Login wiederholen"</string>
 	<string name="LOGIN_FAILED_TARPIT_TIME_text">"Benutzername oder Passwort ist nicht korrekt. Sie können sich in %1$s erneut einloggen."</string>
@@ -60,7 +60,7 @@ Be carefully when you edit/remov/add values here
 	<string name="APP_FUNCTION_NOT_POSSIBLE_text">"%1$s ist nicht verfügbar, weil Sie sich nicht mehr im Telekom Mobilfunknetz befinden."</string>
 
 	<string name="ITEM_NOT_FOUND_title">"%1$s nicht gefunden"</string>
-	<string name="ITEM_NOT_FOUND_text">"Bitte überprüfen Sie %1$s."</string>
+	<string name="ITEM_NOT_FOUND_text">"Bitte prüfen Sie %1$s."</string>
 
 	<string name="ITEM_EXISTS_title">"%1$s vergeben"</string>
 	<string name="ITEM_EXISTS_text">"Bitte wählen Sie einen anderen Namen."</string>
@@ -68,8 +68,8 @@ Be carefully when you edit/remov/add values here
 	<string name="APP_LOAD_ERROR_title">"Entschuldigung"</string>
 	<string name="APP_LOAD_ERROR_text">"%1$s kann momentan nicht geladen werden. Bitte versuchen Sie es später noch einmal."</string>
 
-	<string name="APP_LOAD_NETWORK_ERROR_title">"Keine Internetverbindung"</string>
-	<string name="APP_LOAD_NETWORK_ERROR_text">"Bitte stellen Sie %1$s eine Internetverbindung her und starten Sie anschließend die App erneut."</string>
+	<string name="APP_LOAD_NETWORK_ERROR_title">"Keine Internet-Verbindung"</string>
+	<string name="APP_LOAD_NETWORK_ERROR_text">"Bitte stellen Sie in den %1$s eine Internet-Verbindung her und starten Sie anschließend die App erneut."</string>
 
 	<string name="MEDIA_PLAYBACK_UNAVAILABLE_title">"Entschuldigung"</string>
 	<string name="MEDIA_PLAYBACK_UNAVAILABLE_text">"Das Abspielen ist momentan nicht möglich. Bitte versuchen Sie es später noch einmal."</string>
@@ -89,7 +89,7 @@ Be carefully when you edit/remov/add values here
 	<string name="EMPTY_FIRST_NAME_ENTRY_title">"Bitte geben Sie Ihren Vornamen ein."</string>
 	<string name="EMPTY_FIRST_NAME_ENTRY_text">""</string>
 
-	<string name="INVALID_CHARACTERS_USED_title">"Bitte verwenden Sie nicht %1$s"</string>
+	<string name="INVALID_CHARACTERS_USED_title">"Bitte verwenden Sie nicht %1$s."</string>
 	<string name="INVALID_CHARACTERS_USED_text">""</string>
 
 	<string name="VALID_CHARACTER_SET_title">"Bitte verwenden Sie nur %1$s."</string>
@@ -126,16 +126,16 @@ Be carefully when you edit/remov/add values here
 	<string name="FUNCTION_UNAVAILABLE_BECAUSE_text">"Leider ist diese Funktion momentan nicht verfügbar, weil %1$s. Bitte versuchen Sie es später noch einmal."</string>
 
 	<string name="UPLOAD_FAILED_title">"Entschuldigung"</string>
-	<string name="UPLOAD_FAILED_text">"Leider war das Hochladen nicht möglich. Bitte versuchen Sie es noch einmal."</string>
+	<string name="UPLOAD_FAILED_text">"Leider konnte die Datei nicht hochgeladen werden. Bitte versuchen Sie es noch einmal."</string>
 
 	<string name="INFORMATION_DISPLAY_FAILED_title">"Informationen nicht abrufbar"</string>
 	<string name="INFORMATION_DISPLAY_FAILED_text">""</string>
 
-	<string name="INTERNET_ERROR_IN_LOGIN_title">"Keine Internetverbindung"</string>
+	<string name="INTERNET_ERROR_IN_LOGIN_title">"Keine Internet-Verbindung"</string>
 	<string name="INTERNET_ERROR_IN_LOGIN_text">"Bitte stellen Sie eine Verbindung zum Internet her und loggen Sie sich erneut ein."</string>
 
 	<string name="EMPTY_SEARCH_RESULTS_title">"Keine Ergebnisse"</string>
-	<string name="EMPTY_SEARCH_RESULTS_text">"Ihre Suche ergab leider keine Ergebnisse. Versuchen Sie es doch mit einem anderen Suchbegriff."</string>
+	<string name="EMPTY_SEARCH_RESULTS_text">"Ihre Suche ergab leider keine Ergebnisse. Probieren Sie es doch mit einem anderen Begriff."</string>
 
 	<string name="LOGIN_REQUIRED_title">"Bitte loggen Sie sich ein."</string>
 	<string name="LOGIN_REQUIRED_text">""</string>
@@ -159,7 +159,7 @@ Be carefully when you edit/remov/add values here
 	<string name="PAGE_NOT_FOUND_text">"Bitte versuchen Sie später noch einmal, die Seite aufzurufen."</string>
 
 	<string name="EMAIL_RECIPIENT_UNKNOWN_title">"Entschuldigung"</string>
-	<string name="EMAIL_RECIPIENT_UNKNOWN_text">"Die %1$s konnte nicht gesendet werden. Folgende Empfänger sind unbekannt: %2$s"</string>
+	<string name="EMAIL_RECIPIENT_UNKNOWN_text">"Die Nachricht konnte nicht gesendet werden. Folgende Empfänger sind unbekannt: %1$s"</string>
 
 	<string name="SEND_EMAIL_FAILED_title">"Entschuldigung"</string>
 	<string name="SEND_EMAIL_FAILED_text">"Die %1$s konnte nicht gesendet werden. Bitte versuchen Sie es noch einmal."</string>
@@ -182,8 +182,8 @@ Be carefully when you edit/remov/add values here
 	<string name="CONNECTION_TO_FAILED_title">"Keine Verbindung"</string>
 	<string name="CONNECTION_TO_FAILED_text">"Es tut uns leid, wir konnten keine Verbindung zu %1$s herstellen. Bitte versuchen Sie es später noch einmal."</string>
 
-	<string name="CONNECTION_LOST_title">"Verbindung verloren"</string>
-	<string name="CONNECTION_LOST_text">"Bitte überprüfen Sie Ihre Internetverbindung."</string>
+	<string name="CONNECTION_LOST_title">"Verbindung unterbrochen"</string>
+	<string name="CONNECTION_LOST_text">"Bitte prüfen Sie Ihre Internet-Verbindung."</string>
 
     <!-- Dialog Button texts -->
     <string name="dialog_btn_close">"Schließen"</string>

@@ -204,81 +204,81 @@ public class PDEUsageCircle extends View implements PDEIEventSource {
 
         if (sa != null) {
             // set total fill value
-            if (sa.hasValue(R.styleable.PDEUsageCircle_totalFillValue)) {
-                setTotalFillValue(sa.getFloat(R.styleable.PDEUsageCircle_totalFillValue,
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_totalFillValue)) {
+                setTotalFillValue(sa.getFloat(R.styleable.PDEUsageCircle_pde_totalFillValue,
                                               CONFIGURATION_DEFAULT_TOTAL_FILL_VALUE));
             }
 
             // set current fill value
-            if (sa.hasValue(R.styleable.PDEUsageCircle_currentFillValue)) {
-                setCurrentFillValue(sa.getFloat(R.styleable.PDEUsageCircle_currentFillValue, 0.0f));
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_currentFillValue)) {
+                setCurrentFillValue(sa.getFloat(R.styleable.PDEUsageCircle_pde_currentFillValue, 0.0f));
             }
 
             // set fill duration
-            if (sa.hasValue(R.styleable.PDEUsageCircle_fillDuration)) {
-                setFillDurationToTotalFillValue(sa.getInteger(R.styleable.PDEUsageCircle_fillDuration,
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_fillDuration)) {
+                setFillDurationToTotalFillValue(sa.getInteger(R.styleable.PDEUsageCircle_pde_fillDuration,
                                                               CONFIGURATION_DEFAULT_FILL_DURATION));
             }
 
             // set number of decimal places
-            if (sa.hasValue(R.styleable.PDEUsageCircle_numberOfDecimalPlaces)) {
-                setNumberOfDecimalPlaces(sa.getInteger(R.styleable.PDEUsageCircle_numberOfDecimalPlaces, 0));
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_numberOfDecimalPlaces)) {
+                setNumberOfDecimalPlaces(sa.getInteger(R.styleable.PDEUsageCircle_pde_numberOfDecimalPlaces, 0));
             }
 
             // set max segments
-            if (sa.hasValue(R.styleable.PDEUsageCircle_numberOfSegments)) {
-                setNumberOfSegments(sa.getInteger(R.styleable.PDEUsageCircle_numberOfSegments, 0));
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_numberOfSegments)) {
+                setNumberOfSegments(sa.getInteger(R.styleable.PDEUsageCircle_pde_numberOfSegments, 0));
             }
 
             // set circle enabled
-            if (sa.hasValue(R.styleable.PDEUsageCircle_circleEnabled)) {
-                setCircleEnabled(sa.getBoolean(R.styleable.PDEUsageCircle_circleEnabled, true));
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_circleEnabled)) {
+                setCircleEnabled(sa.getBoolean(R.styleable.PDEUsageCircle_pde_circleEnabled, true));
             }
 
             // set total text enabled
-            if (sa.hasValue(R.styleable.PDEUsageCircle_textViewsEnabled)) {
-                setTextViewsEnabled(sa.getBoolean(R.styleable.PDEUsageCircle_textViewsEnabled, true));
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_textViewsEnabled)) {
+                setTextViewsEnabled(sa.getBoolean(R.styleable.PDEUsageCircle_pde_textViewsEnabled, true));
             }
 
             // set unit text enabled
-            if (sa.hasValue(R.styleable.PDEUsageCircle_unitTextEnabled)) {
-                setUnitTextEnabled(sa.getBoolean(R.styleable.PDEUsageCircle_unitTextEnabled, true));
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_unitTextEnabled)) {
+                setUnitTextEnabled(sa.getBoolean(R.styleable.PDEUsageCircle_pde_unitTextEnabled, true));
             }
 
             // set show current value only
-            if (sa.hasValue(R.styleable.PDEUsageCircle_totalTextEnabled)) {
-                setTotalTextEnabled(sa.getBoolean(R.styleable.PDEUsageCircle_totalTextEnabled, true));
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_totalTextEnabled)) {
+                setTotalTextEnabled(sa.getBoolean(R.styleable.PDEUsageCircle_pde_totalTextEnabled, true));
             }
 
             // set start animation at once
-            if (sa.hasValue(R.styleable.PDEUsageCircle_startAnimationAtOnceEnabled)) {
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_startAnimationAtOnceEnabled)) {
                 setStartAnimationAtOnceEnabled(
-                        sa.getBoolean(R.styleable.PDEUsageCircle_startAnimationAtOnceEnabled, false));
+                        sa.getBoolean(R.styleable.PDEUsageCircle_pde_startAnimationAtOnceEnabled, false));
             }
 
             // set unit text
-            if (sa.hasValue(R.styleable.PDEUsageCircle_unitText)) {
-                setUnitText(sa.getString(R.styleable.PDEUsageCircle_unitText));
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_unitText)) {
+                setUnitText(sa.getString(R.styleable.PDEUsageCircle_pde_unitText));
             }
 
             // set color
-            if (sa.hasValue(R.styleable.PDEUsageCircle_color)) {
-                int resourceID = sa.getResourceId(R.styleable.PDEUsageCircle_color, 0);
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_color)) {
+                int resourceID = sa.getResourceId(R.styleable.PDEUsageCircle_pde_color, 0);
                 if (resourceID != 0) {
                     setColor(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setColor(sa.getColor(R.styleable.PDEUsageCircle_color, R.color.DTDVLightBlue));
+                    setColor(sa.getColor(R.styleable.PDEUsageCircle_pde_color, R.color.DTDVLightBlue));
                 }
             }
 
             // set style
-            if (sa.hasValue(R.styleable.PDEUsageCircle_circleStyle)) {
-                setCircleStyle(sa.getInteger(R.styleable.PDEUsageCircle_circleStyle, 0));
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_circleStyle)) {
+                setCircleStyle(sa.getInteger(R.styleable.PDEUsageCircle_pde_circleStyle, 0));
             }
 
             // set target fill value
-            if (sa.hasValue(R.styleable.PDEUsageCircle_targetFillValue)) {
-                setTargetFillValue(sa.getFloat(R.styleable.PDEUsageCircle_targetFillValue, 0.0f));
+            if (sa.hasValue(R.styleable.PDEUsageCircle_pde_targetFillValue)) {
+                setTargetFillValue(sa.getFloat(R.styleable.PDEUsageCircle_pde_targetFillValue, 0.0f));
             }
 
             sa.recycle();

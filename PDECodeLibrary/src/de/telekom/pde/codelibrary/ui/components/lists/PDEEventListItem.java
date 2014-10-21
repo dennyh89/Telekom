@@ -23,21 +23,23 @@ public class PDEEventListItem extends PDEEvent {
     // the position of the item within the list
     protected int mPosition;
 
+
     /**
      * @brief Set position of item within the list.
      *
      * @param pos position of item within list.
      */
-    public void setListPosition(int pos){
+    public void setListPosition(int pos) {
         mPosition = pos;
     }
+
 
     /**
      * @brief Get position of item within the list.
      *
      * @return list position
      */
-    public int getListPosition(){
+    public int getListPosition() {
         return mPosition;
     }
 }

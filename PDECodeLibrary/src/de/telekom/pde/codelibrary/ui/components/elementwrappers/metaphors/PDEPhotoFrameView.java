@@ -92,9 +92,9 @@ public class PDEPhotoFrameView extends View {
         TypedArray sa = getContext().obtainStyledAttributes(attrs, R.styleable.PDEPhotoFrameView);
 
         //check icon source or string
-        if (sa.hasValue(R.styleable.PDEPhotoFrameView_src)) {
+        if (sa.hasValue(R.styleable.PDEPhotoFrameView_pde_src)) {
             //check if this is a resource value
-            int resourceID = sa.getResourceId(R.styleable.PDEPhotoFrameView_src, 0);
+            int resourceID = sa.getResourceId(R.styleable.PDEPhotoFrameView_pde_src, 0);
             if (resourceID != 0) {
                 setPictureDrawable(getContext().getResources().getDrawable(resourceID));
             }
@@ -106,24 +106,24 @@ public class PDEPhotoFrameView extends View {
         }
 
         // set content style
-        if (sa.hasValue(R.styleable.PDEPhotoFrameView_contentStyle)) {
-            setContentStyle(sa.getInteger(R.styleable.PDEPhotoFrameView_contentStyle, 0));
+        if (sa.hasValue(R.styleable.PDEPhotoFrameView_pde_contentStyle)) {
+            setContentStyle(sa.getInteger(R.styleable.PDEPhotoFrameView_pde_contentStyle, 0));
         }
 
         //set picture string
-        if (sa.hasValue(R.styleable.PDEPhotoFrameView_pictureString)) {
+        if (sa.hasValue(R.styleable.PDEPhotoFrameView_pde_pictureString)) {
             //check if this is a resource value
-            int resourceID = sa.getResourceId(R.styleable.PDEPhotoFrameView_pictureString, 0);
+            int resourceID = sa.getResourceId(R.styleable.PDEPhotoFrameView_pde_pictureString, 0);
             if (resourceID == 0) {
-                setPictureString(sa.getString(R.styleable.PDEPhotoFrameView_pictureString));
+                setPictureString(sa.getString(R.styleable.PDEPhotoFrameView_pde_pictureString));
             } else {
                 setPictureDrawable(getContext().getResources().getDrawable(resourceID));
             }
         }
 
         // set shadow enabled
-        if (sa.hasValue(R.styleable.PDEPhotoFrameView_shadowEnabled)) {
-            setShadowEnabled(sa.getBoolean(R.styleable.PDEPhotoFrameView_shadowEnabled, false));
+        if (sa.hasValue(R.styleable.PDEPhotoFrameView_pde_shadowEnabled)) {
+            setShadowEnabled(sa.getBoolean(R.styleable.PDEPhotoFrameView_pde_shadowEnabled, false));
         }
 
         sa.recycle();

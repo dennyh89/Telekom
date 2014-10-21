@@ -80,8 +80,8 @@ public class PDEInfoFlag extends PDENotificationBase {
 
         if (sa != null) {
             // enable / disable title
-            if (sa.hasValue(R.styleable.PDEInfoFlag_titleEnabled)) {
-                setTitleEnabled(sa.getBoolean(R.styleable.PDEInfoFlag_titleEnabled, true));
+            if (sa.hasValue(R.styleable.PDEInfoFlag_pde_titleEnabled)) {
+                setTitleEnabled(sa.getBoolean(R.styleable.PDEInfoFlag_pde_titleEnabled, true));
             }
 
             sa.recycle();

@@ -14,7 +14,7 @@
             android:layout_margin="@dimen/Telekom.BU2"
             android:id="@+id/pde_dialog_plane"
             android:layout_centerInParent="true"
-            pdecodelibrary:max_width="@dimen/Telekom.BU7"
+            pdecodelibrary:pde_max_width="@dimen/Telekom.BU7"
             >
         <LinearLayout
                 android:layout_width="wrap_content"
@@ -39,12 +39,12 @@
                         android:id="@+id/pde_dialog_title"
                         android:layout_marginLeft="@dimen/Telekom.BU2"
                         android:layout_marginRight="@dimen/Telekom.BU2"
-                        pdecodelibrary:paddingTop="@dimen/Telekom.BU3_1_2"
-                        pdecodelibrary:paddingBottom="@dimen/Telekom.BU"
-                        pdecodelibrary:alignmentMode="capHeight"
-                        pdecodelibrary:maxLines="1"
-                        pdecodelibrary:ellipsizeText="true"
-                        pdecodelibrary:horizontalAlignment="center"
+                        pdecodelibrary:pde_paddingTop="@dimen/Telekom.BU3_1_2"
+                        pdecodelibrary:pde_paddingBottom="@dimen/Telekom.BU"
+                        pdecodelibrary:pde_alignmentMode="capHeight"
+                        pdecodelibrary:pde_maxLines="1"
+                        pdecodelibrary:pde_ellipsizeText="true"
+                        pdecodelibrary:pde_horizontalAlignment="center"
                         />
 
                 <View
@@ -66,7 +66,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/pde_dialog_message"
-                        pdecodelibrary:alignmentMode="capHeight"
+                        pdecodelibrary:pde_alignmentMode="capHeight"
                         />
             </ScrollView>
             <LinearLayout
