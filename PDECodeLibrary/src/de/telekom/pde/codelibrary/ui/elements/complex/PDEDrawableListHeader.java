@@ -61,11 +61,14 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
     private float mTextWidthMainLabel;
     private float mTextWidthSubLabel;
 
+    private boolean mDrawDelimiter;
+
 
     /**
      * @brief Constructor
      */
     public PDEDrawableListHeader() {
+        mDrawDelimiter = true;
         // init sublayers
         initLayers();
 
@@ -74,6 +77,7 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
         mLabelPaddingHorizontal = PDEBuildingUnits.oneFourthBU();
         mVerticalMargin = PDEBuildingUnits.oneHalfBU();
         mDelimiterHeight = 1;
+
 
         // init main label to PDE defaults
         mElementMainLabel.setElementText("");
@@ -125,7 +129,7 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
         mElementDelimiter = new PDEDrawableDelimiter();
 
         // add
-        addLayer(mElementDelimiter);
+        if (mDrawDelimiter) addLayer(mElementDelimiter);
         addLayer(mElementMainLabel);
         addLayer(mElementSubLabel);
     }
@@ -253,10 +257,11 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
 
 
     /**
-     * @brief Set fill (background) color of delimiter.
+     * @brief Set fill (background) color of bottom delimiter.
      *
-     * @param color The new backgroundcolor of the delimiter.
+     * @param color The new backgroundcolor of the bottom delimiter.
      */
+    @SuppressWarnings("unused")
     public void setDelimiterBackgroundColor(PDEColor color) {
         // any change?
         if (color.getIntegerColor() == mElementDelimiter.getElementBackgroundColor().getIntegerColor()) {
@@ -276,6 +281,7 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
      *
      * @return background color of the delimiter
      */
+    @SuppressWarnings("unused")
     public PDEColor getDelimiterBackgroundColor() {
         return mElementDelimiter.getElementBackgroundColor();
     }
@@ -333,7 +339,13 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
         if (DEBUG) Log.d(LOG_TAG,"bounds: left "+bounds.left+" top "+bounds.top+" right "+bounds.right+" bottom " +
                                  ""+bounds.bottom);
         // update delimiter
-        mElementDelimiter.setLayoutRect(new Rect(0,bounds.height()-1,bounds.width(),bounds.height()));
+        mElementDelimiter.setLayoutRect(new Rect(0,
+                                              bounds.height() - getDelimiterHeight(),
+                                              bounds.width(),
+                                              bounds.height()));
+
+
+
         // update the text labels
         calculateLayout(bounds);
     }
@@ -427,7 +439,7 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
         if (mainHasText) {
             // the labels stick to the lower end of the element. The main label always keeps the same distance (vertical margin)
             // to the delimiter. So to get the y-offset of the main label we subtract from the lower end of the element the distances.
-            yPositionMain = bounds.height() - mDelimiterHeight - mVerticalMargin - wantedHeightMain;
+            yPositionMain = bounds.height() - getDelimiterHeight() - mVerticalMargin - wantedHeightMain;
             if (DEBUG) Log.d(LOG_TAG, "yPosMain: "+yPositionMain+" wantedHeightMain "+wantedHeightMain);
             // is there also a sublabel?
             if (subHasText) {
@@ -447,7 +459,7 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
             }
         } else {
             // if there is only the sub-label visible, it sticks to the lower end of the element the same way as the main-label would do.
-            yPositionSub = bounds.height() - mDelimiterHeight - mVerticalMargin - wantedHeightSub;
+            yPositionSub = bounds.height() - getDelimiterHeight() - mVerticalMargin - wantedHeightSub;
         }
 
 
@@ -471,4 +483,32 @@ public class PDEDrawableListHeader extends PDEDrawableMultilayer {
         mElementMainLabel.setLayoutSize(wantedWidthMain,wantedHeightMain);
         mElementSubLabel.setLayoutSize(wantedWidthSub,wantedHeightSub);
     }
+
+    public void setDrawDelimiter(boolean draw){
+        // any change?
+        if (mDrawDelimiter == draw) return;
+        // remember
+        mDrawDelimiter = draw;
+        // make it visible / invisible
+        if (mDrawDelimiter) {
+            addLayer(mElementDelimiter);
+        } else {
+            removeLayer(mElementDelimiter);
+        }
+    }
+
+
+
+    private int getDelimiterHeight() {
+        if (mDrawDelimiter){
+            return mDelimiterHeight;
+        } else {
+            return 0;
+        }
+    }
+
+    public boolean isDelimiterDrawn() {
+        return mDrawDelimiter;
+    }
+
 }

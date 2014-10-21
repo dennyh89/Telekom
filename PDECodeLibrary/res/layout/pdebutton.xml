@@ -8,53 +8,48 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             />
-    <!-- needed since pdebutton_inner_layout wants some margin -->
+
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
-        <RelativeLayout
+            android:id="@+id/pdebutton_inner_layout">
+        <!-- space for center checkbox / radio element - should not be used together with icon and or text -->
+        <LinearLayout
+                android:id="@+id/pdebutton_overlay_slot_center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal"
+                />
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/pdebutton_inner_layout">
-            <!-- space for center checkbox / radio element - should not be used together with icon and or text -->
+                android:id="@+id/pdebutton_overlay_foreground_holder"
+                >
+            <!-- space for left checkbox / radio element -->
             <LinearLayout
-                    android:id="@+id/pdebutton_overlay_slot_center"
+                    android:id="@+id/pdebutton_overlay_slot_left"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
                     android:orientation="horizontal"
                     />
+            <!-- space for icon text element -->
             <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/pdebutton_foreground_slot"
+                    android:layout_width="0dip"
                     android:layout_height="match_parent"
-                    android:id="@+id/pdebutton_overlay_foreground_holder"
-                    >
-                <!-- space for left checkbox / radio element -->
-                <LinearLayout
-                        android:id="@+id/pdebutton_overlay_slot_left"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        />
-                <!-- space for icon text element -->
-                <LinearLayout
-                        android:id="@+id/pdebutton_foreground_slot"
-                        android:layout_width="0dip"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal"
-                        />
-                <!-- space for right checkbox / radio element -->
-                <LinearLayout
-                        android:id="@+id/pdebutton_overlay_slot_right"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        />
-            </LinearLayout>
-        </RelativeLayout>
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    />
+            <!-- space for right checkbox / radio element -->
+            <LinearLayout
+                    android:id="@+id/pdebutton_overlay_slot_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    />
+        </LinearLayout>
     </RelativeLayout>
 
 </merge>

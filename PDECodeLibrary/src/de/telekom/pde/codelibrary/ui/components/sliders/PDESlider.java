@@ -346,8 +346,8 @@ public class PDESlider extends PDEAbsoluteLayout implements PDEIEventSource {
 
             if (sa != null) {
                 // create content
-                if (sa.hasValue(R.styleable.PDESlider_contentType)) {
-                    setSliderContentType(sa.getInt(R.styleable.PDESlider_contentType, 0));
+                if (sa.hasValue(R.styleable.PDESlider_pde_contentType)) {
+                    setSliderContentType(sa.getInt(R.styleable.PDESlider_pde_contentType, 0));
                 }
 
                 sa.recycle();

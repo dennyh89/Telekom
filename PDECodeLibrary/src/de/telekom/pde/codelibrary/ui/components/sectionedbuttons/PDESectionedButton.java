@@ -45,7 +45,7 @@ import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 
 
 /**
- * @brief The PDESectionedButton is a simple button type with 1 or more sections layouted horizontally next to each
+ * @brief The PDESectionedButton is a simple button type with 1 or more sections positioned horizontally next to each
  * other.
  * Internally it works with the normal PDEButton, so the events are the same as the PDEButton has, the only difference
  * at the moment is that the PDESectionedButtonEvent has additional information about the index of the button which
@@ -220,136 +220,136 @@ public class PDESectionedButton extends LinearLayout implements PDEIEventSource 
             TypedArray sa = context.obtainStyledAttributes(attrs, R.styleable.PDESectionedButton);
 
             // first create layer if wanted by xml, use default flat
-            if (sa != null && sa.hasValue(R.styleable.PDESectionedButton_backgroundType)) {
-                setButtonBackgroundLayerWithLayerType(sa.getInt(R.styleable.PDESectionedButton_backgroundType, 0));
+            if (sa != null && sa.hasValue(R.styleable.PDESectionedButton_pde_backgroundType)) {
+                setButtonBackgroundLayerWithLayerType(sa.getInt(R.styleable.PDESectionedButton_pde_backgroundType, 0));
             } else {
                 setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundFlat);
             }
 
             if (sa != null) {
-                if (sa.hasValue(R.styleable.PDESectionedButton_textColor)) {
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_textColor)) {
                     //to have dark/light style use PDEColor with color id
-                    int resourceID = sa.getResourceId(R.styleable.PDESectionedButton_textColor, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDESectionedButton_pde_textColor, 0);
                     if (resourceID != 0) {
                         setTextColor(PDEColor.valueOfColorID(resourceID));
                     } else {
-                        setTextColor(sa.getColor(R.styleable.PDESectionedButton_textColor, R.color.DTBlack));
+                        setTextColor(sa.getColor(R.styleable.PDESectionedButton_pde_textColor, R.color.DTBlack));
                     }
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_buttonColor)) {
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_buttonColor)) {
                     //to have dark/light style use PDEColor with color id
-                    int resourceID = sa.getResourceId(R.styleable.PDESectionedButton_buttonColor, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDESectionedButton_pde_buttonColor, 0);
                     if (resourceID != 0) {
                         setColor(PDEColor.valueOfColorID(resourceID));
                     } else {
-                        setColor(sa.getColor(R.styleable.PDESectionedButton_buttonColor, R.color.DTBlue));
+                        setColor(sa.getColor(R.styleable.PDESectionedButton_pde_buttonColor, R.color.DTBlue));
                     }
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_buttonSelectedColor)) {
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_buttonSelectedColor)) {
                     //to have dark/light style use PDEColor with color id
-                    int resourceID = sa.getResourceId(R.styleable.PDESectionedButton_buttonSelectedColor, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDESectionedButton_pde_buttonSelectedColor, 0);
                     if (resourceID != 0) {
                         setSelectedColor(PDEColor.valueOfColorID(resourceID));
                     } else {
-                        setSelectedColor(sa.getColor(R.styleable.PDESectionedButton_buttonSelectedColor,
+                        setSelectedColor(sa.getColor(R.styleable.PDESectionedButton_pde_buttonSelectedColor,
                                                      R.color.DTBlue));
                     }
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_textSelectedColor)) {
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_textSelectedColor)) {
                     //to have dark/light style use PDEColor with color id
-                    int resourceID = sa.getResourceId(R.styleable.PDESectionedButton_textSelectedColor, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDESectionedButton_pde_textSelectedColor, 0);
                     if (resourceID != 0) {
                         setSelectedTextColor(PDEColor.valueOfColorID(resourceID));
                     } else {
-                        setSelectedTextColor(sa.getColor(R.styleable.PDESectionedButton_textSelectedColor,
+                        setSelectedTextColor(sa.getColor(R.styleable.PDESectionedButton_pde_textSelectedColor,
                                                          R.color.DTBlack));
                     }
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_textSize)) {
-                    String text_size = sa.getString(R.styleable.PDEButton_textSize);
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_textSize)) {
+                    String text_size = sa.getString(R.styleable.PDEButton_pde_textSize);
                     setFontSize(text_size);
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_typeface)) {
-                    setFont(PDETypeface.createByName(sa.getString(R.styleable.PDESectionedButton_typeface)));
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_typeface)) {
+                    setFont(PDETypeface.createByName(sa.getString(R.styleable.PDESectionedButton_pde_typeface)));
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_momentary)) {
-                    setMomentary(sa.getBoolean(R.styleable.PDESectionedButton_momentary, false));
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_momentary)) {
+                    setMomentary(sa.getBoolean(R.styleable.PDESectionedButton_pde_momentary, false));
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_toggle)) {
-                    setToggle(sa.getBoolean(R.styleable.PDESectionedButton_toggle, false));
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_toggle)) {
+                    setToggle(sa.getBoolean(R.styleable.PDESectionedButton_pde_toggle, false));
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_textAlignment)) {
-                    setAlignment(PDEAlignment.values()[sa.getInt(R.styleable.PDESectionedButton_textAlignment, 0)]);
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_textAlignment)) {
+                    setAlignment(PDEAlignment.values()[sa.getInt(R.styleable.PDESectionedButton_pde_textAlignment, 0)]);
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_iconAlignment)) {
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_iconAlignment)) {
                     setIconAlignment(PDEButtonIconAlignment.values()[
-                                             sa.getInt(R.styleable.PDESectionedButton_iconAlignment, 0)]);
+                                             sa.getInt(R.styleable.PDESectionedButton_pde_iconAlignment, 0)]);
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_cornerRadius)) {
-                    setCornerRadius(sa.getDimension(R.styleable.PDESectionedButton_cornerRadius,
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_cornerRadius)) {
+                    setCornerRadius(sa.getDimension(R.styleable.PDESectionedButton_pde_cornerRadius,
                                                     (float) PDEBuildingUnits.oneThirdBU()));
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_borderColor)) {
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_borderColor)) {
                     //to have dark/light style use PDEColor with color id
-                    int resourceID = sa.getResourceId(R.styleable.PDESectionedButton_borderColor, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDESectionedButton_pde_borderColor, 0);
                     if (resourceID != 0) {
                         setBorderColor(PDEColor.valueOfColorID(resourceID));
                     } else {
-                        setBorderColor(sa.getColor(R.styleable.PDESectionedButton_borderColor, R.color.DTBlack));
+                        setBorderColor(sa.getColor(R.styleable.PDESectionedButton_pde_borderColor, R.color.DTBlack));
                     }
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_numberOfSections)) {
-                    setNumberOfSections(sa.getInteger(R.styleable.PDESectionedButton_numberOfSections, 0));
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_numberOfSections)) {
+                    setNumberOfSections(sa.getInteger(R.styleable.PDESectionedButton_pde_numberOfSections, 0));
                 }
 
-                if (sa.hasValue(R.styleable.PDESectionedButton_sections)) {
-                    insertSectionsFromResourceArray(sa.getResourceId(R.styleable.PDESectionedButton_sections, 0));
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_sections)) {
+                    insertSectionsFromResourceArray(sa.getResourceId(R.styleable.PDESectionedButton_pde_sections, 0));
                 }
 
-                if (sa.hasValue(R.styleable.PDESectionedButton_selectedSection)) {
-                    setSelectedSection(sa.getInteger(R.styleable.PDESectionedButton_selectedSection,
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_selectedSection)) {
+                    setSelectedSection(sa.getInteger(R.styleable.PDESectionedButton_pde_selectedSection,
                                                      PDESectionedButtonNoSectionSelected));
                 }
 
-                if (sa.hasValue(R.styleable.PDESectionedButton_minButtonPadding)) {
-                    setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_minButtonPadding, 0),
-                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_minButtonPadding, 0),
-                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_minButtonPadding, 0),
-                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_minButtonPadding, 0));
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_minButtonPadding)) {
+                    setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_pde_minButtonPadding, 0),
+                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_pde_minButtonPadding, 0),
+                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_pde_minButtonPadding, 0),
+                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_pde_minButtonPadding, 0));
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_minButtonPaddingLeft)) {
-                    setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_minButtonPaddingLeft,
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_minButtonPaddingLeft)) {
+                    setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_pde_minButtonPaddingLeft,
                                                                    0),
                                         mMinButtonPadding.top,
                                         mMinButtonPadding.right, mMinButtonPadding.bottom);
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_minButtonPaddingTop)) {
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_minButtonPaddingTop)) {
                     setMinButtonPadding(mMinButtonPadding.left,
-                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_minButtonPaddingTop,
+                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_pde_minButtonPaddingTop,
                                                                    0),
                                         mMinButtonPadding.right, mMinButtonPadding.bottom);
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_minButtonPaddingRight)) {
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_minButtonPaddingRight)) {
                     setMinButtonPadding(mMinButtonPadding.left, mMinButtonPadding.top,
-                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_minButtonPaddingRight,
+                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_pde_minButtonPaddingRight,
                                                                    0),
                                         mMinButtonPadding.bottom);
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_minButtonPaddingBottom)) {
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_minButtonPaddingBottom)) {
                     setMinButtonPadding(mMinButtonPadding.left, mMinButtonPadding.top,
                                         mMinButtonPadding.right,
-                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_minButtonPaddingBottom,
+                                        sa.getDimensionPixelOffset(R.styleable.PDESectionedButton_pde_minButtonPaddingBottom,
                                                                    0)
                     );
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_horizontalPadding)) {
-                    setHorizontalPadding((int) sa.getDimension(R.styleable.PDESectionedButton_horizontalPadding,
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_horizontalPadding)) {
+                    setHorizontalPadding((int) sa.getDimension(R.styleable.PDESectionedButton_pde_horizontalPadding,
                                                                PDEBuildingUnits.pixelFromBU(2.0f)));
                 }
-                if (sa.hasValue(R.styleable.PDESectionedButton_iconToTextHeightRatio)) {
+                if (sa.hasValue(R.styleable.PDESectionedButton_pde_iconToTextHeightRatio)) {
                     setIconToTextHeightRatio(
-                            sa.getFloat(R.styleable.PDESectionedButton_iconToTextHeightRatio,
-                                        PDEConstants.DefaultPDEButtonLayerForegroundIconTextIconToTextHeightRatio)
+                            sa.getFloat(R.styleable.PDESectionedButton_pde_iconToTextHeightRatio,
+                                        PDEConstants.DefaultPDEButtonIconToTextHeightRatio)
                     );
                 }
                 //Don't forget this

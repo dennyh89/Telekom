@@ -14,7 +14,7 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
 /**
  * A custom {@link TextView} that will use the Telegrotesk Font.<br/>
  * You can specify in XML the {@link Typeface} to be used like this : <br/>
- * <code> pde:font="normal|fett"</code><br/>
+ * <code> pde:pde_font="normal|fett"</code><br/>
  * Also define the custom attributes in your XML file : xmlns:pde="http://schemas.android.com/apk/res-auto".
  */
 public class PDEFontTextView extends TextView {
@@ -59,7 +59,7 @@ public class PDEFontTextView extends TextView {
         if (context.getTheme() != null) {
             a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PDEFontTextView, defStyle, 0);
             if (a != null) {
-                fontType = a.getInteger(R.styleable.PDEFontTextView_font, 0);
+                fontType = a.getInteger(R.styleable.PDEFontTextView_pde_font, 0);
                 a.recycle();
             }
             // As defined in pde_attrs.xml ->PDEFontTextView, 0 is normal font

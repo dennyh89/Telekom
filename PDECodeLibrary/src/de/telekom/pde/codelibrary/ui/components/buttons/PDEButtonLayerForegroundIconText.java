@@ -14,6 +14,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.v4.util.LruCache;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -24,7 +25,7 @@ import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.R;
 import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
-import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEViewWrapper;
+import de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEIconView;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEAgentHelper;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEButtonPadding;
 import de.telekom.pde.codelibrary.ui.components.helpers.PDEComponentHelpers;
@@ -34,19 +35,23 @@ import de.telekom.pde.codelibrary.ui.elements.icon.PDEDrawableIcon;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
 import de.telekom.pde.codelibrary.ui.helpers.PDEFontHelpers;
+import de.telekom.pde.codelibrary.ui.helpers.PDETrace;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
 
 /**
  * @brief Button-Layer which shows icon and/or text in the PDEButton.
+ *
+ *  Extends absolute layout because of our complex layouting process, where we calculate our sizes and position
+ *  ourselves. Using the Android Linear Layout was slower, due to other calculation processes.
  */
 class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEButtonLayerInterface {
 
     /**
      * @brief Global tag for log outputs.
      */
-    private final static String LOG_TAG = PDEButtonLayerForegroundIconText.class.getName();
+    private final static String LOG_TAG = PDEButtonLayerForegroundIconText.class.getSimpleName();
     private final static boolean DEBUG_PARAMS = false;
     private final static boolean SHOW_DEBUG_LOGS = false;
     private final static boolean DEBUG_SHADOWS = false;
@@ -77,11 +82,6 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         public float textWidthFirstLetterPlusEllipsis;
         public float textWidthFirstLetter;
         public Rect textSizeFull;
-        public float fontAscenderHeight;
-        public float fontTopHeight;
-        public float fontCapHeight;
-        public float fontOverallHeight;
-        public float fontTopOverallHeight;
         public String firstLetterEllipsis;
         public String firstLetter;
 
@@ -112,11 +112,6 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
             textWidthFirstLetterPlusEllipsis = 0.0f;
             textWidthFirstLetter = 0.0f;
             textSizeFull = new Rect(0, 0, 0, 0);
-            fontAscenderHeight = 0.0f;
-            fontTopHeight = 0.0f;
-            fontCapHeight = 0.0f;
-            fontOverallHeight = 0.0f;
-            fontTopOverallHeight = 0.0f;
             firstLetterEllipsis = "";
             firstLetter = "";
         }
@@ -139,7 +134,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
 
     // content layers
     private PDEDrawText mTextView;
-    private PDEViewWrapper mDrawableIconWrapperView;
+    private PDEIconView mDrawableIconWrapperView;
 
     // configuration
     private PDEColor mDefaultColor;
@@ -165,9 +160,6 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
     private MetaFontSize mFontMetaSize;
     private TextInfo mTextInfo;
 
-    private MetaFontSize mOnMeasureFontMetaSize;
-    private TextInfo mOnMeasureTextInfo;
-
     private FontModeSize mFontModeSizeFromParameters;
 
     // layout info
@@ -178,6 +170,8 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
     private PDEAgentHelper mAgentHelper;
 
     private Context mContext;
+
+    private LruCache<Integer, Integer> mTextWidthSizeCache;
 
 
     /**
@@ -222,12 +216,14 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         mDisplayHeight = 0.0f;
         mTextHasShadow = false;
         mIconColored = false;
-        mIconToTextHeightRatio = PDEConstants.DefaultPDEButtonLayerForegroundIconTextIconToTextHeightRatio;
+        mIconToTextHeightRatio = PDEConstants.DefaultPDEButtonIconToTextHeightRatio;
         mHorizontalPadding = PDEBuildingUnits.pixelFromBU(2.0f);
 
         mDefaultColor = PDEColor.DTUIInteractiveColor();
         mTextOnTransparentColor = PDEColor.DTUITextColor();
         mBackgroundColor = PDEColor.DTUIBackgroundColor();
+
+        mTextWidthSizeCache = new LruCache<Integer, Integer>(5);
 
         if (DEBUG_SHOW_COMPONENTS) {
             setBackgroundColor(0x9900ffff);
@@ -237,8 +233,6 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         mTitle = "";
         mFontModeSizeFromParameters = new FontModeSize();
         mFontMetaSize = new MetaFontSize();
-        mOnMeasureFontMetaSize = new MetaFontSize();
-        mOnMeasureTextInfo = new TextInfo();
         mTextInfo = new TextInfo();
 
         mAlignment = null;
@@ -271,6 +265,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
 
         // create icon view (we hold view all the time, only the icon in the view(drawable) is replaced
         mDrawableIconWrapperView = new PDEDrawableIcon().getWrapperView();
+        //mDrawableIconWrapperView.setBackgroundColor(0x66ff00ff);
         addView(mDrawableIconWrapperView, 0, 0);
 
         // shadow is initially disabled on both text and Icon
@@ -343,6 +338,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
      * Should only be called from main button class, it handles the state, and also does change management.
      */
     public void setParameters(PDEParameterDictionary parameters, boolean force) {
+        PDETrace.beginSection("setParameters");
         if (SHOW_DEBUG_LOGS) {
             Log.d(LOG_TAG, "setParameters begin");
         }
@@ -384,6 +380,8 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         if (SHOW_DEBUG_LOGS) {
             Log.d(LOG_TAG, "setParameters end");
         }
+
+        PDETrace.endSection();
     }
 
 
@@ -481,6 +479,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
 
         // remember
         mTitle = title;
+        mTextWidthSizeCache.evictAll();
 
         // update font size (this calculates some helper values) and layout it
         updateFontSize(mDisplayHeight, true, null, null);
@@ -610,6 +609,8 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
             mFont = lFont;
         }
 
+        mTextWidthSizeCache.evictAll();
+
         // update font size, and do layout
         updateFontSize(mDisplayHeight, true, null, null);
         performLayout();
@@ -628,7 +629,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         // get the object
         iconObject = mParameters.parameterObjectForName(PDEButton.PDEButtonParameterIcon);
 
-        ((PDEDrawableIcon) mDrawableIconWrapperView.getDrawable()).setElementIcon(iconObject);
+        mDrawableIconWrapperView.setIcon(iconObject);
 
         // update font size, and do layout
         updateIcon();
@@ -640,7 +641,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         float ratio;
 
         ratio = mParameters.parameterFloatForName(PDEButton.PDEButtonParameterIconToTextHeightRatio,
-                                                  PDEConstants.DefaultPDEButtonLayerForegroundIconTextIconToTextHeightRatio);
+                                                  PDEConstants.DefaultPDEButtonIconToTextHeightRatio);
 
         // anything to do??
         if (ratio == mIconToTextHeightRatio) return;
@@ -658,7 +659,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
      * @brief Update the Icon size
      */
     private void updateIcon() {
-        PDEDrawableIcon drawableIcon = ((PDEDrawableIcon) mDrawableIconWrapperView.getDrawable());
+        PDEDrawableIcon drawableIcon = mDrawableIconWrapperView.getDrawableIcon();
         Point iconSize = new Point(0, 0);
 
         // Is there a icon we need to adjust
@@ -695,7 +696,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
      */
     private void prepareIconColored() {
         boolean colored;
-        PDEDrawableIcon iconDrawable = (PDEDrawableIcon) mDrawableIconWrapperView.getDrawable();
+        PDEDrawableIcon iconDrawable = mDrawableIconWrapperView.getDrawableIcon();
 
         if (!iconDrawable.hasElementIcon()) return;
 
@@ -775,7 +776,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         // any change?
         if (hasShadow == mTextHasShadow) return;
 
-        PDEDrawableIcon iconDrawable = (PDEDrawableIcon) mDrawableIconWrapperView.getDrawable();
+        PDEDrawableIcon iconDrawable = mDrawableIconWrapperView.getDrawableIcon();
         // remember
         mTextHasShadow = hasShadow;
 
@@ -858,7 +859,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         // set text color
         mTextView.setTextColor(titleColor.getIntegerColor());
 
-        iconDrawable = (PDEDrawableIcon) mDrawableIconWrapperView.getDrawable();
+        iconDrawable = mDrawableIconWrapperView.getDrawableIcon();
 
         // set Icon color if desired
         if (mIconColored && iconDrawable.hasElementIcon()) {
@@ -896,79 +897,200 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
      * This avoids recursive calls of updateFontSize and updateLayout.
      */
     private void updateFontSize(float displayHeight, boolean apply, TextInfo textInfo, MetaFontSize fontMetaSize) {
-        if (apply) {
-            if (textInfo == null) {
-                textInfo = mTextInfo;
-            }
-            if (fontMetaSize == null) {
-                fontMetaSize = mFontMetaSize;
-            }
-        } else {
-            if (fontMetaSize == null) {
-                fontMetaSize = new MetaFontSize();
-            }
-        }
 
-        // ensure that textInfo isn't null
-        if (textInfo == null) {
-            textInfo = new TextInfo();
-        }
+        PDETrace.beginSection("updateFontSize");
 
-        if (SHOW_DEBUG_LOGS) {
-            Log.d(LOG_TAG, "updateFontSize");
-        }
-
-        float fontSize;
-        boolean fontInCaps;
-        PDEDrawableIcon drawableIcon = (PDEDrawableIcon) (mDrawableIconWrapperView.getDrawable());
-
-        //only update when there is text or icon
-        if (!drawableIcon.hasElementIcon() && TextUtils.isEmpty(mTitle)) {
-            return;
-        }
-
-        if (displayHeight == 0.0f) {
-            return;
-        }
-
-        // automatic modes calculate font size from height
-        if (mFontModeSizeFromParameters.mode == PDEButtonLayerForegroundIconTextFontMode.Automatic) {
-            // height in caps
-            fontSize = displayHeight / 3.0f;
-            fontInCaps = true;
-        } else if (mFontModeSizeFromParameters.mode == PDEButtonLayerForegroundIconTextFontMode.Styleguide) {
-            // standardize the font to 4*BU, 3*BU, 2.5*BU button size height
-            if (displayHeight > PDEBuildingUnits.exactPixelFromBU(3.5f)) {
-                // display height > 3,5*BU -> font for display height of 4*BU
-                fontSize = PDEBuildingUnits.pixelFromBU(4.0f) / 3.0f;
-            } else if (displayHeight > PDEBuildingUnits.exactPixelFromBU(2.75f)) {
-                // 2,75*BU < display height <= 3,5*BU -> font for display height of 3*BU
-                fontSize = PDEBuildingUnits.exactBU();
+        try {
+            if (apply) {
+                if (textInfo == null) {
+                    textInfo = mTextInfo;
+                }
+                if (fontMetaSize == null) {
+                    fontMetaSize = mFontMetaSize;
+                }
             } else {
-                // display height < 2,75*BU -> font for display height of 2,5*BU
-                fontSize = PDEBuildingUnits.pixelFromBU(2.5f) / 3.0f;
+                if (fontMetaSize == null) {
+                    fontMetaSize = new MetaFontSize();
+                }
             }
-            fontInCaps = true;
-        } else if (mFontModeSizeFromParameters.mode == PDEButtonLayerForegroundIconTextFontMode.Fixed) {
-            // height in native font size
-            fontSize = mFontModeSizeFromParameters.size;
-            fontInCaps = false;
-        } else {
-            // unknown mode -> do nothing
-            return;
-        }
 
-        if (fontSize != fontMetaSize.size
-            || fontInCaps == fontMetaSize.isCapHeight
-            || TextUtils.equals(mTitle, textInfo.base_text)
-                ) {
+            // ensure that textInfo isn't null
+            if (textInfo == null) {
+                textInfo = new TextInfo();
+            }
+
             if (SHOW_DEBUG_LOGS) {
-                Log.d(LOG_TAG, "updateFontSize after changed return");
+                Log.d(LOG_TAG, "updateFontSize");
             }
 
-            // remember
-            fontMetaSize.size = fontSize;
-            fontMetaSize.isCapHeight = fontInCaps;
+            float fontSize;
+            boolean fontInCaps;
+            PDEDrawableIcon drawableIcon = mDrawableIconWrapperView.getDrawableIcon();
+
+            //only update when there is text or icon
+            if (!drawableIcon.hasElementIcon() && TextUtils.isEmpty(mTitle)) {
+                return;
+            }
+
+            if (displayHeight == 0.0f) {
+                return;
+            }
+
+            // automatic modes calculate font size from height
+            if (mFontModeSizeFromParameters.mode == PDEButtonLayerForegroundIconTextFontMode.Automatic) {
+                // height in caps
+                fontSize = displayHeight / 3.0f;
+                fontInCaps = true;
+            } else if (mFontModeSizeFromParameters.mode == PDEButtonLayerForegroundIconTextFontMode.Styleguide) {
+                // standardize the font to 4*BU, 3*BU, 2.5*BU button size height
+                if (displayHeight > PDEBuildingUnits.exactPixelFromBU(3.5f)) {
+                    // display height > 3,5*BU -> font for display height of 4*BU
+                    fontSize = PDEBuildingUnits.pixelFromBU(4.0f) / 3.0f;
+                } else if (displayHeight > PDEBuildingUnits.exactPixelFromBU(2.75f)) {
+                    // 2,75*BU < display height <= 3,5*BU -> font for display height of 3*BU
+                    fontSize = PDEBuildingUnits.exactBU();
+                } else {
+                    // display height < 2,75*BU -> font for display height of 2,5*BU
+                    fontSize = PDEBuildingUnits.pixelFromBU(2.5f) / 3.0f;
+                }
+                fontInCaps = true;
+            } else if (mFontModeSizeFromParameters.mode == PDEButtonLayerForegroundIconTextFontMode.Fixed) {
+                // height in native font size
+                fontSize = mFontModeSizeFromParameters.size;
+                fontInCaps = false;
+            } else {
+                // unknown mode -> do nothing
+                return;
+            }
+
+            if (fontSize != fontMetaSize.size
+                || fontInCaps == fontMetaSize.isCapHeight
+                || TextUtils.equals(mTitle, textInfo.base_text)
+                    ) {
+                if (SHOW_DEBUG_LOGS) {
+                    Log.d(LOG_TAG, "updateFontSize after changed return");
+                }
+
+                // remember
+                fontMetaSize.size = fontSize;
+                fontMetaSize.isCapHeight = fontInCaps;
+
+                // eventually convert caps height to real height
+                if (fontInCaps) {
+                    fontSize = PDEFontHelpers.calculateFontSize(mFont, fontSize);
+                }
+
+                // assure readable font size
+                fontSize = PDEFontHelpers.assureReadableFontSize(mFont, fontSize);
+                fontMetaSize.pointSize = fontSize;
+
+                // do font calculations once
+                // calculate necessary layouting helpers once here (they don't change necessarily)
+                if (TextUtils.isEmpty(mTitle)) {
+                    textInfo = new TextInfo();
+                } else {
+                    textInfo.base_fontPixelSize = fontSize;
+                    textInfo.base_text = mTitle;
+
+                    if (mTitle.length() == 1) {
+                        //if we have only one letter we don't  need an ellipsis
+                        textInfo.firstLetterEllipsis = textInfo.firstLetter = mTitle;
+
+                    } else if (mTitle.length() == 2) {
+                        // don't show an ellipsis for 2 chars either
+                        textInfo.firstLetter = mTitle.substring(0, 1);
+                        textInfo.firstLetterEllipsis = mTitle.substring(0, 2);
+                    } else {
+                        textInfo.firstLetterEllipsis = String.format("%s...", mTitle.substring(0, 1));
+                        textInfo.firstLetter = mTitle.substring(0, 1);
+                    }
+
+                    // do text calculations
+                    textInfo.textWidthFirstLetterPlusEllipsis = PDEFontHelpers.getTextViewBounds(
+                            textInfo.firstLetterEllipsis, mFont, fontSize).width();
+                    textInfo.textWidthFirstLetter = PDEFontHelpers.getTextViewBounds(
+                            textInfo.firstLetter, mFont, fontSize).width();
+                    textInfo.textSizeFull = PDEFontHelpers.getTextViewBounds(mTitle, mFont, fontSize);
+
+                    if (SHOW_DEBUG_LOGS) {
+                        Log.d(LOG_TAG, "mTextSizeFull " + textInfo.textSizeFull.width() + " from " + mTitle + " "
+                                       + fontSize + " " + mFont.getName());
+                    }
+                }
+
+                if (DEBUG_PARAMS) {
+                    Log.d(LOG_TAG, "mTextWidthFirstLetterPlusEllipsis " + textInfo.textWidthFirstLetterPlusEllipsis);
+                    Log.d(LOG_TAG, "mTextWidthFirstLetter " + textInfo.textWidthFirstLetter);
+                    Log.d(LOG_TAG, "mTextSizeFull " + textInfo.textSizeFull.flattenToString());
+                }
+            }
+
+            if (apply) {
+                mTextInfo = textInfo;
+                mFontMetaSize = fontMetaSize;
+            }
+        } finally {
+            PDETrace.endSection();
+        }
+    }
+
+
+    /**
+     * @brief Calculate the new font size and apply it.
+     * <p/>
+     * Also calculate helper values necessary later in the layout process. Important note: This function
+     * does not issue a request layout on font changes - ensure a layout run is done properly outside of this function.
+     * This avoids recursive calls of updateFontSize and updateLayout.
+     */
+    private float calculateFontSize(float displayHeight) {
+
+        PDETrace.beginSection("updateFontSize");
+
+        try {
+
+            if (SHOW_DEBUG_LOGS) {
+                Log.d(LOG_TAG, "updateFontSize");
+            }
+
+            float fontSize;
+            boolean fontInCaps;
+            PDEDrawableIcon drawableIcon = mDrawableIconWrapperView.getDrawableIcon();
+
+            //only update when there is text or icon
+            if (!drawableIcon.hasElementIcon() && TextUtils.isEmpty(mTitle)) {
+                return 0.0f;
+            }
+
+            if (displayHeight == 0.0f) {
+                return 0.0f;
+            }
+
+            // automatic modes calculate font size from height
+            if (mFontModeSizeFromParameters.mode == PDEButtonLayerForegroundIconTextFontMode.Automatic) {
+                // height in caps
+                fontSize = displayHeight / 3.0f;
+                fontInCaps = true;
+            } else if (mFontModeSizeFromParameters.mode == PDEButtonLayerForegroundIconTextFontMode.Styleguide) {
+                // standardize the font to 4*BU, 3*BU, 2.5*BU button size height
+                if (displayHeight > PDEBuildingUnits.exactPixelFromBU(3.5f)) {
+                    // display height > 3,5*BU -> font for display height of 4*BU
+                    fontSize = PDEBuildingUnits.pixelFromBU(4.0f) / 3.0f;
+                } else if (displayHeight > PDEBuildingUnits.exactPixelFromBU(2.75f)) {
+                    // 2,75*BU < display height <= 3,5*BU -> font for display height of 3*BU
+                    fontSize = PDEBuildingUnits.exactBU();
+                } else {
+                    // display height < 2,75*BU -> font for display height of 2,5*BU
+                    fontSize = PDEBuildingUnits.pixelFromBU(2.5f) / 3.0f;
+                }
+                fontInCaps = true;
+            } else if (mFontModeSizeFromParameters.mode == PDEButtonLayerForegroundIconTextFontMode.Fixed) {
+                // height in native font size
+                fontSize = mFontModeSizeFromParameters.size;
+                fontInCaps = false;
+            } else {
+                // unknown mode -> do nothing
+                return 0.0f;
+            }
 
             // eventually convert caps height to real height
             if (fontInCaps) {
@@ -977,63 +1099,11 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
 
             // assure readable font size
             fontSize = PDEFontHelpers.assureReadableFontSize(mFont, fontSize);
-            fontMetaSize.pointSize = fontSize;
 
-            // do font calculations once
-            // calculate necessary layouting helpers once here (they don't change necessarily)
-            if (TextUtils.isEmpty(mTitle)) {
-                textInfo = new TextInfo();
-            } else {
-                textInfo.base_fontPixelSize = fontSize;
-                textInfo.base_text = mTitle;
+            return fontSize;
 
-                if (mTitle.length() == 1) {
-                    //if we have only one letter we don't  need an ellipsis
-                    textInfo.firstLetterEllipsis = textInfo.firstLetter = mTitle;
-
-                } else if (mTitle.length() == 2) {
-                    // don't show an ellipsis for 2 chars either
-                    textInfo.firstLetter = mTitle.substring(0, 1);
-                    textInfo.firstLetterEllipsis = mTitle.substring(0, 2);
-                } else {
-                    textInfo.firstLetterEllipsis = String.format("%s...", mTitle.substring(0, 1));
-                    textInfo.firstLetter = mTitle.substring(0, 1);
-                }
-
-                // do text calculations
-                textInfo.textWidthFirstLetterPlusEllipsis = PDEFontHelpers.getTextViewBounds(
-                        textInfo.firstLetterEllipsis, mFont, fontSize).width();
-                textInfo.textWidthFirstLetter = PDEFontHelpers.getTextViewBounds(
-                        textInfo.firstLetter, mFont, fontSize).width();
-                textInfo.textSizeFull = PDEFontHelpers.getTextViewBounds(mTitle, mFont, fontSize);
-
-                if (SHOW_DEBUG_LOGS) {
-                    Log.d(LOG_TAG, "mTextSizeFull " + textInfo.textSizeFull.width() + " from " + mTitle + " "
-                                   + fontSize + " " + mFont.getName());
-                }
-
-                textInfo.fontTopHeight = PDEFontHelpers.getPixelsAboveBaseLine(mTitle, mFont, fontSize);
-                textInfo.fontAscenderHeight = PDEFontHelpers.getPixelsBelowBaseLine(mTitle, mFont, fontSize);
-                textInfo.fontCapHeight = PDEFontHelpers.getCapHeight(mFont, fontSize);
-                textInfo.fontOverallHeight = PDEFontHelpers.getHeight(mFont, fontSize);
-                textInfo.fontTopOverallHeight = PDEFontHelpers.getTopHeight(mFont, fontSize);
-            }
-
-            if (DEBUG_PARAMS) {
-                Log.d(LOG_TAG, "mTextWidthFirstLetterPlusEllipsis " + textInfo.textWidthFirstLetterPlusEllipsis);
-                Log.d(LOG_TAG, "mTextWidthFirstLetter " + textInfo.textWidthFirstLetter);
-                Log.d(LOG_TAG, "mTextSizeFull " + textInfo.textSizeFull.flattenToString());
-                Log.d(LOG_TAG, "mFontAscenderHeight " + textInfo.fontAscenderHeight);
-                Log.d(LOG_TAG, "mFontTopHeight " + textInfo.fontTopHeight);
-                Log.d(LOG_TAG, "mFontCapHeight " + textInfo.fontCapHeight);
-                Log.d(LOG_TAG, "mFontOverallHeight " + textInfo.fontOverallHeight);
-                Log.d(LOG_TAG, "mFontTopOverallHeight " + textInfo.fontTopOverallHeight);
-            }
-        }
-
-        if (apply) {
-            mTextInfo = textInfo;
-            mFontMetaSize = fontMetaSize;
+        } finally {
+            PDETrace.endSection();
         }
     }
 
@@ -1047,338 +1117,380 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
      * accordingly. The member variables are already set correctly outside.
      */
     private void performLayout() {
-        if (SHOW_DEBUG_LOGS) {
-            Log.d(LOG_TAG, "performLayout");
-        }
 
-        PointF textPosition = new PointF(.0f, .0f);
-        PointF iconPosition = new PointF(.0f, .0f);
+        PDETrace.beginSection("performLayout");
 
-        float fullWidth; // button width
-        float saveArea = PDEBuildingUnits.exactBU(); //single margin
-        float leftBorder = 0.0f;
-        float outerDistanceLeft = mHorizontalPadding;
-        float outerDistanceRight = mHorizontalPadding;
-        float outerDistanceLeftRight;
+        try {
 
-        ViewGroup innerLayout;
-        ViewGroup overlaySlot;
-        overlaySlot = (ViewGroup) getParent();
-
-        if (overlaySlot != null) {
-            innerLayout = (ViewGroup) overlaySlot.getParent().getParent();
-
-            if (((ViewGroup) innerLayout.findViewById(R.id.pdebutton_overlay_slot_left)).getChildCount() != 0) {
-                outerDistanceLeft = PDEBuildingUnits.exactBU();
+            if (SHOW_DEBUG_LOGS) {
+                Log.d(LOG_TAG, "performLayout");
             }
-            if (((ViewGroup) innerLayout.findViewById(R.id.pdebutton_overlay_slot_right)).getChildCount() != 0) {
-                outerDistanceRight = PDEBuildingUnits.exactBU();
-            }
-        }
 
-        outerDistanceLeftRight = outerDistanceLeft + outerDistanceRight;
+            PointF textPosition = new PointF(.0f, .0f);
+            PointF iconPosition = new PointF(.0f, .0f);
 
-        float buttonYCenter = PDEBuildingUnits.roundToScreenCoordinates(mDisplayHeight / 2.0f);
-        float availableWidthForTitle;
-        float titleWidth = 0.0f;
-        boolean titleShowEllipsis = false;
-        boolean tooLittleSpaceForEverything = false;
-        boolean titleSuppressed = false; //is the layout unable to show the title although it was set
-        String titleToShow = "";
-        Point iconSize = new Point(0, 0);
+            float fullWidth; // button width
+            float saveArea = PDEBuildingUnits.exactBU(); //single margin
+            float leftBorder = 0.0f;
+            float outerDistanceLeft = mHorizontalPadding;
+            float outerDistanceRight = mHorizontalPadding;
+            float outerDistanceLeftRight;
 
-        if (mDisplayWidth == 0 || mDisplayHeight == 0) {
-            // no display size -> can't do a real layout run
-            mDrawableIconWrapperView.setVisibility(View.GONE);
-            mTextView.setVisibility(View.GONE);
-            return;
-        }
+            ViewGroup innerLayout;
+            ViewGroup overlaySlot;
+            overlaySlot = (ViewGroup) getParent();
 
-        // set the font and font size to the text layer
-        mTextView.setTypeface(mFont.getTypeface());
-        mTextView.setTextSize(mFontMetaSize.pointSize);
+            if (overlaySlot != null) {
+                innerLayout = (ViewGroup) overlaySlot.getParent().getParent();
 
-        //text changed -> update icon
-        updateIcon();
-
-        //get icon size
-        LayoutParams iconFontWrapperViewParams = (LayoutParams) mDrawableIconWrapperView.getLayoutParams();
-        iconSize.x = iconFontWrapperViewParams.width;
-        iconSize.y = iconFontWrapperViewParams.height;
-
-        //check if we have space for the title
-        if (iconSize.x + outerDistanceLeftRight < mDisplayWidth) {
-            // Icon doesn't fill up the space alone -> possible to show title
-            if (!TextUtils.isEmpty(mTitle)) {
-                // title is set
-                // calculate available size for the title
-                if (iconSize.x > 0) {
-                    // there is an Icon -> keep saveArea space to it
-                    availableWidthForTitle = mDisplayWidth - outerDistanceLeftRight - saveArea - iconSize.x;
-                } else {
-                    // no Icon, only left and right save area
-                    availableWidthForTitle = mDisplayWidth - outerDistanceLeftRight;
+                if (((ViewGroup) innerLayout.findViewById(R.id.pdebutton_overlay_slot_left)).getChildCount() != 0) {
+                    outerDistanceLeft = PDEBuildingUnits.exactBU();
                 }
+                if (((ViewGroup) innerLayout.findViewById(R.id.pdebutton_overlay_slot_right)).getChildCount() != 0) {
+                    outerDistanceRight = PDEBuildingUnits.exactBU();
+                }
+            }
 
-                // fit the title into available space (if necessary)
-                if (availableWidthForTitle >= mTextInfo.textSizeFull.width()
-                    || availableWidthForTitle > mTextInfo.textWidthFirstLetterPlusEllipsis) {
-                    // sufficient space to show at least one character and "..."
-                    titleToShow = mTitle; //take full title, it will be truncated at the right place
-                    titleShowEllipsis = true;
-                    titleWidth = Math.min(mTextInfo.textSizeFull.width(), availableWidthForTitle);
-                } else if (availableWidthForTitle + outerDistanceRight > mTextInfo.textWidthFirstLetterPlusEllipsis) {
-                    // to less space -> don't enforce right saveArea, but still show first char plus "..."
-                    titleToShow = mTextInfo.firstLetterEllipsis;
-                    titleShowEllipsis = false;
-                    //titleWidth =  availableWidthForTitle + saveArea ;
-                    titleWidth = mTextInfo.textWidthFirstLetterPlusEllipsis;
-                    tooLittleSpaceForEverything = true;
-                } else if (availableWidthForTitle + outerDistanceRight > mTextInfo.textWidthFirstLetter) {
-                    // to less space -> show only first letter
-                    titleToShow = mTextInfo.firstLetter;
-                    titleShowEllipsis = false;
-                    //titleWidth =  availableWidthForTitle + saveArea ;
-                    titleWidth = mTextInfo.textWidthFirstLetter;
-                    tooLittleSpaceForEverything = true;
-                } else {
-                    // to less space even for one char. don't show title
-                    titleToShow = null;
-                    titleWidth = 0.0f;
-                    titleShowEllipsis = false;
-                    // note: don't set tooLittleSpaceForEverything in this case!
-                    if (!TextUtils.isEmpty(mTitle)) {
-                        titleSuppressed = true;
+            outerDistanceLeftRight = outerDistanceLeft + outerDistanceRight;
+
+            float buttonYCenter = PDEBuildingUnits.roundToScreenCoordinates(mDisplayHeight / 2.0f);
+            float availableWidthForTitle;
+            float titleWidth = 0.0f;
+            boolean titleShowEllipsis = false;
+            boolean tooLittleSpaceForEverything = false;
+            boolean titleSuppressed = false; //is the layout unable to show the title although it was set
+            String titleToShow = "";
+            Point iconSize = new Point(0, 0);
+
+            if (mDisplayWidth == 0 || mDisplayHeight == 0) {
+                // no display size -> can't do a real layout run
+                mDrawableIconWrapperView.setVisibility(View.GONE);
+                mTextView.setVisibility(View.GONE);
+                return;
+            }
+
+            // set the font and font size to the text layer
+            mTextView.setTypeface(mFont.getTypeface());
+            mTextView.setTextSize(mFontMetaSize.pointSize);
+
+            //text changed -> update icon
+            updateIcon();
+
+            //get icon size
+            LayoutParams iconFontWrapperViewParams = (LayoutParams) mDrawableIconWrapperView.getLayoutParams();
+            iconSize.x = iconFontWrapperViewParams.width;
+            iconSize.y = iconFontWrapperViewParams.height;
+
+            //check if we have space for the title
+            if (iconSize.x + outerDistanceLeftRight < mDisplayWidth) {
+                // Icon doesn't fill up the space alone -> possible to show title
+                if (!TextUtils.isEmpty(mTitle)) {
+                    // title is set
+                    // calculate available size for the title
+                    if (iconSize.x > 0) {
+                        // there is an Icon -> keep saveArea space to it
+                        availableWidthForTitle = mDisplayWidth - outerDistanceLeftRight - saveArea - iconSize.x;
+                    } else {
+                        // no Icon, only left and right save area
+                        availableWidthForTitle = mDisplayWidth - outerDistanceLeftRight;
+                    }
+
+                    // fit the title into available space (if necessary)
+                    if (availableWidthForTitle >= mTextInfo.textSizeFull.width()
+                        || availableWidthForTitle > mTextInfo.textWidthFirstLetterPlusEllipsis) {
+                        // sufficient space to show at least one character and "..."
+                        titleToShow = mTitle; //take full title, it will be truncated at the right place
+                        titleShowEllipsis = true;
+                        titleWidth = Math.min(mTextInfo.textSizeFull.width(), availableWidthForTitle);
+                    } else if (availableWidthForTitle + outerDistanceRight
+                               > mTextInfo.textWidthFirstLetterPlusEllipsis) {
+                        // to less space -> don't enforce right saveArea, but still show first char plus "..."
+                        titleToShow = mTextInfo.firstLetterEllipsis;
+                        titleShowEllipsis = false;
+                        //titleWidth =  availableWidthForTitle + saveArea ;
+                        titleWidth = mTextInfo.textWidthFirstLetterPlusEllipsis;
+                        tooLittleSpaceForEverything = true;
+                    } else if (availableWidthForTitle + outerDistanceRight > mTextInfo.textWidthFirstLetter) {
+                        // to less space -> show only first letter
+                        titleToShow = mTextInfo.firstLetter;
+                        titleShowEllipsis = false;
+                        //titleWidth =  availableWidthForTitle + saveArea ;
+                        titleWidth = mTextInfo.textWidthFirstLetter;
+                        tooLittleSpaceForEverything = true;
+                    } else {
+                        // to less space even for one char. don't show title
+                        titleToShow = null;
+                        titleWidth = 0.0f;
+                        titleShowEllipsis = false;
+                        // note: don't set tooLittleSpaceForEverything in this case!
+                        if (!TextUtils.isEmpty(mTitle)) {
+                            titleSuppressed = true;
+                        }
                     }
                 }
-            }
-        } else {
-            // no space for the title
-            titleWidth = 0.0f;
-            titleShowEllipsis = false;
-            titleToShow = null;
-            if (!TextUtils.isEmpty(mTitle)) {
-                titleSuppressed = true;
-            }
-        }
-
-        // calculate the width for the button content
-        if (iconSize.x > 0 && titleWidth > 0) {
-            fullWidth = iconSize.x + saveArea + titleWidth;
-        } else if (iconSize.x > 0) {
-            fullWidth = iconSize.x;
-        } else {
-            fullWidth = titleWidth;
-        }
-
-        if (titleSuppressed) {
-            // if the title can't be shown -> center the Icon
-            iconPosition.x = (mDisplayWidth - iconSize.x) / 2.0f;
-        } else {
-
-            // calculate left boarder width (or left save area)
-            if (tooLittleSpaceForEverything) {
-                // no alignment necessary since there is no space for it
-                leftBorder = outerDistanceLeft;
             } else {
-                // do some alignment
-                if (mAlignment == PDEConstants.PDEAlignment.PDEAlignmentLeft
-                    || mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeft) {
+                // no space for the title
+                titleWidth = 0.0f;
+                titleShowEllipsis = false;
+                titleToShow = null;
+                if (!TextUtils.isEmpty(mTitle)) {
+                    titleSuppressed = true;
+                }
+            }
+
+            // calculate the width for the button content
+            if (iconSize.x > 0 && titleWidth > 0) {
+                fullWidth = iconSize.x + saveArea + titleWidth;
+            } else if (iconSize.x > 0) {
+                fullWidth = iconSize.x;
+            } else {
+                fullWidth = titleWidth;
+            }
+
+            if (titleSuppressed) {
+                // if the title can't be shown -> center the Icon
+                iconPosition.x = (mDisplayWidth - iconSize.x) / 2.0f;
+            } else {
+
+                // calculate left boarder width (or left save area)
+                if (tooLittleSpaceForEverything) {
+                    // no alignment necessary since there is no space for it
                     leftBorder = outerDistanceLeft;
-                } else if (mAlignment == PDEConstants.PDEAlignment.PDEAlignmentCenter
-                           && (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeftAttached
-                               || mIconAlignment
-                                  == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentRightAttached)) {
-                    leftBorder = (mDisplayWidth - fullWidth) / 2.0f;
-                } else if (mAlignment == PDEConstants.PDEAlignment.PDEAlignmentRight
-                           || mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentRight) {
-                    leftBorder = (mDisplayWidth - (fullWidth + outerDistanceRight));
                 } else {
-                    Log.d(LOG_TAG, "Should not happen!");
+                    // do some alignment
+                    if (mAlignment == PDEConstants.PDEAlignment.PDEAlignmentLeft
+                        || mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeft) {
+                        leftBorder = outerDistanceLeft;
+                    } else if (mAlignment == PDEConstants.PDEAlignment.PDEAlignmentCenter
+                               && (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeftAttached
+                                   || mIconAlignment
+                                      == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentRightAttached)) {
+                        leftBorder = (mDisplayWidth - fullWidth) / 2.0f;
+                    } else if (mAlignment == PDEConstants.PDEAlignment.PDEAlignmentRight
+                               || mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentRight) {
+                        leftBorder = (mDisplayWidth - (fullWidth + outerDistanceRight));
+                    } else {
+                        Log.d(LOG_TAG, "Should not happen!");
+                    }
                 }
-            }
 
-            // calc text x position
-            if (mAlignment == PDEConstants.PDEAlignment.PDEAlignmentCenter) {
-                if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeft) {
-                    // Icon very left - text centered
-                    iconPosition.x = leftBorder;
-                    if (iconSize.x > 0) {
-                        // there is an Icon
-                        textPosition.x = iconPosition.x + iconSize.x +
-                                         ((mDisplayWidth - iconPosition.x - iconSize.x - titleWidth) / 2.0f);
-                    } else {
-                        // there is no Icon
-                        textPosition.x = (mDisplayWidth - fullWidth) / 2.0f;
+                // calc text x position
+                if (mAlignment == PDEConstants.PDEAlignment.PDEAlignmentCenter) {
+                    if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeft) {
+                        // Icon very left - text centered
+                        iconPosition.x = leftBorder;
+                        if (iconSize.x > 0) {
+                            // there is an Icon
+                            textPosition.x = iconPosition.x + iconSize.x +
+                                             ((mDisplayWidth - iconPosition.x - iconSize.x - titleWidth) / 2.0f);
+                        } else {
+                            // there is no Icon
+                            textPosition.x = (mDisplayWidth - fullWidth) / 2.0f;
+                        }
+                    } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeftAttached) {
+                        // text and Icon centered (Icon left of text)
+                        iconPosition.x = leftBorder;
+                        if (iconSize.x > 0) {
+                            // there is an Icon
+                            textPosition.x = iconPosition.x + iconSize.x + saveArea;
+                        } else {
+                            // there is no Icon
+                            textPosition.x = iconPosition.x;
+                        }
+                    } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentRight) {
+                        // Icon at the very right - text centered
+                        iconPosition.x = mDisplayWidth - iconSize.x - outerDistanceRight;
+                        textPosition.x = (iconPosition.x - titleWidth) / 2.0f;
+                    } else /*mIconAlignment == DTButtonLayerForegroundIconAlignmentRightAttached*/ {
+                        // Icon and text centered (Icon at right of text)
+                        iconPosition.x = leftBorder;
+                        if (titleWidth > 0.0f) {
+                            iconPosition.x += saveArea + titleWidth;
+                        }
+                        textPosition.x = leftBorder;
                     }
-                } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeftAttached) {
-                    // text and Icon centered (Icon left of text)
-                    iconPosition.x = leftBorder;
-                    if (iconSize.x > 0) {
-                        // there is an Icon
-                        textPosition.x = iconPosition.x + iconSize.x + saveArea;
-                    } else {
-                        // there is no Icon
-                        textPosition.x = iconPosition.x;
-                    }
-                } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentRight) {
-                    // Icon at the very right - text centered
-                    iconPosition.x = mDisplayWidth - iconSize.x - outerDistanceRight;
-                    textPosition.x = (iconPosition.x - titleWidth) / 2.0f;
-                } else /*mIconAlignment == DTButtonLayerForegroundIconAlignmentRightAttached*/ {
-                    // Icon and text centered (Icon at right of text)
-                    iconPosition.x = leftBorder;
-                    if (titleWidth > 0.0f) {
-                        iconPosition.x += saveArea + titleWidth;
-                    }
-                    textPosition.x = leftBorder;
-                }
-            } else if (mAlignment == PDEConstants.PDEAlignment.PDEAlignmentLeft) {
-                if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeft) {
-                    // Icon and text on the very left
-                    iconPosition.x = leftBorder;
-                    if (iconSize.x > 0) {
-                        // there is an Icon
-                        textPosition.x = iconPosition.x + iconSize.x + saveArea;
-                    } else {
-                        // there is no Icon
+                } else if (mAlignment == PDEConstants.PDEAlignment.PDEAlignmentLeft) {
+                    if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeft) {
+                        // Icon and text on the very left
+                        iconPosition.x = leftBorder;
+                        if (iconSize.x > 0) {
+                            // there is an Icon
+                            textPosition.x = iconPosition.x + iconSize.x + saveArea;
+                        } else {
+                            // there is no Icon
+                            textPosition.x = outerDistanceLeft;
+                        }
+                    } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeftAttached) {
+                        // Icon and text on the very left
+                        iconPosition.x = leftBorder;
+                        if (iconSize.x > 0) {
+                            // there is an Icon
+                            textPosition.x = iconPosition.x + iconSize.x + saveArea;
+                        } else {
+                            // there is no Icon
+                            textPosition.x = outerDistanceLeft;
+                        }
+                    } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentRight) {
+                        // Icon on very right, text on very left
+                        iconPosition.x = mDisplayWidth - iconSize.x - outerDistanceRight;
                         textPosition.x = outerDistanceLeft;
-                    }
-                } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeftAttached) {
-                    // Icon and text on the very left
-                    iconPosition.x = leftBorder;
-                    if (iconSize.x > 0) {
-                        // there is an Icon
-                        textPosition.x = iconPosition.x + iconSize.x + saveArea;
-                    } else {
-                        // there is no Icon
-                        textPosition.x = outerDistanceLeft;
-                    }
-                } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentRight) {
-                    // Icon on very right, text on very left
-                    iconPosition.x = mDisplayWidth - iconSize.x - outerDistanceRight;
-                    textPosition.x = outerDistanceLeft;
 
-                } else /*mIconAlignment == DTButtonLayerForegroundIconAlignmentRightAttached*/ {
-                    // text left, Icon right next to it
-                    iconPosition.x = leftBorder;
-                    if (titleWidth > 0.0f) {
-                        iconPosition.x += saveArea + titleWidth;
+                    } else /*mIconAlignment == DTButtonLayerForegroundIconAlignmentRightAttached*/ {
+                        // text left, Icon right next to it
+                        iconPosition.x = leftBorder;
+                        if (titleWidth > 0.0f) {
+                            iconPosition.x += saveArea + titleWidth;
+                        }
+                        textPosition.x = leftBorder;
                     }
-                    textPosition.x = leftBorder;
-                }
-            } else /*if (mTextAlignment == PDEConstants.PDEAlignment.PDEAlignmentRight)*/ {
-                if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeft) {
-                    //Icon on the very left, text on the very right
-                    iconPosition.x = leftBorder;
-                    textPosition.x = mDisplayWidth - titleWidth - outerDistanceRight;
-                } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeftAttached) {
-                    // text on the very right, Icon to the left of it
-                    iconPosition.x = leftBorder;
-                    textPosition.x = mDisplayWidth - titleWidth - outerDistanceRight;
+                } else /*if (mTextAlignment == PDEConstants.PDEAlignment.PDEAlignmentRight)*/ {
+                    if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeft) {
+                        //Icon on the very left, text on the very right
+                        iconPosition.x = leftBorder;
+                        textPosition.x = mDisplayWidth - titleWidth - outerDistanceRight;
+                    } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentLeftAttached) {
+                        // text on the very right, Icon to the left of it
+                        iconPosition.x = leftBorder;
+                        textPosition.x = mDisplayWidth - titleWidth - outerDistanceRight;
 
-                } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentRight) {
-                    // text on the right, Icon to the right of it
-                    iconPosition.x = leftBorder;
-                    if (titleWidth > 0.0f) {
-                        iconPosition.x += saveArea + titleWidth;
+                    } else if (mIconAlignment == PDEButton.PDEButtonIconAlignment.PDEButtonIconAlignmentRight) {
+                        // text on the right, Icon to the right of it
+                        iconPosition.x = leftBorder;
+                        if (titleWidth > 0.0f) {
+                            iconPosition.x += saveArea + titleWidth;
+                        }
+                        textPosition.x = leftBorder;
+                    } else /*mIconAlignment == DTButtonLayerForegroundIconAlignmentRightAttached*/ {
+                        // text on the right, Icon to the right of it
+                        // text on the right, Icon to the right of it
+                        iconPosition.x = leftBorder;
+                        if (titleWidth > 0.0f) {
+                            iconPosition.x += saveArea + titleWidth;
+                        }
+                        textPosition.x = leftBorder;
                     }
-                    textPosition.x = leftBorder;
-                } else /*mIconAlignment == DTButtonLayerForegroundIconAlignmentRightAttached*/ {
-                    // text on the right, Icon to the right of it
-                    // text on the right, Icon to the right of it
-                    iconPosition.x = leftBorder;
-                    if (titleWidth > 0.0f) {
-                        iconPosition.x += saveArea + titleWidth;
-                    }
-                    textPosition.x = leftBorder;
                 }
             }
-        }
 
-        // calculate y position of the Icon
-        iconPosition.y = buttonYCenter - PDEBuildingUnits.roundToScreenCoordinates(iconSize.y / 2.0f);
+            // calculate y position of the Icon
+            iconPosition.y = buttonYCenter - PDEBuildingUnits.roundToScreenCoordinates(iconSize.y / 2.0f);
 
-        // here it jumps between the two variants -> there is a small variation in the calculation (can it be corrected?)
-        if (mDisplayHeight > mTextInfo.fontCapHeight) {
-            // center font in the display - as font height we use the cap height
-            textPosition.y = PDEBuildingUnits.roundToScreenCoordinates(buttonYCenter - mTextInfo.fontTopOverallHeight
-                                                                       + mTextInfo.fontCapHeight / 2.0f);
-        } else {
-            // available space for font is less then the space a capital character needs - align baseline with bottom edge
-            // of the button / display
-            textPosition.y = PDEBuildingUnits.roundToScreenCoordinates(mDisplayHeight
-                                                                       - (mTextInfo.fontOverallHeight
-                                                                          - mTextInfo.fontAscenderHeight));
-            //textPosition.y = 0;
-        }
-
-        //----- apply values -----
-
-        // hide or show the layers
-        if (mDrawableIconWrapperView != null && iconSize.x > 0 && titleWidth > 0) {
-            mDrawableIconWrapperView.setVisibility(View.VISIBLE);
-            mTextView.setVisibility(View.VISIBLE);
-        } else if (mDrawableIconWrapperView != null && iconSize.x > 0) {
-            mDrawableIconWrapperView.setVisibility(View.VISIBLE);
-            mTextView.setVisibility(View.GONE);
-        } else {
-            mDrawableIconWrapperView.setVisibility(View.GONE);
-            mTextView.setVisibility(View.VISIBLE);
-        }
-
-        // set Icon position
-        LayoutParams tmpIconFontWrapperViewParams2 = (LayoutParams) mDrawableIconWrapperView.getLayoutParams();
-        tmpIconFontWrapperViewParams2.x = PDEBuildingUnits.roundToScreenCoordinates(iconPosition.x);
-        tmpIconFontWrapperViewParams2.y = PDEBuildingUnits.roundToScreenCoordinates(iconPosition.y);
-        mDrawableIconWrapperView.setLayoutParams(tmpIconFontWrapperViewParams2);
-        mDrawableIconWrapperView.measure(MeasureSpec.makeMeasureSpec(tmpIconFontWrapperViewParams2.width,
-                                                                     MeasureSpec.EXACTLY),
-                                         MeasureSpec.makeMeasureSpec(tmpIconFontWrapperViewParams2.height,
-                                                                     MeasureSpec.EXACTLY));
-
-        PDEAbsoluteLayout.LayoutParams textViewParams = (PDEAbsoluteLayout.LayoutParams) mTextView.getLayoutParams();
-        textViewParams.x = PDEBuildingUnits.roundToScreenCoordinates(textPosition.x);
-        textViewParams.y = PDEBuildingUnits.roundToScreenCoordinates(textPosition.y);
-        textViewParams.width = (int) Math.ceil(titleWidth) + 2; // on some devices the text is cut off
-        textViewParams.height = PDEBuildingUnits.roundToScreenCoordinates(mTextInfo.fontOverallHeight) + 1;
-
-        mTextView.setLayoutParams(textViewParams);
-        mTextView.measure(MeasureSpec.makeMeasureSpec(textViewParams.width, MeasureSpec.EXACTLY),
-                          MeasureSpec.makeMeasureSpec(textViewParams.height, MeasureSpec.EXACTLY));
-
-        if (DEBUG_PARAMS) {
-            Log.d(LOG_TAG, "textView " + textViewParams.x + ", " + textViewParams.y + " - " + textViewParams.width
-                           + " by " + textViewParams.height + " button size: " + mDisplayWidth + ", " + mDisplayHeight
-                           + " text-full-size: " + mTextInfo.textSizeFull.width());
-
-            if (mTextInfo.textSizeFull.width() > textViewParams.width) {
-                Log.d(LOG_TAG, "text-full-size: " + mTextInfo.textSizeFull.width() + " ViewWidth: " +
-                               textViewParams.width + " savearea: " + saveArea);
+            // here it jumps between the two variants -> there is a small variation in the calculation (can it be corrected?)
+            if (mDisplayHeight > mFont.getCapHeight(mFontMetaSize.pointSize)) {
+                // center font in the display - as font height we use the cap height
+                textPosition.y = PDEBuildingUnits.roundToScreenCoordinates(
+                        buttonYCenter - mFont.getTopOverallHeight(mFontMetaSize.pointSize)
+                        + mFont.getCapHeight(mFontMetaSize.pointSize) / 2.0f);
+            } else {
+                // available space for font is less then the space a capital character needs - align baseline with bottom edge
+                // of the button / display
+                textPosition.y = PDEBuildingUnits.roundToScreenCoordinates(mDisplayHeight
+                                                                           - (
+                        mFont.getTopOverallHeight(mFontMetaSize.pointSize)
+                        - mFont.getAscenderHeight(mFontMetaSize.pointSize)));
+                //textPosition.y = 0;
             }
+
+            //----- apply values -----
+
+            // hide or show the layers
+            if (mDrawableIconWrapperView != null && iconSize.x > 0 && titleWidth > 0) {
+                mDrawableIconWrapperView.setVisibility(View.VISIBLE);
+                mTextView.setVisibility(View.VISIBLE);
+            } else if (mDrawableIconWrapperView != null && iconSize.x > 0) {
+                mDrawableIconWrapperView.setVisibility(View.VISIBLE);
+                mTextView.setVisibility(View.GONE);
+            } else {
+                mDrawableIconWrapperView.setVisibility(View.GONE);
+                mTextView.setVisibility(View.VISIBLE);
+            }
+
+            // set Icon position
+            LayoutParams tmpIconFontWrapperViewParams2 = (LayoutParams) mDrawableIconWrapperView.getLayoutParams();
+            tmpIconFontWrapperViewParams2.x = PDEBuildingUnits.roundToScreenCoordinates(iconPosition.x);
+            tmpIconFontWrapperViewParams2.y = PDEBuildingUnits.roundToScreenCoordinates(iconPosition.y);
+
+            mDrawableIconWrapperView.setLayoutParams(tmpIconFontWrapperViewParams2);
+            mDrawableIconWrapperView.measure(MeasureSpec.makeMeasureSpec(tmpIconFontWrapperViewParams2.width,
+                                                                         MeasureSpec.EXACTLY),
+                                             MeasureSpec.makeMeasureSpec(tmpIconFontWrapperViewParams2.height,
+                                                                         MeasureSpec.EXACTLY));
+
+            PDEAbsoluteLayout.LayoutParams
+                    textViewParams
+                    = (PDEAbsoluteLayout.LayoutParams) mTextView.getLayoutParams();
+            textViewParams.x = PDEBuildingUnits.roundToScreenCoordinates(textPosition.x);
+            textViewParams.y = PDEBuildingUnits.roundToScreenCoordinates(textPosition.y);
+            textViewParams.width = (int) Math.ceil(titleWidth) + 2; // on some devices the text is cut off
+            textViewParams.height =
+                    PDEBuildingUnits.roundToScreenCoordinates(mFont.getOverallHeight(mFontMetaSize.pointSize)) + 1;
+
+            mTextView.setLayoutParams(textViewParams);
+            mTextView.measure(MeasureSpec.makeMeasureSpec(textViewParams.width, MeasureSpec.EXACTLY),
+                              MeasureSpec.makeMeasureSpec(textViewParams.height, MeasureSpec.EXACTLY));
+
+            if (DEBUG_PARAMS) {
+                Log.d(LOG_TAG, "iconView " + tmpIconFontWrapperViewParams2.x + ", " + tmpIconFontWrapperViewParams2.y
+                               + " - " + tmpIconFontWrapperViewParams2.width + " by "
+                               + tmpIconFontWrapperViewParams2.height);
+
+                Log.d(LOG_TAG, "textView " + textViewParams.x + ", " + textViewParams.y + " - " + textViewParams.width
+                               + " by " + textViewParams.height + " button size: " + mDisplayWidth + ", "
+                               + mDisplayHeight
+                               + " text-full-size: " + mTextInfo.textSizeFull.width());
+
+                if (mTextInfo.textSizeFull.width() > textViewParams.width) {
+                    Log.d(LOG_TAG, "text-full-size: " + mTextInfo.textSizeFull.width() + " ViewWidth: " +
+                                   textViewParams.width + " savearea: " + saveArea);
+                }
+            }
+
+            if (titleShowEllipsis) {
+                // three dots at the end (if to less space)
+                mTextView.setEllipsize(true);
+
+            } else {
+                // no truncation, no three dots (just clipping)
+                mTextView.setEllipsize(false);
+            }
+
+            // copy in title
+            mTextView.setText(titleToShow);
+        } finally {
+            PDETrace.endSection();
+        }
+    }
+
+
+    protected int getTextWidth(float fontSize) {
+        if (fontSize == 0f) {
+            return 0;
         }
 
-        if (titleShowEllipsis) {
-            // three dots at the end (if to less space)
-            mTextView.setEllipsize(true);
+        int key = (int) Math.floor(fontSize * 100);
 
-        } else {
-            // no truncation, no three dots (just clipping)
-            mTextView.setEllipsize(false);
+        Integer width = mTextWidthSizeCache.get(key);
+
+        if (width == null) {
+
+            width = PDEFontHelpers.getTextViewBounds(mTitle, mFont, fontSize).width();
+
+            mTextWidthSizeCache.put(key, width);
+
         }
-
-        // copy in title
-        mTextView.setText(titleToShow);
+        return width;
     }
 
 
     /**
      * @brief Calculate the wanted width to show the icon (if set) and the whole text.
      */
-    protected float calculateWantedWidth(TextInfo textInfo) {
+    protected float calculateWantedWidth(int textWidth, float fontSize) {
         if (SHOW_DEBUG_LOGS) {
             Log.d(LOG_TAG, "calculateWantedWidth");
         }
+
+        PDETrace.beginSection("calculateWantedWidth");
 
         float wantedWidth = 0.0f;
         float saveArea = PDEBuildingUnits.exactBU(); //single margin
@@ -1405,7 +1517,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
 
         // get the width and the height of the Icon
         if (mDrawableIconWrapperView != null
-            && ((PDEDrawableIcon) mDrawableIconWrapperView.getDrawable()).hasElementIcon()) {
+            && mDrawableIconWrapperView.hasElementIcon()) {
             LayoutParams tmpIconFontWrapperViewParams = (LayoutParams) mDrawableIconWrapperView.getLayoutParams();
             // try to get the values from the Icon (works e.g. for bitmaps)
             if (tmpIconFontWrapperViewParams != null) {
@@ -1420,8 +1532,8 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
             // check if height and width were available
             if (iconWidth <= 0) {
 
-                iconWidth = PDEBuildingUnits.roundToScreenCoordinates(
-                        PDEFontHelpers.getCapHeight(mFont, textInfo.base_fontPixelSize) * mIconToTextHeightRatio);
+                iconWidth = PDEBuildingUnits.roundToScreenCoordinates(mFont.getCapHeight(fontSize)
+                                                                      * mIconToTextHeightRatio);
 
                 if (SHOW_DEBUG_LOGS) {
                     Log.d(LOG_TAG, "calculateWantedWidth - calculated iconWidth: " + iconWidth);
@@ -1430,13 +1542,13 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         }
 
         // calculate wanted width
-        if (!TextUtils.isEmpty(textInfo.base_text)) {
-            wantedWidth = outerDistanceLeftRight + textInfo.textSizeFull.width();
+        if (!TextUtils.isEmpty(mTitle)) {
+            wantedWidth = outerDistanceLeftRight + textWidth;
         }
 
         //check to add icon width and save areas...
         if (iconWidth > 0) {
-            if (!TextUtils.isEmpty(textInfo.base_text)) {
+            if (!TextUtils.isEmpty(mTitle)) {
                 // there is an Icon, thus 3 saveAreas
                 wantedWidth += (saveArea + iconWidth);
             } else {
@@ -1444,6 +1556,8 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
                 wantedWidth += outerDistanceLeftRight + iconWidth;
             }
         }
+
+        PDETrace.endSection();
 
         return wantedWidth;
     }
@@ -1456,9 +1570,9 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int height;
         int width;
+        float fontSize;
 
-        // reset measure text info
-        mOnMeasureTextInfo.reset();
+        PDETrace.beginSection("onMeasure");
 
         if (SHOW_DEBUG_LOGS) {
             Log.d(LOG_TAG, "onMeasure " + MeasureSpec.toString(widthMeasureSpec) + " x "
@@ -1471,15 +1585,13 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         // take the height from the parameter ...
         height = MeasureSpec.getSize(heightMeasureSpec);
 
-        updateFontSize(height, false, mOnMeasureTextInfo, mOnMeasureFontMetaSize);
-
-        // .. and use it to calculate the sizes
-        width = PDEBuildingUnits.roundUpToScreenCoordinates(calculateWantedWidth(mOnMeasureTextInfo));
+        fontSize = calculateFontSize(height);
+        width = PDEBuildingUnits.roundUpToScreenCoordinates(calculateWantedWidth(getTextWidth(fontSize), fontSize));
 
         if (height == 0) {
             height = PDEBuildingUnits.BU() * 3;
-        } else if (height > mOnMeasureTextInfo.fontCapHeight * 3.0f) {
-            height = PDEBuildingUnits.roundUpToScreenCoordinates(mOnMeasureTextInfo.fontCapHeight * 3.0f);
+        } else if (height > mFont.getCapHeight(fontSize) * 3.0f) {
+            height = PDEBuildingUnits.roundUpToScreenCoordinates(mFont.getCapHeight(fontSize) * 3.0f);
         }
 
         // return the values
@@ -1489,21 +1601,24 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         if (SHOW_DEBUG_LOGS) {
             Log.d(LOG_TAG, "onMeasure result: " + getMeasuredWidth() + " x " + getMeasuredHeight());
         }
+
+        PDETrace.endSection();
     }
 
 
     /**
-     * @brief Size changed.
-     *
      * @param width     New width.
      * @param height    New height.
      * @param oldWidth  Old width.
      * @param oldHeight Old height.
+     * @brief Size changed.
      */
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         // we have to call performLayout here, since the new sizes are needed in onLayout. And the new sizes of the text
         // field or set here (the call of measure is also important otherwise the ViewGroup doesn't know about the size)
+
+        PDETrace.beginSection("onSizeChanged");
 
         if (SHOW_DEBUG_LOGS) {
             Log.d(LOG_TAG, "onSizeChanged " + width + " x " + height + " old: " + oldWidth + " x " + oldHeight);
@@ -1517,10 +1632,12 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
 
         if (width != oldWidth || height != oldHeight) {
             // update the font size
-            updateFontSize(mDisplayHeight, true, mOnMeasureTextInfo, mOnMeasureFontMetaSize);
+            updateFontSize(mDisplayHeight, true, mTextInfo, mFontMetaSize);
 
             // and perform a new layout
             performLayout();
         }
+
+        PDETrace.endSection();
     }
 }

@@ -3,25 +3,27 @@
  * Experience Toolbox. You can obtain a copy of the terms and conditions of the Experience Toolbox at
  * https://www.design.telekom.com/myaccount/terms-of-use/
  *
- * Copyright (c) 2012. Neuland Multimedia GmbH.
+ * Copyright (c) 2013. Neuland Multimedia GmbH.
  */
 
 package de.telekom.pde.codelibrary.ui.components.lists;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 import de.telekom.pde.codelibrary.ui.agents.PDEAgentController;
+import de.telekom.pde.codelibrary.ui.buildingunits.PDEBuildingUnits;
 import de.telekom.pde.codelibrary.ui.color.PDEColor;
 import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
-
-import java.util.ArrayList;
 
 //----------------------------------------------------------------------------------------------------------------------
 // PDEListView
@@ -55,7 +57,7 @@ public class PDEListView extends ListView implements PDEIEventSource {
      */
     public PDEListView(Context context) {
         super(context);
-        init();
+        init(context, null);
     }
 
 
@@ -64,7 +66,7 @@ public class PDEListView extends ListView implements PDEIEventSource {
      */
     public PDEListView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context, attrs);
     }
 
 
@@ -73,16 +75,19 @@ public class PDEListView extends ListView implements PDEIEventSource {
      */
     public PDEListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
+        init(context, attrs);
     }
 
 
     /**
      * @brief Init properties.
      */
-    public void init() {
+    @SuppressWarnings("unused")
+    private void init(Context context, android.util.AttributeSet attrs) {
         // init
-
+        // default divider settings
+        setDivider(new ColorDrawable(PDEColor.valueOf("DTGrey220").getIntegerColor()));
+        setDividerHeight(1);
         // make the native list selector invisible
         setSelector(new ColorDrawable(0));
 
@@ -96,6 +101,34 @@ public class PDEListView extends ListView implements PDEIEventSource {
         // set ourselves as the default sender (optional)
         mEventSource.setEventDefaultSender(this, true);
         mStrongPDEEventListenerHolder = new ArrayList<Object>();
+
+        setAttributes(attrs);
+    }
+
+
+    /**
+     * @brief Load XML attributes.
+     */
+    private void setAttributes(AttributeSet attrs) {
+        // valid?
+        if (attrs == null) return;
+
+        int resourceId = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android",
+                                                         "divider", -1);
+        if (resourceId > 0 && getResources() != null) {
+            final Drawable d = getResources().getDrawable(resourceId);
+            if (d != null) {
+                // If a divider is specified use its intrinsic height for divider height
+                setDivider(d);
+            }
+        }
+
+        String str = attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "dividerHeight");
+        if (str != null) {
+            setDividerHeight((int) PDEBuildingUnits.parseSize(str));
+        } else {
+            setDividerHeight(1);
+        }
     }
 
 

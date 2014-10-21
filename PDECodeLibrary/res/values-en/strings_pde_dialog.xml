@@ -28,17 +28,17 @@ Be carefully when you edit/remov/add values here
 	<string name="LOGIN_FAILED_TARPIT_TIME_title">"Repeat Login."</string>
 	<string name="LOGIN_FAILED_TARPIT_TIME_text">"Username or password is incorrect. You can log in again in %1$s."</string>
 
-	<string name="LOGIN_FAILED_ACCOUNT_LOCKED_title">"Locked User Account"</string>
-	<string name="LOGIN_FAILED_ACCOUNT_LOCKED_text">"Please contact %1$s to unlock your account."</string>
+	<string name="LOGIN_FAILED_ACCOUNT_LOCKED_title">"User Account Locked"</string>
+	<string name="LOGIN_FAILED_ACCOUNT_LOCKED_text">"Please contact %1$s to have your user account unlocked."</string>
 
 	<string name="LOGIN_UNAVAILABLE_TARPIT_TIME_title">"Login Unavailable"</string>
 	<string name="LOGIN_UNAVAILABLE_TARPIT_TIME_text">"You can log in again in %1$s."</string>
 
-	<string name="LOGIN_ERROR_ACCOUNT_BLOCKED_title">"Locked User Account"</string>
-	<string name="LOGIN_ERROR_ACCOUNT_BLOCKED_text">"Please contact %1$s to unlock your account."</string>
+	<string name="LOGIN_ERROR_ACCOUNT_BLOCKED_title">"User Account Locked"</string>
+	<string name="LOGIN_ERROR_ACCOUNT_BLOCKED_text">"Please contact %1$s to have your user account unlocked."</string>
 
 	<string name="LOGIN_SERVER_ERROR_500_title">"We're Sorry."</string>
-	<string name="LOGIN_SERVER_ERROR_500_text">"The login isn't possible because the server is temporarily unavailable. Please try again later."</string>
+	<string name="LOGIN_SERVER_ERROR_500_text">"The login isn't possible because the server is currently unavailable. Please try again later."</string>
 
 	<string name="LOGIN_INTERNAL_ERROR_title">"We're Sorry."</string>
 	<string name="LOGIN_INTERNAL_ERROR_text">"The login isn't possible. Please try again later."</string>
@@ -55,7 +55,7 @@ Be carefully when you edit/remov/add values here
 	<string name="APP_OPEN_IN_APP_title">"Open in the App."</string>
 	<string name="APP_OPEN_IN_APP_text">""</string>
 
-	<string name="APP_FUNCTION_NOT_POSSIBLE_title">"Network Changed."</string>
+	<string name="APP_FUNCTION_NOT_POSSIBLE_title">"Network Changed"</string>
 	<string name="APP_FUNCTION_NOT_POSSIBLE_text">"%1$s is unavailable because you are no longer in the Deutsche Telekom cellular network."</string>
 
 	<string name="ITEM_NOT_FOUND_title">"%1$s Not Found"</string>
@@ -68,7 +68,7 @@ Be carefully when you edit/remov/add values here
 	<string name="APP_LOAD_ERROR_text">"%1$s can't be loaded at this time. Please try again later."</string>
 
 	<string name="APP_LOAD_NETWORK_ERROR_title">"No Internet Connection"</string>
-	<string name="APP_LOAD_NETWORK_ERROR_text">"Please establish an Internet connection %1$s, and restart the app thereafter."</string>
+	<string name="APP_LOAD_NETWORK_ERROR_text">"Please establish an Internet connection in %1$s, and restart the app thereafter."</string>
 
 	<string name="MEDIA_PLAYBACK_UNAVAILABLE_title">"We're Sorry."</string>
 	<string name="MEDIA_PLAYBACK_UNAVAILABLE_text">"Playback is currently not possible. Please try again later."</string>
@@ -88,7 +88,7 @@ Be carefully when you edit/remov/add values here
 	<string name="EMPTY_FIRST_NAME_ENTRY_title">"Please enter your first name."</string>
 	<string name="EMPTY_FIRST_NAME_ENTRY_text">""</string>
 
-	<string name="INVALID_CHARACTERS_USED_title">"Please don't use %1$s"</string>
+	<string name="INVALID_CHARACTERS_USED_title">"Please don't use %1$s."</string>
 	<string name="INVALID_CHARACTERS_USED_text">""</string>
 
 	<string name="VALID_CHARACTER_SET_title">"Please only use %1$s."</string>
@@ -125,7 +125,7 @@ Be carefully when you edit/remov/add values here
 	<string name="FUNCTION_UNAVAILABLE_BECAUSE_text">"Unfortunately, this function is currently unavailable due to %1$s. Please try again later."</string>
 
 	<string name="UPLOAD_FAILED_title">"We're Sorry."</string>
-	<string name="UPLOAD_FAILED_text">"Unfortunately, the upload wasn't possible. Please try again."</string>
+	<string name="UPLOAD_FAILED_text">"Unfortunately, the file couldn't be uploaded. Please try again."</string>
 
 	<string name="INFORMATION_DISPLAY_FAILED_title">"Information Not Retrievable"</string>
 	<string name="INFORMATION_DISPLAY_FAILED_text">""</string>
@@ -134,9 +134,9 @@ Be carefully when you edit/remov/add values here
 	<string name="INTERNET_ERROR_IN_LOGIN_text">"Please establish a connection to the Internet, and log in again."</string>
 
 	<string name="EMPTY_SEARCH_RESULTS_title">"No Results"</string>
-	<string name="EMPTY_SEARCH_RESULTS_text">"Unfortunately, no results were found for your search. Please try again with a different search term."</string>
+	<string name="EMPTY_SEARCH_RESULTS_text">"Unfortunately, no results were found for your search. Please try again with a different term."</string>
 
-	<string name="LOGIN_REQUIRED_title">"Please log in."</string>
+	<string name="LOGIN_REQUIRED_title">"Please Log In."</string>
 	<string name="LOGIN_REQUIRED_text">""</string>
 
 	<string name="LOGIN_DATA_INCORRECT_title">"We're Sorry."</string>
@@ -158,7 +158,7 @@ Be carefully when you edit/remov/add values here
 	<string name="PAGE_NOT_FOUND_text">"Please try to load the page again later."</string>
 
 	<string name="EMAIL_RECIPIENT_UNKNOWN_title">"We're Sorry."</string>
-	<string name="EMAIL_RECIPIENT_UNKNOWN_text">"The %1$s couldn't be sent. The following recipients are unknown: %2$s"</string>
+	<string name="EMAIL_RECIPIENT_UNKNOWN_text">"The message couldn't be sent. The following recipients are unknown: %1$s"</string>
 
 	<string name="SEND_EMAIL_FAILED_title">"We're Sorry."</string>
 	<string name="SEND_EMAIL_FAILED_text">"The %1$s couldn't be sent. Please try again."</string>
@@ -167,7 +167,7 @@ Be carefully when you edit/remov/add values here
 	<string name="MISSING_MEMORY_CARD_text">"Please insert your memory card in order to start %1$s."</string>
 
 	<string name="TECHNICAL_ERROR_title">"We're Sorry."</string>
-	<string name="TECHNICAL_ERROR_text">"That shouldn't have happened. Please refer to %1$s with the code %2$s."</string>
+	<string name="TECHNICAL_ERROR_text">"That shouldn't have happened. Please refer to %1$s, and specify the code %2$s."</string>
 
 	<string name="MISSING_SIM_CARD_title">"Insert Deutsche Telekom SIM Card."</string>
 	<string name="MISSING_SIM_CARD_text">"This app only works with a Deutsche Telekom SIM card."</string>

@@ -65,6 +65,7 @@ public class PDEDialogConfig implements Parcelable{
 
 
 
+
     /**
      * @brief standard constructor
      */
@@ -525,4 +526,6 @@ public class PDEDialogConfig implements Parcelable{
     public String getTypefaceNameButton2() {
         return mButton2TypefaceName;
     }
+
+
 }

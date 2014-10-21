@@ -20,10 +20,26 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.*;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.SoundEffectConstants;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.TableRow;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import de.telekom.pde.codelibrary.ui.PDECodeLibrary;
 import de.telekom.pde.codelibrary.ui.PDEConstants;
 import de.telekom.pde.codelibrary.ui.PDEConstants.PDEAlignment;
@@ -41,14 +57,10 @@ import de.telekom.pde.codelibrary.ui.events.PDEEvent;
 import de.telekom.pde.codelibrary.ui.events.PDEEventSource;
 import de.telekom.pde.codelibrary.ui.events.PDEIEventSource;
 import de.telekom.pde.codelibrary.ui.helpers.PDEDictionary;
+import de.telekom.pde.codelibrary.ui.helpers.PDETrace;
 import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
 import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 import de.telekom.pde.codelibrary.ui.layout.PDEAbsoluteLayout;
-
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 //----------------------------------------------------------------------------------------------------------------------
 //  PDEButton
@@ -62,6 +74,9 @@ import java.util.Locale;
  * not be) separated into background, foreground and overlay layers.
  *
  * PDEButton offers a few predefined button variants as preset, but does not prevent you using your own graphics.
+ *
+ * Extends absolute layout because of our complex layouting process, where we calculate our sizes and position
+ * ourselves. Using the Android Linear Layout was slower, due to other calculation processes.
  */
 @SuppressWarnings("unused")
 public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
@@ -408,7 +423,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
                 TypedArray sa = context.obtainStyledAttributes(attrs, R.styleable.PDEButton);
 
                 if (sa != null) {
-                    titleText = sa.getString(R.styleable.PDEButton_text);
+                    titleText = sa.getString(R.styleable.PDEButton_pde_text);
 
                     sa.recycle();
                 }
@@ -560,14 +575,14 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
             if (sa != null) {
 
                 // first create layer if wanted by xml, use default flat
-                if (sa.hasValue(R.styleable.PDEButton_backgroundType)) {
-                    setButtonBackgroundLayerWithLayerType(sa.getInt(R.styleable.PDEButton_backgroundType, 0));
+                if (sa.hasValue(R.styleable.PDEButton_pde_backgroundType)) {
+                    setButtonBackgroundLayerWithLayerType(sa.getInt(R.styleable.PDEButton_pde_backgroundType, 0));
                 } else {
                     setButtonBackgroundLayerWithLayerType(PDEButtonLayerType.BackgroundFlat);
                 }
 
                 // set text
-                titleText = sa.getString(R.styleable.PDEButton_text);
+                titleText = sa.getString(R.styleable.PDEButton_pde_text);
                 if (TextUtils.isEmpty(titleText)) {
                     // try to get "android:text" attribute instead
 
@@ -584,70 +599,70 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
                 setText(titleText);
 
                 // set other attributes
-                if (sa.hasValue(R.styleable.PDEButton_iconAlignment)) {
-                    setIconAlignment(PDEButtonIconAlignment.values()[sa.getInt(R.styleable.PDEButton_iconAlignment, 0)]);
+                if (sa.hasValue(R.styleable.PDEButton_pde_iconAlignment)) {
+                    setIconAlignment(PDEButtonIconAlignment.values()[sa.getInt(R.styleable.PDEButton_pde_iconAlignment, 0)]);
                 }
-                if (sa.hasValue(R.styleable.PDEButton_borderColor)) {
+                if (sa.hasValue(R.styleable.PDEButton_pde_borderColor)) {
                     //to have dark/light style use PDEColor with color id
-                    int resourceID = sa.getResourceId(R.styleable.PDEButton_borderColor, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDEButton_pde_borderColor, 0);
                     if (resourceID != 0) {
                         setBorderColor(PDEColor.valueOfColorID(resourceID));
                     } else {
-                        setBorderColorWithInt(sa.getColor(R.styleable.PDEButton_borderColor, R.color.DTBlack));
+                        setBorderColorWithInt(sa.getColor(R.styleable.PDEButton_pde_borderColor, R.color.DTBlack));
                     }
                 }
                 // check text color attribute, if there is none use title color attribute if there is one
                 // both do the same, but setTextColor is more Android style
-                if (sa.hasValue(R.styleable.PDEButton_textColor)) {
+                if (sa.hasValue(R.styleable.PDEButton_pde_textColor)) {
                     //to have dark/light style use PDEColor with color id
-                    int resourceID = sa.getResourceId(R.styleable.PDEButton_textColor, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDEButton_pde_textColor, 0);
                     if (resourceID != 0) {
                         setTextColor(PDEColor.valueOfColorID(resourceID));
                     } else {
-                        setTextColorWithInt(sa.getColor(R.styleable.PDEButton_textColor, R.color.DTBlack));
+                        setTextColorWithInt(sa.getColor(R.styleable.PDEButton_pde_textColor, R.color.DTBlack));
                     }
-                } else if (sa.hasValue(R.styleable.PDEButton_titleColor)) {
+                } else if (sa.hasValue(R.styleable.PDEButton_pde_titleColor)) {
                     //to have dark/light style use PDEColor with color id
-                    int resourceID = sa.getResourceId(R.styleable.PDEButton_titleColor, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDEButton_pde_titleColor, 0);
                     if (resourceID != 0) {
                         setTitleColor(PDEColor.valueOfColorID(resourceID));
                     } else {
-                        setTitleColorWithInt(sa.getColor(R.styleable.PDEButton_titleColor, R.color.DTBlack));
+                        setTitleColorWithInt(sa.getColor(R.styleable.PDEButton_pde_titleColor, R.color.DTBlack));
                     }
                 }
-                if (sa.hasValue(R.styleable.PDEButton_buttonColor)) {
+                if (sa.hasValue(R.styleable.PDEButton_pde_buttonColor)) {
                     //to have dark/light style use PDEColor with color id
-                    int resourceID = sa.getResourceId(R.styleable.PDEButton_buttonColor, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDEButton_pde_buttonColor, 0);
                     if (resourceID != 0) {
                         setColor(PDEColor.valueOfColorID(resourceID));
                     } else {
-                        setColorWithInt(sa.getColor(R.styleable.PDEButton_buttonColor, R.color.DTBlue));
+                        setColorWithInt(sa.getColor(R.styleable.PDEButton_pde_buttonColor, R.color.DTBlue));
                     }
                 }
-                if (sa.hasValue(R.styleable.PDEButton_buttonSelectedColor)) {
+                if (sa.hasValue(R.styleable.PDEButton_pde_buttonSelectedColor)) {
                     //to have dark/light style use PDEColor with color id
-                    int resourceID = sa.getResourceId(R.styleable.PDEButton_buttonSelectedColor, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDEButton_pde_buttonSelectedColor, 0);
                     if (resourceID != 0) {
                         setSelectedColor(PDEColor.valueOfColorID(resourceID));
                     } else {
-                        setSelectedColor(sa.getColor(R.styleable.PDEButton_buttonSelectedColor, R.color.DTBlue));
+                        setSelectedColor(sa.getColor(R.styleable.PDEButton_pde_buttonSelectedColor, R.color.DTBlue));
                     }
                 }
-                if (sa.hasValue(R.styleable.PDEButton_textSelectedColor)) {
+                if (sa.hasValue(R.styleable.PDEButton_pde_textSelectedColor)) {
                     //to have dark/light style use PDEColor with color id
-                    int resourceID = sa.getResourceId(R.styleable.PDEButton_textSelectedColor, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDEButton_pde_textSelectedColor, 0);
                     if (resourceID != 0) {
                         setSelectedTextColor(PDEColor.valueOfColorID(resourceID));
                     } else {
-                        setSelectedTextColor(sa.getColor(R.styleable.PDEButton_textSelectedColor, R.color.DTBlack));
+                        setSelectedTextColor(sa.getColor(R.styleable.PDEButton_pde_textSelectedColor, R.color.DTBlack));
                     }
                 }
                 //check icon source or string
-                if (sa.hasValue(R.styleable.PDEButton_src)) {
+                if (sa.hasValue(R.styleable.PDEButton_pde_src)) {
                     //check if this is a resource value
-                    int resourceID = sa.getResourceId(R.styleable.PDEButton_src, 0);
+                    int resourceID = sa.getResourceId(R.styleable.PDEButton_pde_src, 0);
                     if (resourceID == 0) {
-                        setIcon(sa.getString(R.styleable.PDEButton_src));
+                        setIcon(sa.getString(R.styleable.PDEButton_pde_src));
                     } else {
                         setIcon(context.getResources().getDrawable(resourceID));
                     }
@@ -658,70 +673,70 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
                     }
                 }
                 //is icon colored?
-                if (sa.hasValue(R.styleable.PDEButton_iconColored)) {
-                    setIconColored(sa.getBoolean(R.styleable.PDEButton_iconColored, false));
+                if (sa.hasValue(R.styleable.PDEButton_pde_iconColored)) {
+                    setIconColored(sa.getBoolean(R.styleable.PDEButton_pde_iconColored, false));
                 }
-                if (sa.hasValue(R.styleable.PDEButton_textAlignment)) {
-                    setAlignment(PDEAlignment.values()[sa.getInt(R.styleable.PDEButton_textAlignment, 0)]);
+                if (sa.hasValue(R.styleable.PDEButton_pde_textAlignment)) {
+                    setAlignment(PDEAlignment.values()[sa.getInt(R.styleable.PDEButton_pde_textAlignment, 0)]);
                 }
-                if (sa.hasValue(R.styleable.PDEButton_textSize)) {
-                    String text_size = sa.getString(R.styleable.PDEButton_textSize);
+                if (sa.hasValue(R.styleable.PDEButton_pde_textSize)) {
+                    String text_size = sa.getString(R.styleable.PDEButton_pde_textSize);
                     setFontSize(text_size);
                 }
-                if (sa.hasValue(R.styleable.PDEButton_typeface)) {
-                    setFont(PDETypeface.createByName(sa.getString(R.styleable.PDEButton_typeface)));
+                if (sa.hasValue(R.styleable.PDEButton_pde_typeface)) {
+                    setFont(PDETypeface.createByName(sa.getString(R.styleable.PDEButton_pde_typeface)));
                 }
-                if (sa.hasValue(R.styleable.PDEButton_minButtonPadding)) {
-                    setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding, 0),
-                            sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding, 0),
-                            sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding, 0),
-                            sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPadding, 0));
+                if (sa.hasValue(R.styleable.PDEButton_pde_minButtonPadding)) {
+                    setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDEButton_pde_minButtonPadding, 0),
+                            sa.getDimensionPixelOffset(R.styleable.PDEButton_pde_minButtonPadding, 0),
+                            sa.getDimensionPixelOffset(R.styleable.PDEButton_pde_minButtonPadding, 0),
+                            sa.getDimensionPixelOffset(R.styleable.PDEButton_pde_minButtonPadding, 0));
                 }
-                if (sa.hasValue(R.styleable.PDEButton_minButtonPaddingLeft)) {
-                    setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingLeft, 0),
+                if (sa.hasValue(R.styleable.PDEButton_pde_minButtonPaddingLeft)) {
+                    setMinButtonPadding(sa.getDimensionPixelOffset(R.styleable.PDEButton_pde_minButtonPaddingLeft, 0),
                             mMinButtonPadding.top,
                             mMinButtonPadding.right, mMinButtonPadding.bottom);
                 }
-                if (sa.hasValue(R.styleable.PDEButton_minButtonPaddingTop)) {
+                if (sa.hasValue(R.styleable.PDEButton_pde_minButtonPaddingTop)) {
                     setMinButtonPadding(mMinButtonPadding.left,
-                            sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingTop, 0),
+                            sa.getDimensionPixelOffset(R.styleable.PDEButton_pde_minButtonPaddingTop, 0),
                             mMinButtonPadding.right, mMinButtonPadding.bottom);
                 }
-                if (sa.hasValue(R.styleable.PDEButton_minButtonPaddingRight)) {
+                if (sa.hasValue(R.styleable.PDEButton_pde_minButtonPaddingRight)) {
                     setMinButtonPadding(mMinButtonPadding.left, mMinButtonPadding.top,
-                            sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingRight, 0),
+                            sa.getDimensionPixelOffset(R.styleable.PDEButton_pde_minButtonPaddingRight, 0),
                             mMinButtonPadding.bottom);
                 }
-                if (sa.hasValue(R.styleable.PDEButton_minButtonPaddingBottom)) {
+                if (sa.hasValue(R.styleable.PDEButton_pde_minButtonPaddingBottom)) {
                     setMinButtonPadding(mMinButtonPadding.left, mMinButtonPadding.top,
                             mMinButtonPadding.right,
-                            sa.getDimensionPixelOffset(R.styleable.PDEButton_minButtonPaddingBottom, 0));
+                            sa.getDimensionPixelOffset(R.styleable.PDEButton_pde_minButtonPaddingBottom, 0));
                 }
-                if (sa.hasValue(R.styleable.PDEButton_overlay)) {
-                    setButtonOverlayLayerWithLayerType(sa.getInt(R.styleable.PDEButton_overlay, 0));
+                if (sa.hasValue(R.styleable.PDEButton_pde_overlay)) {
+                    setButtonOverlayLayerWithLayerType(sa.getInt(R.styleable.PDEButton_pde_overlay, 0));
                 }
-                if (sa.hasValue(R.styleable.PDEButton_selected)) {
-                    setSelected(sa.getBoolean(R.styleable.PDEButton_selected, false));
+                if (sa.hasValue(R.styleable.PDEButton_pde_selected)) {
+                    setSelected(sa.getBoolean(R.styleable.PDEButton_pde_selected, false));
                 }
-                if (sa.hasValue(R.styleable.PDEButton_checkboxAlignment)) {
-                    setCheckboxAlignment(PDEAlignment.values()[sa.getInt(R.styleable.PDEButton_checkboxAlignment, 0)]);
+                if (sa.hasValue(R.styleable.PDEButton_pde_checkboxAlignment)) {
+                    setCheckboxAlignment(PDEAlignment.values()[sa.getInt(R.styleable.PDEButton_pde_checkboxAlignment, 0)]);
                 }
-                if (sa.hasValue(R.styleable.PDEButton_radioAlignment)) {
-                    setRadioAlignment(PDEAlignment.values()[sa.getInt(R.styleable.PDEButton_radioAlignment, 0)]);
+                if (sa.hasValue(R.styleable.PDEButton_pde_radioAlignment)) {
+                    setRadioAlignment(PDEAlignment.values()[sa.getInt(R.styleable.PDEButton_pde_radioAlignment, 0)]);
                 }
-                if (sa.hasValue(R.styleable.PDEButton_roundedCornerConfiguration)) {
-                    setRoundedCornerConfiguration(sa.getInt(R.styleable.PDEButton_roundedCornerConfiguration,
+                if (sa.hasValue(R.styleable.PDEButton_pde_roundedCornerConfiguration)) {
+                    setRoundedCornerConfiguration(sa.getInt(R.styleable.PDEButton_pde_roundedCornerConfiguration,
                             PDECornerConfigurations.PDECornerConfigurationAllCorners));
                 }
-                if (sa.hasValue(R.styleable.PDEButton_iconToTextHeightRatio)) {
-                    setIconToTextHeightRatio(sa.getFloat(R.styleable.PDEButton_iconToTextHeightRatio, PDEConstants.DefaultPDEButtonLayerForegroundIconTextIconToTextHeightRatio));
+                if (sa.hasValue(R.styleable.PDEButton_pde_iconToTextHeightRatio)) {
+                    setIconToTextHeightRatio(sa.getFloat(R.styleable.PDEButton_pde_iconToTextHeightRatio, PDEConstants.DefaultPDEButtonIconToTextHeightRatio));
                 }
-                if (sa.hasValue(R.styleable.PDEButton_cornerRadius)) {
-                    setCornerRadius(sa.getDimension(R.styleable.PDEButton_cornerRadius,
+                if (sa.hasValue(R.styleable.PDEButton_pde_cornerRadius)) {
+                    setCornerRadius(sa.getDimension(R.styleable.PDEButton_pde_cornerRadius,
                             (float) PDEBuildingUnits.oneThirdBU()));
                 }
-                if (sa.hasValue(R.styleable.PDEButton_horizontalPadding)) {
-                    setHorizontalPadding((int) sa.getDimension(R.styleable.PDEButton_horizontalPadding,
+                if (sa.hasValue(R.styleable.PDEButton_pde_horizontalPadding)) {
+                    setHorizontalPadding((int) sa.getDimension(R.styleable.PDEButton_pde_horizontalPadding,
                             PDEBuildingUnits.pixelFromBU(2.0f)));
                 }
 
@@ -2734,93 +2749,99 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        // We do our custom on Measure here, since the background has to be the size of the button, but should not
-        // influence the size.
+        PDETrace.beginSection("PDEButton::onMeasure");
 
-        int heightMeasureSpecOld = heightMeasureSpec;
+        try {
+            // We do our custom on Measure here, since the background has to be the size of the button, but should not
+            // influence the size.
 
-        if (DEBUG_OUTPUT) {
-            Log.d(LOG_TAG, "onMeasure " + MeasureSpec.toString(widthMeasureSpec) + " x "
-                    + MeasureSpec.toString(heightMeasureSpec));
-        }
+            int heightMeasureSpecOld = heightMeasureSpec;
 
-        if (isInEditMode()) {
+            if (DEBUG_OUTPUT) {
+                Log.d(LOG_TAG, "onMeasure " + MeasureSpec.toString(widthMeasureSpec) + " x "
+                               + MeasureSpec.toString(heightMeasureSpec));
+            }
+
+            if (isInEditMode()) {
+                // Find out how big everyone wants to be
+                measureChildren(widthMeasureSpec, heightMeasureSpec);
+
+                setMeasuredDimension(resolveSize(100, widthMeasureSpec),
+                                     resolveSize(100, heightMeasureSpec));
+                return;
+            }
+
+            // now do the special case, that the background doesn't influence the size!
+
+            int count = getChildCount();
+            int maxHeight = 0;
+            int maxWidth = 0;
+
+            // workaround: In order to set the right height as early as possible
+            ViewGroup.LayoutParams layoutParams = getLayoutParams();
+            if (layoutParams != null && layoutParams.height > 0) {
+                // don't pass UNSPECIFIED -> somewhere in the layout structure the value will be lost (and set to 0)
+                if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) {
+                    heightMeasureSpec = MeasureSpec.makeMeasureSpec(layoutParams.height, MeasureSpec.EXACTLY);
+                } else {
+                    heightMeasureSpec = MeasureSpec.makeMeasureSpec(layoutParams.height, MeasureSpec.AT_MOST);
+                }
+
+            }
+
+            if (DEBUG_OUTPUT) {
+                Log.d(LOG_TAG, "onMeasure corrected: " + MeasureSpec.toString(widthMeasureSpec) + " x "
+                               + MeasureSpec.toString(heightMeasureSpec));
+            }
+
             // Find out how big everyone wants to be
             measureChildren(widthMeasureSpec, heightMeasureSpec);
 
-            setMeasuredDimension(resolveSize(100, widthMeasureSpec),
-                    resolveSize(100, heightMeasureSpec));
-            return;
-        }
+            // Find rightmost and bottom-most child
+            for (int i = 0; i < count; i++) {
+                View child = getChildAt(i);
+                // skip invisible and background!
+                if (child != null && child.getVisibility() != GONE && child.getId() != R.id.pdebutton_background_slot) {
+                    int childRight = 0;
+                    int childBottom = 0;
 
-        // now do the special case, that the background doesn't influence the size!
+                    PDEAbsoluteLayout.LayoutParams lp = (PDEAbsoluteLayout.LayoutParams) child.getLayoutParams();
 
-        int count = getChildCount();
-        int maxHeight = 0;
-        int maxWidth = 0;
+                    if (lp != null) {
+                        childRight = lp.x + child.getMeasuredWidth();
+                        childBottom = lp.y + child.getMeasuredHeight();
+                    }
 
-        // workaround: In order to set the right height as early as possible
-        ViewGroup.LayoutParams layoutParams = getLayoutParams();
-        if (layoutParams != null && layoutParams.height > 0) {
-            // don't pass UNSPECIFIED -> somewhere in the layout structure the value will be lost (and set to 0)
-            if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) {
-                heightMeasureSpec = MeasureSpec.makeMeasureSpec(layoutParams.height, MeasureSpec.EXACTLY);
-            } else {
-                heightMeasureSpec = MeasureSpec.makeMeasureSpec(layoutParams.height, MeasureSpec.AT_MOST);
-            }
-
-        }
-
-        if (DEBUG_OUTPUT) {
-            Log.d(LOG_TAG, "onMeasure corrected: " + MeasureSpec.toString(widthMeasureSpec) + " x "
-                    + MeasureSpec.toString(heightMeasureSpec));
-        }
-
-        // Find out how big everyone wants to be
-        measureChildren(widthMeasureSpec, heightMeasureSpec);
-
-        // Find rightmost and bottom-most child
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            // skip invisible and background!
-            if (child != null && child.getVisibility() != GONE && child.getId() != R.id.pdebutton_background_slot) {
-                int childRight = 0;
-                int childBottom = 0;
-
-                PDEAbsoluteLayout.LayoutParams lp = (PDEAbsoluteLayout.LayoutParams) child.getLayoutParams();
-
-                if (lp != null) {
-                    childRight = lp.x + child.getMeasuredWidth();
-                    childBottom = lp.y + child.getMeasuredHeight();
+                    maxWidth = Math.max(maxWidth, childRight);
+                    maxHeight = Math.max(maxHeight, childBottom);
                 }
-
-                maxWidth = Math.max(maxWidth, childRight);
-                maxHeight = Math.max(maxHeight, childBottom);
             }
-        }
 
-        // Account for padding too
-        maxWidth += getPaddingLeft() + getPaddingRight();
-        maxHeight += getPaddingTop() + getPaddingBottom();
+            // Account for padding too
+            maxWidth += getPaddingLeft() + getPaddingRight();
+            maxHeight += getPaddingTop() + getPaddingBottom();
 
-        // we want it bigger for Outer Shadow buttons!
-        maxWidth += mButtonPadding.getLeft() + mButtonPadding.getRight();
-        maxHeight += mButtonPadding.getTop() + mButtonPadding.getBottom();
+            // we want it bigger for Outer Shadow buttons!
+            maxWidth += mButtonPadding.getLeft() + mButtonPadding.getRight();
+            maxHeight += mButtonPadding.getTop() + mButtonPadding.getBottom();
 
-        // Check against minimum height and width
-        maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
-        maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
+            // Check against minimum height and width
+            maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
+            maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
 
-        setMeasuredDimension(resolveSize(maxWidth, widthMeasureSpec),
-                resolveSize(maxHeight, heightMeasureSpecOld));
+            setMeasuredDimension(resolveSize(maxWidth, widthMeasureSpec),
+                                 resolveSize(maxHeight, heightMeasureSpecOld));
 
-        //update the background
-        findViewById(R.id.pdebutton_background_slot).measure(
-                MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+            //update the background
+            findViewById(R.id.pdebutton_background_slot).measure(
+                    MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
 
-        if (DEBUG_OUTPUT) {
-            Log.d(LOG_TAG, "onMeasure result: " + getMeasuredWidth() + " x " + getMeasuredHeight());
+            if (DEBUG_OUTPUT) {
+                Log.d(LOG_TAG, "onMeasure result: " + getMeasuredWidth() + " x " + getMeasuredHeight());
+            }
+        } finally {
+            PDETrace.endSection();
         }
     }
 
@@ -2933,13 +2954,10 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
         }
 
         if (findViewById(R.id.pdebutton_inner_layout) != null) {
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) findViewById(R.id.pdebutton_inner_layout).
-                    getLayoutParams();
-            if (lp != null) {
-                lp.setMargins(mButtonPadding.getLeft(), mButtonPadding.getTop(), mButtonPadding.getRight(),
-                        mButtonPadding.getBottom());
-                findViewById(R.id.pdebutton_inner_layout).setLayoutParams(lp);
-            }
+            findViewById(R.id.pdebutton_inner_layout).setPadding(mButtonPadding.getLeft(),
+                                                                 mButtonPadding.getTop(),
+                                                                 mButtonPadding.getRight(),
+                                                                 mButtonPadding.getBottom());
         }
     }
 

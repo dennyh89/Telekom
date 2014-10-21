@@ -305,8 +305,8 @@ public class PDEAbsoluteLayout extends ViewGroup {
             super(c, attrs);
             TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.PDEAbsoluteLayout_Layout);
             if (a != null) {
-                x = a.getDimensionPixelOffset(R.styleable.PDEAbsoluteLayout_Layout_layoutX, 0);
-                y = a.getDimensionPixelOffset(R.styleable.PDEAbsoluteLayout_Layout_layoutY, 0);
+                x = a.getDimensionPixelOffset(R.styleable.PDEAbsoluteLayout_Layout_pde_layoutX, 0);
+                y = a.getDimensionPixelOffset(R.styleable.PDEAbsoluteLayout_Layout_pde_layoutY, 0);
                 a.recycle();
             }
         }

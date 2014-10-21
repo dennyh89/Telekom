@@ -507,7 +507,7 @@ public class PDEParametricCurveAnimation extends PDEAnimation {
 
     public void goToValue(double target) {
         double time;
-        double dist, baseSpeed, baseAcceleration, tempTime, tempDist;
+        double dist, baseSpeed, baseAcceleration, tempTime, tempDist, startSpeed;
         boolean linearIn, linearOut;
         boolean turnAround;
 
@@ -581,9 +581,9 @@ public class PDEParametricCurveAnimation extends PDEAnimation {
                 // some values to use later
                 dist = Math.abs(target - mValue);
                 if (linearIn) {
-                    mStartSpeed = 0.0;
+                    startSpeed = 0.0;
                 } else {
-                    mStartSpeed = Math.abs(mSpeed);
+                    startSpeed = Math.abs(mSpeed);
                 }
                 // ease-in calculation
                 if (linearIn) {
@@ -593,14 +593,14 @@ public class PDEParametricCurveAnimation extends PDEAnimation {
                     dist /= 2.0;
                 } else {
                     // we have a current speed, calculate the time and distance it would take to get to zero
-                    tempTime = mStartSpeed / baseAcceleration;
-                    tempDist = 0.5 * mStartSpeed * tempTime;
+                    tempTime = startSpeed / baseAcceleration;
+                    tempDist = 0.5 * startSpeed * tempTime;
                     // which case?
                     if (turnAround) {
                         // we don't want to go the full distance (this looks too sluggish). Modify time, recalculate
                         // distance
                         tempTime *= mTurnAroundFactor;
-                        tempDist = 0.5 * mStartSpeed * tempTime;
+                        tempDist = 0.5 * startSpeed * tempTime;
                         // we start by breaking
                         time = tempTime;
                         // after this, we have to move some more back
@@ -624,7 +624,7 @@ public class PDEParametricCurveAnimation extends PDEAnimation {
                     } else {
                         // we're overshooting anyway. Forget continuity, calculate the time it takes to break with constant
                         // deceleration
-                        time = (2.0 * dist / mStartSpeed);
+                        time = (2.0 * dist / startSpeed);
                         // no distance left for ease-out
                         dist = 0.0;
                     }

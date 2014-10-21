@@ -43,13 +43,6 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
     private final static String LOG_TAG = PDEParametricCurveAnimationEssentials.class.getName();
     private final static boolean DEBUG_SHOW = false;
 
-    // helper values
-    protected double mStartValue;
-    protected double mStartSpeed;
-    protected double mStartAcceleration;
-    protected double mTargetSpeed;
-    protected double mTargetAcceleration;
-
     // bezier values for easier calculations
     protected double[] mBezierControl;
 
@@ -85,14 +78,11 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
         // init
         mValue = 0.0;
         mTarget = 0.0;
-        mStartValue = 0.0;
         mDuration = 0;
         mSpeed = 0.0;
 
         mBezierControl = new double[6];
 
-        mTargetSpeed = 0.0;
-        mTargetAcceleration = 0.0;
         for (int i = 0; i < 6; i++) {
             mBezierControl[i] = 0.0;
         }
@@ -108,11 +98,11 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
 
     /**
      * @brief Set base time to be used.
-     *
+     * <p/>
      * Base distance is unchanged. For TimeModeConstant, setting the base time is enough. For
      * all other time modes, use setBaseTimeAndDistance() and see flags documentation.
      * For behaviour of the different timing modes, see time constants documentation.
-     *
+     * <p/>
      * Current animation can be kept (although it's unmodified).
      */
     public void setBaseTime(long baseTime) {
@@ -131,9 +121,9 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
 
     /**
      * @brief Set base distance to be used..
-     *
+     * <p/>
      * Base time is unchanged.
-     *
+     * <p/>
      * Current animation can be kept (although it's unmodified).
      */
     public void setBaseDistance(double baseDistance) {
@@ -177,9 +167,9 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
 
     /**
      * @brief Directly set the value.
-     *
+     * <p/>
      * This stops any running animations.
-     *
+     * <p/>
      * Note the naming: We cannot use setValue: as function name, since this is already defined as
      * setter function for the value property. Simply setting the value shouldn't affect the animation
      * (since we're using the value setting ourself). We also want to stay compliant with KeyValueCoding
@@ -193,7 +183,6 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
         }
 
         // set to safe parameters
-        mStartValue = value;
         mTarget = value;
         mDuration = 0;
         setSpeed(0.0);
@@ -209,7 +198,7 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
 
     /**
      * @brief Stop the animation immediately.
-     *
+     * <p/>
      * Just sets to the current value and stops running
      */
     public void stopAnimation() {
@@ -223,7 +212,7 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
 
     /**
      * @brief Go to the value in the specified time.
-     *
+     * <p/>
      * Animation is always performed starting with the current value, and using the specified duration,
      * even if there's nothing to animate - there's no check for value changes.
      */
@@ -260,15 +249,9 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
         }
         limitEnd = true;
 
-        // remember current value as start value
-        mStartValue = mValue;
-
         // remember target and duration
         mTarget = target;
         mDuration = duration;
-
-        // calculate start/stop speed and acceleration depending on easing type.
-        calculateEasing();
 
         // calculate bezier curve values
         bezierInit();
@@ -292,7 +275,7 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
 
     public void goToValue(double target) {
         double time;
-        double dist, baseSpeed, baseAcceleration, tempTime, tempDist;
+        double dist, baseSpeed, baseAcceleration, tempTime, tempDist, startSpeed;
         boolean turnAround;
 
         // bailout / set directly on boundary conditions
@@ -322,17 +305,17 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
         }
         // some values to use later
         dist = Math.abs(target - mValue);
-        mStartSpeed = Math.abs(mSpeed);
+        startSpeed = Math.abs(mSpeed);
         // ease-in calculation
         // we have a current speed, calculate the time and distance it would take to get to zero
-        tempTime = mStartSpeed / baseAcceleration;
-        tempDist = 0.5 * mStartSpeed * tempTime;
+        tempTime = startSpeed / baseAcceleration;
+        tempDist = 0.5 * startSpeed * tempTime;
         // which case?
         if (turnAround) {
             // we don't want to go the full distance (this looks too sluggish). Modify time, recalculate
             // distance
             tempTime *= 0.25; // hardcoded turnaround factor of 0.25 (now no longer parametrized)
-            tempDist = 0.5 * mStartSpeed * tempTime;
+            tempDist = 0.5 * startSpeed * tempTime;
             // we start by breaking
             time = tempTime;
             // after this, we have to move some more back
@@ -356,7 +339,7 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
         } else {
             // we're overshooting anyway. Forget continuity, calculate the time it takes to break with constant
             // deceleration
-            time = (2.0 * dist / mStartSpeed);
+            time = (2.0 * dist / startSpeed);
             // no distance left for ease-out
             dist = 0.0;
         }
@@ -441,12 +424,7 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
             setSpeed(0.0);
             setAcceleration(0.0);
             // also reset current segment
-            mStartValue = mValue;
             mTarget = mValue;
-            mStartSpeed = 0.0;
-            mTargetSpeed = 0.0;
-            mStartAcceleration = 0.0;
-            mTargetAcceleration = 0.0;
             // and intermediate information
             for (i = 0; i < 6; i++) {
                 mBezierControl[i] = mValue;
@@ -499,11 +477,11 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
 
         // Bezier5
         x = q * q * q * q * q * mBezierControl[0]
-            + 5.0 * u * q * q * q * q * mBezierControl[1]
-            + 10.0 * u * u * q * q * q * mBezierControl[2]
-            + 10.0 * u * u * u * q * q * mBezierControl[3]
-            + 5.0 * u * u * u * u * q * mBezierControl[4]
-            + u * u * u * u * u * mBezierControl[5];
+                + 5.0 * u * q * q * q * q * mBezierControl[1]
+                + 10.0 * u * u * q * q * q * mBezierControl[2]
+                + 10.0 * u * u * u * q * q * mBezierControl[3]
+                + 5.0 * u * u * u * u * q * mBezierControl[4]
+                + u * u * u * u * u * mBezierControl[5];
 
         if (DEBUG_SHOW) {
             Log.d(LOG_TAG, "bezierValueAtTime(" + time + ") = " + x);
@@ -530,11 +508,11 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
 
         // speed b5
         vx = -5.0 * q * q * q * q * mBezierControl[0]
-             + 5.0 * (-4.0 * u + q) * q * q * q * mBezierControl[1]
-             + 10.0 * (-3.0 * u + 2.0 * q) * u * q * q * mBezierControl[2]
-             + 10.0 * (-2.0 * u + 3.0 * q) * u * u * q * mBezierControl[3]
-             + 5.0 * (-u + 4.0 * q) * u * u * u * mBezierControl[4]
-             + 5.0 * u * u * u * u * mBezierControl[5];
+                + 5.0 * (-4.0 * u + q) * q * q * q * mBezierControl[1]
+                + 10.0 * (-3.0 * u + 2.0 * q) * u * q * q * mBezierControl[2]
+                + 10.0 * (-2.0 * u + 3.0 * q) * u * u * q * mBezierControl[3]
+                + 5.0 * (-u + 4.0 * q) * u * u * u * mBezierControl[4]
+                + 5.0 * u * u * u * u * mBezierControl[5];
 
         // normalize speed to duration
         return vx / mDuration;
@@ -557,11 +535,11 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
 
         // acceleration b5
         ax = 20.0 * q * q * q * mBezierControl[0]
-             + 5.0 * (3.0 * u - 2.0 * q) * 4.0 * q * q * mBezierControl[1]
-             + 10.0 * (3.0 * u * u - 6.0 * u * q + q * q) * 2.0 * q * mBezierControl[2]
-             + 10.0 * (u * u - 6.0 * u * q + 3.0 * q * q) * 2.0 * u * mBezierControl[3]
-             + 5.0 * (-2.0 * u + 3.0 * q) * 4.0 * u * u * mBezierControl[4]
-             + 20.0 * u * u * u * mBezierControl[5];
+                + 5.0 * (3.0 * u - 2.0 * q) * 4.0 * q * q * mBezierControl[1]
+                + 10.0 * (3.0 * u * u - 6.0 * u * q + q * q) * 2.0 * q * mBezierControl[2]
+                + 10.0 * (u * u - 6.0 * u * q + 3.0 * q * q) * 2.0 * u * mBezierControl[3]
+                + 5.0 * (-2.0 * u + 3.0 * q) * 4.0 * u * u * mBezierControl[4]
+                + 20.0 * u * u * u * mBezierControl[5];
 
         // normalize acceleration to duration
         return ax / Math.pow(mDuration, 2.0);
@@ -570,7 +548,7 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
 
     /**
      * @brief Get the remaining duration of the animation.
-     *
+     * <p/>
      * If the animation is stopped, the remaining duration is zero.
      */
     public long remainingDuration() {
@@ -594,7 +572,7 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
 
     /**
      * @brief Get the time that has elapsed since the animation was done.
-     *
+     * <p/>
      * If we're still running, the time will be negative meaning the animation will be done sometime
      * in the future.
      */
@@ -614,21 +592,20 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
      */
     protected void bezierInit() {
         // b5: start points (see derivations for how we arrive at these values)
-        mBezierControl[0] = mStartValue;
-        mBezierControl[1] = mStartValue + 1.0 / 5.0 * mStartSpeed * mDuration;
-        mBezierControl[2] = mStartValue + 2.0 / 5.0 * mStartSpeed * mDuration + 1.0 / 20.0 * mStartAcceleration
-                                                                                * Math.pow(mDuration, 2.0);
+        mBezierControl[0] = mValue;
+        mBezierControl[1] = mValue + 1.0 / 5.0 * mSpeed * mDuration;
+        mBezierControl[2] = mValue + 2.0 / 5.0 * mSpeed * mDuration + 1.0 / 20.0 * mAcceleration
+                * Math.pow(mDuration, 2.0);
         // end points
-        mBezierControl[3] = mTarget - 2.0 / 5.0 * mTargetSpeed * mDuration
-                            + 1.0 / 20.0 * mTargetAcceleration * Math.pow(mDuration, 2.0);
-        mBezierControl[4] = mTarget - 1.0 / 5.0 * mTargetSpeed * mDuration;
+        mBezierControl[3] = mTarget;
+        mBezierControl[4] = mTarget;
         mBezierControl[5] = mTarget;
     }
 
 
     /**
      * @brief Internal. Limit bezier values (they obey the bounding box property) to avoid overscolls.
-     *
+     * <p/>
      * The method used is quite restrictive (the bezier must obey the bounding box property, but usually does not touch
      * it). Better methods would be harder to implement (and may not be available as closed forms, so have to be
      * calculated iterative).
@@ -639,31 +616,17 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
         if (start) {
             // which direction?
             if (mBezierControl[5] >= mBezierControl[0]) {
-                if (mBezierControl[1] < mBezierControl[0]) {
-                    mBezierControl[1] = mBezierControl[0];
-                }
-                if (mBezierControl[2] < mBezierControl[0]) {
-                    mBezierControl[2] = mBezierControl[0];
-                }
-                if (mBezierControl[3] < mBezierControl[0]) {
-                    mBezierControl[3] = mBezierControl[0];
-                }
-                if (mBezierControl[4] < mBezierControl[0]) {
-                    mBezierControl[4] = mBezierControl[0];
+                for (int i = 1; i <= 4; i++) {
+                    if (mBezierControl[i] < mBezierControl[0]) {
+                        mBezierControl[i] = mBezierControl[0];
+                    }
                 }
             }
             if (mBezierControl[5] <= mBezierControl[0]) {
-                if (mBezierControl[1] > mBezierControl[0]) {
-                    mBezierControl[1] = mBezierControl[0];
-                }
-                if (mBezierControl[2] > mBezierControl[0]) {
-                    mBezierControl[2] = mBezierControl[0];
-                }
-                if (mBezierControl[3] > mBezierControl[0]) {
-                    mBezierControl[3] = mBezierControl[0];
-                }
-                if (mBezierControl[4] > mBezierControl[0]) {
-                    mBezierControl[4] = mBezierControl[0];
+                for (int i = 1; i <= 4; i++) {
+                    if (mBezierControl[i] > mBezierControl[0]) {
+                        mBezierControl[i] = mBezierControl[0];
+                    }
                 }
             }
         }
@@ -671,72 +634,21 @@ public class PDEParametricCurveAnimationEssentials extends PDEAnimation {
         if (end) {
             // which direction?
             if (mBezierControl[5] >= mBezierControl[0]) {
-                if (mBezierControl[1] > mBezierControl[5]) {
-                    mBezierControl[1] = mBezierControl[5];
+                for (int i = 1; i <= 4; i++) {
+                    if (mBezierControl[i] > mBezierControl[5]) {
+                        mBezierControl[i] = mBezierControl[5];
+                    }
                 }
-                if (mBezierControl[2] > mBezierControl[5]) {
-                    mBezierControl[2] = mBezierControl[5];
-                }
-                if (mBezierControl[3] > mBezierControl[5]) {
-                    mBezierControl[3] = mBezierControl[5];
-                }
-                if (mBezierControl[4] > mBezierControl[5]) {
-                    mBezierControl[4] = mBezierControl[5];
-                }
+
             }
             if (mBezierControl[5] <= mBezierControl[0]) {
-                if (mBezierControl[1] < mBezierControl[5]) {
-                    mBezierControl[1] = mBezierControl[5];
-                }
-                if (mBezierControl[2] < mBezierControl[5]) {
-                    mBezierControl[2] = mBezierControl[5];
-                }
-                if (mBezierControl[3] < mBezierControl[5]) {
-                    mBezierControl[3] = mBezierControl[5];
-                }
-                if (mBezierControl[4] < mBezierControl[5]) {
-                    mBezierControl[4] = mBezierControl[5];
+                for (int i = 1; i <= 4; i++) {
+                    if (mBezierControl[i] < mBezierControl[5]) {
+                        mBezierControl[i] = mBezierControl[5];
+                    }
                 }
             }
         }
     }
-
-
-    /**
-     * @brief Internal. Calculate start/stop speed and acceleration based on easing function type.
-     *
-     * We try to satisfy as many constraints as possible given the curve. For curves we have the
-     * following degrees of freedom:
-     * - linear: 2 (start and endpoint)
-     * - B3: 4 (start and endpoint, speed at start/end)
-     * - B5: 6 (start and endpoint, speed and acceleration at start/end)
-     * For the different easing types the constraints are:
-     * - hard: speed = max, acceleration = 0 (straight line)
-     * - medium: speed = max, acceleration = 0 (straight speed)
-     * - soft: speed = 0, acceleration = 0 (stopping softly)
-     * For the inpoints, we're using the given values as following:
-     * - hard: none
-     * - medium: speed
-     * - soft: speed and acceleration
-     * And eventually if some continuity is forced by flags add up current speed and acceleration if
-     * possible. Start points are uniquely defined then, endpoints are adjusted so that max values
-     * are satisfied (=> derivative of speed or acceleration must be zero)
-     * Inpoints are thus uniquely defined, endpoints are calculated to satisfy constraints (in some
-     * cases the start values affect the end values).
-     */
-    protected void calculateEasing() {
-        // easein: given values (we know the constraints when fading out, so we
-        // can hardcode initial them, eventually then overriding them with forced
-        // continuation values and letting the curve do the rest.
-        // continuous speed and acceleration
-        mStartSpeed = mSpeed;
-        mStartAcceleration = mAcceleration;
-
-        // easeout
-        mTargetSpeed = 0.0;
-        mTargetAcceleration = 0.0;
-    }
-
-
 }
 

@@ -267,7 +267,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         // set text
         if (sa != null) {
-            text = sa.getString(R.styleable.PDEInputField_text);
+            text = sa.getString(R.styleable.PDEInputField_pde_text);
         }
 
         if (TextUtils.isEmpty(text)) {
@@ -278,109 +278,109 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         if (sa != null) {
             // set typeface (font)
-            if (sa.hasValue(R.styleable.PDEInputField_typeface)) {
-                setFont(PDETypeface.createByName(sa.getString(R.styleable.PDEInputField_typeface)));
+            if (sa.hasValue(R.styleable.PDEInputField_pde_typeface)) {
+                setFont(PDETypeface.createByName(sa.getString(R.styleable.PDEInputField_pde_typeface)));
             }
 
             // set the text size
-            if (sa.hasValue(R.styleable.PDEInputField_textSize)) {
-                String text_size = sa.getString(R.styleable.PDEInputField_textSize);
+            if (sa.hasValue(R.styleable.PDEInputField_pde_textSize)) {
+                String text_size = sa.getString(R.styleable.PDEInputField_pde_textSize);
                 setFontSize(text_size);
             }
 
-            if (sa.hasValue(R.styleable.PDEInputField_backgroundType)) {
-                setInputFieldBackgroundLayerWithLayerType(sa.getInt(R.styleable.PDEInputField_backgroundType, 0));
+            if (sa.hasValue(R.styleable.PDEInputField_pde_backgroundType)) {
+                setInputFieldBackgroundLayerWithLayerType(sa.getInt(R.styleable.PDEInputField_pde_backgroundType, 0));
             }
 
             // set color of text
-            if (sa.hasValue(R.styleable.PDEInputField_textColor)) {
+            if (sa.hasValue(R.styleable.PDEInputField_pde_textColor)) {
                 //to have dark/light style use PDEColor with color id
-                int resourceID = sa.getResourceId(R.styleable.PDEInputField_textColor, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDEInputField_pde_textColor, 0);
                 if (resourceID != 0) {
                     setTextColor(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setTextColor(sa.getColor(R.styleable.PDEInputField_textColor, R.color.DTBlack));
+                    setTextColor(sa.getColor(R.styleable.PDEInputField_pde_textColor, R.color.DTBlack));
                 }
             }
 
             // set cursor visibility
-            if (sa.hasValue(R.styleable.PDEInputField_cursorVisible)) {
-                setCursorVisible(sa.getBoolean(R.styleable.PDEInputField_cursorVisible, true));
+            if (sa.hasValue(R.styleable.PDEInputField_pde_cursorVisible)) {
+                setCursorVisible(sa.getBoolean(R.styleable.PDEInputField_pde_cursorVisible, true));
             }
 
             //check icon source or string
-            if (sa.hasValue(R.styleable.PDEInputField_leftIcon)) {
+            if (sa.hasValue(R.styleable.PDEInputField_pde_leftIcon)) {
                 //check if this is a resource value
-                int resourceID = sa.getResourceId(R.styleable.PDEInputField_leftIcon, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDEInputField_pde_leftIcon, 0);
                 if (resourceID == 0) {
-                    setLeftIcon(sa.getString(R.styleable.PDEInputField_leftIcon));
+                    setLeftIcon(sa.getString(R.styleable.PDEInputField_pde_leftIcon));
                 } else {
                     setLeftIcon(getContext().getResources().getDrawable(resourceID));
                 }
             }
 
             // set hint text
-            if (sa.hasValue(R.styleable.PDEInputField_hint)) {
-                setHint(sa.getText(R.styleable.PDEInputField_hint));
+            if (sa.hasValue(R.styleable.PDEInputField_pde_hint)) {
+                setHint(sa.getText(R.styleable.PDEInputField_pde_hint));
             }
 
             // set hint color
-            if (sa.hasValue(R.styleable.PDEInputField_hintColor)) {
+            if (sa.hasValue(R.styleable.PDEInputField_pde_hintColor)) {
                 //to have dark/light style use PDEColor with color id
-                int resourceID = sa.getResourceId(R.styleable.PDEInputField_hintColor, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDEInputField_pde_hintColor, 0);
                 if (resourceID != 0) {
                     setHintTextColor(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setHintTextColor(sa.getColor(R.styleable.PDEInputField_hintColor, R.color.DTBlack));
+                    setHintTextColor(sa.getColor(R.styleable.PDEInputField_pde_hintColor, R.color.DTBlack));
                 }
             }
 
             // set on focus selection
-            if (sa.hasValue(R.styleable.PDEInputField_selectAllOnFocus)) {
-                setSelectAllOnFocus(sa.getBoolean(R.styleable.PDEInputField_selectAllOnFocus, false));
+            if (sa.hasValue(R.styleable.PDEInputField_pde_selectAllOnFocus)) {
+                setSelectAllOnFocus(sa.getBoolean(R.styleable.PDEInputField_pde_selectAllOnFocus, false));
             }
 
             // set highlight text color
-            if (sa.hasValue(R.styleable.PDEInputField_textColorHighlight)) {
+            if (sa.hasValue(R.styleable.PDEInputField_pde_textColorHighlight)) {
                 //to have dark/light style use PDEColor with color id
-                int resourceID = sa.getResourceId(R.styleable.PDEInputField_textColorHighlight, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDEInputField_pde_textColorHighlight, 0);
                 if (resourceID != 0) {
                     setHighlightColor(PDEColor.valueOfColorID(resourceID));
                 } else {
-                    setHighlightColor(sa.getColor(R.styleable.PDEInputField_textColorHighlight, R.color.DTMagenta));
+                    setHighlightColor(sa.getColor(R.styleable.PDEInputField_pde_textColorHighlight, R.color.DTMagenta));
                 }
             }
 
             // set password mode
-            if (sa.hasValue(R.styleable.PDEInputField_password)) {
-                if (sa.getBoolean(R.styleable.PDEInputField_password, false)) {
+            if (sa.hasValue(R.styleable.PDEInputField_pde_password)) {
+                if (sa.getBoolean(R.styleable.PDEInputField_pde_password, false)) {
                     setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 }
             }
 
             // set ellipsize mode
-            if (sa.hasValue(R.styleable.PDEInputField_ellipsize)) {
-                setEllipsize(sa.getInt(R.styleable.PDEInputField_ellipsize, 0));
+            if (sa.hasValue(R.styleable.PDEInputField_pde_ellipsize)) {
+                setEllipsize(sa.getInt(R.styleable.PDEInputField_pde_ellipsize, 0));
             }
 
             // set input type mode
-            if (sa.hasValue(R.styleable.PDEInputField_inputType)) {
-                setInputType(sa.getInt(R.styleable.PDEInputField_inputType, InputType.TYPE_NULL));
+            if (sa.hasValue(R.styleable.PDEInputField_pde_inputType)) {
+                setInputType(sa.getInt(R.styleable.PDEInputField_pde_inputType, InputType.TYPE_NULL));
             }
 
             // set ime options
-            if (sa.hasValue(R.styleable.PDEInputField_imeOptions)) {
-                setImeOptions(sa.getInt(R.styleable.PDEInputField_imeOptions, EditorInfo.IME_ACTION_DONE));
+            if (sa.hasValue(R.styleable.PDEInputField_pde_imeOptions)) {
+                setImeOptions(sa.getInt(R.styleable.PDEInputField_pde_imeOptions, EditorInfo.IME_ACTION_DONE));
             }
 
             //check if clear button is disabled or enabled
-            if (sa.hasValue(R.styleable.PDEInputField_clearButtonEnabled)) {
-                setClearButtonEnabled(sa.getBoolean(R.styleable.PDEInputField_clearButtonEnabled, true));
+            if (sa.hasValue(R.styleable.PDEInputField_pde_clearButtonEnabled)) {
+                setClearButtonEnabled(sa.getBoolean(R.styleable.PDEInputField_pde_clearButtonEnabled, true));
             }
 
             // icon to text height
-            if (sa.hasValue(R.styleable.PDEInputField_iconToTextHeightRatio)) {
-                setIconToTextHeightRatio(sa.getFloat(R.styleable.PDEInputField_iconToTextHeightRatio, 2.0f));
+            if (sa.hasValue(R.styleable.PDEInputField_pde_iconToTextHeightRatio)) {
+                setIconToTextHeightRatio(sa.getFloat(R.styleable.PDEInputField_pde_iconToTextHeightRatio, 2.0f));
             }
 
             sa.recycle();
@@ -1244,7 +1244,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
      * Pass the  value through the edittextview, input field doesn't holds value itself.
      */
     public void setEllipsize(TruncateAt ellipsis) {
-        if (PDEResourceAttributesHelper.isInEnum(getContext(), R.attr.ellipsize, ellipsis.ordinal())) {
+        if (PDEResourceAttributesHelper.isInEnum(getContext(), R.attr.pde_ellipsize, ellipsis.ordinal())) {
             mEditTextView.setEllipsize(ellipsis);
         } else {
             Log.e(LOG_TAG, "NOT SUPPORTED TRUNCATE TYPE:" + ellipsis.name());
@@ -1562,7 +1562,7 @@ public class PDEInputField extends RelativeLayout implements PDEIEventSource, Te
 
         mSupportedInputTypesMask = 0;
 
-        int[] attributeValues = PDEResourceAttributesHelper.getIntArray(context, R.attr.inputType);
+        int[] attributeValues = PDEResourceAttributesHelper.getIntArray(context, R.attr.pde_inputType);
 
         for (i = 0; i < attributeValues.length; i++) {
             mSupportedInputTypesMask |= attributeValues[i];

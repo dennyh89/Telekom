@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Deutsche Telekom AG owns the right of use concerning the following code taken from the Deutsche Telekom
+  ~ Experience Toolbox. You can obtain a copy of the terms and conditions of the Experience Toolbox at
+  ~ https://www.design.telekom.com/myaccount/terms-of-use/
+  ~
+  ~ Copyright (c) 2014. Neuland Multimedia GmbH.
+  -->
+
+<de.telekom.pde.codelibrary.ui.elements.complex.PDEListHeaderLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pdecodelibrary="http://schemas.android.com/apk/res-auto"
+    android:layout_centerHorizontal="true"
+    android:id="@+id/headline"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    />
+

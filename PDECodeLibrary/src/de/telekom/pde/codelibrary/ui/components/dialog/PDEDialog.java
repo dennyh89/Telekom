@@ -55,7 +55,7 @@ public class PDEDialog implements PDEIEventSource, DialogInterface {
     // possible dialog results (which button was pressed by user)
     public final static int PDE_DIALOG_RESULT_BUTTON1 = 0xffffffff;
     public final static int PDE_DIALOG_RESULT_BUTTON2 = 0xfffffffe;
-    public final static int PDE_DIALOG_RESULT_BUTTON3 = 0xfffffffd;
+    //public final static int PDE_DIALOG_RESULT_BUTTON3 = 0xfffffffd;
     public final static int PDE_DIALOG_RESULT_ANDROID_HARDWARE_BACK_BUTTON = 0xfffffffc;
 
     // special result ID

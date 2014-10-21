@@ -60,4 +60,13 @@
         <ignore path="res/layout/pde_dialog_full.xml" />
         <ignore path="res/layout/pde_dialog_title_only.xml" />
     </issue>
+
+    <!--
+    Ignore attribute which is only introduced in API level 11
+    -->
+    <issue id="UnusedAttribute">
+        <ignore path="res/drawable/selectable_background_pde.xml" />
+    </issue>
+
+
 </lint>

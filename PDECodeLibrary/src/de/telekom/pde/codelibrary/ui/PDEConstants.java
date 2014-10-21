@@ -22,7 +22,7 @@ public class PDEConstants {
 
     // static initialize
     static {
-        // load default (tele grotesk) font name from the resources
+        // load default (telegrotesk) font name from the resources
         Context c = PDECodeLibrary.getInstance().getApplicationContext();
         sPDEDefaultFontName = c.getResources().getString(R.string.DTDefaultFont);
     }
@@ -55,7 +55,8 @@ public class PDEConstants {
 
     public final static String PDE_CODELIB_EXTRA_CONTENTSTYLE = "de.telekom.pde.codelibrary.extra.content_style";
 
-    public final static float DefaultPDEButtonLayerForegroundIconTextIconToTextHeightRatio = 2.0f;
+    //DefaultPDEButtonLayerForegroundIconTextIconToTextHeightRatio
+    public final static float DefaultPDEButtonIconToTextHeightRatio = 2.0f;
     public final static float DefaultPDEEditTextIconToTextHeightRatio = 1.7f;
 
 

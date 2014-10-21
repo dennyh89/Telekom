@@ -19,18 +19,18 @@
     <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            pdecodelibrary:maxLines="1"
-            pdecodelibrary:ellipsizeText="true"
+            pdecodelibrary:pde_maxLines="1"
+            pdecodelibrary:pde_ellipsizeText="true"
             android:id="@+id/NotificationTitle"
-            pdecodelibrary:textColor="@color/DTWhite"
+            pdecodelibrary:pde_textColor="@color/DTWhite"
             />
 
     <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDETextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/NotificationMessage"
-            pdecodelibrary:textColor="@color/DTWhite"
-            pdecodelibrary:ellipsizeText="true"
+            pdecodelibrary:pde_textColor="@color/DTWhite"
+            pdecodelibrary:pde_ellipsizeText="true"
             />
 
 

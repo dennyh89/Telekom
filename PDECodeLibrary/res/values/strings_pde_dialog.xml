@@ -160,7 +160,7 @@
     <string name="PAGE_NOT_FOUND_text">"Bitte versuchen Sie später noch einmal, die Seite aufzurufen."</string>
 
     <string name="EMAIL_RECIPIENT_UNKNOWN_title">"Entschuldigung"</string>
-    <string name="EMAIL_RECIPIENT_UNKNOWN_text">"Die %1$s konnte nicht gesendet werden. Folgende Empfänger sind unbekannt: %2$s"</string>
+    <string name="EMAIL_RECIPIENT_UNKNOWN_text">"Die Nachricht konnte nicht gesendet werden. Folgende Empfänger sind unbekannt: %1$s"</string>
 
     <string name="SEND_EMAIL_FAILED_title">"Entschuldigung"</string>
     <string name="SEND_EMAIL_FAILED_text">"Die %1$s konnte nicht gesendet werden. Bitte versuchen Sie es noch einmal."</string>

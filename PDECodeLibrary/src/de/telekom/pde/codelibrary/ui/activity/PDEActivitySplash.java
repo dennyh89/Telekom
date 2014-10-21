@@ -15,7 +15,7 @@ import de.telekom.pde.codelibrary.ui.helpers.PDEUtils;
 @SuppressLint("Registered")
 public class PDEActivitySplash extends PDEActionBarActivity
 {
-	private PDETextView splashAppName;
+	private PDETextView mSplashAppName;
 
 
 	/**
@@ -23,7 +23,7 @@ public class PDEActivitySplash extends PDEActionBarActivity
 	 */
     @SuppressWarnings("unused")
     protected String getSplashAppName()	{
-		return splashAppName.getText();
+		return mSplashAppName.getText();
 	}
 
 
@@ -41,20 +41,20 @@ public class PDEActivitySplash extends PDEActionBarActivity
 	 */
     @SuppressWarnings("unused")
 	protected void setSplashAppName(final String splashAppName) {
-		this.splashAppName.setText(splashAppName);
+		mSplashAppName.setText(splashAppName);
 	}
 
 
 	private void setupLayout() {
         View splashAppIcon;
         Display display;
-		final PDETextView splashAppName;
+        Object splashAppName;
         Typeface typeface;
 
         // remember
         typeface = PDEFontHelpers.getNormal().getTypeface();
-        splashAppName = (PDETextView) findViewById(R.id.splash_activity_app_name);
-        this.splashAppName = splashAppName;
+        splashAppName = findViewById(R.id.splash_activity_app_name);
+        mSplashAppName = (PDETextView)splashAppName;
 
         // get view and display
         splashAppIcon = findViewById(R.id.splash_activity_app_icon);
@@ -67,7 +67,7 @@ public class PDEActivitySplash extends PDEActionBarActivity
 
         // set view font
         if (splashAppName != null && typeface != null) {
-            PDEFontHelpers.setViewFontTo(splashAppName, typeface);
+            PDEFontHelpers.setViewFontTo(mSplashAppName, typeface);
         }
 	}
 }

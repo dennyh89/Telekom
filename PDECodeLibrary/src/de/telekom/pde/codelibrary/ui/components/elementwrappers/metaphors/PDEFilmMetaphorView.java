@@ -96,9 +96,9 @@ public class PDEFilmMetaphorView extends View {
         TypedArray sa = context.obtainStyledAttributes(attrs, R.styleable.PDEFilmMetaphorView);
 
         //check icon source or string
-        if (sa != null && sa.hasValue(R.styleable.PDEFilmMetaphorView_src)) {
+        if (sa != null && sa.hasValue(R.styleable.PDEFilmMetaphorView_pde_src)) {
             //check if this is a resource value
-            int resourceID = sa.getResourceId(R.styleable.PDEFilmMetaphorView_src, 0);
+            int resourceID = sa.getResourceId(R.styleable.PDEFilmMetaphorView_pde_src, 0);
             if (resourceID != 0) {
                 setPictureDrawable(context.getResources().getDrawable(resourceID));
             }
@@ -112,24 +112,24 @@ public class PDEFilmMetaphorView extends View {
         if (sa != null) {
 
             // set content style
-            if (sa.hasValue(R.styleable.PDEFilmMetaphorView_contentStyle)) {
-                setContentStyle(sa.getInteger(R.styleable.PDEFilmMetaphorView_contentStyle, 0));
+            if (sa.hasValue(R.styleable.PDEFilmMetaphorView_pde_contentStyle)) {
+                setContentStyle(sa.getInteger(R.styleable.PDEFilmMetaphorView_pde_contentStyle, 0));
             }
 
             //set picture string
-            if (sa.hasValue(R.styleable.PDEFilmMetaphorView_pictureString)) {
+            if (sa.hasValue(R.styleable.PDEFilmMetaphorView_pde_pictureString)) {
                 //check if this is a resource value
-                int resourceID = sa.getResourceId(R.styleable.PDEFilmMetaphorView_pictureString, 0);
+                int resourceID = sa.getResourceId(R.styleable.PDEFilmMetaphorView_pde_pictureString, 0);
                 if (resourceID == 0) {
-                    setPictureString(sa.getString(R.styleable.PDEFilmMetaphorView_pictureString));
+                    setPictureString(sa.getString(R.styleable.PDEFilmMetaphorView_pde_pictureString));
                 } else {
                     setPictureDrawable(context.getResources().getDrawable(resourceID));
                 }
             }
 
             // set shadow enabled
-            if (sa.hasValue(R.styleable.PDEFilmMetaphorView_shadowEnabled)) {
-                setShadowEnabled(sa.getBoolean(R.styleable.PDEFilmMetaphorView_shadowEnabled, false));
+            if (sa.hasValue(R.styleable.PDEFilmMetaphorView_pde_shadowEnabled)) {
+                setShadowEnabled(sa.getBoolean(R.styleable.PDEFilmMetaphorView_pde_shadowEnabled, false));
             }
 
             sa.recycle();

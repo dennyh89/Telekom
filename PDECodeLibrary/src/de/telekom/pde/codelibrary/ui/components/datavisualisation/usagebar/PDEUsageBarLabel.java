@@ -32,7 +32,6 @@ import de.telekom.pde.codelibrary.ui.helpers.PDETypeface;
  * @brief Textual label of PDEUsageBar.
  *
  * The PDEUsageBar has to show some text, like the current usage value, the maximum/total usage value and the unit.
- * All this text has to be properly formated and layouted.
  * This configurable label object takes care, that the information is shown in the defined way.
  */
 public class PDEUsageBarLabel extends RelativeLayout {

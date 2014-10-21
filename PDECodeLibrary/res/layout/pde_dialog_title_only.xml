@@ -13,7 +13,7 @@
             android:layout_margin="@dimen/Telekom.BU2"
             android:id="@+id/pde_dialog_plane"
             android:layout_centerInParent="true"
-            pdecodelibrary:max_width="@dimen/Telekom.BU7"
+            pdecodelibrary:pde_max_width="@dimen/Telekom.BU7"
             >
         <LinearLayout
                 android:layout_width="wrap_content"
@@ -39,8 +39,8 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/pde_dialog_title"
-                        pdecodelibrary:alignmentMode="capHeight"
-                        pdecodelibrary:horizontalAlignment="center"
+                        pdecodelibrary:pde_alignmentMode="capHeight"
+                        pdecodelibrary:pde_horizontalAlignment="center"
                         />
             </ScrollView>
 

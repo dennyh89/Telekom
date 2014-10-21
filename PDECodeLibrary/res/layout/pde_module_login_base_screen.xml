@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/LoginScreenBoundedPane"
             android:layout_centerInParent="true"
-            pdecodelibrary:max_width="@dimen/Telekom.BU7">
+            pdecodelibrary:pde_max_width="@dimen/Telekom.BU7">
         <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -24,16 +24,28 @@
                           android:gravity="top"
                           android:layout_gravity="top"
                           >
+                <!--
                 <de.telekom.pde.codelibrary.ui.components.elementwrappers.PDEListHeaderView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/Telekom.BU6"
                         android:id="@+id/LoginScreenHeaderArea"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
-                        pdecodelibrary:text="@string/login_screen_header"
-                        pdecodelibrary:backgroundColor="@color/DTTransparentBlack"
-                        pdecodelibrary:horizontalAlignment="center"
-                        />
+                        pdecodelibrary:pde_text="@string/login_screen_header"
+                        pdecodelibrary:pde_backgroundColor="@color/DTTransparentBlack"
+                        pdecodelibrary:pde_horizontalAlignment="center"
+                        /> -->
+                <de.telekom.pde.codelibrary.ui.elements.complex.PDEListHeaderLayout
+                    android:id="@+id/LoginScreenHeaderArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/Telekom.BU6"
+                    pdecodelibrary:pde_text="@string/login_screen_header"
+                    pdecodelibrary:pde_showDelimiter="true"
+                    pdecodelibrary:pde_type="headline"
+                    />
+
+
+
                 <!-- DESCRIPTION AREA -->
                 <RelativeLayout
                         android:layout_width="match_parent"
@@ -120,10 +132,10 @@
                       android:layout_marginBottom="@dimen/Telekom.BU_1_2"
                       android:layout_marginLeft="@dimen/Telekom.BU" android:layout_marginRight="@dimen/Telekom.BU2"
                       android:id="@+id/LoginScreenStaySignedInCheckbox"
-                      pdecodelibrary:overlay="checkboxFlat"
-                      pdecodelibrary:backgroundType="none"
-                      pdecodelibrary:textAlignment="left"
-                      pdecodelibrary:text="@string/login_screen_checkbox_stay_signed_in"
+                      pdecodelibrary:pde_overlay="checkboxFlat"
+                      pdecodelibrary:pde_backgroundType="none"
+                      pdecodelibrary:pde_textAlignment="left"
+                      pdecodelibrary:pde_text="@string/login_screen_checkbox_stay_signed_in"
                       android:layout_below="@id/LoginScreenPasswordInputField"
                 />
 
@@ -143,7 +155,7 @@
                       android:id="@+id/LoginScreenButtonLogin"
                       android:layout_marginLeft="@dimen/Telekom.BU5"
                       android:layout_marginRight="@dimen/Telekom.BU5"
-                      pdecodelibrary:text="@string/login_screen_button_login"
+                      pdecodelibrary:pde_text="@string/login_screen_button_login"
                       android:layout_below="@id/LoginScreenAboveButtonLoginSpacer"
                       />
 
@@ -216,7 +228,7 @@
                 <de.telekom.pde.codelibrary.ui.components.notification.PDEInfoFlag
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        pdecodelibrary:titleEnabled="false"
+                        pdecodelibrary:pde_titleEnabled="false"
                         android:layout_above="@id/LoginScreenUsernameInputField"
                         android:layout_centerHorizontal="true"
                         android:id="@+id/LoginScreenUsernameInfoToolTip"
