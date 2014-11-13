@@ -206,6 +206,15 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
             }
         }
 
+
+        /**
+         * @brief Called when a OnClickListener is set.
+         */
+        public void onActionWillBeSelected(PDEEvent event) {
+            performPDEButtonClick();
+        }
+
+
     }
 
 
@@ -3075,7 +3084,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
             }
         } else if (l != null && mOnClickListener == null) {
             // add listener
-            mAgentStateListenWillBeSelected = addListener(this, "onActionWillBeSelected",
+            mAgentStateListenWillBeSelected = addListener(getEventReceiver(), "onActionWillBeSelected",
                     PDEAgentController.PDE_AGENT_CONTROLLER_EVENT_ACTION_WILL_BE_SELECTED);
         }
 
@@ -3132,9 +3141,6 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
     }
 
 
-    public void onActionWillBeSelected(PDEEvent event) {
-        performPDEButtonClick();
-    }
 
 
     //----- Key handling -----------------------------------------------------------------------------------------------

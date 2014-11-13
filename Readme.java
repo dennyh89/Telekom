@@ -185,10 +185,10 @@ Branches
 --------
 
 The master branch of the Git-system contains the latest version of the software
-components. Currently, the Code Library version 4.0 is available in the master
+components. Currently, the Code Library version 6.0 is available in the master
 branch. Previous versions are available in specific branches.
 
-The Code Library versions 1.0, 2.0, and 3.0 are available in the branches
+The Code Library versions 1.0 to 5.0 are available in the branches
 "release-X.Y". The branch can be cloned directly by using the option "-b".
 Please replace "X" with the major release number and "Y" with the minor release
 number.
@@ -226,7 +226,7 @@ ActionBarSherlock used in previous versions. The ActionBar Compat is part of
 the Android v7 Support Library. Please refer to
 http://developer.android.com/tools/support-library/features.html#v7 for
 details. You must have installed the Android v7 support library to re-compile
-the Code Library for Android, v4.0.
+the Code Library for Android, v4.0 or higher.
 
 The samples were built for Android 2.3.3 (API10) or higher. To build and run
 the samples, you need the Code Library. The bundle contains a project file
@@ -533,10 +533,33 @@ Release notes
 =============
 
 __Current public version__<br />
-6.0
+6.0.1
  
 __Current non-public version__<br />
-6.0
+6.0.1
+
+Patch 6.0.1 (public)
+--------------------
+
+_Date__<br />
+12.11.2014
+ 
+__Server__<br />
+git.design.telekom.com
+ 
+__Repositories__<br />
+PDECodeLibrary_Android.git
+ 
+__Branch__<br />
+master
+ 
+__Content__<br />
+
+Compatibility: PDEButton on API lower 14
+
+The function setOnClickListener of PDEButton did not work properly on
+API lower than 14 Android 4.0. The function has been fixed to work on
+Android 2.3 or higher.
 
 Major 6.0 (public)
 --------------------
@@ -558,7 +581,7 @@ __Content__<br />
 
 The Code Library version 6.0 adds a component for activity indication, adds
 clusters and headers to lists, implements swipe refresh behavior for lists
-and implements text modifications for standard diaolgs from language
+and implements text modifications for standard dialogs from language
 department.
 
 Because of the missing namespace for attributes, the prefix 'pde_' has been
@@ -574,7 +597,7 @@ the attribute-name "mode" is widely used. Unfortunately, Android does not
 support a namespace to distinguish between the attributes.
 
 In order to avoid conflicts and compile errors, the Code Library uses the
-prefix "pde_" for all strings useded as names of XML-attributes.
+prefix "pde_" for all strings used as names of XML-attributes.
 
 Feature 5.5 (non-public)
 -------------------------
