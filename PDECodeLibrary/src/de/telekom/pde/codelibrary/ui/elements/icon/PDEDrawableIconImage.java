@@ -226,7 +226,8 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
      * @brief Set Image Color
      */
     public void setElementIconColor(PDEColor color) {
-        if (color.equals(mIconColor)) return;
+        if ((color == null && mIconColor == null)
+            || (color != null && color.equals(mIconColor))) return;
         mIconColor = color;
 
         if (mIconColor != null) {
@@ -323,7 +324,9 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
      */
     public void setElementShadowColor(PDEColor color) {
         //any change?
-        if (color.equals(mShadowColor)) return;
+        if ((color == null && mShadowColor == null)
+            || (color != null && color.equals(mShadowColor))) return;
+
         //remember
         mShadowColor = color;
 
@@ -333,6 +336,7 @@ public class PDEDrawableIconImage extends PDEDrawableBase {
         } else {
             mShadowColorFilter = null;
         }
+
         //redraw
         updateImage();
         update();

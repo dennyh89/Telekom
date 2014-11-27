@@ -713,6 +713,7 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
         if (!mIconColored) {
             // clear out the color
             iconDrawable.setColorFilter(null);
+            iconDrawable.setElementIconColor(null);
         }
 
         // image layer only has a shadow if it's enabled, and the image is colorized
@@ -759,7 +760,8 @@ class PDEButtonLayerForegroundIconText extends PDEAbsoluteLayout implements PDEB
      */
     private void setDefaultColor(PDEColor color) {
         // any change?
-        if (color.equals(mDefaultColor)) return;
+        if ((color == null && mDefaultColor == null) ||
+            (color != null && color.equals(mDefaultColor))) return;
 
         // remember
         mDefaultColor = color;
