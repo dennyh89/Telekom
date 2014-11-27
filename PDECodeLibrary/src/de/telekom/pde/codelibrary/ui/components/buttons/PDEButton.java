@@ -997,7 +997,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
      * @brief Set one of default backgrounds by string
      */
     public void setButtonBackgroundLayerWithLayerTypeString(String layerType) {
-        //set background type paramter and update (parameters are send to new layer in update process)
+        //set background type parameter and update (parameters are send to new layer in update process)
         mParameters.setParameter(PDEButtonParameterBackground, layerType);
         updateButtonParameterBackground();
     }
@@ -1007,7 +1007,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
      * @brief Set one of default backgrounds by string
      */
     public void setButtonForegroundLayerWithLayerTypeString(String layerType) {
-        //set background type paramter and update (parameters are send to new layer in update process)
+        //set background type parameter and update (parameters are send to new layer in update process)
         mParameters.setParameter(PDEButtonParameterForeground, layerType);
         updateButtonParameterForeground();
     }
@@ -1017,7 +1017,7 @@ public class PDEButton extends PDEAbsoluteLayout implements PDEIEventSource {
      * @brief Set one of default backgrounds by string
      */
     public void setButtonOverlayLayerWithLayerTypeString(String layerType) {
-        //set background type paramter and update (parameters are send to new layer in update process)
+        //set background type parameter and update (parameters are send to new layer in update process)
         mParameters.setParameter(PDEButtonParameterOverlay, layerType);
         updateButtonParameterOverlay();
     }

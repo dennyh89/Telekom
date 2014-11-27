@@ -179,9 +179,9 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
      * @brief Set icon image.
      */
     public void setElementIconDrawable(Drawable image) {
-        if (image == null)
-        {
-            removeLayerAtIndex(0);
+        removeLayerAtIndex(0);
+
+        if (image == null) {
             return;
         }
 
@@ -194,7 +194,7 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
         mIconImage.setElementPadding(mPadding);
         addLayer(mIconImage);
 
-        //update(true);
+        doLayout();
     }
 
 
@@ -216,8 +216,9 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
     public void setElementIconString(String iconString) {
         Drawable imageFromString;
 
+        removeLayerAtIndex(0);
+
         if (TextUtils.isEmpty(iconString)) {
-            removeLayerAtIndex(0);
             return;
         }
 
@@ -235,17 +236,17 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
             mIconFont.setElementShadowYOffset(mShadowYOffset);
             mIconFont.setElementPadding(mPadding);
             addLayer(mIconFont);
-            //update(true);
+            doLayout();
         } else {
             imageFromString = Drawable.createFromPath(iconString);
 
             if (imageFromString == null) {
                 Log.e(LOG_TAG, "Image could not be loaded");
-                removeLayerAtIndex(0);
             } else {
                 setElementIconDrawable(imageFromString);
             }
         }
+
     }
 
 
@@ -298,7 +299,8 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
      */
     public void setElementIconColor(PDEColor color) {
         //any change?
-        if (color.equals(mIconColor)) return;
+        if ((color == null && mIconColor == null)
+            || (color != null && color.equals(mIconColor))) return;
 
         //remember
         mIconColor = color;
@@ -309,9 +311,6 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
         } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
             ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementIconColor(color);
         }
-
-        //redraw
-        //update();
     }
 
 
@@ -338,8 +337,6 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
         } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
             ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementShadowEnabled(enabled);
         }
-
-        //update(true);
     }
 
 
@@ -356,7 +353,8 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
      */
     public void setElementShadowColor(PDEColor color) {
         //any change?
-        if (color.equals(mShadowColor)) return;
+        if ((color == null && mShadowColor == null)
+            || (color != null && color.equals(mShadowColor))) return;
 
         //remember
         mShadowColor = color;
@@ -366,8 +364,6 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
         } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
             ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementShadowColor(color);
         }
-
-        //update();
     }
 
 
@@ -394,8 +390,6 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
         } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
             ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementShadowXOffset(offset);
         }
-
-        //update(true);
     }
 
 
@@ -422,8 +416,6 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
         } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
             ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementShadowYOffset(offset);
         }
-
-        //update(true);
     }
 
 
@@ -450,8 +442,6 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
         } else if (getLayerAtIndex(0) instanceof PDEDrawableIconImage) {
             ((PDEDrawableIconImage)getLayerAtIndex(0)).setElementPadding(padding);
         }
-
-        //update(true);
     }
 
 
@@ -483,7 +473,7 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
 
 
     /**
-     * @brief Update all of my sublayers.
+     * @brief Update all of my sub-layers.
      */
     @Override
     protected void doLayout() {
@@ -491,22 +481,7 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
         if (getLayerAtIndex(0) != null) {
             getLayerAtIndex(0).setBounds(0, 0, bounds.width(), bounds.height());
         }
-
-
     }
-
-
-//    /**
-//     * @brief Updates image color.
-//     */
-//    protected void updateAllPaints() {
-//        // no further paints needed so apply paint changes directly on the image
-//        if (mIconDrawable != null) {
-//            mIconDrawable.setAlpha(mAlpha);
-//            mIconDrawable.setDither(mDither);
-//            mIconDrawable.setColorFilter(mColorFilter);
-//        }
-//    }
 
 
     /**
@@ -525,20 +500,8 @@ public class PDEDrawableIcon extends PDEDrawableMultilayer {
     }
 
 
-//    /**
-//     * @brief Draws image.
-//     *
-//     * @param c the Canvas of the DrawingBitmap we want to draw into.
-//     * @param bounds the current bounding rect of our Drawable.
-//     */
-//    protected void updateDrawingBitmap(Canvas c, Rect bounds) {
-//        // security
-//        if (getNumberOfLayers() == 0 || bounds.width() <= 0 || bounds.height() <= 0) return;
-//
-//        getLayerAtIndex(0).draw(c);
-//    }
 
-    //---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 // ----- Wrapper View  ----------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
 
