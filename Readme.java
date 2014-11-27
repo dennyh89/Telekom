@@ -533,10 +533,30 @@ Release notes
 =============
 
 __Current public version__<br />
-6.0.1
+6.0.2
  
 __Current non-public version__<br />
-6.0.1
+6.0.2
+
+Patch 6.0.2 (public)
+--------------------
+
+_Date__<br />
+27.11.2014
+ 
+__Server__<br />
+git.design.telekom.com
+ 
+__Repositories__<br />
+PDECodeLibrary_Android.git
+ 
+__Branch__<br />
+master
+ 
+__Content__<br />
+
+Fix exchange of icons in PDEButton
+Build files added to the gitignore file
 
 Patch 6.0.1 (public)
 --------------------
